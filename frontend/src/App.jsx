@@ -9,8 +9,10 @@ import EventEditModal from './components/EventEditModal';
 import AiRefineModal from './components/AiRefineModal';
 import SavedTimelinesModal from './components/SavedTimelinesModal';
 import SettingsModal from './components/SettingsModal';
+import AiDisclaimerModal from './components/AiDisclaimerModal';
+import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
-import { Sparkles, FolderOpen } from 'lucide-react';
+import { Sparkles, FolderOpen, AlertTriangle } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -60,6 +62,7 @@ export default function App() {
   const [isAiRefineOpen, setIsAiRefineOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
 
   const timelineRef = useRef(null);
@@ -272,6 +275,7 @@ export default function App() {
         onExportJson={handleExportJson}
         onExportImage={handleExportImage}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
         isGenerating={isLoading}
         theme={theme}
         onToggleTheme={handleToggleTheme}
@@ -329,13 +333,17 @@ export default function App() {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500/10 via-blue-500/20 to-indigo-500/10 dark:from-sky-400/20 dark:to-indigo-500/20 border border-sky-200 dark:border-sky-800/60 flex items-center justify-center shadow-inner">
                 <Sparkles className="w-8 h-8 text-sky-500 dark:text-sky-400" />
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-2 flex flex-col items-center">
                 <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
                   Ready to explore history
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                   Type a topic or historical era in the search bar above to generate a new interactive timeline, or open a saved one.
                 </p>
+                <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-sm">
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <span>AI models synthesize events and dates, which may contain inaccuracies. Verify key facts.</span>
+                </div>
               </div>
               <button
                 type="button"
@@ -360,9 +368,13 @@ export default function App() {
               setIsEventEditOpen(true);
             }}
             onDelete={handleDeleteEvent}
+            onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
           />
         )}
       </main>
+
+      {/* Bottom AI Disclaimer Bar */}
+      <AiDisclaimerBar onOpenModal={() => setIsDisclaimerModalOpen(true)} />
 
       {/* Modals */}
       <EventEditModal
@@ -396,6 +408,11 @@ export default function App() {
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      <AiDisclaimerModal
+        isOpen={isDisclaimerModalOpen}
+        onClose={() => setIsDisclaimerModalOpen(false)}
       />
     </div>
   );

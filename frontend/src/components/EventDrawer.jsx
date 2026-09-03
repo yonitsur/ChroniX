@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon } from 'lucide-react';
+import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle } from 'lucide-react';
 
 const MONTH_NAMES = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -46,7 +46,8 @@ export default function EventDrawer({
   lanes = [],
   onClose,
   onEdit,
-  onDelete
+  onDelete,
+  onOpenDisclaimer
 }) {
   if (!article) return null;
 
@@ -117,6 +118,23 @@ export default function EventDrawer({
               <span dir="auto">{laneObj.title}</span>
             </div>
           )}
+        </div>
+
+        {/* AI Disclaimer Note */}
+        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/50 text-amber-900 dark:text-amber-200 text-xs">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+          <div className="leading-snug">
+            <span className="font-semibold">AI Generated:</span> Events and dates may contain inaccuracies or invented facts. Always verify historical milestones.
+            {onOpenDisclaimer && (
+              <button
+                type="button"
+                onClick={onOpenDisclaimer}
+                className="ml-1.5 text-amber-700 dark:text-amber-300 underline font-medium hover:text-amber-900 dark:hover:text-amber-100 cursor-pointer inline"
+              >
+                Learn more
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Wikipedia Extract */}

@@ -15,6 +15,7 @@ import {
   Loader2,
   ArrowRight,
   HelpCircle,
+  AlertTriangle,
   LayoutList,
   Trash2,
   ChevronDown,
@@ -74,6 +75,7 @@ export default function Toolbar({
   onExportJson,
   onExportImage,
   onOpenSettings,
+  onOpenDisclaimer,
   isGenerating,
   theme = 'light',
   onToggleTheme,
@@ -386,6 +388,16 @@ export default function Toolbar({
               Img
             </button>
           </div>
+
+          {/* AI Disclaimer Button */}
+          <button
+            type="button"
+            onClick={onOpenDisclaimer}
+            className="p-1.5 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-800 shadow-xs transition-colors"
+            title="AI Disclaimer"
+          >
+            <AlertTriangle className="w-4 h-4" />
+          </button>
 
           {/* Settings Button */}
           <button
