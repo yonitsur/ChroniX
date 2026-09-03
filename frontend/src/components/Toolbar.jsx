@@ -132,7 +132,7 @@ export default function Toolbar({
   };
 
   return (
-    <div className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-20 select-none transition-colors">
+    <div className="relative w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-20 select-none transition-colors">
       {/* Top Row: Left branding | Center search box | Right tools */}
       <div className="px-3 sm:px-4 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 sm:gap-3 text-slate-700 dark:text-slate-200">
         {/* Left: Branding & Info */}
@@ -459,8 +459,8 @@ export default function Toolbar({
 
       {/* Loading Progress Bar */}
       {isGenerating && (
-        <div className="h-0.5 w-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 w-1/2 animate-[progress_1.8s_ease-in-out_infinite]" />
+        <div className="absolute -bottom-px left-0 right-0 h-[2.5px] bg-slate-200/50 dark:bg-slate-800/60 overflow-hidden pointer-events-none z-30">
+          <div className="h-full w-[28%] bg-gradient-to-r from-transparent via-sky-400 via-blue-500 to-transparent rounded-full shadow-[0_0_12px_rgba(56,189,248,0.9)] animate-progress-indeterminate" />
         </div>
       )}
     </div>

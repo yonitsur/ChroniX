@@ -130,8 +130,8 @@ export default function PromptBar({ onGenerate, isLoading }) {
 
         {/* Loading Progress Bar */}
         {isLoading && (
-          <div className="absolute -bottom-1 left-4 right-4 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-sky-400 via-blue-500 to-purple-500 w-1/2 animate-[progress_1.8s_ease-in-out_infinite]" />
+          <div className="absolute -bottom-1 left-4 right-4 h-1 bg-slate-200/60 dark:bg-slate-800 rounded-full overflow-hidden pointer-events-none">
+            <div className="h-full w-[28%] bg-gradient-to-r from-transparent via-sky-400 via-blue-500 to-transparent rounded-full shadow-[0_0_8px_rgba(14,165,233,0.8)] animate-progress-indeterminate" />
           </div>
         )}
       </form>
