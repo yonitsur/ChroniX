@@ -109,11 +109,12 @@ def clean_json_text(text: str) -> str:
 def get_gemini_models_to_try() -> list[str]:
     env_model = os.getenv("GEMINI_MODEL")
     defaults = [
-        "gemini-3.6-flash",
+        "gemini-flash-latest",
         "gemini-3.8-flash",
         "gemini-3.7-flash",
+        "gemini-3.6-flash",
         "gemini-3.5-flash",
-        "gemini-flash-latest",
+        
     ]
     if env_model:
         return [env_model] + [m for m in defaults if m != env_model]

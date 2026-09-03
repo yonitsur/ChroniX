@@ -47,7 +47,13 @@ const SUGGESTIONS = [
   "World War II Key Events",
   "Human Evolution & Early Hominids",
   "History of Artificial Intelligence",
-  "Space Race & Moon Missions"
+  "Space Race & Moon Missions",
+  "Rise & Fall of the Roman Empire",
+  "Ancient Egypt & Pharaohs",
+  "History of Aviation & Flight",
+  "Renaissance Masters & Art Movements",
+  "Evolution of Video Game Consoles",
+  "Timeline of the Universe (Big Bang to Now)"
 ];
 
 const LOADING_STEPS = [
@@ -131,9 +137,6 @@ export default function Toolbar({
       <div className="px-3 sm:px-4 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 sm:gap-3 text-slate-700 dark:text-slate-200">
         {/* Left: Branding & Info */}
         <div className="flex items-center gap-2.5 shrink-0 min-w-0">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-sm shadow-sky-500/20">
-            CX
-          </div>
           <div className="hidden sm:block">
             <h1 className="font-bold text-sm text-slate-900 dark:text-white truncate max-w-[150px] xl:max-w-xs">
               {timelineData?.title || 'ChroniX'}

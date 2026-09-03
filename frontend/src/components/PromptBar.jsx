@@ -8,8 +8,15 @@ const SUGGESTIONS = [
   "World War II Key Events",
   "Human Evolution & Early Hominids",
   "History of Artificial Intelligence",
-  "Space Race & Moon Missions"
+  "Space Race & Moon Missions",
+  "Rise & Fall of the Roman Empire",
+  "Ancient Egypt & Pharaohs",
+  "History of Aviation & Flight",
+  "Renaissance Masters & Art Movements",
+  "Evolution of Video Game Consoles",
+  "Timeline of the Universe (Big Bang to Now)"
 ];
+
 
 const LOADING_STEPS = [
   "Consulting Gemini AI...",
