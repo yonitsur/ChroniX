@@ -10,11 +10,11 @@ import AiRefineModal from './components/AiRefineModal';
 import SavedTimelinesModal from './components/SavedTimelinesModal';
 import SettingsModal from './components/SettingsModal';
 import FloatingCardsButton from './components/FloatingCardsButton';
+import { Sparkles, FolderOpen } from 'lucide-react';
 
 import {
   generateTimeline,
   refineTimeline,
-  fetchTimelines,
   fetchTimeline,
   saveTimeline,
   getApiKey
@@ -63,22 +63,6 @@ export default function App() {
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
 
   const timelineRef = useRef(null);
-
-  // Load initial timeline on start
-  useEffect(() => {
-    async function loadInitial() {
-      try {
-        const list = await fetchTimelines();
-        if (list && list.length > 0) {
-          const first = await fetchTimeline(list[0].id);
-          setCurrentTimeline(first);
-        }
-      } catch (err) {
-        console.warn('Could not load initial timeline:', err);
-      }
-    }
-    loadInitial();
-  }, []);
 
   const triggerCelebration = () => {
     try {
@@ -340,9 +324,28 @@ export default function App() {
             theme={theme}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-3">
-            <div className="text-4xl">⏳</div>
-            <p className="text-sm">Type a prompt above to generate your first interactive timeline</p>
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center select-none">
+            <div className="max-w-md flex flex-col items-center gap-4 animate-in fade-in duration-300">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500/10 via-blue-500/20 to-indigo-500/10 dark:from-sky-400/20 dark:to-indigo-500/20 border border-sky-200 dark:border-sky-800/60 flex items-center justify-center shadow-inner">
+                <Sparkles className="w-8 h-8 text-sky-500 dark:text-sky-400" />
+              </div>
+              <div className="space-y-1.5">
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                  Ready to explore history
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Type a topic or historical era in the search bar above to generate a new interactive timeline, or open a saved one.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSavedModalOpen(true)}
+                className="mt-2 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
+              >
+                <FolderOpen className="w-4 h-4 text-amber-500" />
+                <span>Open Saved Timelines</span>
+              </button>
+            </div>
           </div>
         )}
 
