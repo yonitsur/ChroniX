@@ -22,6 +22,7 @@ import {
   SlidersHorizontal,
   Check
 } from 'lucide-react';
+import ChroniXLogo from './ChroniXLogo';
 
 const DETAIL_LEVEL_OPTIONS = [
   {
@@ -138,26 +139,38 @@ export default function Toolbar({
       {/* Top Row: Left branding | Center search box | Right tools */}
       <div className="px-3 sm:px-4 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-2 sm:gap-3 text-slate-700 dark:text-slate-200">
         {/* Left: Branding & Info */}
-        <div className="flex items-center gap-2.5 shrink-0 min-w-0">
-          <div className="hidden sm:block">
-            <h1 className="font-bold text-sm text-slate-900 dark:text-white truncate max-w-[150px] xl:max-w-xs">
-              {timelineData?.title || 'ChroniX'}
-            </h1>
-            <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                {timelineData?.articles?.length || 0} events
-              </span>
-              {timelineData?.lanes?.length > 0 && (
-                <>
-                  <span>•</span>
+        <div className="flex items-center gap-3 shrink-0 min-w-0">
+          <div className="flex items-center gap-2.5">
+            <ChroniXLogo className="h-10 sm:h-11 w-auto transition-transform hover:scale-105" />
+            {timelineData?.title && timelineData.title !== 'ChroniX' ? (
+              <div className="hidden sm:block pl-2.5 border-l border-slate-300 dark:border-slate-700">
+                <h1 className="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate max-w-[130px] xl:max-w-xs" title={timelineData.title}>
+                  {timelineData.title}
+                </h1>
+                <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1">
-                    <Layers className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
-                    {timelineData.lanes.length} lanes
+                    <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
+                    {timelineData?.articles?.length || 0} events
                   </span>
-                </>
-              )}
-            </div>
+                  {timelineData?.lanes?.length > 0 && (
+                    <>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Layers className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
+                        {timelineData.lanes.length} lanes
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="hidden sm:block pl-2 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
+                  {timelineData?.articles?.length || 0} events
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
