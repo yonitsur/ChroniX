@@ -50,7 +50,7 @@ export default function ChroniXLogo({
 
   return (
     <svg
-      viewBox="2 2 126 40"
+      viewBox="2 2 119 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`shrink-0 select-none ${className}`}
@@ -94,7 +94,7 @@ export default function ChroniXLogo({
       <line
         x1="5"
         y1="33"
-        x2="120"
+        x2="113"
         y2="33"
         stroke="currentColor"
         className="text-slate-400 dark:text-slate-500"
@@ -103,7 +103,7 @@ export default function ChroniXLogo({
       />
       {/* X Arrowhead */}
       <path
-        d="M117.5 29.5 L123 33 L117.5 36.5"
+        d="M110.5 29.5 L116 33 L110.5 36.5"
         stroke="currentColor"
         className="text-slate-400 dark:text-slate-500"
         strokeWidth="2.2"
