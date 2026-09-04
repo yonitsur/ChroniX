@@ -170,7 +170,7 @@ export default function Toolbar({
         {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
         <div className="order-1 flex items-center gap-2 sm:gap-3 min-w-0 max-w-[58%] sm:max-w-[62%] lg:max-w-[30%] xl:max-w-[34%] overflow-hidden shrink-0">
           <div className="flex items-center gap-2 min-w-0 w-full overflow-hidden">
-            <ChroniXLogo size="md" className="h-9 sm:h-10 w-auto shrink-0" />
+            <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0" />
             
             {timelineData?.title && timelineData.title !== 'ChroniX' ? (
               <div className="flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-200 dark:border-slate-800">

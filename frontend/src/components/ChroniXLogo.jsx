@@ -21,9 +21,33 @@ export default function ChroniXLogo({
   className = "", 
   size = "md",
   iconOnly = false,
+  minimal = true,
+  withDot = false,
+  dot = false,
+  mode = undefined, // 'dot' | 'minimal' | 'axes'
+  showAxes = undefined,
   animated = false,
   variant = "auto" // 'auto' | 'dark' | 'light' | 'white'
 }) {
+  // Determine effective mode:
+  // 'dot' = clean wordmark with accent origin dot (no arrows)
+  // 'minimal' = pure wordmark only (no arrows, no dot)
+  // 'axes' = full Cartesian coordinate system with arrows and origin dot
+  let effectiveMode = 'dot';
+  if (mode) {
+    effectiveMode = mode;
+  } else if (withDot || dot) {
+    effectiveMode = 'dot';
+  } else if (showAxes === true) {
+    effectiveMode = 'axes';
+  } else if (showAxes === false) {
+    effectiveMode = 'minimal';
+  } else if (minimal === true) {
+    effectiveMode = 'minimal';
+  } else if (minimal === false) {
+    effectiveMode = 'dot';
+  }
+
   const sizeClass = SIZE_CLASSES[size] || (className ? "" : "h-10");
   const computedClass = `${sizeClass} ${className}`.trim();
 
@@ -44,6 +68,38 @@ export default function ChroniXLogo({
     : "text-slate-400 dark:text-slate-500";
 
   if (iconOnly) {
+    if (effectiveMode === 'minimal') {
+      return (
+        <svg
+          viewBox="0 0 36 36"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={`shrink-0 select-none ${computedClass}`}
+          aria-label="ChroniX Icon"
+        >
+          <defs>
+            <linearGradient id="chronix-x-grad-min" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#38bdf8" />
+              <stop offset="100%" stopColor="#0284c7" />
+            </linearGradient>
+          </defs>
+
+          {/* Centered Plus Jakarta Sans 'X' without origin dot */}
+          <text
+            x="18"
+            y="26"
+            textAnchor="middle"
+            fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+            fontWeight="900"
+            fontSize="26"
+            fill="url(#chronix-x-grad-min)"
+          >
+            X
+          </text>
+        </svg>
+      );
+    }
+
     return (
       <svg
         viewBox="0 0 36 36"
@@ -76,6 +132,100 @@ export default function ChroniXLogo({
           fill="#38bdf8"
         >
           X
+        </text>
+      </svg>
+    );
+  }
+
+  // Mode 3: Clean wordmark with accent origin dot (no arrows)
+  if (effectiveMode === 'dot') {
+    return (
+      <svg
+        viewBox="0 0 100 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`shrink-0 select-none ${computedClass}`}
+        aria-label="ChroniX Logo"
+      >
+        <defs>
+          <linearGradient id="chronix-dot-x-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#0284c7" />
+          </linearGradient>
+        </defs>
+
+        {/* Accent Origin Dot (grounded at the base/start of 'C', close gap) */}
+        <circle
+          cx="4.0"
+          cy="20.2"
+          r="3.4"
+          fill="url(#chronix-dot-x-grad)"
+          className="transition-all"
+        />
+
+        {/* Wordmark in Plus Jakarta Sans */}
+        <text
+          x="8.8"
+          y="21.5"
+          fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+          fontWeight="800"
+          fontSize="23"
+          letterSpacing="-0.5px"
+        >
+          <tspan
+            fill={isForcedDark ? "#ffffff" : isForcedLight ? "#0f172a" : "currentColor"}
+            className={textColorClass}
+          >
+            Chroni
+          </tspan>
+          <tspan
+            fill="url(#chronix-dot-x-grad)"
+            fontWeight="900"
+          >
+            X
+          </tspan>
+        </text>
+      </svg>
+    );
+  }
+
+  // Mode 2: Minimalist wordmark only (no arrows, no dot)
+  if (effectiveMode === 'minimal') {
+    return (
+      <svg
+        viewBox="0 0 96 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`shrink-0 select-none ${computedClass}`}
+        aria-label="ChroniX Logo"
+      >
+        <defs>
+          <linearGradient id="chronix-min-text-x-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#0284c7" />
+          </linearGradient>
+        </defs>
+
+        <text
+          x="1"
+          y="21.5"
+          fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+          fontWeight="800"
+          fontSize="23"
+          letterSpacing="-0.5px"
+        >
+          <tspan
+            fill={isForcedDark ? "#ffffff" : isForcedLight ? "#0f172a" : "currentColor"}
+            className={textColorClass}
+          >
+            Chroni
+          </tspan>
+          <tspan
+            fill="url(#chronix-min-text-x-grad)"
+            fontWeight="900"
+          >
+            X
+          </tspan>
         </text>
       </svg>
     );
