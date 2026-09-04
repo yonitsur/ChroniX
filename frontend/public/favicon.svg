@@ -1,14 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <!-- Brand Cyan-to-Blue Linear Gradient matching ChroniX Logo -->
+    <linearGradient id="chronix-fav-x-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+  </defs>
+
   <!-- Rounded modern dark background tile -->
   <rect width="48" height="48" rx="12" fill="#090d16" />
   <rect width="46" height="46" x="1" y="1" rx="11" stroke="#1e293b" stroke-width="1.2" />
   
-  <!-- Origin Coordinate Dot in single uniform brand cyan (#38bdf8) -->
-  <circle cx="11.5" cy="35.5" r="4.2" fill="#38bdf8" />
+  <!-- Origin Coordinate Dot with brand cyan gradient -->
+  <circle cx="11.5" cy="34" r="4.2" fill="url(#chronix-fav-x-grad)" />
 
-  <!-- Authentic Suez One serif 'X' in identical uniform brand cyan (#38bdf8) -->
+  <!-- Authentic Plus Jakarta Sans ExtraBold 'X' matching the ChroniX logo typography -->
   <path
-    d="M 29.97 30.16 L 31.90 29.68 L 28.12 24.60 L 25.37 28.53 Q 25.22 28.72, 25.22 28.94 Q 25.22 29.20, 25.63 29.53 L 26.93 30.57 L 26.67 33.39 L 17.69 33.39 L 17.50 30.20 L 18.39 29.35 L 25.41 21.00 L 19.43 12.95 L 17.57 10.73 L 17.69 8.50 L 29.19 8.50 L 29.60 11.84 L 27.63 12.32 L 31.23 17.14 L 33.87 13.32 Q 33.98 13.14, 33.98 12.99 Q 33.98 12.69, 33.61 12.36 L 32.27 11.36 L 32.53 8.50 L 41.55 8.50 L 41.78 11.69 L 40.85 12.54 L 33.94 20.78 L 40.14 29.05 L 42.00 31.27 L 41.85 33.50 L 30.20 33.50 Z"
-    fill="#38bdf8"
+    d="M 25.55 34.00 L 19.85 34.00 L 27.66 22.06 L 19.85 10.16 L 25.55 10.16 L 31.82 19.70 L 29.04 19.70 L 35.28 10.16 L 40.97 10.16 L 33.20 22.06 L 40.97 34.00 L 35.28 34.00 L 29.04 24.43 L 31.82 24.46 Z"
+    fill="url(#chronix-fav-x-grad)"
   />
 </svg>
