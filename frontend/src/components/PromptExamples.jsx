@@ -399,11 +399,17 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                   isHebrew ? 'text-right' : 'text-left'
                 } w-72 sm:w-80 h-40 sm:h-44 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-1 hover:shadow-lg shadow-2xs group-hover/track:opacity-85 hover:!opacity-100`}
               >
-                {/* Card Top Metadata Bar */}
-                <div className="flex items-center justify-between w-full mb-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
-                    {isHebrew ? 'רעיון לציר זמן' : 'Timeline Concept'}
-                  </span>
+                {/* Prompt Title at the Top */}
+                <p
+                  className={`text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 group-hover/card:text-sky-600 dark:group-hover/card:text-sky-400 leading-relaxed line-clamp-4 font-medium transition-colors ${
+                    isHebrew ? 'font-sans' : 'font-sans'
+                  }`}
+                >
+                  {item.prompt}
+                </p>
+
+                {/* Card Bottom Metadata Bar */}
+                <div className="flex items-center justify-between w-full mt-auto pt-2">
                   <span
                     className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
                       item.detailLevel === 'deep_dive'
@@ -411,26 +417,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                         : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/50'
                     }`}
                   >
-                    {item.detailLevel === 'deep_dive' ? (isHebrew ? 'מעמיק' : 'Deep Dive') : (isHebrew ? 'סטנדרטי' : 'Standard')}
-                  </span>
-                </div>
-
-                {/* Prompt Title */}
-                <p
-                  className={`text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 group-hover/card:text-sky-600 dark:group-hover/card:text-sky-400 leading-relaxed line-clamp-3 font-medium transition-colors ${
-                    isHebrew ? 'font-sans' : 'font-sans'
-                  }`}
-                >
-                  {item.prompt}
-                </p>
-
-                {/* Card Footer with Subtle Explore Indicator */}
-                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800/60 mt-auto w-full text-slate-400 dark:text-slate-500 group-hover/card:text-slate-700 dark:group-hover/card:text-slate-300 transition-colors">
-                  <span className="text-[11px] font-medium">
-                    {isHebrew ? 'לחץ לבניית הציר' : 'Click to generate'}
-                  </span>
-                  <span className="text-xs transition-transform duration-200 group-hover/card:translate-x-0.5 rtl:group-hover/card:-translate-x-0.5">
-                    {isHebrew ? '←' : '→'}
+                    {item.detailLevel === 'deep_dive' ? 'Deep Dive' : 'Standard'}
                   </span>
                 </div>
               </button>
@@ -471,7 +458,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           type="button"
           onClick={handleShuffle}
           disabled={isGenerating}
-          title="ערבב דוגמאות / Shuffle prompts"
+          title="Shuffle prompts"
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Shuffle
@@ -479,7 +466,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
               isShuffling ? 'rotate-180 text-sky-500' : ''
             }`}
           />
-          <span>ערבב רעיונות / Shuffle</span>
+          <span>Shuffle</span>
         </button>
       </div>
     </div>
