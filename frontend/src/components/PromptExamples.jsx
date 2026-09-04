@@ -408,8 +408,8 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                   {item.prompt}
                 </p>
 
-                {/* Card Bottom Metadata Bar */}
-                <div className="flex items-center justify-between w-full mt-auto pt-2">
+                {/* Card Bottom Metadata Bar - Always LTR for uniform left alignment */}
+                <div className="flex items-center justify-start w-full mt-auto pt-2" dir="ltr">
                   <span
                     className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
                       item.detailLevel === 'deep_dive'
