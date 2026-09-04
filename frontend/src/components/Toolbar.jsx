@@ -15,7 +15,6 @@ import {
   Loader2,
   ArrowRight,
   AlertTriangle,
-  LayoutList,
   Trash2,
   ChevronDown,
   SlidersHorizontal,
@@ -73,8 +72,6 @@ export default function Toolbar({
   theme = 'light',
   onToggleTheme,
   onGenerate,
-  isCardsListOpen = false,
-  onToggleCardsList,
   onClearBoard,
   onOpenAuth,
   activePrompt
@@ -283,33 +280,6 @@ export default function Toolbar({
             >
               <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500 transition-colors shrink-0" />
               <span className="hidden xl:inline">Clear</span>
-            </button>
-          )}
-
-          {/* Cards List Drawer Toggle Button (Only when extra space is available, floating side button is always present) */}
-          {timelineData && (
-            <button
-              type="button"
-              disabled={!timelineData.articles || timelineData.articles.length === 0}
-              onClick={onToggleCardsList}
-              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
-                isCardsListOpen
-                  ? 'bg-sky-50 dark:bg-sky-950/70 border-sky-400 dark:border-sky-600 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20'
-                  : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700'
-              }`}
-              title={isCardsListOpen ? 'Close Cards List' : 'Open Cards List'}
-            >
-              <LayoutList className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-              <span>Cards</span>
-              {timelineData.articles?.length > 0 && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                  isCardsListOpen
-                    ? 'bg-sky-200 dark:bg-sky-800 text-sky-900 dark:text-sky-100'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                }`}>
-                  {timelineData.articles.length}
-                </span>
-              )}
             </button>
           )}
 

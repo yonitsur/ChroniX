@@ -311,8 +311,6 @@ export default function App() {
         theme={theme}
         onToggleTheme={handleToggleTheme}
         onGenerate={handleGenerate}
-        isCardsListOpen={isCardsListOpen}
-        onToggleCardsList={() => setIsCardsListOpen((prev) => !prev)}
         onClearBoard={handleClearBoard}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
