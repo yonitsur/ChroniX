@@ -665,7 +665,7 @@ export default function EventEditModal({
                 type="text"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
-                placeholder="e.g. Normandy, France or ירושלים"
+                placeholder="e.g. Normandy, France or Jerusalem"
                 className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
               />
             </div>

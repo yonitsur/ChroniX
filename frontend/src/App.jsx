@@ -464,7 +464,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('pip')}
                     className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title="העבר לחלונית מפה צפה (Picture-in-Picture)"
+                    title="Switch to Picture-in-Picture (PiP)"
                   >
                     <Minimize2 className="w-3.5 h-3.5" />
                   </button>
@@ -472,7 +472,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('full')}
                     className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title="הגדל למסך מלא"
+                    title="Full Screen"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
@@ -480,7 +480,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('icon')}
                     className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
-                    title="סגור פיצול וחזור לציר הזמן"
+                    title="Close split and return to timeline"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -511,7 +511,7 @@ export default function App() {
                 className={`group relative w-full h-3.5 flex items-center justify-center cursor-row-resize bg-slate-200/90 dark:bg-slate-800/90 border-y border-slate-300 dark:border-slate-700 hover:bg-sky-500/20 dark:hover:bg-sky-500/30 transition-colors shrink-0 z-30 select-none ${
                   isDraggingSplit ? 'bg-sky-500/30 dark:bg-sky-500/40 ring-1 ring-sky-500/60' : ''
                 }`}
-                title="גרור כדי לשנות את גודל המפה וציר הזמן • לחץ פעמיים לאיפוס חצי-חצי (50%)"
+                title="Drag to resize map & timeline • Double-click to reset 50/50"
               >
                 {/* Visual Grip pill */}
                 <div className="flex items-center gap-1 px-3 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-2xs group-hover:border-sky-400 group-hover:scale-105 transition-all pointer-events-none">
