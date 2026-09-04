@@ -181,6 +181,7 @@ const TimelineView = forwardRef(({
       // 3. Load articles
       if (timelineData.articles && timelineData.articles.length > 0) {
         const formattedArticles = timelineData.articles.map((art) => ({
+          ...art,
           id: art.id,
           title: art.title,
           subtitle: art.subtitle || '',
@@ -194,6 +195,10 @@ const TimelineView = forwardRef(({
           wikiUrl: art.wikiUrl,
           extract: art.extract,
           wikiTitle: art.wikiTitle,
+          locationName: art.locationName,
+          lat: art.lat,
+          lng: art.lng,
+          googleMapsUrl: art.googleMapsUrl,
         }));
 
         timeline.load(formattedArticles);
@@ -211,8 +216,9 @@ const TimelineView = forwardRef(({
       // Event listener for article clicks
       timeline.on('article-click', (article) => {
         if (onSelectArticle) {
-          // Pass the article data to parent
-          onSelectArticle(article.data || article);
+          const clickedId = article?.id || article?.data?.id;
+          const original = timelineData.articles?.find((a) => a.id === clickedId);
+          onSelectArticle(original || article.data || article);
         }
       });
 

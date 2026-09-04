@@ -375,10 +375,24 @@ export default function App() {
     setIsCardsListOpen(false);
   };
 
-  // Focus and select article from cards list
+  // Helper to ensure we always have the full article object with all metadata (locationName, lat, lng, etc.)
+  const handleSelectArticle = (article) => {
+    if (!article) {
+      setSelectedArticle(null);
+      return;
+    }
+    const articleId = article.id || article.data?.id;
+    const fullArticle = currentTimeline?.articles?.find((a) => a.id === articleId) || article;
+    setSelectedArticle(fullArticle);
+  };
+
+  // Focus and select article from cards list or map
   const handleFocusArticle = (article) => {
-    setSelectedArticle(article);
-    timelineRef.current?.focusArticle(article.id);
+    handleSelectArticle(article);
+    const id = article?.id || article?.data?.id;
+    if (id) {
+      timelineRef.current?.focusArticle(id);
+    }
   };
 
   return (
@@ -529,7 +543,7 @@ export default function App() {
                 <TimelineView
                   ref={timelineRef}
                   timelineData={currentTimeline}
-                  onSelectArticle={(article) => setSelectedArticle(article)}
+                  onSelectArticle={handleSelectArticle}
                   selectedArticleId={selectedArticle?.id}
                   theme={theme}
                 />
@@ -541,7 +555,7 @@ export default function App() {
               <TimelineView
                 ref={timelineRef}
                 timelineData={currentTimeline}
-                onSelectArticle={(article) => setSelectedArticle(article)}
+                onSelectArticle={handleSelectArticle}
                 selectedArticleId={selectedArticle?.id}
                 theme={theme}
               />
