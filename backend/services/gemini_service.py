@@ -27,11 +27,6 @@ DETAIL_LEVEL_GUIDELINES = {
     "deep_dive": "Produce 35 to 50 comprehensive, granular events detailing major and minor critical developments."
 }
 
-DETAIL_LEVEL_MAX_TOKENS = {
-    "overview": 100000,
-    "standard": 100000,
-    "deep_dive": 100000
-}
 
 
 def is_hebrew_text(text: str) -> bool:
@@ -194,8 +189,7 @@ Return a structured JSON timeline following the schema.
                     system_instruction=system_inst,
                     response_mime_type="application/json",
                     response_schema=GeminiTimelineOutput,
-                    temperature=0.3,
-                    max_output_tokens=DETAIL_LEVEL_MAX_TOKENS.get(detail_level, 16384)
+                    temperature=0.3
                 )
             )
 
@@ -372,8 +366,7 @@ Ensure events contain accurate dates and Wikipedia article titles.
                     system_instruction=system_inst,
                     response_mime_type="application/json",
                     response_schema=GeminiTimelineOutput,
-                    temperature=0.3,
-                    max_output_tokens=16384
+                    temperature=0.3
                 )
             )
 
@@ -577,8 +570,7 @@ Timescale: "{time_scale}"
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
                     response_schema=EventSuggestionOutput,
-                    temperature=0.1,
-                    max_output_tokens=4000
+                    temperature=0.1
                 )
             )
 
