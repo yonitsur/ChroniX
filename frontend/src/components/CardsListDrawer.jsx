@@ -53,7 +53,7 @@ export default function CardsListDrawer({
           const titleMatch = art.title?.toLowerCase().includes(q);
           const subtitleMatch = art.subtitle?.toLowerCase().includes(q);
           const extractMatch = art.extract?.toLowerCase().includes(q);
-          const laneName = (laneMap.get(art.lane) || '').toLowerCase();
+          const laneName = (laneMap.get(art.lane)?.title || '').toLowerCase();
           const laneMatch = laneName.includes(q);
           const yearMatch = art.from?.year?.toString().includes(q);
 

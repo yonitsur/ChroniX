@@ -1,4 +1,4 @@
-import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin } from 'lucide-react';
+import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info } from 'lucide-react';
 import { getLaneColor } from '../data/laneColors';
 
 const MONTH_NAMES = [
@@ -7,8 +7,12 @@ const MONTH_NAMES = [
 ];
 
 export function formatDatePart(d) {
-  if (!d || d.year === undefined || d.year === null) return '';
-  const y = d.year;
+  if (!d) return '';
+  if (typeof d === 'number') return String(d);
+  if (typeof d === 'string') return d;
+  if (d.year === undefined || d.year === null) return '';
+  const y = Number(d.year);
+  if (isNaN(y)) return String(d.year);
 
   if (d.precision === 'million-years' || Math.abs(y) >= 1000000) {
     const ma = Math.abs(y / 1000000);
@@ -20,12 +24,12 @@ export function formatDatePart(d) {
   }
 
   if (d.month && d.day) {
-    const m = MONTH_NAMES[d.month - 1] || d.month;
+    const m = MONTH_NAMES[Number(d.month) - 1] || d.month;
     return `${m} ${d.day}, ${y}`;
   }
 
   if (d.month) {
-    const m = MONTH_NAMES[d.month - 1] || d.month;
+    const m = MONTH_NAMES[Number(d.month) - 1] || d.month;
     return `${m} ${y}`;
   }
 
@@ -34,9 +38,10 @@ export function formatDatePart(d) {
 
 export function formatTimeSpan(from, to, isToPresent) {
   const fromStr = formatDatePart(from);
-  if (isToPresent) return `${fromStr} – Present`;
+  if (isToPresent) return fromStr ? `${fromStr} – Present` : 'Present';
   if (!to) return fromStr;
   const toStr = formatDatePart(to);
+  if (!fromStr) return toStr;
   if (fromStr === toStr) return fromStr;
   return `${fromStr} – ${toStr}`;
 }
@@ -126,15 +131,15 @@ export default function EventDrawer({
         </div>
 
         {/* Location & Google Maps Link */}
-        {(article.locationName || (article.lat && article.lng)) && (
+        {(article.locationName || (article.lat != null && article.lng != null)) && (
           <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs">
             <div className="flex items-center gap-2 min-w-0">
               <MapPin className="w-4 h-4 shrink-0 text-rose-500" />
               <div className="truncate">
                 <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate">
-                  {article.locationName || `${article.lat?.toFixed(2)}, ${article.lng?.toFixed(2)}`}
+                  {article.locationName || `${Number(article.lat).toFixed(2)}, ${Number(article.lng).toFixed(2)}`}
                 </span>
-                {article.lat && article.lng && (
+                {article.lat != null && article.lng != null && !isNaN(Number(article.lat)) && !isNaN(Number(article.lng)) && (
                   <span className="text-[10px] text-slate-400 dark:text-slate-500">
                     {Number(article.lat).toFixed(4)}°, {Number(article.lng).toFixed(4)}°
                   </span>
@@ -206,7 +211,7 @@ export default function EventDrawer({
       <div className="px-5 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 bg-white dark:bg-slate-950">
         <button
           type="button"
-          onClick={() => onEdit(article)}
+          onClick={() => onEdit?.(article)}
           className="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 border border-slate-200 dark:border-slate-700 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
         >
           <Edit className="w-3.5 h-3.5" />
@@ -215,7 +220,7 @@ export default function EventDrawer({
 
         <button
           type="button"
-          onClick={() => onDelete(article.id)}
+          onClick={() => onDelete?.(article.id)}
           className="flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-rose-50 dark:bg-slate-900 dark:hover:bg-rose-950/40 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-800 hover:border-rose-300 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
           title="Delete Event"
         >

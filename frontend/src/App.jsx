@@ -5,6 +5,7 @@ import Toolbar from './components/Toolbar';
 import TimelineView from './components/TimelineView';
 import GeoMapView from './components/GeoMapView';
 import EventDrawer from './components/EventDrawer';
+import ErrorBoundary from './components/ErrorBoundary';
 import CardsListDrawer from './components/CardsListDrawer';
 import EventEditModal from './components/EventEditModal';
 import AiRefineModal from './components/AiRefineModal';
@@ -619,17 +620,32 @@ export default function App() {
 
         {/* Selected Article Detail Drawer */}
         {selectedArticle && (
-          <EventDrawer
-            article={selectedArticle}
-            lanes={currentTimeline?.lanes || []}
-            onClose={() => setSelectedArticle(null)}
-            onEdit={(art) => {
-              setEventBeingEdited(art);
-              setIsEventEditOpen(true);
-            }}
-            onDelete={handleDeleteEvent}
-            onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
-          />
+          <ErrorBoundary
+            onReset={() => setSelectedArticle(null)}
+            fallback={(err, reset) => (
+              <div className="fixed bottom-6 right-6 z-50 bg-rose-900/95 text-white p-4 rounded-xl shadow-2xl flex items-center gap-3 text-xs border border-rose-700 backdrop-blur-md">
+                <span>Failed to display event details: {err?.message}</span>
+                <button
+                  onClick={reset}
+                  className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded text-white font-medium cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          >
+            <EventDrawer
+              article={selectedArticle}
+              lanes={currentTimeline?.lanes || []}
+              onClose={() => setSelectedArticle(null)}
+              onEdit={(art) => {
+                setEventBeingEdited(art);
+                setIsEventEditOpen(true);
+              }}
+              onDelete={handleDeleteEvent}
+              onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
+            />
+          </ErrorBoundary>
         )}
       </main>
 
