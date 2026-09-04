@@ -28,9 +28,9 @@ DETAIL_LEVEL_GUIDELINES = {
 }
 
 DETAIL_LEVEL_MAX_TOKENS = {
-    "overview": 8192,
-    "standard": 16384,
-    "deep_dive": 24000
+    "overview": 100000,
+    "standard": 100000,
+    "deep_dive": 100000
 }
 
 
