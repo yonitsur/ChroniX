@@ -79,3 +79,24 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 .animate-progress-indeterminate {
   animation: progress-slide 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+/* Infinite Marquee Animation for Movie Strip Reel */
+@keyframes infinite-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-marquee {
+  display: flex;
+  width: max-content;
+  animation: infinite-marquee 50s linear infinite;
+  will-change: transform;
+}
+
+.animate-infinite-marquee:hover {
+  animation-play-state: paused;
+}
