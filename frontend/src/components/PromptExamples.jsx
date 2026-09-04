@@ -326,7 +326,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 type="button"
                 disabled={isGenerating}
                 onClick={() => onSelectPrompt?.(item.prompt, item.detailLevel)}
-                dir={isHebrew ? 'rtl' : 'ltr'}
+                dir={'ltr'}
                 className={`group/card relative flex flex-col justify-between text-start p-4 rounded-2xl border transition-all duration-250 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                   isHebrew ? 'text-right' : 'text-left'
                 } w-64 sm:w-72 h-36 sm:h-40 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800/90 hover:border-sky-400 dark:hover:border-sky-400 hover:scale-105 sm:hover:scale-108 hover:-translate-y-1 hover:z-20 hover:shadow-2xl hover:shadow-sky-500/20 shadow-xs group-hover/track:opacity-75 hover:!opacity-100`}
@@ -342,7 +342,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700/60'
                     }`}
                   >
-                    {item.detailLevel === 'deep_dive' ? '🔬 Deep' : '⚡ Standard'}
+                    {item.detailLevel === 'deep_dive' ? 'Deep' : 'Standard'}
                   </span>
                 </div>
               </button>
