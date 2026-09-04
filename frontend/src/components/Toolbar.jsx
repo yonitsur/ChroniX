@@ -74,7 +74,8 @@ export default function Toolbar({
   onGenerate,
   onClearBoard,
   onOpenAuth,
-  activePrompt
+  activePrompt,
+  activeDetailLevel
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -113,7 +114,14 @@ export default function Toolbar({
       setPrompt(activePrompt);
     }
   }, [activePrompt]);
-  const [detailLevel, setDetailLevel] = useState('standard');
+
+  const [detailLevel, setDetailLevel] = useState(activeDetailLevel || 'standard');
+
+  useEffect(() => {
+    if (activeDetailLevel) {
+      setDetailLevel(activeDetailLevel);
+    }
+  }, [activeDetailLevel]);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
   const [recentSurprises, setRecentSurprises] = useState(() => {
     try {

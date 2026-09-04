@@ -35,6 +35,7 @@ export default function App() {
   const [isRefining, setIsRefining] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [activePrompt, setActivePrompt] = useState('');
+  const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
 
   // Theme state ('light' | 'dark')
   const [theme, setTheme] = useState(() => {
@@ -128,6 +129,7 @@ export default function App() {
   // Handle prompt card selection from home screen
   const handleSelectPrompt = (promptText, detailLevel = 'standard') => {
     setActivePrompt(promptText);
+    setActiveDetailLevel(detailLevel);
     handleGenerate(promptText, detailLevel);
   };
 
@@ -314,6 +316,7 @@ export default function App() {
         onClearBoard={handleClearBoard}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
+        activeDetailLevel={activeDetailLevel}
       />
 
       {/* Error banner */}

@@ -80,13 +80,26 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
               disabled={isGenerating}
               onClick={() => onSelectPrompt?.(item.prompt, item.detailLevel)}
               dir={isHebrew ? 'rtl' : 'ltr'}
-              className={`group text-start p-3.5 rounded-xl border transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`group flex flex-col justify-between text-start p-3.5 rounded-xl border transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                 isHebrew ? 'text-right' : 'text-left'
               } bg-white dark:bg-slate-900/70 hover:bg-slate-50 dark:hover:bg-slate-800/80 border-slate-200/90 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500 shadow-2xs hover:shadow-xs active:scale-[0.99]`}
             >
-              <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed line-clamp-3 font-normal transition-colors">
+              <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white leading-relaxed line-clamp-3 font-normal transition-colors mb-2.5">
                 {item.prompt}
               </p>
+              <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60 mt-auto w-full">
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${
+                    item.detailLevel === 'deep_dive'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border-indigo-200/70 dark:border-indigo-800/50'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700/60'
+                  }`}
+                >
+                  {item.detailLevel === 'deep_dive'
+                    ? ('🔬 Deep')
+                    : ('⚡ Standard')}
+                </span>
+              </div>
             </button>
           );
         })}
