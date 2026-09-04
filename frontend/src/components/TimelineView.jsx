@@ -84,6 +84,48 @@ const TimelineView = forwardRef(({
       }
     }
 
+    const articleStyle = {
+      backgroundColor: isDark ? '#0f172a' : '#ffffff',
+      color: isDark ? '#1e293b' : '#f1f5f9',
+      topRadius: 6,
+      borderRadius: 6,
+      border: {
+        color: isDark ? '#334155' : '#cbd5e1',
+        width: 1,
+      },
+      header: {
+        height: 50,
+        text: {
+          font: "600 13px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
+          color: isDark ? '#f8fafc' : '#0f172a',
+          margin: 10,
+          lineHeight: 18,
+          numberOfLines: 2,
+        }
+      },
+      subheader: {
+        height: 26,
+        color: isDark ? '#0b1120' : '#e2e8f0',
+        text: {
+          font: "500 11px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
+          color: isDark ? '#94a3b8' : '#64748b',
+          margin: 10,
+          lineHeight: 14,
+        }
+      },
+      shadow: {
+        x: 0,
+        y: 3,
+        amount: isDark ? 8 : 4,
+        color: isDark ? 'rgba(0, 0, 0, 0.55)' : 'rgba(0, 0, 0, 0.08)',
+      },
+      connectorLine: {
+        visible: true,
+        thickness: 1.5,
+        color: isDark ? '#475569' : '#94a3b8',
+      }
+    };
+
     try {
       const options = {
         width,
@@ -129,6 +171,7 @@ const TimelineView = forwardRef(({
             },
             title: {
               color: isDark ? '#f1f5f9' : '#1e293b',
+              font: "600 13px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
             }
           }
         },
@@ -147,6 +190,40 @@ const TimelineView = forwardRef(({
           periodLine: {
             thickness: 6,
             spacing: 4,
+          },
+          defaultStyle: articleStyle,
+          defaultHoverStyle: {
+            color: isDark ? '#334155' : '#e2e8f0',
+            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+            border: {
+              color: isDark ? '#38bdf8' : '#0284c7',
+              width: 1.5,
+            },
+            shadow: {
+              x: 0,
+              y: 6,
+              amount: 14,
+              color: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.16)',
+            }
+          },
+          defaultActiveStyle: {
+            color: isDark ? '#1e3a8a' : '#bfdbfe',
+            backgroundColor: isDark ? '#172554' : '#eff6ff',
+            border: {
+              color: '#38bdf8',
+              width: 2,
+            },
+            header: {
+              text: {
+                color: isDark ? '#ffffff' : '#0f172a',
+              }
+            },
+            subheader: {
+              color: isDark ? '#1e40af' : '#dbeafe',
+              text: {
+                color: isDark ? '#93c5fd' : '#1e40af',
+              }
+            }
           }
         }
       };
@@ -181,13 +258,32 @@ const TimelineView = forwardRef(({
                 },
                 title: {
                   color: textColor,
-                  font: 'bold 13px Inter, system-ui, sans-serif',
+                  font: "600 13px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
                 }
               }
             };
           })
         );
       }
+
+      // Helper to tone down timeband background in dark mode
+      const formatBandBg = (color) => {
+        if (!color) return isDark ? 'rgba(59, 130, 246, 0.12)' : 'rgba(59, 130, 246, 0.08)';
+        if (typeof color === 'string' && color.startsWith('rgba')) {
+          return isDark ? color.replace(/[\d\.]+\)$/, '0.12)') : color;
+        }
+        if (typeof color === 'string' && color.startsWith('#')) {
+          let hex = color.slice(1);
+          if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('');
+          if (hex.length === 6) {
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${isDark ? 0.12 : 0.09})`;
+          }
+        }
+        return color;
+      };
 
       // 2. Load time bands if any
       if (timelineData.timeBands && timelineData.timeBands.length > 0) {
@@ -198,7 +294,7 @@ const TimelineView = forwardRef(({
             from: tb.from,
             to: tb.to,
             style: {
-              background: tb.color || (isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.12)'),
+              background: formatBandBg(tb.color),
             }
           }))
         );
@@ -217,6 +313,7 @@ const TimelineView = forwardRef(({
           isToPresent: art.isToPresent || false,
           imageUrl: art.imageUrl || undefined,
           rank: art.rank || 5,
+          style: articleStyle,
           // Attach custom rich data into article object for drawer
           wikiUrl: art.wikiUrl,
           extract: art.extract,
