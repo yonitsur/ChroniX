@@ -176,15 +176,51 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 30. English - Standard
+  // 30. Hebrew - Deep (Comparative / Parallel)
+  {
+    prompt: 'מה קרה באימפריה הרומית במקביל למה שקרה בסין העתיקה (שושלת האן)? ציר זמן השוואתי מקביל של שתי אימפריות-העל באותן מאות שנים',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 31. English - Standard (Comparative / Parallel)
+  {
+    prompt: 'The Roman Empire vs. Han Dynasty China: Parallel timeline comparing Eurasia\'s twin classical superpowers (200 BCE – 220 CE)',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 32. Hebrew - Standard (Comparative / Parallel)
+  {
+    prompt: 'ציר זמן מקביל: הרנסאנס באירופה במקביל לתור הזהב של האימפריה העות\'מאנית (1450–1600)',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 33. English - Standard
   {
     prompt: 'Rise and Fall of the Roman Empire: From Republic to Fall of Rome',
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 31. English - Deep
+  // 34. Hebrew - Deep (Comparative / Parallel)
+  {
+    prompt: 'המהפכה האמריקאית מול המהפכה הצרפתית: ציר זמן מקביל של שני המאבקים הגדולים לחירות ודמוקרטיה (1775–1799)',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 35. English - Deep
   {
     prompt: 'The Manhattan Project and Cold War Nuclear Proliferation (1939–1962): From Trinity test to the Cuban Missile Crisis',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 36. English - Standard (Comparative / Parallel)
+  {
+    prompt: 'American Revolution vs. French Revolution: Parallel chronology of two Atlantic struggles for liberty (1775–1799)',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 37. English - Deep (Comparative / Parallel)
+  {
+    prompt: 'World War II Parallel Theaters: European Theater vs. Pacific Theater — Simultaneous timeline contrasting campaigns and turning points (1939–1945)',
     detailLevel: 'deep_dive',
     lang: 'en'
   }
@@ -271,33 +307,13 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
       {/* Edge gradient fade masks for that infinite cinema look */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
-
-      {/* Left Navigation Arrow */}
-      <button
-        type="button"
-        onClick={() => handleManualScroll('left')}
-        aria-label="Scroll left"
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700/80 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer opacity-80 group-hover/carousel:opacity-100"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-
-      {/* Right Navigation Arrow */}
-      <button
-        type="button"
-        onClick={() => handleManualScroll('right')}
-        aria-label="Scroll right"
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700/80 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer opacity-80 group-hover/carousel:opacity-100"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-slate-100 dark:from-slate-950 to-transparent z-30 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-slate-100 dark:from-slate-950 to-transparent z-30 pointer-events-none" />
 
       {/* Scrollable Reel Track */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto overflow-y-hidden py-4 px-8 scrollbar-none"
+        className="overflow-x-auto overflow-y-hidden py-4 px-10 sm:px-14 scrollbar-none"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div className="flex gap-3.5 w-max group/track">
@@ -313,7 +329,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 dir={isHebrew ? 'rtl' : 'ltr'}
                 className={`group/card relative flex flex-col justify-between text-start p-4 rounded-2xl border transition-all duration-250 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                   isHebrew ? 'text-right' : 'text-left'
-                } w-64 sm:w-72 h-36 sm:h-40 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800/90 hover:border-sky-400 dark:hover:border-sky-400 hover:scale-105 sm:hover:scale-108 hover:-translate-y-1 hover:z-30 hover:shadow-2xl hover:shadow-sky-500/20 shadow-xs group-hover/track:opacity-75 hover:!opacity-100`}
+                } w-64 sm:w-72 h-36 sm:h-40 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800/90 hover:border-sky-400 dark:hover:border-sky-400 hover:scale-105 sm:hover:scale-108 hover:-translate-y-1 hover:z-20 hover:shadow-2xl hover:shadow-sky-500/20 shadow-xs group-hover/track:opacity-75 hover:!opacity-100`}
               >
                 <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 group-hover/card:text-slate-950 dark:group-hover/card:text-white leading-relaxed line-clamp-3 font-medium transition-colors">
                   {item.prompt}
@@ -334,6 +350,32 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           })}
         </div>
       </div>
+
+      {/* Left Navigation Arrow - Elevated to z-50 so it is never obscured by scrolling cards */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleManualScroll('left');
+        }}
+        aria-label="Scroll left"
+        className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-xl hover:shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+
+      {/* Right Navigation Arrow - Elevated to z-50 so it is never obscured by scrolling cards */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleManualScroll('right');
+        }}
+        aria-label="Scroll right"
+        className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-xl hover:shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
     </div>
   );
 }

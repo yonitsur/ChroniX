@@ -116,11 +116,19 @@ export const ENGLISH_TOPICS = [
   "Star Wars plot",
   "The Prohibition era",
   "Organized crime in the US",
-  "Marvel Cinematic Universe and The Avengers"
+  "Marvel Cinematic Universe and The Avengers",
+  "The Roman Empire vs. Han Dynasty China: Parallel Civilizations",
+  "World War II: European Theater vs. Pacific Theater",
+  "American Revolution vs. French Revolution: Parallel Struggles"
 ];
 
 // 2. Hebrew Topics (~75 items: Israeli, Jewish & General History/Science/Culture)
 export const HEBREW_TOPICS = [
+  // Comparative & Parallel Timelines
+  "מה קרה באימפריה הרומית במקביל לסין העתיקה",
+  "ציר זמן מקביל: הרנסאנס באירופה מול האימפריה העות'מאנית",
+  "המהפכה האמריקאית מול המהפכה הצרפתית: ציר זמן מקביל",
+
   // Israel & Jewish History & Culture
   "ראשי ממשלת ישראל ומנהיגיה הבולטים",
   "מלחמות ישראל: ממלחמת העצמאות ועד ימינו",
