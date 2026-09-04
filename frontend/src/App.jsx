@@ -16,6 +16,7 @@ import AuthModal from './components/AuthModal';
 import AuthGate from './components/AuthGate';
 import { useAuth } from './context/AuthContext';
 import ChroniXLogo from './components/ChroniXLogo';
+import PromptExamples from './components/PromptExamples';
 import { FolderOpen, AlertTriangle, Loader2 } from 'lucide-react';
 
 import {
@@ -33,6 +34,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [activePrompt, setActivePrompt] = useState('');
 
   // Theme state ('light' | 'dark')
   const [theme, setTheme] = useState(() => {
@@ -121,6 +123,12 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle prompt card selection from home screen
+  const handleSelectPrompt = (promptText, detailLevel = 'standard') => {
+    setActivePrompt(promptText);
+    handleGenerate(promptText, detailLevel);
   };
 
   // Handle refinement with AI
@@ -307,6 +315,7 @@ export default function App() {
         onToggleCardsList={() => setIsCardsListOpen((prev) => !prev)}
         onClearBoard={handleClearBoard}
         onOpenAuth={() => setIsAuthModalOpen(true)}
+        activePrompt={activePrompt}
       />
 
       {/* Error banner */}
@@ -352,32 +361,41 @@ export default function App() {
             theme={theme}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center select-none">
-            <div className="max-w-md flex flex-col items-center gap-4 animate-in fade-in duration-300">
+          <div className="w-full h-full overflow-y-auto flex flex-col items-center p-4 sm:p-6 pb-24 select-none animate-in fade-in duration-300">
+            {/* Hero Branding & Welcome */}
+            <div className="max-w-xl flex flex-col items-center gap-3 text-center mb-2">
               <div className="mb-1 transition-transform duration-300 hover:scale-105">
                 <ChroniXLogo size="xl" className="w-auto drop-shadow-sm" />
               </div>
-              <div className="space-y-2 flex flex-col items-center">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                  Ready to explore timelines
+              <div className="space-y-1.5 flex flex-col items-center">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+                  גלו והרכיבו צירי זמן אינטראקטיביים
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Type a topic or historical era in the search bar above to generate a new interactive timeline, or open a saved one.
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+                  הקלידו נושא בתיבת החיפוש למעלה, או לחצו על אחת מכרטיסיות הדוגמה כדי להתחיל מייד:
                 </p>
-                <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-sm">
+                <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-md">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                  <span>AI models synthesize events and dates, which may contain inaccuracies. Verify key facts.</span>
+                  <span>מודלי AI מסנתזים תאריכים ואירועים. ייתכנו אי-דיוקים קלים, מומלץ לאמת עובדות מפתח.</span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsSavedModalOpen(true)}
-                className="mt-2 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
-              >
-                <FolderOpen className="w-4 h-4 text-amber-500" />
-                <span>Open Saved Timelines</span>
-              </button>
+              <div className="flex items-center gap-2 mt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsSavedModalOpen(true)}
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
+                >
+                  <FolderOpen className="w-4 h-4 text-amber-500" />
+                  <span>צירים שמורים</span>
+                </button>
+              </div>
             </div>
+
+            {/* Prompt Cards (Simple & Complex) */}
+            <PromptExamples
+              onSelectPrompt={handleSelectPrompt}
+              isGenerating={isLoading}
+            />
           </div>
         )}
 

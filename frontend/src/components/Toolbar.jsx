@@ -76,7 +76,8 @@ export default function Toolbar({
   isCardsListOpen = false,
   onToggleCardsList,
   onClearBoard,
-  onOpenAuth
+  onOpenAuth,
+  activePrompt
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -108,7 +109,13 @@ export default function Toolbar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState(activePrompt || '');
+
+  useEffect(() => {
+    if (activePrompt) {
+      setPrompt(activePrompt);
+    }
+  }, [activePrompt]);
   const [detailLevel, setDetailLevel] = useState('standard');
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
   const [recentSurprises, setRecentSurprises] = useState(() => {
