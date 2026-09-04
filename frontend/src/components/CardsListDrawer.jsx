@@ -97,11 +97,10 @@ export default function CardsListDrawer({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse" />
-          <h2 className="font-bold text-sm text-slate-900 dark:text-white">
-            Cards List
+          <h2 className="font-semibold text-sm text-slate-900 dark:text-white font-sans">
+            Timeline Events
           </h2>
-          <span className="text-[11px] font-semibold bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800/80">
+          <span className="text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
             {filteredArticles.length === articles.length
               ? articles.length
               : `${filteredArticles.length} of ${articles.length}`}

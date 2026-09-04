@@ -394,23 +394,43 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 type="button"
                 disabled={isGenerating}
                 onClick={() => onSelectPrompt?.(item.prompt, item.detailLevel)}
-                dir={'ltr'}
-                className={`group/card relative flex flex-col justify-between text-start p-4 rounded-2xl border transition-all duration-250 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                dir={isHebrew ? 'rtl' : 'ltr'}
+                className={`group/card relative flex flex-col justify-between text-start p-4 sm:p-5 rounded-xl border transition-all duration-200 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                   isHebrew ? 'text-right' : 'text-left'
-                } w-64 sm:w-72 h-36 sm:h-40 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800/90 hover:border-sky-400 dark:hover:border-sky-400 hover:scale-105 sm:hover:scale-108 hover:-translate-y-1 hover:z-20 hover:shadow-2xl hover:shadow-sky-500/20 shadow-xs group-hover/track:opacity-75 hover:!opacity-100`}
+                } w-72 sm:w-80 h-40 sm:h-44 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-1 hover:shadow-lg shadow-2xs group-hover/track:opacity-85 hover:!opacity-100`}
               >
-                <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 group-hover/card:text-slate-950 dark:group-hover/card:text-white leading-relaxed line-clamp-3 font-medium transition-colors">
-                  {item.prompt}
-                </p>
-                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800/60 mt-auto w-full">
+                {/* Card Top Metadata Bar */}
+                <div className="flex items-center justify-between w-full mb-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
+                    {isHebrew ? 'רעיון לציר זמן' : 'Timeline Concept'}
+                  </span>
                   <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${
+                    className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
                       item.detailLevel === 'deep_dive'
-                        ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border-indigo-200/70 dark:border-indigo-800/50'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700/60'
+                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                        : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/50'
                     }`}
                   >
-                    {item.detailLevel === 'deep_dive' ? 'Deep' : 'Standard'}
+                    {item.detailLevel === 'deep_dive' ? (isHebrew ? 'מעמיק' : 'Deep Dive') : (isHebrew ? 'סטנדרטי' : 'Standard')}
+                  </span>
+                </div>
+
+                {/* Prompt Title */}
+                <p
+                  className={`text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 group-hover/card:text-sky-600 dark:group-hover/card:text-sky-400 leading-relaxed line-clamp-3 font-medium transition-colors ${
+                    isHebrew ? 'font-sans' : 'font-sans'
+                  }`}
+                >
+                  {item.prompt}
+                </p>
+
+                {/* Card Footer with Subtle Explore Indicator */}
+                <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800/60 mt-auto w-full text-slate-400 dark:text-slate-500 group-hover/card:text-slate-700 dark:group-hover/card:text-slate-300 transition-colors">
+                  <span className="text-[11px] font-medium">
+                    {isHebrew ? 'לחץ לבניית הציר' : 'Click to generate'}
+                  </span>
+                  <span className="text-xs transition-transform duration-200 group-hover/card:translate-x-0.5 rtl:group-hover/card:-translate-x-0.5">
+                    {isHebrew ? '←' : '→'}
                   </span>
                 </div>
               </button>
@@ -419,7 +439,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
         </div>
       </div>
 
-      {/* Left Navigation Arrow - Elevated to z-50 so it is never obscured by scrolling cards */}
+      {/* Left Navigation Arrow */}
       <button
         type="button"
         onClick={(e) => {
@@ -427,12 +447,12 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           handleManualScroll('left');
         }}
         aria-label="Scroll left"
-        className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-xl hover:shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 z-50 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
       >
-        <ChevronLeft className="w-5 h-5" />
+        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
-      {/* Right Navigation Arrow - Elevated to z-50 so it is never obscured by scrolling cards */}
+      {/* Right Navigation Arrow */}
       <button
         type="button"
         onClick={(e) => {
@@ -440,9 +460,9 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           handleManualScroll('right');
         }}
         aria-label="Scroll right"
-        className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-xl hover:shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 z-50 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
       >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
       {/* Subtle manual shuffle button */}
@@ -452,7 +472,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           onClick={handleShuffle}
           disabled={isGenerating}
           title="ערבב דוגמאות / Shuffle prompts"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-300 dark:hover:border-sky-500/50 shadow-xs hover:shadow-sm transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Shuffle
             className={`w-3.5 h-3.5 transition-transform duration-500 ${

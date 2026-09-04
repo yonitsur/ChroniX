@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', Heebo, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
+  letter-spacing: -0.011em;
 }
 
 html.dark {
@@ -18,12 +19,15 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
   user-select: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.dark body {
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: #070b14;
+  color: #f1f5f9;
 }
 
 /* Custom scrollbar */
@@ -114,8 +118,8 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 .histropedia-lane-header {
   display: flex !important;
   align-items: center !important;
-  border-radius: 6px 6px 0 0 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px 8px 0 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 2px 6px -1px rgba(0, 0, 0, 0.16) !important;
   z-index: 2 !important;
   overflow: hidden !important;
   transition: background-color 0.25s ease, opacity 0.25s ease !important;
@@ -128,14 +132,16 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   display: flex !important;
   align-items: center !important;
   padding: 0 16px !important;
-  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', Heebo, system-ui, sans-serif !important;
+  font-weight: 600 !important;
   font-size: 13px !important;
-  letter-spacing: 0.015em !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
   unicode-bidi: plaintext !important;
   pointer-events: none !important;
 }
 
 .histropedia-lane-body {
-  border-radius: 0 0 8px 8px !important;
+  border-radius: 0 0 10px 10px !important;
 }
 

@@ -1,16 +1,18 @@
 // Shared Lane Colors & Utilities for ChroniX
 
 export const DEFAULT_LANE_COLORS = [
-  '#2563eb', // Blue
-  '#dc2626', // Red
-  '#059669', // Emerald / Green
-  '#7c3aed', // Purple
-  '#d97706', // Amber / Orange
-  '#0891b2', // Cyan
-  '#db2777', // Pink
-  '#4f46e5', // Indigo
-  '#ea580c', // Dark Orange
-  '#0d9488', // Teal
+  '#2b5278', // Lapis Lazuli / Prussian Navy
+  '#b84a39', // Warm Terracotta / Venetian Red
+  '#2e6b56', // Antique Cypress / Deep Sage
+  '#6e395e', // Muted Mulberry / Imperial Plum
+  '#b87326', // Burnished Ochre / Byzantine Amber
+  '#24657a', // Aegean Petrol / Mineral Teal
+  '#87593b', // Archival Sepia / Renaissance Bronze
+  '#434875', // Muted Indigo / Slate Violet
+  '#8c3a48', // Rosewood / Crimson Pine
+  '#235848', // Dark Spruce / Forest
+  '#5a4578', // Amethyst Ore
+  '#3b4b5e', // Basalt Slate / Anthracite
 ];
 
 /**

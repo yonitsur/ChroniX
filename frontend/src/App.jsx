@@ -583,31 +583,27 @@ export default function App() {
             </>
           )
         ) : (
-          <div className="w-full h-full overflow-y-auto flex flex-col items-center p-4 sm:p-6 pb-24 select-none animate-in fade-in duration-300">
+          <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300">
             {/* Hero Branding & Welcome */}
-            <div className="max-w-xl flex flex-col items-center gap-3 text-center mb-2">
+            <div className="max-w-xl flex flex-col items-center gap-3.5 text-center mb-4">
               <div className="mb-1 transition-transform duration-300 hover:scale-105">
                 <ChroniXLogo size="xl" className="w-auto drop-shadow-sm" />
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
-                <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
-                  Discover and build interactive timelines
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight font-sans">
+                  Discover and explore interactive chronologies
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
-                  Type a topic in the search bar above, or click one of the example cards to get started:
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-sans">
+                  Enter any historical epoch, scientific revolution, or biographical journey above — or select an exhibition below to begin:
                 </p>
-                <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-md">
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                  <strong>Disclaimer</strong><span>Timeline data is AI-generated and may contain inaccuracies, incorrect dates, or hallucinated events. Please verify critical historical facts.</span>
-                </div>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center">
                 <button
                   type="button"
                   onClick={() => setIsSavedModalOpen(true)}
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
                 >
-                  <FolderOpen className="w-4 h-4 text-amber-500" />
+                  <FolderOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                   <span>Saved Timelines</span>
                 </button>
               </div>

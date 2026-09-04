@@ -164,32 +164,32 @@ export default function Toolbar({
   };
 
   return (
-    <header className="relative w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-20 select-none transition-colors">
+    <header className="relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 z-20 select-none transition-colors">
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
         {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
         <div className="order-1 flex items-center gap-2 sm:gap-3 min-w-0 max-w-[58%] sm:max-w-[62%] lg:max-w-[30%] xl:max-w-[34%] overflow-hidden shrink-0">
           <div className="flex items-center gap-2 min-w-0 w-full overflow-hidden">
-            <ChroniXLogo className="h-9 sm:h-10 w-auto transition-transform hover:scale-105 shrink-0" />
+            <ChroniXLogo size="md" className="h-9 sm:h-10 w-auto shrink-0" />
             
             {timelineData?.title && timelineData.title !== 'ChroniX' ? (
-              <div className="flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-300 dark:border-slate-700">
+              <div className="flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-200 dark:border-slate-800">
                 <h1
-                  className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate min-w-0 w-full"
+                  className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate min-w-0 w-full font-sans tracking-tight"
                   title={timelineData.title}
                 >
                   {timelineData.title}
                 </h1>
                 <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate">
-                  <span className="flex items-center gap-1 shrink-0">
+                  <span className="flex items-center gap-1 shrink-0 font-medium">
                     <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                     {timelineData?.articles?.length || 0} events
                   </span>
                   {timelineData?.lanes?.length > 0 && (
                     <>
-                      <span className="shrink-0">•</span>
-                      <span className="flex items-center gap-1 shrink-0">
-                        <Layers className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
+                      <span className="shrink-0 opacity-40">•</span>
+                      <span className="flex items-center gap-1 shrink-0 font-medium">
+                        <Layers className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                         {timelineData.lanes.length} lanes
                       </span>
                     </>
@@ -197,10 +197,10 @@ export default function Toolbar({
                 </div>
               </div>
             ) : (
-              <div className="hidden sm:flex flex-col pl-2 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                  Interactive Chronology
+              <div className="hidden sm:flex flex-col pl-2.5 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 shrink-0">
+                <span className="flex items-center gap-1 font-medium tracking-wide">
+                  <Calendar className="w-3 h-3 text-sky-500/80 dark:text-sky-400/80" />
+                  Visual Chronology
                 </span>
               </div>
             )}
@@ -210,11 +210,11 @@ export default function Toolbar({
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
         <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto lg:ml-0">
           {/* Zoom Controls Pill */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-700/60 shadow-xs">
+          <div className="flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs">
             <button
               type="button"
               onClick={onZoomIn}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title="Zoom In"
               aria-label="Zoom In"
             >
@@ -223,7 +223,7 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onZoomOut}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title="Zoom Out"
               aria-label="Zoom Out"
             >
@@ -232,7 +232,7 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onFitAll}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title="Fit All Articles"
               aria-label="Fit All Articles"
             >
@@ -246,10 +246,11 @@ export default function Toolbar({
               type="button"
               disabled={isGenerating}
               onClick={onOpenRefine}
-              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium shadow-sm transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
+              className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
               title="Refine timeline using AI instructions"
             >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-sky-400 dark:text-sky-600 shrink-0" />
+              <span className="hidden sm:inline">Refine</span>
             </button>
           )}
 
@@ -258,11 +259,11 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onAddEvent}
-              className="flex items-center gap-1.5 bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-800 shadow-xs transition-all active:scale-95 cursor-pointer group"
+              className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
               title="Add Custom Event"
               aria-label="Add Custom Event"
             >
-              <PlusCircle className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform shrink-0" />
+              <PlusCircle className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
             </button>
           )}
 
@@ -276,7 +277,7 @@ export default function Toolbar({
                   onClearBoard?.();
                 }
               }}
-              className="flex items-center gap-1.5 bg-white dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-xs transition-all active:scale-95 cursor-pointer group"
+              className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-rose-50/80 dark:hover:bg-rose-950/30 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-900/50 shadow-2xs transition-all active:scale-95 cursor-pointer group"
               title="Clear Board / New Board"
               aria-label="Clear Board / New Board"
             >
@@ -288,14 +289,14 @@ export default function Toolbar({
           <button
             type="button"
             onClick={onToggleTheme}
-            className="p-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs transition-all active:scale-95 cursor-pointer"
+            className="p-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
             title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {isDark ? (
               <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
             ) : (
-              <Moon className="w-4 h-4 text-indigo-600 hover:-rotate-12 transition-transform" />
+              <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
             )}
           </button>
 
@@ -304,10 +305,10 @@ export default function Toolbar({
             <button
               type="button"
               onClick={() => setIsMoreMenuOpen((prev) => !prev)}
-              className={`p-1.5 rounded-xl border shadow-xs transition-all active:scale-95 cursor-pointer ${
+              className={`p-1.5 rounded-lg border shadow-2xs transition-all active:scale-95 cursor-pointer ${
                 isMoreMenuOpen
-                  ? 'bg-sky-50 dark:bg-sky-950/70 border-sky-400 dark:border-sky-600 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20'
-                  : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700'
+                  ? 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white'
+                  : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800'
               }`}
               title="More Actions & Settings"
               aria-label="More Actions & Settings"
@@ -497,7 +498,7 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onOpenAuth}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-xl text-xs font-medium shadow-xs transition-all hover:shadow-md active:scale-95 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 rounded-lg text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
               title="Sign In with Google, Facebook or Email"
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -511,7 +512,7 @@ export default function Toolbar({
           onSubmit={handleSubmit}
           className="order-3 lg:order-2 w-full lg:w-auto lg:flex-1 min-w-0 max-w-2xl mx-auto lg:mx-2"
         >
-          <div className="relative flex items-center bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-800 focus-within:bg-white dark:focus-within:bg-slate-900 border border-slate-300/80 dark:border-slate-700/80 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs w-full min-w-0">
+          <div className="relative flex items-center bg-slate-100/80 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 focus-within:bg-white dark:focus-within:bg-slate-950 border border-slate-200 dark:border-slate-800 focus-within:border-sky-500/80 focus-within:ring-2 focus-within:ring-sky-500/15 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs w-full min-w-0">
             
             <div className="text-slate-400 dark:text-slate-400 pl-0.5 pr-1.5 flex items-center shrink-0">
               {isGenerating ? (
@@ -531,9 +532,9 @@ export default function Toolbar({
               placeholder={
                 isGenerating
                   ? LOADING_STEPS[loadingStepIdx]
-                  : "Enter timeline topic"
+                  : "Enter timeline topic (e.g. Ancient Egypt, Space Race, תולדות הציונות)"
               }
-              className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1"
+              className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans"
             />
 
             {/* Quick Clear Button when text entered */}
@@ -555,20 +556,20 @@ export default function Toolbar({
                 type="button"
                 onClick={() => setIsDetailDropdownOpen((prev) => !prev)}
                 disabled={isGenerating}
-                className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-700/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-1.5 sm:px-2 py-1 rounded-lg border border-slate-300/70 dark:border-slate-600/60 text-xs font-semibold transition-all mr-1 shadow-2xs active:scale-95 cursor-pointer"
+                className="flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold transition-all mr-1 shadow-2xs active:scale-95 cursor-pointer"
                 title={`Detail level: ${activeDetailOption.label} (${activeDetailOption.description})`}
               >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
+                <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
                 <span className="hidden sm:inline">{activeDetailOption.label}</span>
                 <ChevronDown
-                  className={`w-3 h-3 text-slate-400 dark:text-slate-400 transition-transform duration-200 ${
+                  className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${
                     isDetailDropdownOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
 
               {isDetailDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-2 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                     Detail Level
                   </div>
@@ -584,8 +585,8 @@ export default function Toolbar({
                         }}
                         className={`w-full text-left flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                           isSelected
-                            ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 font-semibold'
-                            : 'hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200'
+                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white font-semibold'
+                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         <div className="flex flex-col text-left">
@@ -597,7 +598,7 @@ export default function Toolbar({
                           </span>
                         </div>
                         {isSelected && (
-                          <Check className="w-4 h-4 text-sky-500 dark:text-sky-400 shrink-0 ml-2" />
+                          <Check className="w-4 h-4 text-sky-500 shrink-0 ml-2" />
                         )}
                       </button>
                     );
@@ -611,17 +612,17 @@ export default function Toolbar({
               type="button"
               onClick={handleSurpriseMe}
               disabled={isGenerating}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2 rounded-lg shadow-sm transition-all text-xs shrink-0 mr-1 group cursor-pointer"
+              className="flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-400 border border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-700/60 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed font-medium p-1.5 sm:px-2 rounded-lg shadow-2xs transition-all text-xs shrink-0 mr-1 cursor-pointer group"
               title="Surprise me with a random fascinating timeline topic!"
             >
-              <Dices className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-180 transition-transform duration-500 shrink-0" />
+              <Dices className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
             </button>
 
             {/* Generate Button - Stays firmly inside the prompt container */}
             <button
               type="submit"
               disabled={!prompt.trim() || isGenerating}
-              className="flex items-center justify-center bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+              className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
               title={isGenerating ? "Creating timeline..." : "Generate timeline"}
               aria-label={isGenerating ? "Creating timeline..." : "Generate timeline"}
             >
