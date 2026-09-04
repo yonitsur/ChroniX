@@ -110,17 +110,13 @@ export default function Toolbar({
   const [prompt, setPrompt] = useState(activePrompt || '');
 
   useEffect(() => {
-    if (activePrompt) {
-      setPrompt(activePrompt);
-    }
+    setPrompt(activePrompt || '');
   }, [activePrompt]);
 
   const [detailLevel, setDetailLevel] = useState(activeDetailLevel || 'standard');
 
   useEffect(() => {
-    if (activeDetailLevel) {
-      setDetailLevel(activeDetailLevel);
-    }
+    setDetailLevel(activeDetailLevel || 'standard');
   }, [activeDetailLevel]);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
   const [recentSurprises, setRecentSurprises] = useState(() => {
@@ -278,6 +274,7 @@ export default function Toolbar({
               type="button"
               onClick={() => {
                 if (window.confirm('Are you sure you want to clear the board and start a new timeline? All unsaved events will be deleted.')) {
+                  setPrompt('');
                   onClearBoard?.();
                 }
               }}
@@ -393,6 +390,7 @@ export default function Toolbar({
                     onClick={() => {
                       setIsMoreMenuOpen(false);
                       if (window.confirm('Are you sure you want to clear the board? All unsaved events will be deleted.')) {
+                        setPrompt('');
                         onClearBoard?.();
                       }
                     }}

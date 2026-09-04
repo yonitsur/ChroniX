@@ -197,6 +197,8 @@ export default function App() {
 
   // Handle generation from prompt
   const handleGenerate = async (prompt, detailLevel) => {
+    setActivePrompt(prompt);
+    if (detailLevel) setActiveDetailLevel(detailLevel);
     setIsLoading(true);
     setErrorMessage(null);
     setSelectedArticle(null);
@@ -353,6 +355,9 @@ export default function App() {
       const data = await fetchTimeline(id);
       setCurrentTimeline(data);
       setSelectedArticle(null);
+      if (data?.title) {
+        setActivePrompt(data.title);
+      }
     } catch (err) {
       alert('Failed to load timeline: ' + err.message);
     }
@@ -361,6 +366,9 @@ export default function App() {
   const handleImportJson = async (imported) => {
     setCurrentTimeline(imported);
     setSelectedArticle(null);
+    if (imported?.title) {
+      setActivePrompt(imported.title);
+    }
     try {
       await saveTimeline(imported);
     } catch (e) {
@@ -373,6 +381,8 @@ export default function App() {
     setCurrentTimeline(null);
     setSelectedArticle(null);
     setIsCardsListOpen(false);
+    setActivePrompt('');
+    setActiveDetailLevel('standard');
   };
 
   // Helper to ensure we always have the full article object with all metadata (locationName, lat, lng, etc.)
@@ -588,7 +598,7 @@ export default function App() {
                 </p>
                 <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-md">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                  <span>AI models synthesize dates and events. Minor inaccuracies may occur; verifying key facts is recommended.</span>
+                  <strong>Disclaimer</strong><span>Timeline data is AI-generated and may contain inaccuracies, incorrect dates, or hallucinated events. Please verify critical historical facts.</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center">
@@ -599,16 +609,6 @@ export default function App() {
                 >
                   <FolderOpen className="w-4 h-4 text-amber-500" />
                   <span>Saved Timelines</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleSelectTimeline('sample-us-presidents')}
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
-                  title="Open live Geo-Timeline demo with map and Google Maps links"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-rose-300 animate-pulse" />
-                  <span>🗺️ Geo-Timeline Demo</span>
                 </button>
               </div>
             </div>
