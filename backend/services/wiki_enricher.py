@@ -167,12 +167,21 @@ async def _get_summary_direct(
             elif "originalimage" in data and "source" in data["originalimage"]:
                 img_url = data["originalimage"]["source"]
 
+            coords = data.get("coordinates")
+            lat = None
+            lng = None
+            if coords and isinstance(coords, dict):
+                lat = coords.get("lat")
+                lng = coords.get("lon")
+
             return {
                 "wikiTitle": data.get("title", title),
                 "wikiUrl": data.get("content_urls", {}).get("desktop", {}).get("page"),
                 "extract": data.get("extract", ""),
                 "description": data.get("description", ""),
-                "imageUrl": img_url
+                "imageUrl": img_url,
+                "lat": lat,
+                "lng": lng
             }
     except Exception:
         pass
@@ -411,5 +420,8 @@ async def enrich_events_with_wikipedia(
                     events_data[i]["wikiExtract"] = res["extract"]
                 if not events_data[i].get("wikiTitle") and res.get("wikiTitle"):
                     events_data[i]["wikiTitle"] = res["wikiTitle"]
+                if (events_data[i].get("lat") is None or events_data[i].get("lng") is None) and res.get("lat") is not None and res.get("lng") is not None:
+                    events_data[i]["lat"] = res["lat"]
+                    events_data[i]["lng"] = res["lng"]
 
     return events_data

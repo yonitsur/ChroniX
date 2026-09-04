@@ -1,5 +1,4 @@
-import React from 'react';
-import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle } from 'lucide-react';
+import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin } from 'lucide-react';
 
 const MONTH_NAMES = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -119,6 +118,38 @@ export default function EventDrawer({
             </div>
           )}
         </div>
+
+        {/* Location & Google Maps Link */}
+        {(article.locationName || (article.lat && article.lng)) && (
+          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <MapPin className="w-4 h-4 shrink-0 text-rose-500" />
+              <div className="truncate">
+                <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate">
+                  {article.locationName || `${article.lat?.toFixed(2)}, ${article.lng?.toFixed(2)}`}
+                </span>
+                {article.lat && article.lng && (
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    {Number(article.lat).toFixed(4)}°, {Number(article.lng).toFixed(4)}°
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {article.googleMapsUrl && (
+              <a
+                href={article.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 shrink-0 px-2.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white font-medium text-[11px] shadow-xs transition-colors cursor-pointer"
+                title="Open location in Google Maps"
+              >
+                <span>Google Maps</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
+        )}
 
         {/* AI Disclaimer Note */}
         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/50 text-amber-900 dark:text-amber-200 text-xs">

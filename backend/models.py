@@ -33,6 +33,12 @@ class TimelineArticle(BaseModel):
     extract: Optional[str] = None
     category: Optional[str] = None
 
+    # Geographic metadata
+    locationName: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    googleMapsUrl: Optional[str] = None
+
     model_config = {"populate_by_name": True}
 
 class TimelineLane(BaseModel):
@@ -93,6 +99,9 @@ class EventSuggestionOutput(BaseModel):
     to_precision: Optional[PrecisionType] = None
     is_to_present: Optional[bool] = False
     lane_id: Optional[str] = Field(default=None, description="Matching lane id from available lanes, or null")
+    location_name: Optional[str] = Field(default=None, description="City, region, landmark, or country where the event took place, or null")
+    lat: Optional[float] = Field(default=None, description="Latitude coordinate, or null")
+    lng: Optional[float] = Field(default=None, description="Longitude coordinate, or null")
 
 
 # Gemini Raw Structured Response Models
@@ -112,6 +121,9 @@ class GeminiEventItem(BaseModel):
     is_to_present: Optional[bool] = False
     wikipedia_title: Optional[str] = ""
     importance_rank: int = 5
+    location_name: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
 
 class GeminiLaneItem(BaseModel):
     id: str

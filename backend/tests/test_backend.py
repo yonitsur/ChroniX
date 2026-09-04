@@ -259,5 +259,33 @@ async def test_simple_rate_limiter():
     assert exc_info.value.status_code == 429
 
 
+def test_timeline_article_geographic_fields():
+    from models import TimelineArticle
+    article = TimelineArticle(
+        id="geo-test",
+        title="Battle of Normandy",
+        **{"from": {"year": 1944, "month": 6, "day": 6, "precision": "day"}},
+        locationName="Normandy, France",
+        lat=49.33,
+        lng=-0.45,
+        googleMapsUrl="https://www.google.com/maps/search/?api=1&query=49.33,-0.45"
+    )
+    dumped = article.model_dump(by_alias=True)
+    assert dumped["locationName"] == "Normandy, France"
+    assert dumped["lat"] == 49.33
+    assert dumped["lng"] == -0.45
+    assert dumped["googleMapsUrl"] == "https://www.google.com/maps/search/?api=1&query=49.33,-0.45"
+
+
+def test_sample_timeline_has_geographic_data():
+    from services.storage import get_sample_timeline
+    sample = get_sample_timeline()
+    articles_with_geo = [a for a in sample["articles"] if a.get("lat") is not None and a.get("lng") is not None]
+    assert len(articles_with_geo) >= 6
+    assert articles_with_geo[0]["locationName"] is not None
+    assert articles_with_geo[0]["googleMapsUrl"] is not None
+
+
+
 
 

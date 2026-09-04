@@ -8,7 +8,8 @@ import {
   Image as ImageIcon,
   ChevronLeft,
   Filter,
-  Check
+  Check,
+  MapPin
 } from 'lucide-react';
 import { formatTimeSpan } from './EventDrawer';
 
@@ -262,6 +263,13 @@ export default function CardsListDrawer({
                       <span className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/80 dark:border-indigo-800/60 px-1.5 py-0.5 rounded-md truncate max-w-[120px]">
                         <Layers className="w-2.5 h-2.5" />
                         <span className="truncate">{laneTitle}</span>
+                      </span>
+                    )}
+
+                    {art.locationName && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 px-1.5 py-0.5 rounded-md truncate max-w-[120px]" title={art.locationName}>
+                        <MapPin className="w-2.5 h-2.5 text-rose-500 shrink-0" />
+                        <span className="truncate">{art.locationName}</span>
                       </span>
                     )}
                   </div>

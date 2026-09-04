@@ -25,7 +25,10 @@ import {
   MoreVertical,
   Image as ImageIcon,
   X,
-  User as UserIcon
+  User as UserIcon,
+  Map as MapIcon,
+  Columns2,
+  Clock
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import { getRandomSurpriseTopic } from '../data/surpriseTopics';
@@ -75,7 +78,9 @@ export default function Toolbar({
   onClearBoard,
   onOpenAuth,
   activePrompt,
-  activeDetailLevel
+  activeDetailLevel,
+  viewMode = 'split',
+  onViewModeChange
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -214,6 +219,51 @@ export default function Toolbar({
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
         <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto lg:ml-0">
           
+          {/* View Mode Switcher (Timeline | Split | Map) */}
+          {timelineData && (
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => onViewModeChange?.('timeline')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'timeline'
+                    ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-300 shadow-xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                title="Timeline View Only"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Timeline</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onViewModeChange?.('split')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'split'
+                    ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-300 shadow-xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                title="Split Screen (Map & Timeline)"
+              >
+                <Columns2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Split</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onViewModeChange?.('map')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'map'
+                    ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-300 shadow-xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                title="Geo Map View Only"
+              >
+                <MapIcon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Map</span>
+              </button>
+            </div>
+          )}
+
           {/* Zoom Controls Pill */}
           <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-700/60 shadow-xs">
             <button

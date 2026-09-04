@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { toPng } from 'html-to-image';
 import Toolbar from './components/Toolbar';
 import TimelineView from './components/TimelineView';
+import GeoMapView from './components/GeoMapView';
 import EventDrawer from './components/EventDrawer';
 import CardsListDrawer from './components/CardsListDrawer';
 import EventEditModal from './components/EventEditModal';
@@ -36,6 +37,24 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [activePrompt, setActivePrompt] = useState('');
   const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
+
+  // View Mode ('timeline' | 'split' | 'map')
+  const [viewMode, setViewMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('vt_view_mode');
+      if (saved === 'timeline' || saved === 'split' || saved === 'map') return saved;
+      return 'split';
+    } catch (e) {
+      return 'split';
+    }
+  });
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem('vt_view_mode', mode);
+    } catch (e) {}
+  };
 
   // Theme state ('light' | 'dark')
   const [theme, setTheme] = useState(() => {
@@ -317,6 +336,8 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
         activeDetailLevel={activeDetailLevel}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
 
       {/* Error banner */}
@@ -354,13 +375,45 @@ export default function App() {
         />
 
         {currentTimeline ? (
-          <TimelineView
-            ref={timelineRef}
-            timelineData={currentTimeline}
-            onSelectArticle={(article) => setSelectedArticle(article)}
-            selectedArticleId={selectedArticle?.id}
-            theme={theme}
-          />
+          viewMode === 'map' ? (
+            <GeoMapView
+              articles={currentTimeline?.articles || []}
+              lanes={currentTimeline?.lanes || []}
+              selectedArticleId={selectedArticle?.id}
+              onSelectArticle={handleFocusArticle}
+              theme={theme}
+              className="w-full h-full"
+            />
+          ) : viewMode === 'split' ? (
+            <div className="w-full h-full flex flex-col overflow-hidden">
+              <div className="h-[46%] min-h-[220px] w-full relative border-b border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+                <GeoMapView
+                  articles={currentTimeline?.articles || []}
+                  lanes={currentTimeline?.lanes || []}
+                  selectedArticleId={selectedArticle?.id}
+                  onSelectArticle={handleFocusArticle}
+                  theme={theme}
+                />
+              </div>
+              <div className="flex-1 w-full relative overflow-hidden">
+                <TimelineView
+                  ref={timelineRef}
+                  timelineData={currentTimeline}
+                  onSelectArticle={(article) => setSelectedArticle(article)}
+                  selectedArticleId={selectedArticle?.id}
+                  theme={theme}
+                />
+              </div>
+            </div>
+          ) : (
+            <TimelineView
+              ref={timelineRef}
+              timelineData={currentTimeline}
+              onSelectArticle={(article) => setSelectedArticle(article)}
+              selectedArticleId={selectedArticle?.id}
+              theme={theme}
+            />
+          )
         ) : (
           <div className="w-full h-full overflow-y-auto flex flex-col items-center p-4 sm:p-6 pb-24 select-none animate-in fade-in duration-300">
             {/* Hero Branding & Welcome */}

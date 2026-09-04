@@ -10,7 +10,8 @@ import {
   Calendar,
   Layers,
   ChevronDown,
-  AlertCircle
+  AlertCircle,
+  MapPin
 } from 'lucide-react';
 import { enrichItem, suggestEventData, searchWikiCandidates } from '../api';
 
@@ -37,6 +38,9 @@ export default function EventEditModal({
   const [imageUrl, setImageUrl] = useState('');
   const [extract, setExtract] = useState('');
   const [wikiUrl, setWikiUrl] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
 
   // Async states
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -62,6 +66,9 @@ export default function EventEditModal({
       setImageUrl(initialEvent?.imageUrl || '');
       setExtract(initialEvent?.extract || '');
       setWikiUrl(initialEvent?.wikiUrl || '');
+      setLocationName(initialEvent?.locationName || '');
+      setLat(initialEvent?.lat !== undefined && initialEvent?.lat !== null ? String(initialEvent.lat) : '');
+      setLng(initialEvent?.lng !== undefined && initialEvent?.lng !== null ? String(initialEvent.lng) : '');
       setShowCandidatePicker(false);
       setWikiCandidates([]);
       setStatusMessage(null);
@@ -127,7 +134,10 @@ export default function EventEditModal({
         if (data.imageUrl) setImageUrl(data.imageUrl);
         if (data.extract) setExtract(data.extract);
         if (data.wikiUrl) setWikiUrl(data.wikiUrl);
-
+        if (data.imageUrl) setImageUrl(data.imageUrl);
+        if (data.locationName) setLocationName(data.locationName);
+        if (data.lat !== undefined && data.lat !== null) setLat(String(data.lat));
+        if (data.lng !== undefined && data.lng !== null) setLng(String(data.lng));
         setStatusMessage('Auto-filled with AI based on timeline context!');
         setTimeout(() => setStatusMessage(null), 5000);
       }
@@ -248,6 +258,15 @@ export default function EventEditModal({
       };
     }
 
+    const parsedLat = lat !== '' && !isNaN(Number(lat)) ? Number(lat) : undefined;
+    const parsedLng = lng !== '' && !isNaN(Number(lng)) ? Number(lng) : undefined;
+    let googleMapsUrl = initialEvent?.googleMapsUrl;
+    if (parsedLat !== undefined && parsedLng !== undefined) {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${parsedLat},${parsedLng}`;
+    } else if (locationName.trim()) {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationName.trim())}`;
+    }
+
     const savedArticle = {
       id: initialEvent?.id || `user-event-${Date.now()}`,
       title: title.trim(),
@@ -259,6 +278,10 @@ export default function EventEditModal({
       imageUrl: imageUrl.trim() || undefined,
       extract: extract.trim(),
       wikiUrl: wikiUrl.trim(),
+      locationName: locationName.trim() || undefined,
+      lat: parsedLat,
+      lng: parsedLng,
+      googleMapsUrl: googleMapsUrl || undefined,
       rank: initialEvent?.rank || 8,
     };
 
@@ -614,6 +637,63 @@ export default function EventEditModal({
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Geographic Location */}
+          <div className="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                <span>Geographic Location (Optional)</span>
+              </label>
+              {lat !== '' && lng !== '' && (
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Test in Google Maps</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Location Name</label>
+              <input
+                type="text"
+                value={locationName}
+                onChange={(e) => setLocationName(e.target.value)}
+                placeholder="e.g. Normandy, France or ירושלים"
+                className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Latitude (lat)</label>
+                <input
+                  type="number"
+                  step="any"
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
+                  placeholder="e.g. 49.33"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Longitude (lng)</label>
+                <input
+                  type="number"
+                  step="any"
+                  value={lng}
+                  onChange={(e) => setLng(e.target.value)}
+                  placeholder="e.g. -0.45"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Image URL with thumbnail preview */}

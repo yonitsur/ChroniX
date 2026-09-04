@@ -62,7 +62,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "George Washington",
                 "wikiUrl": "https://en.wikipedia.org/wiki/George_Washington",
                 "extract": "George Washington was an American military officer, statesman, and Founding Father who served as the first president of the United States from 1789 to 1797.",
-                "rank": 10
+                "rank": 10,
+                "locationName": "Philadelphia & Mount Vernon, USA",
+                "lat": 38.7081,
+                "lng": -77.0861,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=38.7081,-77.0861"
             },
             {
                 "id": "abraham-lincoln",
@@ -75,7 +79,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "Abraham Lincoln",
                 "wikiUrl": "https://en.wikipedia.org/wiki/Abraham_Lincoln",
                 "extract": "Abraham Lincoln was an American lawyer, politician, and statesman who served as the 16th president of the United States from 1861 until his assassination in 1865. Lincoln led the nation through the American Civil War and issued the Emancipation Proclamation.",
-                "rank": 10
+                "rank": 10,
+                "locationName": "Washington D.C. & Springfield, USA",
+                "lat": 38.8977,
+                "lng": -77.0365,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=38.8977,-77.0365"
             },
             {
                 "id": "theodore-roosevelt",
@@ -88,7 +96,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "Theodore Roosevelt",
                 "wikiUrl": "https://en.wikipedia.org/wiki/Theodore_Roosevelt",
                 "extract": "Theodore Roosevelt Jr. was an American politician, statesman, soldier, conservationist, and writer who served as the 26th president of the United States from 1901 to 1909.",
-                "rank": 8
+                "rank": 8,
+                "locationName": "Oyster Bay, New York, USA",
+                "lat": 40.8718,
+                "lng": -73.5321,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=40.8718,-73.5321"
             },
             {
                 "id": "franklin-d-roosevelt",
@@ -101,7 +113,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "Franklin D. Roosevelt",
                 "wikiUrl": "https://en.wikipedia.org/wiki/Franklin_D._Roosevelt",
                 "extract": "Franklin Delano Roosevelt was an American statesman and political leader who served as the 32nd president of the United States from 1933 until his death in 1945. He led the nation through the Great Depression and World War II.",
-                "rank": 10
+                "rank": 10,
+                "locationName": "Hyde Park, New York, USA",
+                "lat": 41.7684,
+                "lng": -73.9351,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=41.7684,-73.9351"
             },
             {
                 "id": "john-f-kennedy",
@@ -114,7 +130,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "John F. Kennedy",
                 "wikiUrl": "https://en.wikipedia.org/wiki/John_F._Kennedy",
                 "extract": "John Fitzgerald Kennedy, often referred to by his initials JFK, was an American politician who served as the 35th president of the United States from 1961 until his assassination in 1963.",
-                "rank": 9
+                "rank": 9,
+                "locationName": "Dallas, Texas, USA",
+                "lat": 32.7788,
+                "lng": -96.8087,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=32.7788,-96.8087"
             },
             {
                 "id": "barack-obama",
@@ -127,7 +147,11 @@ def get_sample_timeline() -> dict:
                 "wikiTitle": "Barack Obama",
                 "wikiUrl": "https://en.wikipedia.org/wiki/Barack_Obama",
                 "extract": "Barack Hussein Obama II is an American retired politician who served as the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, he was the first African-American president.",
-                "rank": 9
+                "rank": 9,
+                "locationName": "Chicago, Illinois, USA",
+                "lat": 41.8781,
+                "lng": -87.6298,
+                "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=41.8781,-87.6298"
             }
         ],
         "createdAt": "2026-09-03T11:00:00Z",
