@@ -157,29 +157,29 @@ export default function Toolbar({
 
   return (
     <header className="relative w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-20 select-none transition-colors">
-      <div className="px-3 sm:px-4 py-2 flex items-center justify-between gap-2 sm:gap-4 text-slate-700 dark:text-slate-200">
+      <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
-        {/* Left: Branding & Timeline Info */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[28%] xl:max-w-[32%]">
-          <div className="flex items-center gap-2">
+        {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
+        <div className="order-1 flex items-center gap-2 sm:gap-3 min-w-0 max-w-[58%] sm:max-w-[62%] lg:max-w-[30%] xl:max-w-[34%] overflow-hidden shrink-0">
+          <div className="flex items-center gap-2 min-w-0 w-full overflow-hidden">
             <ChroniXLogo className="h-9 sm:h-10 w-auto transition-transform hover:scale-105 shrink-0" />
             
             {timelineData?.title && timelineData.title !== 'ChroniX' ? (
-              <div className="flex flex-col min-w-0 pl-2 sm:pl-2.5 border-l border-slate-300 dark:border-slate-700">
+              <div className="flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-300 dark:border-slate-700">
                 <h1
-                  className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[360px] xl:max-w-[460px]"
+                  className="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate min-w-0 w-full"
                   title={timelineData.title}
                 >
                   {timelineData.title}
                 </h1>
-                <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate">
                   <span className="flex items-center gap-1 shrink-0">
                     <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                     {timelineData?.articles?.length || 0} events
                   </span>
                   {timelineData?.lanes?.length > 0 && (
                     <>
-                      <span>•</span>
+                      <span className="shrink-0">•</span>
                       <span className="flex items-center gap-1 shrink-0">
                         <Layers className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                         {timelineData.lanes.length} lanes
@@ -189,7 +189,7 @@ export default function Toolbar({
                 </div>
               </div>
             ) : (
-              <div className="hidden md:flex flex-col pl-2 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
+              <div className="hidden sm:flex flex-col pl-2 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                   Interactive Chronology
@@ -199,131 +199,8 @@ export default function Toolbar({
           </div>
         </div>
 
-        {/* Center: Search / Prompt Form (Spacious, responsive, strictly contained) */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex-1 min-w-[190px] max-w-2xl mx-1 sm:mx-2"
-        >
-          <div className="relative flex items-center bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-800 focus-within:bg-white dark:focus-within:bg-slate-900 border border-slate-300/80 dark:border-slate-700/80 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs">
-            
-            <div className="text-slate-400 dark:text-slate-400 pl-0.5 pr-1.5 flex items-center shrink-0">
-              {isGenerating ? (
-                <Loader2 className="w-4 h-4 animate-spin text-sky-500 dark:text-sky-400" />
-              ) : (
-                <Sparkles className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-              )}
-            </div>
-
-            <input
-              type="text"
-              dir="auto"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              disabled={isGenerating}
-              title={prompt || "Enter timeline topic"}
-              placeholder={
-                isGenerating
-                  ? LOADING_STEPS[loadingStepIdx]
-                  : "Enter timeline topic"
-              }
-              className="flex-1 min-w-[70px] bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1"
-            />
-
-            {/* Quick Clear Button when text entered */}
-            {prompt && !isGenerating && (
-              <button
-                type="button"
-                onClick={() => setPrompt('')}
-                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0 mr-1"
-                title="Clear input"
-                aria-label="Clear input"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-
-            {/* Detail Level Dropdown */}
-            <div className="relative shrink-0" ref={detailDropdownRef}>
-              <button
-                type="button"
-                onClick={() => setIsDetailDropdownOpen((prev) => !prev)}
-                disabled={isGenerating}
-                className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-700/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-1.5 sm:px-2 py-1 rounded-lg border border-slate-300/70 dark:border-slate-600/60 text-xs font-semibold transition-all mr-1 shadow-2xs active:scale-95 cursor-pointer"
-                title={`Detail level: ${activeDetailOption.label} (${activeDetailOption.description})`}
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-                <span className="hidden sm:inline">{activeDetailOption.label}</span>
-                <ChevronDown
-                  className={`w-3 h-3 text-slate-400 dark:text-slate-400 transition-transform duration-200 ${
-                    isDetailDropdownOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-
-              {isDetailDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-2 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                    Detail Level
-                  </div>
-                  {DETAIL_LEVEL_OPTIONS.map((opt) => {
-                    const isSelected = detailLevel === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => {
-                          setDetailLevel(opt.id);
-                          setIsDetailDropdownOpen(false);
-                        }}
-                        className={`w-full text-left flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-                          isSelected
-                            ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 font-semibold'
-                            : 'hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200'
-                        }`}
-                      >
-                        <div className="flex flex-col text-left">
-                          <span className="font-medium text-xs text-slate-900 dark:text-slate-100">
-                            {opt.label}
-                          </span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
-                            {opt.description}
-                          </span>
-                        </div>
-                        {isSelected && (
-                          <Check className="w-4 h-4 text-sky-500 dark:text-sky-400 shrink-0 ml-2" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Surprise Me Button */}
-            <button
-              type="button"
-              onClick={handleSurpriseMe}
-              disabled={isGenerating}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2 rounded-lg shadow-sm transition-all text-xs shrink-0 mr-1 group cursor-pointer"
-              title="Surprise me with a random fascinating timeline topic!"
-            >
-              <Dices className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-180 transition-transform duration-500 shrink-0" />
-            </button>
-
-            {/* Generate Button - Stays firmly inside the prompt container */}
-            <button
-              type="submit"
-              disabled={!prompt.trim() || isGenerating}
-              className="flex items-center gap-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
-            >
-              <span>{isGenerating ? 'Creating...' : 'Generate'}</span>
-              {!isGenerating && <ArrowRight className="w-3.5 h-3.5 shrink-0" />}
-            </button>
-          </div>
-        </form>
-
-        {/* Right: Essential Controls & Clean Dropdown Menu */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
+        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto lg:ml-0">
           
           {/* Zoom Controls Pill */}
           <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-700/60 shadow-xs">
@@ -362,11 +239,11 @@ export default function Toolbar({
               type="button"
               disabled={isGenerating}
               onClick={onOpenRefine}
-              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-xl text-xs font-medium shadow-sm transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
+              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium shadow-sm transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
               title="Refine timeline using AI instructions"
             >
               <Sparkles className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
-              <span className="hidden lg:inline">Refine</span>
+              <span className="hidden xl:inline">Refine</span>
             </button>
           )}
 
@@ -376,7 +253,7 @@ export default function Toolbar({
               type="button"
               disabled={!timelineData.articles || timelineData.articles.length === 0}
               onClick={onToggleCardsList}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium border shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
                 isCardsListOpen
                   ? 'bg-sky-50 dark:bg-sky-950/70 border-sky-400 dark:border-sky-600 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20'
                   : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700'
@@ -384,7 +261,7 @@ export default function Toolbar({
               title={isCardsListOpen ? 'Close Cards List' : 'Open Cards List'}
             >
               <LayoutList className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-              <span className="hidden lg:inline">Cards</span>
+              <span className="hidden xl:inline">Cards</span>
               {timelineData.articles?.length > 0 && (
                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                   isCardsListOpen
@@ -394,19 +271,6 @@ export default function Toolbar({
                   {timelineData.articles.length}
                 </span>
               )}
-            </button>
-          )}
-
-          {/* Add Event Button (Visible on extra-wide screens) */}
-          {timelineData && (
-            <button
-              type="button"
-              onClick={onAddEvent}
-              className="hidden 2xl:flex items-center gap-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white px-2.5 py-1.5 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-700 shadow-xs transition-all cursor-pointer"
-              title="Add Custom Event"
-            >
-              <PlusCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
-              <span>Add</span>
             </button>
           )}
 
@@ -630,6 +494,129 @@ export default function Toolbar({
             </button>
           )}
         </div>
+
+        {/* Center: Search / Prompt Form (Full-width row on mobile/tablet, centered on desktop) */}
+        <form
+          onSubmit={handleSubmit}
+          className="order-3 lg:order-2 w-full lg:w-auto lg:flex-1 min-w-0 max-w-2xl mx-auto lg:mx-2"
+        >
+          <div className="relative flex items-center bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-800 focus-within:bg-white dark:focus-within:bg-slate-900 border border-slate-300/80 dark:border-slate-700/80 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs w-full min-w-0">
+            
+            <div className="text-slate-400 dark:text-slate-400 pl-0.5 pr-1.5 flex items-center shrink-0">
+              {isGenerating ? (
+                <Loader2 className="w-4 h-4 animate-spin text-sky-500 dark:text-sky-400" />
+              ) : (
+                <Sparkles className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+              )}
+            </div>
+
+            <input
+              type="text"
+              dir="auto"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              disabled={isGenerating}
+              title={prompt || "Enter timeline topic"}
+              placeholder={
+                isGenerating
+                  ? LOADING_STEPS[loadingStepIdx]
+                  : "Enter timeline topic"
+              }
+              className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1"
+            />
+
+            {/* Quick Clear Button when text entered */}
+            {prompt && !isGenerating && (
+              <button
+                type="button"
+                onClick={() => setPrompt('')}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0 mr-1 cursor-pointer"
+                title="Clear input"
+                aria-label="Clear input"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {/* Detail Level Dropdown */}
+            <div className="relative shrink-0" ref={detailDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsDetailDropdownOpen((prev) => !prev)}
+                disabled={isGenerating}
+                className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-700/70 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-1.5 sm:px-2 py-1 rounded-lg border border-slate-300/70 dark:border-slate-600/60 text-xs font-semibold transition-all mr-1 shadow-2xs active:scale-95 cursor-pointer"
+                title={`Detail level: ${activeDetailOption.label} (${activeDetailOption.description})`}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
+                <span className="hidden sm:inline">{activeDetailOption.label}</span>
+                <ChevronDown
+                  className={`w-3 h-3 text-slate-400 dark:text-slate-400 transition-transform duration-200 ${
+                    isDetailDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {isDetailDropdownOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-2 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                    Detail Level
+                  </div>
+                  {DETAIL_LEVEL_OPTIONS.map((opt) => {
+                    const isSelected = detailLevel === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setDetailLevel(opt.id);
+                          setIsDetailDropdownOpen(false);
+                        }}
+                        className={`w-full text-left flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 font-semibold'
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200'
+                        }`}
+                      >
+                        <div className="flex flex-col text-left">
+                          <span className="font-medium text-xs text-slate-900 dark:text-slate-100">
+                            {opt.label}
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
+                            {opt.description}
+                          </span>
+                        </div>
+                        {isSelected && (
+                          <Check className="w-4 h-4 text-sky-500 dark:text-sky-400 shrink-0 ml-2" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Surprise Me Button */}
+            <button
+              type="button"
+              onClick={handleSurpriseMe}
+              disabled={isGenerating}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2 rounded-lg shadow-sm transition-all text-xs shrink-0 mr-1 group cursor-pointer"
+              title="Surprise me with a random fascinating timeline topic!"
+            >
+              <Dices className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-180 transition-transform duration-500 shrink-0" />
+            </button>
+
+            {/* Generate Button - Stays firmly inside the prompt container */}
+            <button
+              type="submit"
+              disabled={!prompt.trim() || isGenerating}
+              className="flex items-center gap-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+            >
+              <span>{isGenerating ? 'Creating...' : 'Generate'}</span>
+              {!isGenerating && <ArrowRight className="w-3.5 h-3.5 shrink-0" />}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Loading Progress Bar */}
