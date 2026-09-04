@@ -106,7 +106,16 @@ export const ENGLISH_TOPICS = [
   "The Hundred Years' War: Joan of Arc and Agincourt",
   "History of Clocks and Horology: Sundials to Atomic Clocks",
   "Women in Science: Pioneering Discoveries Throughout History",
-  "Great Archaeological Discoveries: Tutankhamun, Pompeii, Rosetta Stone"
+  "Great Archaeological Discoveries: Tutankhamun, Pompeii, Rosetta Stone",
+  "Harry Potter plot",
+  "Game of Thrones plot",
+  "The Targaryen family",
+  "The Lannister family",
+  "The Stark family",
+  "Lord of the Rings plot",
+  "Star Wars plot",
+  "The Prohibition era",
+  "Organized crime in the US"
 ];
 
 // 2. Hebrew Topics (~75 items: Israeli, Jewish & General History/Science/Culture)
@@ -190,7 +199,15 @@ export const HEBREW_TOPICS = [
   "תולדות הרכב: ממרכבות סוסים ועד למכוניות חשמליות",
   "תולדות האסטרונומיה: מצפייה בעין בלתי מזוינת ועד טלסקופ ג'יימס וב",
   "התפתחות הטלפונים הניידים: מבלוק המוטורולה ועד לסמארטפונים",
-  "אסונות טבע ואירועי מזג אוויר ששינו את פני ההיסטוריה"
+  "אסונות טבע ואירועי מזג אוויר ששינו את פני ההיסטוריה",
+  "עלילת הארי פוטר",
+  "עלילת משחקי הכס",
+  "בית טארגאריין",
+  "בית לאניסטר",
+  "בית סטארק",
+  "עלילת שר הטבעות",
+  "תקופת היובש",
+  "פשע מאורגן בארה"
 ];
 
 // Combined full pool of surprise topics
