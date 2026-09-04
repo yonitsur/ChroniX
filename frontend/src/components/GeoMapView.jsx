@@ -11,8 +11,7 @@ import {
   Sparkles,
   Info,
   Calendar,
-  Eye,
-  Route
+  Eye
 } from 'lucide-react';
 import { formatDatePart } from './EventDrawer';
 
@@ -27,10 +26,8 @@ export default function GeoMapView({
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
-  const polylineRef = useRef(null);
   const tileLayerRef = useRef(null);
 
-  const [showRoute, setShowRoute] = useState(true);
   const [showGlobalEvents, setShowGlobalEvents] = useState(false);
 
   const isDark = theme === 'dark';
@@ -145,11 +142,6 @@ export default function GeoMapView({
     // Clear previous markers
     Object.values(markersRef.current).forEach((marker) => marker.remove());
     markersRef.current = {};
-
-    if (polylineRef.current) {
-      polylineRef.current.remove();
-      polylineRef.current = null;
-    }
 
     if (geoArticles.length === 0) return;
 
@@ -281,19 +273,6 @@ export default function GeoMapView({
       markersRef.current[art.id] = marker;
     });
 
-    // Draw route line between events
-    if (showRoute && routeCoordinates.length > 1) {
-      const polyline = L.polyline(routeCoordinates, {
-        color: isDark ? '#38bdf8' : '#0284c7',
-        weight: 3,
-        opacity: 0.75,
-        dashArray: '6, 8',
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
-      polylineRef.current = polyline;
-    }
-
     // Auto-fit bounds if no article is selected yet
     if (!selectedArticleId && routeCoordinates.length > 0) {
       try {
@@ -303,7 +282,7 @@ export default function GeoMapView({
         // ignore
       }
     }
-  }, [geoArticles, laneColorMap, showRoute, isDark]);
+  }, [geoArticles, laneColorMap, isDark]);
 
   // 4. Focus on selected article
   useEffect(() => {
@@ -351,20 +330,6 @@ export default function GeoMapView({
         >
           <Maximize2 className="w-3.5 h-3.5 text-sky-500" />
           <span>Fit All</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setShowRoute((prev) => !prev)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shadow-md backdrop-blur-md border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
-            showRoute
-              ? 'bg-sky-500 text-white border-sky-400'
-              : 'bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-slate-700/80'
-          }`}
-          title="Toggle chronological route line"
-        >
-          <Route className="w-3.5 h-3.5" />
-          <span>Route</span>
         </button>
       </div>
 

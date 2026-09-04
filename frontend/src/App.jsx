@@ -56,6 +56,75 @@ export default function App() {
     } catch (e) {}
   };
 
+  // Resizable Split Pane State (percentage for top map pane, 15% to 85%)
+  const [splitRatio, setSplitRatio] = useState(() => {
+    try {
+      const saved = localStorage.getItem('vt_split_ratio');
+      const num = parseFloat(saved);
+      if (!isNaN(num) && num >= 15 && num <= 85) return num;
+      return 48;
+    } catch (e) {
+      return 48;
+    }
+  });
+  const [isDraggingSplit, setIsDraggingSplit] = useState(false);
+  const splitContainerRef = useRef(null);
+
+  const handleSplitMouseDown = (e) => {
+    e.preventDefault();
+    setIsDraggingSplit(true);
+
+    const onMouseMove = (moveEvent) => {
+      if (!splitContainerRef.current) return;
+      const rect = splitContainerRef.current.getBoundingClientRect();
+      const newPercent = ((moveEvent.clientY - rect.top) / rect.height) * 100;
+      const clamped = Math.min(Math.max(newPercent, 15), 85);
+      setSplitRatio(clamped);
+    };
+
+    const onMouseUp = () => {
+      setIsDraggingSplit(false);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      try {
+        setSplitRatio((current) => {
+          localStorage.setItem('vt_split_ratio', String(Math.round(current)));
+          return current;
+        });
+      } catch (e) {}
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  const handleSplitTouchStart = (e) => {
+    setIsDraggingSplit(true);
+
+    const onTouchMove = (moveEvent) => {
+      if (!splitContainerRef.current || !moveEvent.touches[0]) return;
+      const rect = splitContainerRef.current.getBoundingClientRect();
+      const newPercent = ((moveEvent.touches[0].clientY - rect.top) / rect.height) * 100;
+      const clamped = Math.min(Math.max(newPercent, 15), 85);
+      setSplitRatio(clamped);
+    };
+
+    const onTouchEnd = () => {
+      setIsDraggingSplit(false);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      try {
+        setSplitRatio((current) => {
+          localStorage.setItem('vt_split_ratio', String(Math.round(current)));
+          return current;
+        });
+      } catch (e) {}
+    };
+
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchend', onTouchEnd);
+  };
+
   // Theme state ('light' | 'dark')
   const [theme, setTheme] = useState(() => {
     try {
@@ -385,8 +454,19 @@ export default function App() {
               className="w-full h-full"
             />
           ) : viewMode === 'split' ? (
-            <div className="w-full h-full flex flex-col overflow-hidden">
-              <div className="h-[46%] min-h-[220px] w-full relative border-b border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+            <div
+              ref={splitContainerRef}
+              className={`w-full h-full flex flex-col overflow-hidden ${
+                isDraggingSplit ? 'select-none cursor-row-resize' : ''
+              }`}
+            >
+              {/* Top: Geo Map pane */}
+              <div
+                style={{ height: `${splitRatio}%` }}
+                className={`w-full relative shrink-0 overflow-hidden ${
+                  isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
+                }`}
+              >
                 <GeoMapView
                   articles={currentTimeline?.articles || []}
                   lanes={currentTimeline?.lanes || []}
@@ -395,7 +475,38 @@ export default function App() {
                   theme={theme}
                 />
               </div>
-              <div className="flex-1 w-full relative overflow-hidden">
+
+              {/* Draggable Divider Bar */}
+              <div
+                role="separator"
+                aria-orientation="horizontal"
+                tabIndex={0}
+                onMouseDown={handleSplitMouseDown}
+                onTouchStart={handleSplitTouchStart}
+                onDoubleClick={() => {
+                  setSplitRatio(50);
+                  try {
+                    localStorage.setItem('vt_split_ratio', '50');
+                  } catch (e) {}
+                }}
+                className={`group relative w-full h-3.5 flex items-center justify-center cursor-row-resize bg-slate-200/90 dark:bg-slate-800/90 border-y border-slate-300 dark:border-slate-700 hover:bg-sky-500/20 dark:hover:bg-sky-500/30 transition-colors shrink-0 z-30 select-none ${
+                  isDraggingSplit ? 'bg-sky-500/30 dark:bg-sky-500/40 ring-1 ring-sky-500/60' : ''
+                }`}
+                title="גרור כדי לשנות את גודל המפה וציר הזמן • לחץ פעמיים לאיפוס חצי-חצי (50%)"
+              >
+                {/* Visual Grip pill */}
+                <div className="flex items-center gap-1 px-3 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-2xs group-hover:border-sky-400 group-hover:scale-105 transition-all pointer-events-none">
+                  <div className="w-6 h-1 rounded-full bg-slate-400 dark:bg-slate-500 group-hover:bg-sky-500 transition-colors" />
+                </div>
+              </div>
+
+              {/* Bottom: Timeline pane */}
+              <div
+                style={{ height: `calc(${100 - splitRatio}% - 14px)` }}
+                className={`w-full relative overflow-hidden shrink-0 ${
+                  isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
+                }`}
+              >
                 <TimelineView
                   ref={timelineRef}
                   timelineData={currentTimeline}
