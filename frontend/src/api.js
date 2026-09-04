@@ -1,3 +1,5 @@
+import { supabase } from './supabaseClient';
+
 const API_BASE = '/api';
 
 export const getApiKey = () => {
@@ -12,14 +14,29 @@ export const setApiKey = (key) => {
   }
 };
 
-const getHeaders = () => {
+const getHeaders = async () => {
   const headers = {
     'Content-Type': 'application/json',
   };
+
   const key = getApiKey();
   if (key) {
     headers['X-Gemini-Api-Key'] = key;
   }
+
+  // Attach Supabase JWT Bearer token if session exists
+  if (supabase) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data?.session?.access_token;
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    } catch (e) {
+      // ignore auth error
+    }
+  }
+
   return headers;
 };
 
@@ -32,7 +49,7 @@ export async function fetchHealth() {
 export async function generateTimeline(prompt, detailLevel = 'standard', customFocus = '') {
   const res = await fetch(`${API_BASE}/timeline/generate`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: await getHeaders(),
     body: JSON.stringify({
       prompt,
       detail_level: detailLevel,
@@ -50,7 +67,7 @@ export async function generateTimeline(prompt, detailLevel = 'standard', customF
 export async function refineTimeline(timeline, instruction) {
   const res = await fetch(`${API_BASE}/timeline/refine`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: await getHeaders(),
     body: JSON.stringify({
       timeline,
       instruction,
@@ -65,13 +82,17 @@ export async function refineTimeline(timeline, instruction) {
 }
 
 export async function fetchTimelines() {
-  const res = await fetch(`${API_BASE}/timelines`);
+  const res = await fetch(`${API_BASE}/timelines`, {
+    headers: await getHeaders(),
+  });
   if (!res.ok) throw new Error('Failed to load timelines list');
   return res.json();
 }
 
 export async function fetchTimeline(id) {
-  const res = await fetch(`${API_BASE}/timelines/${id}`);
+  const res = await fetch(`${API_BASE}/timelines/${id}`, {
+    headers: await getHeaders(),
+  });
   if (!res.ok) throw new Error('Failed to load timeline');
   return res.json();
 }
@@ -79,7 +100,7 @@ export async function fetchTimeline(id) {
 export async function saveTimeline(timeline) {
   const res = await fetch(`${API_BASE}/timelines`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: await getHeaders(),
     body: JSON.stringify(timeline),
   });
   if (!res.ok) throw new Error('Failed to save timeline');
@@ -89,6 +110,7 @@ export async function saveTimeline(timeline) {
 export async function deleteTimeline(id) {
   const res = await fetch(`${API_BASE}/timelines/${id}`, {
     method: 'DELETE',
+    headers: await getHeaders(),
   });
   if (!res.ok) throw new Error('Failed to delete timeline');
   return res.json();
@@ -97,7 +119,7 @@ export async function deleteTimeline(id) {
 export async function enrichItem(title, context = '', lang = null) {
   const res = await fetch(`${API_BASE}/timeline/enrich-item`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: await getHeaders(),
     body: JSON.stringify({ title, context, lang }),
   });
   if (!res.ok) return null;
@@ -107,7 +129,7 @@ export async function enrichItem(title, context = '', lang = null) {
 export async function suggestEventData({ query, timelineTopic = '', timeScale = 'calendar', lanes = [], language = null }) {
   const res = await fetch(`${API_BASE}/timeline/suggest-event`, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: await getHeaders(),
     body: JSON.stringify({
       query,
       timeline_topic: timelineTopic,
@@ -127,8 +149,9 @@ export async function searchWikiCandidates(query, context = '', lang = null) {
   const params = new URLSearchParams({ query });
   if (lang) params.append('lang', lang);
   if (context) params.append('context', context);
-  const res = await fetch(`${API_BASE}/timeline/wiki-search?${params.toString()}`);
+  const res = await fetch(`${API_BASE}/timeline/wiki-search?${params.toString()}`, {
+    headers: await getHeaders(),
+  });
   if (!res.ok) return [];
   return res.json();
 }
-

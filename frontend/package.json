@@ -13,6 +13,7 @@
     "vite": "^8.2.2"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.115.0",
     "@vitejs/plugin-react": "^6.1.1",
     "autoprefixer": "^10.5.4",
     "canvas-confetti": "^1.9.4",

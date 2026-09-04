@@ -1,17 +1,35 @@
 import json
 import os
+import logging
 from pathlib import Path
 from typing import List, Optional
 from datetime import datetime
+import httpx
 from models import TimelineData, TimelineArticle, TimelineDate, TimelineLane, TimelineTimeBand
+
+logger = logging.getLogger("ChroniXStorage")
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 TIMELINES_FILE = DATA_DIR / "timelines.json"
 
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+
+def _get_supabase_headers():
+    if not SUPABASE_SERVICE_ROLE_KEY:
+        return None
+    return {
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        "Content-Type": "application/json"
+    }
+
+def _supabase_is_configured() -> bool:
+    return bool(SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
+
 def ensure_data_dir():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     if not TIMELINES_FILE.exists():
-        # Initialize with sample timeline
         initial_data = [get_sample_timeline()]
         with open(TIMELINES_FILE, "w", encoding="utf-8") as f:
             json.dump(initial_data, f, indent=2, ensure_ascii=False)
@@ -116,12 +134,52 @@ def get_sample_timeline() -> dict:
         "updatedAt": "2026-09-03T11:00:00Z"
     }
 
-def list_all_timelines() -> List[dict]:
+def list_all_timelines(user_id: Optional[str] = None) -> List[dict]:
+    """
+    List timelines. If Supabase is configured and reachable, fetches from Supabase PostgreSQL.
+    Otherwise, falls back to local JSON storage.
+    """
+    if _supabase_is_configured():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/timelines"
+            headers = _get_supabase_headers()
+            params = {
+                "select": "id,title,description,time_scale,data,created_at,updated_at,user_id",
+                "order": "updated_at.desc"
+            }
+            if user_id:
+                params["or"] = f"(is_public.eq.true,user_id.eq.{user_id})"
+            else:
+                params["is_public"] = "eq.true"
+
+            with httpx.Client(timeout=5.0) as client:
+                resp = client.get(url, headers=headers, params=params)
+                if resp.status_code == 200:
+                    rows = resp.json()
+                    results = []
+                    for row in rows:
+                        data = row.get("data") or {}
+                        articles = data.get("articles", [])
+                        results.append({
+                            "id": row["id"],
+                            "title": row["title"],
+                            "description": row.get("description", ""),
+                            "articleCount": len(articles),
+                            "timeScale": row.get("time_scale", "calendar"),
+                            "updatedAt": row.get("updated_at", row.get("created_at", "")),
+                            "isOwner": bool(user_id and row.get("user_id") == user_id)
+                        })
+                    return results
+                else:
+                    logger.warning(f"Supabase list_all_timelines status {resp.status_code}: {resp.text}")
+        except Exception as e:
+            logger.warning(f"Supabase fetch failed, falling back to local file: {e}")
+
+    # Fallback to local JSON storage
     ensure_data_dir()
     try:
         with open(TIMELINES_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
-            # Return list of summaries
             return [
                 {
                     "id": item["id"],
@@ -137,6 +195,26 @@ def list_all_timelines() -> List[dict]:
         return []
 
 def get_timeline_by_id(timeline_id: str) -> Optional[dict]:
+    """
+    Get a timeline by ID. Tries Supabase first, then falls back to local storage.
+    """
+    if _supabase_is_configured():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/timelines"
+            headers = _get_supabase_headers()
+            params = {
+                "id": f"eq.{timeline_id}",
+                "select": "*"
+            }
+            with httpx.Client(timeout=5.0) as client:
+                resp = client.get(url, headers=headers, params=params)
+                if resp.status_code == 200:
+                    rows = resp.json()
+                    if rows:
+                        return rows[0].get("data")
+        except Exception as e:
+            logger.warning(f"Supabase get_timeline failed: {e}")
+
     ensure_data_dir()
     try:
         with open(TIMELINES_FILE, "r", encoding="utf-8") as f:
@@ -148,35 +226,88 @@ def get_timeline_by_id(timeline_id: str) -> Optional[dict]:
         pass
     return None
 
-def save_timeline_data(timeline: dict) -> dict:
-    ensure_data_dir()
+def save_timeline_data(timeline: dict, user_id: Optional[str] = None) -> dict:
+    """
+    Save timeline data. Tries Supabase first, and mirrors to local storage for backup.
+    """
     timeline["updatedAt"] = datetime.utcnow().isoformat() + "Z"
     if "createdAt" not in timeline or not timeline["createdAt"]:
         timeline["createdAt"] = timeline["updatedAt"]
 
-    data = []
+    # Try saving to Supabase
+    if _supabase_is_configured():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/timelines"
+            headers = _get_supabase_headers()
+            headers["Prefer"] = "resolution=merge-duplicates,return=representation"
+            
+            payload = {
+                "id": timeline["id"],
+                "title": timeline.get("title", "Untitled Timeline"),
+                "description": timeline.get("description", ""),
+                "time_scale": timeline.get("timeScale", "calendar"),
+                "data": timeline,
+                "is_public": True,
+                "updated_at": timeline["updatedAt"]
+            }
+            if user_id:
+                payload["user_id"] = user_id
+
+            with httpx.Client(timeout=5.0) as client:
+                resp = client.post(url, headers=headers, json=payload)
+                if resp.status_code in (200, 201):
+                    logger.info(f"Timeline {timeline['id']} successfully saved to Supabase")
+                else:
+                    logger.warning(f"Supabase save status {resp.status_code}: {resp.text}")
+        except Exception as e:
+            logger.warning(f"Failed to save timeline to Supabase: {e}")
+
+    # Mirror to local file for backup/offline resilience
+    ensure_data_dir()
     try:
-        with open(TIMELINES_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception:
         data = []
+        try:
+            with open(TIMELINES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            data = []
 
-    # Replace existing or append
-    found = False
-    for i, item in enumerate(data):
-        if item["id"] == timeline["id"]:
-            data[i] = timeline
-            found = True
-            break
-    if not found:
-        data.insert(0, timeline)
+        found = False
+        for i, item in enumerate(data):
+            if item["id"] == timeline["id"]:
+                data[i] = timeline
+                found = True
+                break
+        if not found:
+            data.insert(0, timeline)
 
-    with open(TIMELINES_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        with open(TIMELINES_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Error saving to local backup: {e}")
 
     return timeline
 
-def delete_timeline_data(timeline_id: str) -> bool:
+def delete_timeline_data(timeline_id: str, user_id: Optional[str] = None) -> bool:
+    """
+    Delete timeline data from Supabase and local storage.
+    """
+    deleted = False
+    if _supabase_is_configured():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/timelines"
+            headers = _get_supabase_headers()
+            params = {"id": f"eq.{timeline_id}"}
+            if user_id:
+                params["user_id"] = f"eq.{user_id}"
+
+            with httpx.Client(timeout=5.0) as client:
+                resp = client.delete(url, headers=headers, params=params)
+                if resp.status_code in (200, 204):
+                    deleted = True
+        except Exception as e:
+            logger.warning(f"Supabase delete failed: {e}")
+
     ensure_data_dir()
     try:
         with open(TIMELINES_FILE, "r", encoding="utf-8") as f:
@@ -185,7 +316,8 @@ def delete_timeline_data(timeline_id: str) -> bool:
         if len(filtered) != len(data):
             with open(TIMELINES_FILE, "w", encoding="utf-8") as f:
                 json.dump(filtered, f, indent=2, ensure_ascii=False)
-            return True
+            deleted = True
     except Exception:
         pass
-    return False
+
+    return deleted

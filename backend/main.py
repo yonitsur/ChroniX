@@ -2,7 +2,7 @@ import os
 import re
 import logging
 from typing import List, Optional, Dict, Any
-from fastapi import FastAPI, HTTPException, Header, Body
+from fastapi import FastAPI, HTTPException, Header, Body, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
@@ -26,6 +26,7 @@ from services.storage import (
     delete_timeline_data,
     ensure_data_dir
 )
+from services.auth_service import get_current_user_optional, get_current_user_required
 import httpx
 import asyncio
 
@@ -61,7 +62,8 @@ async def health_check():
 @app.post("/api/timeline/generate", response_model=TimelineData)
 async def generate_timeline_endpoint(
     req: GenerateTimelineRequest,
-    x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key")
+    x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key"),
+    user: Optional[Dict[str, Any]] = Depends(get_current_user_optional)
 ):
     """
     Generate a full timeline from a natural language prompt.
@@ -74,8 +76,8 @@ async def generate_timeline_endpoint(
             api_key=x_gemini_api_key,
             language=req.language
         )
-        # Automatically save to persistent storage
-        save_timeline_data(timeline.model_dump(by_alias=True))
+        user_id = user.get("id") if user else None
+        save_timeline_data(timeline.model_dump(by_alias=True), user_id=user_id)
         return timeline
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -86,7 +88,8 @@ async def generate_timeline_endpoint(
 @app.post("/api/timeline/refine", response_model=TimelineData)
 async def refine_timeline_endpoint(
     req: RefineTimelineRequest,
-    x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key")
+    x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key"),
+    user: Optional[Dict[str, Any]] = Depends(get_current_user_optional)
 ):
     """
     Refine or extend an existing timeline via a natural language instruction.
@@ -97,7 +100,8 @@ async def refine_timeline_endpoint(
             instruction=req.instruction,
             api_key=x_gemini_api_key
         )
-        save_timeline_data(updated_timeline.model_dump(by_alias=True))
+        user_id = user.get("id") if user else None
+        save_timeline_data(updated_timeline.model_dump(by_alias=True), user_id=user_id)
         return updated_timeline
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -106,8 +110,9 @@ async def refine_timeline_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/timelines")
-async def get_all_timelines():
-    return list_all_timelines()
+async def get_all_timelines(user: Optional[Dict[str, Any]] = Depends(get_current_user_optional)):
+    user_id = user.get("id") if user else None
+    return list_all_timelines(user_id=user_id)
 
 @app.get("/api/timelines/{timeline_id}")
 async def get_single_timeline(timeline_id: str):
@@ -117,13 +122,21 @@ async def get_single_timeline(timeline_id: str):
     return timeline
 
 @app.post("/api/timelines")
-async def save_timeline(timeline: dict = Body(...)):
-    saved = save_timeline_data(timeline)
+async def save_timeline(
+    timeline: dict = Body(...),
+    user: Optional[Dict[str, Any]] = Depends(get_current_user_optional)
+):
+    user_id = user.get("id") if user else None
+    saved = save_timeline_data(timeline, user_id=user_id)
     return saved
 
 @app.delete("/api/timelines/{timeline_id}")
-async def delete_timeline(timeline_id: str):
-    deleted = delete_timeline_data(timeline_id)
+async def delete_timeline(
+    timeline_id: str,
+    user: Optional[Dict[str, Any]] = Depends(get_current_user_optional)
+):
+    user_id = user.get("id") if user else None
+    deleted = delete_timeline_data(timeline_id, user_id=user_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Timeline not found")
     return {"success": True}

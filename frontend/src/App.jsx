@@ -12,6 +12,7 @@ import SettingsModal from './components/SettingsModal';
 import AiDisclaimerModal from './components/AiDisclaimerModal';
 import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
+import AuthModal from './components/AuthModal';
 import { Sparkles, FolderOpen, AlertTriangle } from 'lucide-react';
 
 import {
@@ -64,6 +65,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const timelineRef = useRef(null);
 
@@ -283,6 +285,7 @@ export default function App() {
         isCardsListOpen={isCardsListOpen}
         onToggleCardsList={() => setIsCardsListOpen((prev) => !prev)}
         onClearBoard={handleClearBoard}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Error banner */}
@@ -413,6 +416,11 @@ export default function App() {
       <AiDisclaimerModal
         isOpen={isDisclaimerModalOpen}
         onClose={() => setIsDisclaimerModalOpen(false)}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
     </div>
   );
