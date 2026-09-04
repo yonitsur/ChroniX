@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
 
 export const PROMPT_EXAMPLES = [
   // 1. Hebrew - Standard
@@ -232,17 +232,75 @@ export const PROMPT_EXAMPLES = [
   },
 ];
 
+// Fisher-Yates array shuffle helper
+function shuffleArray(arr) {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+/**
+ * Smart balanced shuffle:
+ * Randomizes all prompt examples while balancing Hebrew and English prompts
+ * so users always see both languages upfront in a fresh random order every time.
+ */
+export function getSmartShuffledExamples() {
+  const hebrew = shuffleArray(PROMPT_EXAMPLES.filter((p) => p.lang === 'he'));
+  const english = shuffleArray(PROMPT_EXAMPLES.filter((p) => p.lang === 'en'));
+
+  const merged = [];
+  let h = 0;
+  let e = 0;
+  // 50% chance to start with Hebrew or English
+  let pickHebrewNext = Math.random() < 0.5;
+
+  while (h < hebrew.length || e < english.length) {
+    if (pickHebrewNext && h < hebrew.length) {
+      merged.push(hebrew[h++]);
+      if (e < english.length) pickHebrewNext = false;
+    } else if (!pickHebrewNext && e < english.length) {
+      merged.push(english[e++]);
+      // English has 24 items vs Hebrew's 14, so allow a 2nd English card with ~45% chance
+      if (e < english.length && (english.length - e) > (hebrew.length - h) && Math.random() < 0.45) {
+        merged.push(english[e++]);
+      }
+      if (h < hebrew.length) pickHebrewNext = true;
+    } else if (h < hebrew.length) {
+      merged.push(hebrew[h++]);
+    } else if (e < english.length) {
+      merged.push(english[e++]);
+    }
+  }
+
+  return merged;
+}
+
 export default function PromptExamples({ onSelectPrompt, isGenerating = false }) {
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isManualScrollingRef = useRef(false);
+  const [isShuffling, setIsShuffling] = useState(false);
+
+  // Initialize with a fresh smart-shuffled order every time the component mounts
+  const [examples, setExamples] = useState(() => getSmartShuffledExamples());
 
   // Triple array for seamless infinite wrapping in both directions
-  const triplicatedExamples = [
-    ...PROMPT_EXAMPLES,
-    ...PROMPT_EXAMPLES,
-    ...PROMPT_EXAMPLES
-  ];
+  const triplicatedExamples = useMemo(() => [
+    ...examples,
+    ...examples,
+    ...examples
+  ], [examples]);
+
+  const handleShuffle = useCallback(() => {
+    setIsShuffling(true);
+    setExamples(getSmartShuffledExamples());
+    setTimeout(() => {
+      setIsShuffling(false);
+    }, 450);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -322,7 +380,11 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
         className="overflow-x-auto overflow-y-hidden py-4 px-10 sm:px-14 scrollbar-none"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex gap-3.5 w-max group/track">
+        <div
+          className={`flex gap-3.5 w-max group/track transition-all duration-300 ${
+            isShuffling ? 'opacity-40 scale-[0.99]' : 'opacity-100 scale-100'
+          }`}
+        >
           {triplicatedExamples.map((item, idx) => {
             const isHebrew = item.lang === 'he';
 
@@ -382,6 +444,24 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
       >
         <ChevronRight className="w-5 h-5" />
       </button>
+
+      {/* Subtle manual shuffle button */}
+      <div className="flex justify-center mt-3">
+        <button
+          type="button"
+          onClick={handleShuffle}
+          disabled={isGenerating}
+          title="ערבב דוגמאות / Shuffle prompts"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-300 dark:hover:border-sky-500/50 shadow-xs hover:shadow-sm transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Shuffle
+            className={`w-3.5 h-3.5 transition-transform duration-500 ${
+              isShuffling ? 'rotate-180 text-sky-500' : ''
+            }`}
+          />
+          <span>ערבב רעיונות / Shuffle</span>
+        </button>
+      </div>
     </div>
   );
 }
