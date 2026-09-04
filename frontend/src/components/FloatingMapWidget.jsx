@@ -325,9 +325,6 @@ export default function FloatingMapWidget({
             <div className="p-1 rounded-lg bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 group-hover:scale-110 transition-transform">
               <Globe className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
-              Floating Map (PiP)
-            </span>
             {geoCount > 0 && (
               <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300">
                 {geoCount} locations

@@ -250,7 +250,6 @@ export default function Toolbar({
               title="Refine timeline using AI instructions"
             >
               <Sparkles className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
-              <span className="hidden xl:inline">Refine</span>
             </button>
           )}
 
@@ -264,7 +263,6 @@ export default function Toolbar({
               aria-label="Add Custom Event"
             >
               <PlusCircle className="w-3.5 h-3.5 text-emerald-500 group-hover:scale-110 transition-transform shrink-0" />
-              <span className="hidden xl:inline">Add</span>
             </button>
           )}
 
@@ -283,7 +281,6 @@ export default function Toolbar({
               aria-label="Clear Board / New Board"
             >
               <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500 transition-colors shrink-0" />
-              <span className="hidden xl:inline">Clear</span>
             </button>
           )}
 
@@ -626,7 +623,6 @@ export default function Toolbar({
               disabled={!prompt.trim() || isGenerating}
               className="flex items-center gap-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
             >
-              <span>{isGenerating ? 'Creating...' : 'Generate'}</span>
               {!isGenerating && <ArrowRight className="w-3.5 h-3.5 shrink-0" />}
             </button>
           </div>
