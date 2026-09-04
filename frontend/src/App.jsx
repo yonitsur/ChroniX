@@ -15,7 +15,8 @@ import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
 import AuthGate from './components/AuthGate';
 import { useAuth } from './context/AuthContext';
-import { Sparkles, FolderOpen, AlertTriangle, Loader2 } from 'lucide-react';
+import ChroniXLogo from './components/ChroniXLogo';
+import { FolderOpen, AlertTriangle, Loader2 } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -353,12 +354,12 @@ export default function App() {
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center select-none">
             <div className="max-w-md flex flex-col items-center gap-4 animate-in fade-in duration-300">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500/10 via-blue-500/20 to-indigo-500/10 dark:from-sky-400/20 dark:to-indigo-500/20 border border-sky-200 dark:border-sky-800/60 flex items-center justify-center shadow-inner">
-                <Sparkles className="w-8 h-8 text-sky-500 dark:text-sky-400" />
+              <div className="mb-1 transition-transform duration-300 hover:scale-105">
+                <ChroniXLogo size="xl" className="w-auto drop-shadow-sm" />
               </div>
               <div className="space-y-2 flex flex-col items-center">
                 <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                  Ready to explore history
+                  Ready to explore timelines
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                   Type a topic or historical era in the search bar above to generate a new interactive timeline, or open a saved one.
