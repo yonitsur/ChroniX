@@ -210,13 +210,13 @@ export function getRandomSurpriseTopic(recentHistory = []) {
   // Exclude recent topics (up to 35 last picks) to prevent repetitions
   const available = SURPRISE_TOPICS.filter((t) => !recentHistory.includes(t));
   const pool = available.length > 0 ? available : SURPRISE_TOPICS;
-  
+
   const randomIndex = Math.floor(Math.random() * pool.length);
   const selectedTopic = pool[randomIndex];
-  
+
   // Keep history limited to the last 35 picked items
   const updatedHistory = [...recentHistory.filter((t) => t !== selectedTopic), selectedTopic].slice(-35);
-  
+
   return {
     topic: selectedTopic,
     nextHistory: updatedHistory
