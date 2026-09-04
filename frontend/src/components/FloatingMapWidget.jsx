@@ -38,17 +38,6 @@ export default function FloatingMapWidget({
   if (mapMode === 'icon') {
     return (
       <div className="fixed bottom-5 right-5 z-40 flex items-center gap-2 select-none animate-in fade-in zoom-in-90 duration-200">
-        {/* Adjacent Split Screen Button */}
-        <button
-          type="button"
-          onClick={() => onModeChange?.('split')}
-          className="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-white/95 dark:bg-slate-800/95 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 border border-slate-200/90 dark:border-slate-700/80 shadow-lg shadow-slate-900/10 backdrop-blur-md text-xs font-semibold hover:scale-105 active:scale-95 transition-all cursor-pointer group"
-          title="Split Screen • Map & Timeline side by side"
-        >
-          <Columns2 className="w-4 h-4 text-sky-500 group-hover:scale-110 transition-transform" />
-          <span className="hidden sm:inline">Split</span>
-        </button>
-
         {/* Floating Earth / Globe Button */}
         <button
           type="button"
@@ -60,7 +49,6 @@ export default function FloatingMapWidget({
           <span className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 opacity-40 blur-xs group-hover:opacity-75 transition-opacity -z-10" />
 
           <Globe className="w-4 h-4 text-sky-100 group-hover:rotate-12 transition-transform duration-300" />
-          <span className="text-xs font-semibold tracking-wide">Floating Map</span>
 
           {geoCount > 0 && (
             <span className="flex items-center gap-0.5 bg-white/20 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white/20 shadow-2xs">
