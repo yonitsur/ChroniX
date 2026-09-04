@@ -86,7 +86,7 @@ export default function AuthGate() {
         {/* Top Header */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="mb-3 scale-110">
-            <ChroniXLogo size="lg" />
+            <ChroniXLogo size="lg" variant="dark" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {mode === 'signin' ? 'Sign in to ChroniX' : 'Create your ChroniX account'}

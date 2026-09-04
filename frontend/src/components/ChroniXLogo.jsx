@@ -9,18 +9,47 @@ import React from 'react';
  * - X-axis arrow points RIGHT (the timeline / chronological dimension).
  * - 'ChroniX' is situated in the upper-right quadrant (Quadrant I).
  */
+
+const SIZE_CLASSES = {
+  sm: "h-8",
+  md: "h-10",
+  lg: "h-14",
+  xl: "h-20"
+};
+
 export default function ChroniXLogo({ 
-  className = "h-10", 
+  className = "", 
+  size = "md",
   iconOnly = false,
-  animated = false 
+  animated = false,
+  variant = "auto" // 'auto' | 'dark' | 'light' | 'white'
 }) {
+  const sizeClass = SIZE_CLASSES[size] || (className ? "" : "h-10");
+  const computedClass = `${sizeClass} ${className}`.trim();
+
+  // Color mappings based on variant
+  const isForcedDark = variant === "dark" || variant === "white";
+  const isForcedLight = variant === "light";
+
+  const textColorClass = isForcedDark
+    ? "fill-white"
+    : isForcedLight
+    ? "fill-slate-900"
+    : "fill-slate-900 dark:fill-white transition-colors";
+
+  const axisColorClass = isForcedDark
+    ? "text-slate-400"
+    : isForcedLight
+    ? "text-slate-400"
+    : "text-slate-400 dark:text-slate-500";
+
   if (iconOnly) {
     return (
       <svg
         viewBox="0 0 36 36"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`shrink-0 select-none ${className}`}
+        className={`shrink-0 select-none ${computedClass}`}
         aria-label="ChroniX Icon"
       >
         <defs>
@@ -53,7 +82,7 @@ export default function ChroniXLogo({
       viewBox="2 2 119 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 select-none ${className}`}
+      className={`shrink-0 select-none ${computedClass}`}
       aria-label="ChroniX Logo"
     >
       <defs>
@@ -75,7 +104,7 @@ export default function ChroniXLogo({
         x2="12"
         y2="7"
         stroke="currentColor"
-        className="text-slate-400 dark:text-slate-500"
+        className={axisColorClass}
         strokeWidth="2.2"
         strokeLinecap="round"
       />
@@ -83,7 +112,7 @@ export default function ChroniXLogo({
       <path
         d="M8.5 9.5 L12 4 L15.5 9.5"
         stroke="currentColor"
-        className="text-slate-400 dark:text-slate-500"
+        className={axisColorClass}
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -97,7 +126,7 @@ export default function ChroniXLogo({
         x2="113"
         y2="33"
         stroke="currentColor"
-        className="text-slate-400 dark:text-slate-500"
+        className={axisColorClass}
         strokeWidth="2.2"
         strokeLinecap="round"
       />
@@ -105,7 +134,7 @@ export default function ChroniXLogo({
       <path
         d="M110.5 29.5 L116 33 L110.5 36.5"
         stroke="currentColor"
-        className="text-slate-400 dark:text-slate-500"
+        className={axisColorClass}
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -130,8 +159,8 @@ export default function ChroniXLogo({
         letterSpacing="0px"
       >
         <tspan
-          fill="currentColor"
-          className="fill-slate-900 dark:fill-white transition-colors"
+          fill={isForcedDark ? "#ffffff" : isForcedLight ? "#0f172a" : "currentColor"}
+          className={textColorClass}
         >
           Chroni
         </tspan>
