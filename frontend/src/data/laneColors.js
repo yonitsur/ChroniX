@@ -1,4 +1,5 @@
 // Shared Lane Colors & Utilities for ChroniX
+// Curated 12-color archival/historical museum palette
 
 export const DEFAULT_LANE_COLORS = [
   '#2b5278', // Lapis Lazuli / Prussian Navy
@@ -14,6 +15,134 @@ export const DEFAULT_LANE_COLORS = [
   '#5a4578', // Amethyst Ore
   '#3b4b5e', // Basalt Slate / Anthracite
 ];
+
+// Complete mapping of legacy Tailwind / saturated / vibe-coding hexes
+export const LEGACY_COLOR_MAP = {
+  // Blues -> Prussian Navy (#2b5278)
+  '#2563eb': '#2b5278',
+  '#3b82f6': '#2b5278',
+  '#1d4ed8': '#2b5278',
+  '#1e40af': '#2b5278',
+  '#1e3a8a': '#2b5278',
+  '#3182ce': '#2b5278',
+  '#2b6cb0': '#2b5278',
+  '#1976d2': '#2b5278',
+  '#1e88e5': '#2b5278',
+  '#2980b9': '#2b5278',
+  '#0d47a1': '#2b5278',
+  '#4682b4': '#2b5278',
+
+  // Reds -> Warm Terracotta (#b84a39) / Rosewood (#8c3a48)
+  '#dc2626': '#b84a39',
+  '#ef4444': '#b84a39',
+  '#e53e3e': '#b84a39',
+  '#c53030': '#b84a39',
+  '#d32f2f': '#b84a39',
+  '#f44336': '#b84a39',
+  '#e74c3c': '#b84a39',
+  '#b91c1c': '#8c3a48',
+  '#b22222': '#8c3a48',
+  '#8b0000': '#8c3a48',
+  '#800020': '#8c3a48',
+  '#8b263e': '#8c3a48',
+
+  // Greens -> Antique Cypress (#2e6b56) / Dark Spruce (#235848)
+  '#059669': '#2e6b56',
+  '#10b981': '#2e6b56',
+  '#047857': '#2e6b56',
+  '#27ae60': '#2e6b56',
+  '#2f855a': '#2e6b56',
+  '#3b7a57': '#2e6b56',
+  '#4caf50': '#2e6b56',
+  '#8bc34a': '#2e6b56',
+  '#1b5e20': '#235848',
+
+  // Purples -> Muted Mulberry (#6e395e) / Amethyst (#5a4578)
+  '#7c3aed': '#6e395e',
+  '#8b5cf6': '#5a4578',
+  '#7b1fa2': '#6e395e',
+  '#9c27b0': '#6e395e',
+  '#4f46e5': '#434875',
+  '#6366f1': '#434875',
+
+  // Ambers / Oranges -> Burnished Ochre (#b87326) / Sepia (#87593b)
+  '#d97706': '#b87326',
+  '#f59e0b': '#b87326',
+  '#b45309': '#b87326',
+  '#ff9800': '#b87326',
+  '#e67e22': '#b87326',
+  '#ea580c': '#87593b',
+  '#f97316': '#87593b',
+  '#dd6b20': '#87593b',
+  '#e65100': '#87593b',
+  '#b85d19': '#87593b',
+  '#c2593f': '#b84a39',
+  '#c29b38': '#b87326',
+  '#c59b27': '#b87326',
+  '#daa520': '#b87326',
+  '#d4af37': '#b87326',
+  '#795548': '#87593b',
+  '#8b5a2b': '#87593b',
+
+  // Cyans / Teals -> Aegean Petrol (#24657a) / Dark Spruce (#235848)
+  '#0891b2': '#24657a',
+  '#0284c7': '#24657a',
+  '#38bdf8': '#24657a',
+  '#0d9488': '#235848',
+
+  // Pinks -> Rosewood (#8c3a48)
+  '#db2777': '#8c3a48',
+  '#ec4899': '#8c3a48',
+
+  // Slate
+  '#475569': '#3b4b5e',
+};
+
+/**
+ * Maps an arbitrary hex color by perceived hue to the closest museum tone.
+ */
+function mapHexToMuseumColor(hex) {
+  if (!hex || !hex.startsWith('#')) return null;
+  let clean = hex.slice(1);
+  if (clean.length === 3) {
+    clean = clean.split('').map((c) => c + c).join('');
+  }
+  if (clean.length !== 6) return null;
+
+  const r = parseInt(clean.substring(0, 2), 16) / 255;
+  const g = parseInt(clean.substring(2, 4), 16) / 255;
+  const b = parseInt(clean.substring(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+
+  // Very low saturation -> Basalt Slate
+  if (max === 0 || d < 0.12) {
+    return '#3b4b5e';
+  }
+
+  let h = 0;
+  if (max === r) {
+    h = ((g - b) / d) % 6;
+  } else if (max === g) {
+    h = (b - r) / d + 2;
+  } else {
+    h = (r - g) / d + 4;
+  }
+  h = Math.round(h * 60);
+  if (h < 0) h += 360;
+
+  // Map hue spectrum into curated museum palette
+  if (h >= 345 || h < 15) return '#b84a39'; // Terracotta
+  if (h >= 15 && h < 45) return '#b87326';  // Burnished Ochre
+  if (h >= 45 && h < 75) return '#87593b';  // Archival Sepia
+  if (h >= 75 && h < 165) return '#2e6b56'; // Antique Cypress
+  if (h >= 165 && h < 205) return '#24657a'; // Aegean Petrol
+  if (h >= 205 && h < 250) return '#2b5278'; // Prussian Navy
+  if (h >= 250 && h < 285) return '#434875'; // Slate Violet
+  return '#6e395e'; // Muted Mulberry
+}
 
 /**
  * Determines if a color is light or dark to pick the best contrasting text color.
@@ -52,28 +181,34 @@ export function isColorLight(hexOrColor) {
 }
 
 /**
- * Resolves the color for a lane. If lanes already have distinct colors, uses lane.color.
- * Otherwise falls back to the curated DEFAULT_LANE_COLORS palette by lane index.
+ * Resolves the color for a lane.
+ * Maps legacy/bright primary colors to the curated archival museum palette.
  */
 export function getLaneColor(lane, index = 0, allLanes = []) {
-  if (!lane) return DEFAULT_LANE_COLORS[0];
+  const fallbackColor = DEFAULT_LANE_COLORS[index % DEFAULT_LANE_COLORS.length];
+  if (!lane) return fallbackColor;
 
-  const providedColor = lane.color?.trim();
+  const rawColor = lane.color?.trim();
+  if (!rawColor) return fallbackColor;
 
-  // If we have a list of all lanes, check if they provide diverse colors
-  if (Array.isArray(allLanes) && allLanes.length > 1) {
-    const uniqueColors = new Set(allLanes.map((l) => l.color?.trim()).filter(Boolean));
-    // If multiple distinct colors were provided (e.g. from data/AI), honor them
-    if (uniqueColors.size > 1 && providedColor) {
-      return providedColor;
-    }
+  const lower = rawColor.toLowerCase();
+
+  // 1. If it's already one of our curated museum colors, keep it!
+  if (DEFAULT_LANE_COLORS.some((c) => c.toLowerCase() === lower)) {
+    return rawColor;
   }
 
-  // If a specific custom non-default color was set
-  if (providedColor && !['#3b82f6', '#38bdf8', '#0284c7'].includes(providedColor.toLowerCase())) {
-    return providedColor;
+  // 2. If it's in our legacy color map, translate it to its museum counterpart
+  if (LEGACY_COLOR_MAP[lower]) {
+    return LEGACY_COLOR_MAP[lower];
   }
 
-  // Otherwise, use diverse palette by index
-  return DEFAULT_LANE_COLORS[index % DEFAULT_LANE_COLORS.length];
+  // 3. If it's another hex color, compute its hue and map to the closest museum tone
+  const hueMapped = mapHexToMuseumColor(lower);
+  if (hueMapped) {
+    return hueMapped;
+  }
+
+  // 4. Harmonic fallback by lane index
+  return fallbackColor;
 }

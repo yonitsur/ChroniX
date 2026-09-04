@@ -41,14 +41,14 @@ def get_sample_timeline() -> dict:
         "description": "An interactive timeline highlighting transformative presidents in American history.",
         "timeScale": "calendar",
         "lanes": [
-            {"id": "early", "title": "18th & 19th Century", "color": "#2563eb", "order": 1},
-            {"id": "modern", "title": "20th Century", "color": "#059669", "order": 2},
-            {"id": "contemporary", "title": "21st Century", "color": "#7c3aed", "order": 3}
+            {"id": "early", "title": "18th & 19th Century", "color": "#2b5278", "order": 1},
+            {"id": "modern", "title": "20th Century", "color": "#2e6b56", "order": 2},
+            {"id": "contemporary", "title": "21st Century", "color": "#6e395e", "order": 3}
         ],
         "timeBands": [
-            {"id": "founding", "title": "Founding & Civil War Era", "from": {"year": 1789, "precision": "year"}, "to": {"year": 1877, "precision": "year"}, "color": "rgba(37, 99, 235, 0.08)"},
-            {"id": "twentieth", "title": "20th Century & Cold War", "from": {"year": 1900, "precision": "year"}, "to": {"year": 1999, "precision": "year"}, "color": "rgba(5, 150, 105, 0.08)"},
-            {"id": "twentyfirst", "title": "21st Century", "from": {"year": 2000, "precision": "year"}, "to": {"year": 2026, "precision": "year"}, "color": "rgba(124, 58, 237, 0.08)"}
+            {"id": "founding", "title": "Founding & Civil War Era", "from": {"year": 1789, "precision": "year"}, "to": {"year": 1877, "precision": "year"}, "color": "rgba(43, 82, 120, 0.08)"},
+            {"id": "twentieth", "title": "20th Century & Cold War", "from": {"year": 1900, "precision": "year"}, "to": {"year": 1999, "precision": "year"}, "color": "rgba(46, 107, 86, 0.08)"},
+            {"id": "twentyfirst", "title": "21st Century", "from": {"year": 2000, "precision": "year"}, "to": {"year": 2026, "precision": "year"}, "color": "rgba(110, 57, 94, 0.08)"}
         ],
         "articles": [
             {
