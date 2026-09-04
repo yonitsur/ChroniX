@@ -28,9 +28,9 @@ DETAIL_LEVEL_GUIDELINES = {
 }
 
 DETAIL_LEVEL_MAX_TOKENS = {
-    "overview": 2500,
-    "standard": 4500,
-    "deep_dive": 7500
+    "overview": 8192,
+    "standard": 16384,
+    "deep_dive": 24000
 }
 
 
@@ -195,7 +195,7 @@ Return a structured JSON timeline following the schema.
                     response_mime_type="application/json",
                     response_schema=GeminiTimelineOutput,
                     temperature=0.3,
-                    max_output_tokens=DETAIL_LEVEL_MAX_TOKENS.get(detail_level, 4500)
+                    max_output_tokens=DETAIL_LEVEL_MAX_TOKENS.get(detail_level, 16384)
                 )
             )
 
@@ -208,8 +208,14 @@ Return a structured JSON timeline following the schema.
 
             if parsed_data is None:
                 raw_text = clean_json_text(response.text)
-                parsed_dict = json.loads(raw_text)
-                parsed_data = GeminiTimelineOutput(**parsed_dict)
+                try:
+                    parsed_dict = json.loads(raw_text)
+                    parsed_data = GeminiTimelineOutput(**parsed_dict)
+                except Exception as parse_err:
+                    cand = response.candidates[0] if getattr(response, "candidates", None) else None
+                    finish_reason = getattr(cand, "finish_reason", "UNKNOWN")
+                    logger.error(f"JSON parsing error for {model_name} (finish_reason={finish_reason}, len={len(raw_text)}): {parse_err}")
+                    raise parse_err
 
             # Convert to our TimelineData format with safe slug supporting Hebrew characters
             clean_slug = re.sub(r'[^a-zA-Z0-9\u0590-\u05FF]+', '-', prompt.lower()).strip('-')[:24]
@@ -367,7 +373,7 @@ Ensure events contain accurate dates and Wikipedia article titles.
                     response_mime_type="application/json",
                     response_schema=GeminiTimelineOutput,
                     temperature=0.3,
-                    max_output_tokens=4500
+                    max_output_tokens=16384
                 )
             )
 
@@ -380,8 +386,14 @@ Ensure events contain accurate dates and Wikipedia article titles.
 
             if parsed_data is None:
                 raw_text = clean_json_text(response.text)
-                parsed_dict = json.loads(raw_text)
-                parsed_data = GeminiTimelineOutput(**parsed_dict)
+                try:
+                    parsed_dict = json.loads(raw_text)
+                    parsed_data = GeminiTimelineOutput(**parsed_dict)
+                except Exception as parse_err:
+                    cand = response.candidates[0] if getattr(response, "candidates", None) else None
+                    finish_reason = getattr(cand, "finish_reason", "UNKNOWN")
+                    logger.error(f"Refine JSON parse error for {model_name} (finish_reason={finish_reason}): {parse_err}")
+                    raise parse_err
 
             # Merge or add new events
             existing_ids = {a.id for a in current_timeline.articles}
@@ -566,7 +578,7 @@ Timescale: "{time_scale}"
                     response_mime_type="application/json",
                     response_schema=EventSuggestionOutput,
                     temperature=0.1,
-                    max_output_tokens=700
+                    max_output_tokens=4000
                 )
             )
 
