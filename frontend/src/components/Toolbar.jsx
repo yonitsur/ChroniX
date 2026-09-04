@@ -20,9 +20,11 @@ import {
   Trash2,
   ChevronDown,
   SlidersHorizontal,
-  Check
+  Check,
+  Dices
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
+import { getRandomSurpriseTopic } from '../data/surpriseTopics';
 
 const DETAIL_LEVEL_OPTIONS = [
   {
@@ -40,22 +42,6 @@ const DETAIL_LEVEL_OPTIONS = [
     label: 'Deep',
     description: '~35-50 granular events'
   }
-];
-
-const SUGGESTIONS = [
-  "Presidents of the United States",
-  "Empires",
-  "Dinosaurs & Mesozoic Eras",
-  "World War II Key Events",
-  "Human Evolution & Early Hominids",
-  "History of Artificial Intelligence",
-  "Space Race & Moon Missions",
-  "Rise & Fall of the Roman Empire",
-  "Ancient Egypt & Pharaohs",
-  "History of Aviation & Flight",
-  "Renaissance Masters & Art Movements",
-  "Evolution of Video Game Consoles",
-  "Timeline of the Universe (Big Bang to Now)"
 ];
 
 const LOADING_STEPS = [
@@ -91,7 +77,27 @@ export default function Toolbar({
   const [isDetailDropdownOpen, setIsDetailDropdownOpen] = useState(false);
   const detailDropdownRef = useRef(null);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
-  const [showExamples, setShowExamples] = useState(true);
+  const [recentSurprises, setRecentSurprises] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chronix_recent_surprises');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const handleSurpriseMe = () => {
+    if (isGenerating) return;
+    const { topic, nextHistory } = getRandomSurpriseTopic(recentSurprises);
+    setRecentSurprises(nextHistory);
+    try {
+      localStorage.setItem('chronix_recent_surprises', JSON.stringify(nextHistory));
+    } catch (e) {}
+    setPrompt(topic);
+    if (onGenerate) {
+      onGenerate(topic, detailLevel);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -124,13 +130,6 @@ export default function Toolbar({
     if (!prompt.trim() || isGenerating) return;
     if (onGenerate) {
       onGenerate(prompt.trim(), detailLevel);
-    }
-  };
-
-  const handleChipClick = (suggestion) => {
-    setPrompt(suggestion);
-    if (onGenerate) {
-      onGenerate(suggestion, detailLevel);
     }
   };
 
@@ -259,6 +258,17 @@ export default function Toolbar({
               )}
             </div>
 
+            {/* Surprise Me Button */}
+            <button
+              type="button"
+              onClick={handleSurpriseMe}
+              disabled={isGenerating}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-2.5 py-1.5 rounded-lg shadow-sm transition-all text-xs shrink-0 mr-1.5 group cursor-pointer"
+              title="Surprise me with a random fascinating timeline topic!"
+            >
+              <Dices className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-180 transition-transform duration-500 shrink-0" />
+            </button>
+
             {/* Submit Button */}
             <button
               type="submit"
@@ -312,7 +322,7 @@ export default function Toolbar({
             title="Refine timeline using AI instructions"
           >
             <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
-            <span className="hidden xl:inline">Refine AI</span>
+            <span className="hidden xl:inline">Refine</span>
           </button>
 
           {/* Add Event Button */}
@@ -436,51 +446,8 @@ export default function Toolbar({
               <Moon className="w-4 h-4 text-indigo-600 hover:-rotate-12 transition-transform" />
             )}
           </button>
-
-          {/* Toggle Examples Button */}
-          <button
-            type="button"
-            onClick={() => setShowExamples((prev) => !prev)}
-            className={`px-2 py-1.5 rounded-xl border text-xs font-medium transition-colors flex items-center gap-1 shadow-xs ${
-              showExamples
-                ? 'bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
-            }`}
-            title={showExamples ? 'Hide suggestions row' : 'Show suggestions row'}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden 2xl:inline">Examples</span>
-          </button>
         </div>
       </div>
-
-      {/* Row 2: Examples / Suggestions Sub-row (fixed at top, not floating over canvas) */}
-      {showExamples && (
-        <div className="px-3 sm:px-4 py-1.5 bg-slate-50/90 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
-          <span className="text-slate-500 dark:text-slate-400 shrink-0 font-medium mr-1 flex items-center gap-1 text-[11px]">
-            <span>Examples:</span>
-          </span>
-          {SUGGESTIONS.map((item) => (
-            <button
-              key={item}
-              type="button"
-              disabled={isGenerating}
-              onClick={() => handleChipClick(item)}
-              className="shrink-0 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/60 shadow-2xs rounded-full px-2.5 py-0.5 transition-all hover:border-slate-400 dark:hover:border-slate-500 text-xs"
-            >
-              {item}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => setShowExamples(false)}
-            className="ml-auto text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs shrink-0 px-1 py-0.5 rounded hover:bg-slate-200/60 dark:hover:bg-slate-800"
-            title="Hide examples row"
-          >
-            ✕
-          </button>
-        </div>
-      )}
 
       {/* Loading Progress Bar */}
       {isGenerating && (
