@@ -18,7 +18,7 @@ import AuthGate from './components/AuthGate';
 import { useAuth } from './context/AuthContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
-import { FolderOpen, AlertTriangle, Loader2 } from 'lucide-react';
+import { FolderOpen, AlertTriangle, Loader2, MapPin } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -433,7 +433,7 @@ export default function App() {
                   <span>AI models synthesize dates and events. Minor inaccuracies may occur; verifying key facts is recommended.</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-1 flex-wrap justify-center">
                 <button
                   type="button"
                   onClick={() => setIsSavedModalOpen(true)}
@@ -441,6 +441,16 @@ export default function App() {
                 >
                   <FolderOpen className="w-4 h-4 text-amber-500" />
                   <span>Saved Timelines</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectTimeline('sample-us-presidents')}
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+                  title="Open live Geo-Timeline demo with map and Google Maps links"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-rose-300 animate-pulse" />
+                  <span>🗺️ Geo-Timeline Demo</span>
                 </button>
               </div>
             </div>

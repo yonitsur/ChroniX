@@ -424,4 +424,30 @@ async def enrich_events_with_wikipedia(
                     events_data[i]["lat"] = res["lat"]
                     events_data[i]["lng"] = res["lng"]
 
+        # Geocoding fallback for events with location_name but without coordinates
+        async def geocode_fallback(event: dict):
+            if event.get("lat") is not None and event.get("lng") is not None:
+                return
+            loc = event.get("location_name") or event.get("locationName")
+            if not loc or len(loc.strip()) < 2:
+                return
+            try:
+                url = f"https://nominatim.openstreetmap.org/search?q={urllib.parse.quote(loc.strip())}&format=json&limit=1"
+                resp = await client.get(url, headers=HEADERS, timeout=3.5)
+                if resp.status_code == 200:
+                    hits = resp.json()
+                    if hits and len(hits) > 0:
+                        event["lat"] = float(hits[0]["lat"])
+                        event["lng"] = float(hits[0]["lon"])
+            except Exception:
+                pass
+
+        geo_tasks = [
+            geocode_fallback(event)
+            for event in events_data
+            if (event.get("lat") is None or event.get("lng") is None) and (event.get("location_name") or event.get("locationName"))
+        ]
+        if geo_tasks:
+            await asyncio.gather(*geo_tasks, return_exceptions=True)
+
     return events_data
