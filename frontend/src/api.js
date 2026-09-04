@@ -52,8 +52,8 @@ export async function fetchHealth() {
   return res.json();
 }
 
-export async function generateTimeline(prompt, detailLevel = 'standard', customFocus = '') {
-  const res = await fetch(`${API_BASE}/timeline/generate`, {
+export async function generateTimeline(prompt, detailLevel = 'standard', customFocus = '', signal = null) {
+  const fetchOptions = {
     method: 'POST',
     headers: await getHeaders(),
     body: JSON.stringify({
@@ -61,7 +61,12 @@ export async function generateTimeline(prompt, detailLevel = 'standard', customF
       detail_level: detailLevel,
       custom_focus: customFocus || null,
     }),
-  });
+  };
+  if (signal) {
+    fetchOptions.signal = signal;
+  }
+
+  const res = await fetch(`${API_BASE}/timeline/generate`, fetchOptions);
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
@@ -70,15 +75,20 @@ export async function generateTimeline(prompt, detailLevel = 'standard', customF
   return res.json();
 }
 
-export async function refineTimeline(timeline, instruction) {
-  const res = await fetch(`${API_BASE}/timeline/refine`, {
+export async function refineTimeline(timeline, instruction, signal = null) {
+  const fetchOptions = {
     method: 'POST',
     headers: await getHeaders(),
     body: JSON.stringify({
       timeline,
       instruction,
     }),
-  });
+  };
+  if (signal) {
+    fetchOptions.signal = signal;
+  }
+
+  const res = await fetch(`${API_BASE}/timeline/refine`, fetchOptions);
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));

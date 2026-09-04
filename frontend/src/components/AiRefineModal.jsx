@@ -50,8 +50,7 @@ export default function AiRefineModal({
           <button
             type="button"
             onClick={onClose}
-            disabled={isLoading}
-            className="text-slate-400 hover:text-slate-800 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="text-slate-400 hover:text-slate-800 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,10 +112,9 @@ export default function AiRefineModal({
               <button
                 type="button"
                 onClick={onClose}
-                disabled={isLoading}
-                className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors"
+                className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors cursor-pointer"
               >
-                Cancel
+                {isLoading ? 'Stop & Cancel' : 'Cancel'}
               </button>
               <button
                 type="submit"

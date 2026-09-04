@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import { toPng } from 'html-to-image';
 import Toolbar from './components/Toolbar';
@@ -20,7 +20,7 @@ import { useAuth } from './context/AuthContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
-import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2 } from 'lucide-react';
+import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -39,6 +39,51 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [activePrompt, setActivePrompt] = useState('');
   const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
+
+  // AbortControllers for active AI requests
+  const generateAbortControllerRef = useRef(null);
+  const refineAbortControllerRef = useRef(null);
+
+  // Handle stopping generation
+  const handleStopGenerate = useCallback(() => {
+    if (generateAbortControllerRef.current) {
+      generateAbortControllerRef.current.abort();
+      generateAbortControllerRef.current = null;
+    }
+    setIsLoading(false);
+  }, []);
+
+  // Handle stopping refinement
+  const handleStopRefine = useCallback(() => {
+    if (refineAbortControllerRef.current) {
+      refineAbortControllerRef.current.abort();
+      refineAbortControllerRef.current = null;
+    }
+    setIsRefining(false);
+  }, []);
+
+  // Keyboard shortcut: Escape to stop active generation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (isLoading) {
+          handleStopGenerate();
+        } else if (isRefining) {
+          handleStopRefine();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLoading, isRefining, handleStopGenerate, handleStopRefine]);
+
+  // Clean up ongoing requests on unmount
+  useEffect(() => {
+    return () => {
+      generateAbortControllerRef.current?.abort();
+      refineAbortControllerRef.current?.abort();
+    };
+  }, []);
 
   // Map Display Mode ('icon' | 'pip' | 'split' | 'full')
   const [mapDisplayMode, setMapDisplayMode] = useState(() => {
@@ -198,6 +243,12 @@ export default function App() {
 
   // Handle generation from prompt
   const handleGenerate = async (prompt, detailLevel) => {
+    if (generateAbortControllerRef.current) {
+      generateAbortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    generateAbortControllerRef.current = controller;
+
     setActivePrompt(prompt);
     if (detailLevel) setActiveDetailLevel(detailLevel);
     setIsLoading(true);
@@ -205,16 +256,23 @@ export default function App() {
     setSelectedArticle(null);
 
     try {
-      const data = await generateTimeline(prompt, detailLevel);
+      const data = await generateTimeline(prompt, detailLevel, '', controller.signal);
       setCurrentTimeline(data);
       triggerCelebration();
     } catch (err) {
+      if (err.name === 'AbortError' || controller.signal.aborted) {
+        console.log('Generation stopped by user.');
+        return;
+      }
       console.error('Generation failed:', err);
       setErrorMessage(err.message || 'Failed to generate timeline');
       if (err.message && err.message.includes('API Key')) {
         setIsSettingsOpen(true);
       }
     } finally {
+      if (generateAbortControllerRef.current === controller) {
+        generateAbortControllerRef.current = null;
+      }
       setIsLoading(false);
     }
   };
@@ -229,18 +287,31 @@ export default function App() {
   // Handle refinement with AI
   const handleRefine = async (instruction) => {
     if (!currentTimeline) return;
+    if (refineAbortControllerRef.current) {
+      refineAbortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    refineAbortControllerRef.current = controller;
+
     setIsRefining(true);
     setErrorMessage(null);
 
     try {
-      const updated = await refineTimeline(currentTimeline, instruction);
+      const updated = await refineTimeline(currentTimeline, instruction, controller.signal);
       setCurrentTimeline({ ...updated });
       setIsAiRefineOpen(false);
       triggerCelebration();
     } catch (err) {
+      if (err.name === 'AbortError' || controller.signal.aborted) {
+        console.log('Refinement stopped by user.');
+        return;
+      }
       console.error('Refinement failed:', err);
       setErrorMessage(err.message || 'Failed to refine timeline');
     } finally {
+      if (refineAbortControllerRef.current === controller) {
+        refineAbortControllerRef.current = null;
+      }
       setIsRefining(false);
     }
   };
@@ -425,6 +496,7 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
         isGenerating={isLoading}
+        onStopGenerate={handleStopGenerate}
         theme={theme}
         onToggleTheme={handleToggleTheme}
         onGenerate={handleGenerate}
@@ -647,6 +719,28 @@ export default function App() {
             />
           </ErrorBoundary>
         )}
+
+        {/* Floating Generation Status Pill with Stop Button */}
+        {isLoading && (
+          <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 pl-4 pr-2 py-1.5 rounded-full shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-200 select-none">
+            <div className="flex items-center gap-2">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-sky-500 shrink-0" />
+              <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
+                Generating chronology...
+              </span>
+            </div>
+            <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-0.5" />
+            <button
+              type="button"
+              onClick={handleStopGenerate}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 text-xs font-semibold border border-rose-200/80 dark:border-rose-800/80 transition-all cursor-pointer active:scale-95 shadow-2xs group"
+              title="Stop generation (Esc)"
+            >
+              <Square className="w-2.5 h-2.5 fill-current text-rose-500 group-hover:scale-110 transition-transform" />
+              <span>Stop generate</span>
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Bottom AI Disclaimer Bar */}
@@ -668,7 +762,10 @@ export default function App() {
 
       <AiRefineModal
         isOpen={isAiRefineOpen}
-        onClose={() => setIsAiRefineOpen(false)}
+        onClose={() => {
+          handleStopRefine();
+          setIsAiRefineOpen(false);
+        }}
         onRefine={handleRefine}
         isLoading={isRefining}
         currentTimelineTitle={currentTimeline?.title}

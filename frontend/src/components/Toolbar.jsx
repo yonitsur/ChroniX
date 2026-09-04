@@ -25,7 +25,8 @@ import {
   MoreVertical,
   Image as ImageIcon,
   X,
-  User as UserIcon
+  User as UserIcon,
+  Square
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import { getRandomSurpriseTopic } from '../data/surpriseTopics';
@@ -69,6 +70,7 @@ export default function Toolbar({
   onOpenSettings,
   onOpenDisclaimer,
   isGenerating,
+  onStopGenerate,
   theme = 'light',
   onToggleTheme,
   onGenerate,
@@ -618,20 +620,33 @@ export default function Toolbar({
               <Dices className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
             </button>
 
-            {/* Generate Button - Stays firmly inside the prompt container */}
-            <button
-              type="submit"
-              disabled={!prompt.trim() || isGenerating}
-              className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
-              title={isGenerating ? "Creating timeline..." : "Generate timeline"}
-              aria-label={isGenerating ? "Creating timeline..." : "Generate timeline"}
-            >
-              {isGenerating ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-              ) : (
+            {/* Generate / Stop Button - Stays firmly inside the prompt container */}
+            {isGenerating ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onStopGenerate?.();
+                }}
+                className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-medium px-2 sm:px-2.5 py-1.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+                title="Stop generation"
+                aria-label="Stop generation"
+              >
+                <Square className="w-3 h-3 fill-current shrink-0" />
+                <span className="font-semibold text-[11px] sm:text-xs">Stop</span>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!prompt.trim()}
+                className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+                title="Generate timeline"
+                aria-label="Generate timeline"
+              >
                 <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              )}
-            </button>
+              </button>
+            )}
           </div>
         </form>
       </div>
