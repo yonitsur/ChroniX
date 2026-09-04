@@ -64,14 +64,12 @@ export default function ChroniXLogo({
         </defs>
 
         {/* Origin dot */}
-        <circle cx="10" cy="26" r="2.6" fill="url(#chronix-dot-grad)" />
+        <circle cx="9" cy="27" r="3.2" fill="url(#chronix-dot-grad)" />
 
-        {/* Stylized 'X' in Quadrant I */}
+        {/* Stylized Suez One 'X' in Quadrant I */}
         <path
-          d="M17 10 L28 21 M28 10 L17 21"
-          stroke="url(#chronix-x-grad)"
-          strokeWidth="3.4"
-          strokeLinecap="round"
+          d="M 23.67 23.81 L 25.17 23.44 L 22.23 19.49 L 20.10 22.54 Q 19.99 22.69, 19.99 22.86 Q 19.99 23.06, 20.30 23.32 L 21.31 24.13 L 21.11 26.31 L 14.14 26.31 L 14.00 23.84 L 14.69 23.18 L 20.13 16.70 L 15.50 10.45 L 14.06 8.73 L 14.14 7.00 L 23.07 7.00 L 23.38 9.59 L 21.86 9.96 L 24.65 13.71 L 26.70 10.74 Q 26.78 10.60, 26.78 10.48 Q 26.78 10.25, 26.49 9.99 L 25.46 9.22 L 25.66 7.00 L 32.65 7.00 L 32.83 9.48 L 32.11 10.14 L 26.75 16.53 L 31.56 22.95 L 33.00 24.67 L 32.88 26.40 L 23.85 26.40 Z"
+          fill="url(#chronix-x-grad)"
         />
       </svg>
     );
