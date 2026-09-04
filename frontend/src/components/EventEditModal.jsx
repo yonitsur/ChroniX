@@ -335,6 +335,7 @@ export default function EventEditModal({
                 type="text"
                 required
                 dir="auto"
+                maxLength={150}
                 value={title}
                 onChange={(e) => {
                   setTitle(e.target.value);
@@ -452,6 +453,7 @@ export default function EventEditModal({
             <input
               type="text"
               dir="auto"
+              maxLength={300}
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
               placeholder="e.g. 3.2-million-year-old fossilized hominid skeleton"

@@ -1,8 +1,10 @@
 import os
 import re
 import logging
+import time
+from collections import defaultdict
 from typing import List, Optional, Dict, Any
-from fastapi import FastAPI, HTTPException, Header, Body, Depends
+from fastapi import FastAPI, HTTPException, Header, Body, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
@@ -36,6 +38,44 @@ logger = logging.getLogger("ChroniXAPI")
 
 ensure_data_dir()
 
+class SimpleRateLimiter:
+    """
+    In-memory sliding-window rate limiter per client IP.
+    Protects expensive AI endpoints from spam and wallet exhaustion.
+    """
+    def __init__(self, max_requests: int, window_seconds: int = 60, name: str = "endpoint"):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self.name = name
+        self.records: Dict[str, list[float]] = defaultdict(list)
+
+    async def __call__(self, request: Request, x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key")):
+        # If user provides their own API key, give relaxed quota; if server key, enforce strict cap
+        effective_limit = self.max_requests * 4 if x_gemini_api_key else self.max_requests
+
+        forwarded = request.headers.get("X-Forwarded-For")
+        ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "unknown")
+        now = time.time()
+        cutoff = now - self.window_seconds
+
+        # Clean expired timestamps
+        self.records[ip] = [t for t in self.records[ip] if t > cutoff]
+
+        if len(self.records[ip]) >= effective_limit:
+            oldest = self.records[ip][0]
+            retry_after = max(1, int(self.window_seconds - (now - oldest)))
+            logger.warning(f"Rate limit exceeded for IP {ip} on {self.name} ({len(self.records[ip])}/{effective_limit})")
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"Rate limit exceeded for {self.name}. Please wait {retry_after} seconds before trying again.",
+                headers={"Retry-After": str(retry_after)}
+            )
+
+        self.records[ip].append(now)
+
+timeline_rate_limiter = SimpleRateLimiter(max_requests=8, window_seconds=60, name="timeline generation")
+event_suggest_rate_limiter = SimpleRateLimiter(max_requests=25, window_seconds=60, name="event suggestion")
+
 app = FastAPI(
     title="ChroniX Backend",
     description="Interactive visual chronology generator using Gemini and Wikipedia/Wikidata",
@@ -59,7 +99,7 @@ async def health_check():
         "message": "ChroniX API is running"
     }
 
-@app.post("/api/timeline/generate", response_model=TimelineData)
+@app.post("/api/timeline/generate", response_model=TimelineData, dependencies=[Depends(timeline_rate_limiter)])
 async def generate_timeline_endpoint(
     req: GenerateTimelineRequest,
     x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key"),
@@ -85,7 +125,7 @@ async def generate_timeline_endpoint(
         logger.error(f"Error in generate_timeline: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/timeline/refine", response_model=TimelineData)
+@app.post("/api/timeline/refine", response_model=TimelineData, dependencies=[Depends(timeline_rate_limiter)])
 async def refine_timeline_endpoint(
     req: RefineTimelineRequest,
     x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key"),
@@ -171,10 +211,10 @@ async def enrich_single_item(payload: dict = Body(...)):
         )
         return res
 
-@app.post("/api/timeline/suggest-event")
+@app.post("/api/timeline/suggest-event", dependencies=[Depends(event_suggest_rate_limiter)])
 async def suggest_single_event(
     payload: EventSuggestionRequest,
-    x_gemini_api_key: Optional[str] = Header(None)
+    x_gemini_api_key: Optional[str] = Header(None, alias="X-Gemini-Api-Key")
 ):
     """
     Suggest event details (title, subtitle, from/to years, precision, lane, and Wikipedia metadata)

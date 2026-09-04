@@ -60,13 +60,19 @@ export default function AiRefineModal({
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-sm text-slate-700 dark:text-slate-300">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-              What would you like to add or change?
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                What would you like to add or change?
+              </label>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                {instruction.length}/300
+              </span>
+            </div>
             <textarea
               rows={3}
               required
               dir="auto"
+              maxLength={300}
               disabled={isLoading}
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}

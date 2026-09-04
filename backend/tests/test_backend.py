@@ -211,4 +211,53 @@ async def test_suggest_event_details_lucy():
     assert res.get("imageUrl") or res.get("wikiUrl")
 
 
+def test_input_validation_max_length():
+    from pydantic import ValidationError
+    from models import GenerateTimelineRequest, RefineTimelineRequest, EventSuggestionRequest, TimelineData
+
+    # Valid prompt within bounds
+    req = GenerateTimelineRequest(prompt="Valid prompt")
+    assert req.prompt == "Valid prompt"
+
+    # Prompt exceeding 400 characters must fail validation
+    long_prompt = "A" * 401
+    with pytest.raises(ValidationError):
+        GenerateTimelineRequest(prompt=long_prompt)
+
+    # Custom focus exceeding 300 characters must fail
+    with pytest.raises(ValidationError):
+        GenerateTimelineRequest(prompt="Valid prompt", custom_focus="F" * 301)
+
+    # Refine instruction exceeding 300 characters must fail
+    dummy_tl = TimelineData(id="1", title="Test")
+    with pytest.raises(ValidationError):
+        RefineTimelineRequest(timeline=dummy_tl, instruction="I" * 301)
+
+    # Event query exceeding 150 characters must fail
+    with pytest.raises(ValidationError):
+        EventSuggestionRequest(query="Q" * 151)
+
+
+@pytest.mark.asyncio
+async def test_simple_rate_limiter():
+    from main import SimpleRateLimiter
+    from fastapi import HTTPException
+    from unittest.mock import MagicMock
+
+    limiter = SimpleRateLimiter(max_requests=3, window_seconds=60, name="test")
+    mock_req = MagicMock()
+    mock_req.headers.get.return_value = None
+    mock_req.client.host = "192.168.1.100"
+
+    # First 3 calls should succeed
+    for _ in range(3):
+        await limiter(mock_req, x_gemini_api_key=None)
+
+    # 4th call should raise 429
+    with pytest.raises(HTTPException) as exc_info:
+        await limiter(mock_req, x_gemini_api_key=None)
+    assert exc_info.value.status_code == 429
+
+
+
 

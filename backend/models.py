@@ -62,21 +62,21 @@ class TimelineData(BaseModel):
     updatedAt: Optional[str] = None
 
 class GenerateTimelineRequest(BaseModel):
-    prompt: str = Field(..., min_length=2, description="User natural language request for timeline")
+    prompt: str = Field(..., min_length=2, max_length=400, description="User natural language request for timeline")
     detail_level: Literal["overview", "standard", "deep_dive"] = "standard"
-    custom_focus: Optional[str] = None
-    language: Optional[str] = None
+    custom_focus: Optional[str] = Field(default=None, max_length=300, description="Optional special focus or aspect")
+    language: Optional[str] = Field(default=None, max_length=10, description="Language code e.g. he or en")
 
 class RefineTimelineRequest(BaseModel):
     timeline: TimelineData
-    instruction: str = Field(..., min_length=2, description="Instruction for refining or adding events")
+    instruction: str = Field(..., min_length=2, max_length=300, description="Instruction for refining or adding events")
 
 class EventSuggestionRequest(BaseModel):
-    query: str = Field(..., min_length=1, description="Event name, query, or phrase")
-    timeline_topic: Optional[str] = Field(default="", description="Active timeline title or prompt")
+    query: str = Field(..., min_length=1, max_length=150, description="Event name, query, or phrase")
+    timeline_topic: Optional[str] = Field(default="", max_length=250, description="Active timeline title or prompt")
     time_scale: Optional[Literal["calendar", "prehistoric"]] = Field(default="calendar")
     lanes: Optional[List[dict]] = Field(default_factory=list)
-    language: Optional[str] = None
+    language: Optional[str] = Field(default=None, max_length=10)
     api_key: Optional[str] = None
 
 class EventSuggestionOutput(BaseModel):

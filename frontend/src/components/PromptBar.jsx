@@ -69,6 +69,7 @@ export default function PromptBar({ onGenerate, isLoading }) {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={isLoading}
+            maxLength={400}
             placeholder={
               isLoading
                 ? LOADING_STEPS[loadingStepIdx]
