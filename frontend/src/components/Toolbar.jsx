@@ -634,7 +634,6 @@ export default function Toolbar({
                 aria-label="Stop generation"
               >
                 <Square className="w-3 h-3 fill-current shrink-0" />
-                <span className="font-semibold text-[11px] sm:text-xs">Stop</span>
               </button>
             ) : (
               <button
