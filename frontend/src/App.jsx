@@ -18,7 +18,8 @@ import AuthGate from './components/AuthGate';
 import { useAuth } from './context/AuthContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
-import { FolderOpen, AlertTriangle, Loader2, MapPin } from 'lucide-react';
+import FloatingMapWidget from './components/FloatingMapWidget';
+import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2 } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -38,21 +39,22 @@ export default function App() {
   const [activePrompt, setActivePrompt] = useState('');
   const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
 
-  // View Mode ('timeline' | 'split' | 'map')
-  const [viewMode, setViewMode] = useState(() => {
+  // Map Display Mode ('icon' | 'pip' | 'split' | 'full')
+  const [mapDisplayMode, setMapDisplayMode] = useState(() => {
     try {
-      const saved = localStorage.getItem('vt_view_mode');
-      if (saved === 'timeline' || saved === 'split' || saved === 'map') return saved;
-      return 'split';
+      const saved = localStorage.getItem('chronix_map_mode');
+      if (saved === 'icon' || saved === 'pip' || saved === 'split' || saved === 'full') return saved;
+      // Default to 'icon' (Timeline full, floating globe button in bottom-right)
+      return 'icon';
     } catch (e) {
-      return 'split';
+      return 'icon';
     }
   });
 
-  const handleViewModeChange = (mode) => {
-    setViewMode(mode);
+  const handleMapDisplayModeChange = (mode) => {
+    setMapDisplayMode(mode);
     try {
-      localStorage.setItem('vt_view_mode', mode);
+      localStorage.setItem('chronix_map_mode', mode);
     } catch (e) {}
   };
 
@@ -405,8 +407,6 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
         activeDetailLevel={activeDetailLevel}
-        viewMode={viewMode}
-        onViewModeChange={handleViewModeChange}
       />
 
       {/* Error banner */}
@@ -444,16 +444,7 @@ export default function App() {
         />
 
         {currentTimeline ? (
-          viewMode === 'map' ? (
-            <GeoMapView
-              articles={currentTimeline?.articles || []}
-              lanes={currentTimeline?.lanes || []}
-              selectedArticleId={selectedArticle?.id}
-              onSelectArticle={handleFocusArticle}
-              theme={theme}
-              className="w-full h-full"
-            />
-          ) : viewMode === 'split' ? (
+          mapDisplayMode === 'split' ? (
             <div
               ref={splitContainerRef}
               className={`w-full h-full flex flex-col overflow-hidden ${
@@ -467,6 +458,34 @@ export default function App() {
                   isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
                 }`}
               >
+                {/* Floating Quick Controls inside Split Map pane */}
+                <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 p-1 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 backdrop-blur-md select-none">
+                  <button
+                    type="button"
+                    onClick={() => handleMapDisplayModeChange('pip')}
+                    className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                    title="העבר לחלונית מפה צפה (Picture-in-Picture)"
+                  >
+                    <Minimize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMapDisplayModeChange('full')}
+                    className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                    title="הגדל למסך מלא"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMapDisplayModeChange('icon')}
+                    className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                    title="סגור פיצול וחזור לציר הזמן"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <GeoMapView
                   articles={currentTimeline?.articles || []}
                   lanes={currentTimeline?.lanes || []}
@@ -517,13 +536,27 @@ export default function App() {
               </div>
             </div>
           ) : (
-            <TimelineView
-              ref={timelineRef}
-              timelineData={currentTimeline}
-              onSelectArticle={(article) => setSelectedArticle(article)}
-              selectedArticleId={selectedArticle?.id}
-              theme={theme}
-            />
+            <>
+              {/* Full Height Timeline */}
+              <TimelineView
+                ref={timelineRef}
+                timelineData={currentTimeline}
+                onSelectArticle={(article) => setSelectedArticle(article)}
+                selectedArticleId={selectedArticle?.id}
+                theme={theme}
+              />
+
+              {/* Floating Map Widget (Icon | PiP | Full) */}
+              <FloatingMapWidget
+                articles={currentTimeline?.articles || []}
+                lanes={currentTimeline?.lanes || []}
+                selectedArticleId={selectedArticle?.id}
+                onSelectArticle={handleFocusArticle}
+                theme={theme}
+                mapMode={mapDisplayMode}
+                onModeChange={handleMapDisplayModeChange}
+              />
+            </>
           )
         ) : (
           <div className="w-full h-full overflow-y-auto flex flex-col items-center p-4 sm:p-6 pb-24 select-none animate-in fade-in duration-300">

@@ -19,7 +19,7 @@ export default function AiDisclaimerBar({ onOpenModal }) {
   // If minimized, display a sleek floating corner badge
   if (isMinimized) {
     return (
-      <div className="fixed bottom-3 right-3 z-30 animate-in fade-in zoom-in-95 duration-200">
+      <div className="fixed bottom-3 left-4 z-30 animate-in fade-in zoom-in-95 duration-200">
         <button
           type="button"
           onClick={() => setIsMinimized(false)}
