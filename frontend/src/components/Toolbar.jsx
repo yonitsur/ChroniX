@@ -274,6 +274,24 @@ export default function Toolbar({
             </button>
           )}
 
+          {/* Clear / New Board Quick Access Button (when timeline exists) */}
+          {timelineData && (
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm('Are you sure you want to clear the board and start a new timeline? All unsaved events will be deleted.')) {
+                  onClearBoard?.();
+                }
+              }}
+              className="flex items-center gap-1.5 bg-white dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-xs transition-all active:scale-95 cursor-pointer group"
+              title="Clear Board / New Board"
+              aria-label="Clear Board / New Board"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500 transition-colors shrink-0" />
+              <span className="hidden xl:inline">New Board</span>
+            </button>
+          )}
+
           {/* Light / Dark Mode Toggle Button */}
           <button
             type="button"
