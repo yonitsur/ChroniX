@@ -115,7 +115,8 @@ export const ENGLISH_TOPICS = [
   "Lord of the Rings plot",
   "Star Wars plot",
   "The Prohibition era",
-  "Organized crime in the US"
+  "Organized crime in the US",
+  "Marvel Cinematic Universe and The Avengers"
 ];
 
 // 2. Hebrew Topics (~75 items: Israeli, Jewish & General History/Science/Culture)
@@ -123,6 +124,7 @@ export const HEBREW_TOPICS = [
   // Israel & Jewish History & Culture
   "ראשי ממשלת ישראל ומנהיגיה הבולטים",
   "מלחמות ישראל: ממלחמת העצמאות ועד ימינו",
+  "הסכסוך הישראלי-פלסטיני",
   "תולדות ירושלים לאורך הדורות",
   "תולדות הציונות והקמת מדינת ישראל",
   "מבצעי העלייה הגדולים לישראל",
@@ -205,9 +207,7 @@ export const HEBREW_TOPICS = [
   "בית טארגאריין",
   "בית לאניסטר",
   "בית סטארק",
-  "עלילת שר הטבעות",
-  "תקופת היובש",
-  "פשע מאורגן בארה"
+  "עלילת שר הטבעות"
 ];
 
 // Combined full pool of surprise topics
