@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Timeline } from 'histropediajs';
+import { getLaneColor, isColorLight } from '../data/laneColors';
 
 const TimelineView = forwardRef(({
   timelineData,
@@ -156,10 +157,35 @@ const TimelineView = forwardRef(({
       // 1. Load lanes if any
       if (timelineData.lanes && timelineData.lanes.length > 0) {
         timeline.loadLanes(
-          timelineData.lanes.map((l) => ({
-            id: l.id,
-            title: l.title,
-          }))
+          timelineData.lanes.map((l, idx) => {
+            const laneColor = getLaneColor(l, idx, timelineData.lanes);
+            const isLight = isColorLight(laneColor);
+            const textColor = isLight ? '#0f172a' : '#ffffff';
+
+            return {
+              id: l.id,
+              title: l.title,
+              layout: {
+                header: {
+                  height: 28,
+                  padding: { left: 14, right: 14 }
+                }
+              },
+              style: {
+                header: {
+                  backgroundColor: laneColor,
+                },
+                body: {
+                  backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.65)',
+                  borderColor: isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.8)',
+                },
+                title: {
+                  color: textColor,
+                  font: 'bold 13px Inter, system-ui, sans-serif',
+                }
+              }
+            };
+          })
         );
       }
 

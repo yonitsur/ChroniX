@@ -1,4 +1,5 @@
 import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin } from 'lucide-react';
+import { getLaneColor } from '../data/laneColors';
 
 const MONTH_NAMES = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -50,7 +51,9 @@ export default function EventDrawer({
 }) {
   if (!article) return null;
 
-  const laneObj = lanes.find((l) => l.id === article.lane);
+  const laneIndex = lanes.findIndex((l) => l.id === article.lane);
+  const laneObj = laneIndex >= 0 ? lanes[laneIndex] : null;
+  const laneColor = laneObj ? getLaneColor(laneObj, laneIndex, lanes) : null;
   const timeSpan = formatTimeSpan(article.from, article.to, article.isToPresent);
 
   return (
@@ -112,8 +115,11 @@ export default function EventDrawer({
           )}
 
           {laneObj && (
-            <div className="flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-lg px-2.5 py-1 text-xs font-medium">
-              <Layers className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 rounded-lg px-2.5 py-1 text-xs font-medium">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
+                style={{ backgroundColor: laneColor }}
+              />
               <span dir="auto">{laneObj.title}</span>
             </div>
           )}

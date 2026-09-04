@@ -12,6 +12,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { formatTimeSpan } from './EventDrawer';
+import { getLaneColor } from '../data/laneColors';
 
 export default function CardsListDrawer({
   isOpen,
@@ -28,8 +29,11 @@ export default function CardsListDrawer({
   // Map lanes for fast lookup
   const laneMap = useMemo(() => {
     const map = new Map();
-    lanes.forEach((lane) => {
-      map.set(lane.id, lane.title);
+    lanes.forEach((lane, idx) => {
+      map.set(lane.id, {
+        title: lane.title,
+        color: getLaneColor(lane, idx, lanes),
+      });
     });
     return map;
   }, [lanes]);
@@ -200,7 +204,7 @@ export default function CardsListDrawer({
           filteredArticles.map((art) => {
             const isSelected = selectedArticleId === art.id;
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
-            const laneTitle = laneMap.get(art.lane);
+            const laneInfo = laneMap.get(art.lane);
 
             return (
               <div
@@ -259,10 +263,10 @@ export default function CardsListDrawer({
                       </span>
                     )}
 
-                    {laneTitle && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/80 dark:border-indigo-800/60 px-1.5 py-0.5 rounded-md truncate max-w-[120px]">
-                        <Layers className="w-2.5 h-2.5" />
-                        <span className="truncate">{laneTitle}</span>
+                    {laneInfo && (
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 px-1.5 py-0.5 rounded-md truncate max-w-[120px]">
+                        <span className="w-2 h-2 rounded-full shrink-0 shadow-2xs" style={{ backgroundColor: laneInfo.color }} />
+                        <span className="truncate">{laneInfo.title}</span>
                       </span>
                     )}
 

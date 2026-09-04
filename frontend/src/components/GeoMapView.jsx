@@ -14,6 +14,7 @@ import {
   Eye
 } from 'lucide-react';
 import { formatDatePart } from './EventDrawer';
+import { getLaneColor } from '../data/laneColors';
 
 export default function GeoMapView({
   articles = [],
@@ -62,8 +63,8 @@ export default function GeoMapView({
   // Map lane ID to lane color
   const laneColorMap = useMemo(() => {
     const map = {};
-    lanes.forEach((l) => {
-      map[l.id] = l.color || '#38bdf8';
+    lanes.forEach((l, idx) => {
+      map[l.id] = getLaneColor(l, idx, lanes);
     });
     return map;
   }, [lanes]);

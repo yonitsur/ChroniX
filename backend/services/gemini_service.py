@@ -28,6 +28,19 @@ DETAIL_LEVEL_GUIDELINES = {
     "deep_dive": "Produce 35 to 50 comprehensive, granular events detailing major and minor critical developments."
 }
 
+DEFAULT_LANE_PALETTE = [
+    "#2563eb",  # Blue
+    "#dc2626",  # Red
+    "#059669",  # Emerald
+    "#7c3aed",  # Purple
+    "#d97706",  # Amber
+    "#0891b2",  # Cyan
+    "#db2777",  # Pink
+    "#4f46e5",  # Indigo
+    "#ea580c",  # Dark Orange
+    "#0d9488",  # Teal
+]
+
 
 
 def is_hebrew_text(text: str) -> bool:
@@ -82,6 +95,7 @@ CRITICAL INSTRUCTIONS:
 2. LANES:
    - Provide 2 to 4 intuitive swimlanes to organize events horizontally (e.g. for WWII: 'Europe', 'Pacific', 'Diplomacy'; for Dinosaurs: 'Theropods', 'Sauropods', 'Ornithischians', 'Pre-dinosaur/Transitions'; for Tech: 'Hardware', 'Software & AI', 'Internet & Networks').
    - Assign each event a matching `lane` id.
+   - For each lane, assign a distinct, thematic hex color (e.g. '#2563eb', '#dc2626', '#059669', '#7c3aed', '#d97706', '#0891b2').
 
 3. TIME BANDS:
    - Provide 2 to 5 broad overarching eras/periods to be painted as background bands (e.g. 'Triassic', 'Jurassic', 'Cretaceous' or 'Interwar', 'Early War', 'Late War', 'Post-War').
@@ -223,9 +237,16 @@ Return a structured JSON timeline following the schema.
             clean_slug = re.sub(r'[^a-zA-Z0-9\u0590-\u05FF]+', '-', prompt.lower()).strip('-')[:24]
             timeline_id = f"{str(uuid.uuid4())[:8]}-{clean_slug}" if clean_slug else str(uuid.uuid4())[:12]
 
-            # Convert lanes
+            # Convert lanes with distinct colors
+            unique_colors = {l.color for l in parsed_data.lanes if l.color and l.color.lower() not in ["#3b82f6", "#38bdf8"]}
+            has_diverse = len(unique_colors) > 1
             lanes = [
-                TimelineLane(id=l.id, title=l.title, color=l.color or "#3b82f6", order=idx+1)
+                TimelineLane(
+                    id=l.id,
+                    title=l.title,
+                    color=(l.color if has_diverse and l.color else DEFAULT_LANE_PALETTE[idx % len(DEFAULT_LANE_PALETTE)]),
+                    order=idx+1
+                )
                 for idx, l in enumerate(parsed_data.lanes)
             ]
 
@@ -514,7 +535,8 @@ Ensure events contain accurate dates and Wikipedia article titles.
             merged_lanes = list(current_timeline.lanes)
             for l in parsed_data.lanes:
                 if l.id not in existing_lane_ids:
-                    merged_lanes.append(TimelineLane(id=l.id, title=l.title, color=l.color or "#3b82f6", order=len(merged_lanes)+1))
+                    lane_color = l.color if (l.color and l.color.lower() not in ["#3b82f6", "#38bdf8"]) else DEFAULT_LANE_PALETTE[len(merged_lanes) % len(DEFAULT_LANE_PALETTE)]
+                    merged_lanes.append(TimelineLane(id=l.id, title=l.title, color=lane_color, order=len(merged_lanes)+1))
                     existing_lane_ids.add(l.id)
 
             current_timeline.articles = merged_articles
