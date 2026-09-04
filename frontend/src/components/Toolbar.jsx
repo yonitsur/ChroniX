@@ -621,9 +621,15 @@ export default function Toolbar({
             <button
               type="submit"
               disabled={!prompt.trim() || isGenerating}
-              className="flex items-center gap-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+              className="flex items-center justify-center bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-sm transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+              title={isGenerating ? "Creating timeline..." : "Generate timeline"}
+              aria-label={isGenerating ? "Creating timeline..." : "Generate timeline"}
             >
-              {!isGenerating && <ArrowRight className="w-3.5 h-3.5 shrink-0" />}
+              {isGenerating ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+              ) : (
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+              )}
             </button>
           </div>
         </form>

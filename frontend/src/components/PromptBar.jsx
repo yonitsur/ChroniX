@@ -122,9 +122,15 @@ export default function PromptBar({ onGenerate, isLoading }) {
           <button
             type="submit"
             disabled={!prompt.trim() || isLoading}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 sm:px-5 py-2.5 rounded-xl shadow-lg shadow-sky-500/25 transition-all active:scale-95 text-sm"
+            className="flex items-center justify-center bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium p-2.5 sm:px-3.5 rounded-xl shadow-lg shadow-sky-500/25 transition-all active:scale-95 text-sm"
+            title={isLoading ? "Creating timeline..." : "Generate timeline"}
+            aria-label={isLoading ? "Creating timeline..." : "Generate timeline"}
           >
-            {!isLoading && <ArrowRight className="w-4 h-4" />}
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+            ) : (
+              <ArrowRight className="w-4 h-4 shrink-0" />
+            )}
           </button>
         </div>
 
