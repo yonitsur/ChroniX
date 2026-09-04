@@ -13,7 +13,9 @@ import AiDisclaimerModal from './components/AiDisclaimerModal';
 import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
-import { Sparkles, FolderOpen, AlertTriangle } from 'lucide-react';
+import AuthGate from './components/AuthGate';
+import { useAuth } from './context/AuthContext';
+import { Sparkles, FolderOpen, AlertTriangle, Loader2 } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -24,6 +26,7 @@ import {
 } from './api';
 
 export default function App() {
+  const { user, loading: authLoading } = useAuth();
   const [currentTimeline, setCurrentTimeline] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +71,23 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const timelineRef = useRef(null);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
+        <div className="relative flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
+          </div>
+        </div>
+        <span className="text-xs text-slate-400 font-medium tracking-wide">Starting ChroniX...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthGate />;
+  }
 
   const triggerCelebration = () => {
     try {
