@@ -223,7 +223,13 @@ export const PROMPT_EXAMPLES = [
     prompt: 'World War II Parallel Theaters: European Theater vs. Pacific Theater — Simultaneous timeline contrasting campaigns and turning points (1939–1945)',
     detailLevel: 'deep_dive',
     lang: 'en'
-  }
+  },
+  // 38. English - Deep
+  {
+    prompt: 'Human Evolution from the earliest hominids to Homo sapiens',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
 ];
 
 export default function PromptExamples({ onSelectPrompt, isGenerating = false }) {
