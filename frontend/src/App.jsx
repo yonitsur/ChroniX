@@ -370,14 +370,14 @@ export default function App() {
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
-                  גלו והרכיבו צירי זמן אינטראקטיביים
+                  Discover and build interactive timelines
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
-                  הקלידו נושא בתיבת החיפוש למעלה, או לחצו על אחת מכרטיסיות הדוגמה כדי להתחיל מייד:
+                  Type a topic in the search bar above, or click one of the example cards to get started:
                 </p>
                 <div className="mx-auto flex items-center justify-center text-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300/90 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl px-3 py-1.5 max-w-md">
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                  <span>מודלי AI מסנתזים תאריכים ואירועים. ייתכנו אי-דיוקים קלים, מומלץ לאמת עובדות מפתח.</span>
+                  <span>AI models synthesize dates and events. Minor inaccuracies may occur; verifying key facts is recommended.</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 mt-1">
@@ -387,7 +387,7 @@ export default function App() {
                   className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
                 >
                   <FolderOpen className="w-4 h-4 text-amber-500" />
-                  <span>צירים שמורים</span>
+                  <span>Saved Timelines</span>
                 </button>
               </div>
             </div>
