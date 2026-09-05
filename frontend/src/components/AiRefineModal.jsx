@@ -3,10 +3,10 @@ import { X, Sparkles, Loader2, ArrowRight, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const DEFAULT_SUGGESTIONS = [
+  "Divide the events into two timelines (e.g. by region or theme)",
+  "Split into political, cultural, and military tracks",
   "Add 5 more key milestone events with Wikipedia links",
-  "Add more events focused on scientific & technological breakthroughs",
-  "Include the social and cultural context during this period",
-  "Add events covering the final concluding phases and aftermath"
+  "Filter to highlight only major turning points and decisive battles"
 ];
 
 export default function AiRefineModal({
@@ -77,14 +77,14 @@ export default function AiRefineModal({
                 {t('aiRefine.label')}
               </label>
               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                {instruction.length}/300
+                {instruction.length}/500
               </span>
             </div>
             <textarea
               rows={3}
               required
               dir="auto"
-              maxLength={300}
+              maxLength={500}
               disabled={isLoading}
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}

@@ -194,16 +194,16 @@ export const translations = {
       createEvent: 'Create Event'
     },
     aiRefine: {
-      title: 'Refine with AI',
+      title: 'Refine & Restructure with AI',
       subtitle: 'Current Timeline: {title}',
-      label: 'What would you like to add or change?',
-      placeholder: "e.g. 'Add 5 more events about naval battles' or 'Expand on scientific discoveries in the 19th century'...",
+      label: 'What would you like to add, change, or restructure?',
+      placeholder: "e.g. 'Divide the events into two timelines: Europe and America', 'Split into political and cultural tracks', 'Add 5 more key milestone events'...",
       suggestionsTitle: 'Quick Suggestions:',
       suggestions: [
+        'Divide the events into two timelines (e.g. by region or theme)',
+        'Split into political, cultural, and military tracks',
         'Add 5 more key milestone events with Wikipedia links',
-        'Add more events focused on scientific & technological breakthroughs',
-        'Include the social and cultural context during this period',
-        'Add events covering the final concluding phases and aftermath'
+        'Filter to highlight only major turning points and decisive battles'
       ],
       refining: 'Refining Timeline...',
       applyBtn: 'Apply Refinements'
@@ -649,18 +649,18 @@ export const translations = {
       createEvent: 'צור אירוע'
     },
     aiRefine: {
-      title: 'ליטוש באמצעות AI',
+      title: 'ליטוש וארגון מחדש ב-AI',
       subtitle: 'ציר הזמן הנוכחי: {title}',
-      label: 'מה תרצו להוסיף או לשנות בציר הזמן?',
-      placeholder: "לדוגמה: 'הוסף 5 אירועים נוספים על הקרבות הימיים', 'הרחב על תגליות מדעיות במאה ה-19'...",
+      label: 'מה תרצו להוסיף, לשנות או לארגן מחדש בציר הזמן?',
+      placeholder: "לדוגמה: 'חלק את האירועים לשני צירי זמן: אירופה ואמריקה', 'פצל למסלולים פוליטיים ותרבותיים', 'הוסף 5 אירועי מפתח נוספים'...",
       suggestionsTitle: 'הצעות מהירות:',
       suggestions: [
+        'חלק את האירועים לשני צירי זמן (לפי אזור גיאוגרפי או נושא)',
+        'פצל למסלולים פוליטיים, תרבותיים וצבאיים',
         'הוסף 5 אירועי מפתח נוספים עם קישורים לוויקיפדיה',
-        'הוסף אירועים המתמקדים בפריצות דרך מדעיות וטכנולוגיות',
-        'הוסף הקשר חברתי ותרבותי שהתפתח לאורך תקופה זו',
-        'הוסף אירועים המסכמים את שלבי הסיום וההשלכות ההיסטוריות'
+        'סנן כדי להדגיש רק נקודות מפנה עיקריות ואירועים מכריעים'
       ],
-      refining: 'מלטש את ציר הזמן...',
+      refining: 'מלטש ומארגן את ציר הזמן...',
       applyBtn: 'החל ליטוש'
     },
     savedTimelines: {

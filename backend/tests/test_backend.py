@@ -228,10 +228,13 @@ def test_input_validation_max_length():
     with pytest.raises(ValidationError):
         GenerateTimelineRequest(prompt="Valid prompt", custom_focus="F" * 301)
 
-    # Refine instruction exceeding 300 characters must fail
+    # Refine instruction exceeding 500 characters must fail
     dummy_tl = TimelineData(id="1", title="Test")
     with pytest.raises(ValidationError):
-        RefineTimelineRequest(timeline=dummy_tl, instruction="I" * 301)
+        RefineTimelineRequest(timeline=dummy_tl, instruction="I" * 501)
+    # 450 characters should succeed
+    valid_refine = RefineTimelineRequest(timeline=dummy_tl, instruction="I" * 450)
+    assert len(valid_refine.instruction) == 450
 
     # Event query exceeding 150 characters must fail
     with pytest.raises(ValidationError):
@@ -375,4 +378,157 @@ async def test_gemini_generation_hebrew_explicit_multi_lane():
     assert len(tl.articles) > 0
     assigned_lanes = {a.lane for a in tl.articles if a.lane}
     assert len(assigned_lanes) >= 2, f"Expected events in at least 2 lanes, got {assigned_lanes}"
+
+
+@pytest.mark.asyncio
+async def test_refine_timeline_restructuring_and_preservation():
+    from unittest.mock import MagicMock, patch
+    from models import TimelineData, TimelineLane, TimelineArticle, TimelineDate, GeminiTimelineOutput, GeminiLaneItem, GeminiEventItem
+    from services.gemini_service import refine_timeline_with_gemini
+
+    # Existing timeline with 2 events in a single "main" lane
+    initial_tl = TimelineData(
+        id="tl-ww2",
+        title="World War II",
+        lanes=[TimelineLane(id="main", title="Main", color="#2b5278", order=1)],
+        articles=[
+            TimelineArticle(
+                id="ev-dday",
+                title="D-Day Normandy Landings",
+                subtitle="Allied invasion of France",
+                lane="main",
+                **{"from": {"year": 1944, "month": 6, "day": 6, "precision": "day"}},
+                imageUrl="https://upload.wikimedia.org/dday.jpg",
+                wikiUrl="https://en.wikipedia.org/wiki/Normandy_landings",
+                wikiTitle="Normandy landings",
+                extract="Landings in Normandy...",
+                rank=10,
+                locationName="Normandy, France",
+                lat=49.33,
+                lng=-0.56,
+                googleMapsUrl="https://www.google.com/maps/search/?api=1&query=49.33,-0.56"
+            ),
+            TimelineArticle(
+                id="ev-pearl",
+                title="Attack on Pearl Harbor",
+                subtitle="Surprise attack by Imperial Japanese Navy",
+                lane="main",
+                **{"from": {"year": 1941, "month": 12, "day": 7, "precision": "day"}},
+                imageUrl="https://upload.wikimedia.org/pearl.jpg",
+                wikiUrl="https://en.wikipedia.org/wiki/Pearl_Harbor",
+                wikiTitle="Attack on Pearl Harbor",
+                extract="Attack on Pearl Harbor...",
+                rank=9
+            )
+        ]
+    )
+
+    # Mock Gemini response restructuring into two lanes: Europe and Pacific/America
+    mock_gemini_output = GeminiTimelineOutput(
+        title="World War II - Divided Arenas",
+        description="Restructured by operational theater",
+        lanes=[
+            GeminiLaneItem(id="europe", title="European Theater", color="#2b5278"),
+            GeminiLaneItem(id="pacific", title="Pacific & American Theater", color="#b84a39")
+        ],
+        events=[
+            # Reassign ev-dday to Europe
+            GeminiEventItem(
+                id="ev-dday",
+                title="D-Day Normandy Landings",
+                subtitle="Allied invasion of Normandy",
+                lane="europe",
+                from_year=1944,
+                from_month=6,
+                from_day=6,
+                from_precision="day",
+                wikipedia_title="Normandy landings"
+            ),
+            # Reassign ev-pearl to Pacific
+            GeminiEventItem(
+                id="ev-pearl",
+                title="Attack on Pearl Harbor",
+                subtitle="Surprise attack in Hawaii",
+                lane="pacific",
+                from_year=1941,
+                from_month=12,
+                from_day=7,
+                from_precision="day",
+                wikipedia_title="Attack on Pearl Harbor"
+            ),
+            # Add new event in Europe
+            GeminiEventItem(
+                id="new_battle_of_bulge",
+                title="Battle of the Bulge",
+                subtitle="German counter-offensive in the Ardennes",
+                lane="europe",
+                from_year=1944,
+                from_month=12,
+                from_day=16,
+                from_precision="day",
+                wikipedia_title="Battle of the Bulge"
+            )
+        ]
+    )
+
+    mock_response = MagicMock()
+    mock_response.parsed = mock_gemini_output
+
+    with patch("services.gemini_service.get_gemini_client") as mock_get_client, \
+         patch("services.gemini_service.enrich_events_with_wikipedia") as mock_enrich:
+        
+        mock_client = MagicMock()
+        mock_client.models.generate_content.return_value = mock_response
+        mock_get_client.return_value = mock_client
+
+        # Return mock enriched item for the new event
+        mock_enrich.return_value = [
+            {
+                "id": "new_battle_of_bulge",
+                "title": "Battle of the Bulge",
+                "subtitle": "German counter-offensive in the Ardennes",
+                "lane": "europe",
+                "from": {"year": 1944, "month": 12, "day": 16, "precision": "day"},
+                "rank": 5,
+                "imageUrl": "https://upload.wikimedia.org/bulge.jpg",
+                "wikiTitle": "Battle of the Bulge",
+                "wikiUrl": "https://en.wikipedia.org/wiki/Battle_of_the_Bulge",
+                "extract": "Major German campaign...",
+                "locationName": "Ardennes",
+                "lat": 50.25,
+                "lng": 5.66
+            }
+        ]
+
+        refined = await refine_timeline_with_gemini(
+            current_timeline=initial_tl,
+            instruction="divide the events into two timelines - one for Europe and one for Pacific/America and add Battle of the Bulge",
+            api_key="test_key"
+        )
+
+        # 1. Lanes restructured to Europe and Pacific
+        lane_ids = [l.id for l in refined.lanes]
+        assert "europe" in lane_ids
+        assert "pacific" in lane_ids
+
+        # 2. Articles count
+        assert len(refined.articles) == 3
+
+        # 3. Verify ev-dday reassigned to europe and metadata preserved
+        dday = next(a for a in refined.articles if a.id == "ev-dday")
+        assert dday.lane == "europe"
+        assert dday.imageUrl == "https://upload.wikimedia.org/dday.jpg", "Preserved existing thumbnail"
+        assert dday.lat == 49.33, "Preserved coordinates"
+        assert dday.wikiTitle == "Normandy landings"
+
+        # 4. Verify ev-pearl reassigned to pacific
+        pearl = next(a for a in refined.articles if a.id == "ev-pearl")
+        assert pearl.lane == "pacific"
+        assert pearl.imageUrl == "https://upload.wikimedia.org/pearl.jpg", "Preserved existing thumbnail"
+
+        # 5. Verify new event enriched and present in europe
+        bulge = next(a for a in refined.articles if a.id == "new_battle_of_bulge")
+        assert bulge.lane == "europe"
+        assert bulge.from_.year == 1944
+        assert bulge.from_.month == 12
 

@@ -400,8 +400,11 @@ async def refine_timeline_with_gemini(
     api_key: Optional[str] = None
 ) -> TimelineData:
     """
-    Takes an existing timeline and an instruction (e.g. 'Add 5 events about battle of Midway and Pacific naval combat'),
-    and uses Gemini to add or modify events while maintaining consistency.
+    Takes an existing timeline and a refinement/restructuring instruction
+    (e.g. 'divide into two timelines - one for Europe and one for America',
+    'add 5 events about battle of Midway', or 'filter to keep only political events'),
+    and uses Gemini to restructure lanes, reassign events, edit existing events,
+    or add new events while preserving enriched Wikipedia metadata (images, links, coordinates).
     """
     client = get_gemini_client(api_key)
 
@@ -409,24 +412,52 @@ async def refine_timeline_with_gemini(
     target_lang = "he" if is_hebrew else "en"
     system_inst = get_system_instruction(is_hebrew=is_hebrew)
 
-    existing_articles_summary = [
-        {"title": a.title, "year": a.from_.year, "lane": a.lane}
-        for a in current_timeline.articles[:30]
+    existing_lanes_summary = [
+        {"id": l.id, "title": l.title}
+        for l in current_timeline.lanes
+    ]
+
+    existing_events_summary = [
+        {
+            "id": a.id,
+            "title": a.title,
+            "subtitle": a.subtitle or "",
+            "lane": a.lane,
+            "from_year": a.from_.year,
+            "from_month": a.from_.month,
+            "from_day": a.from_.day,
+            "to_year": a.to.year if a.to else None,
+            "wikipedia_title": a.wikiTitle or a.title
+        }
+        for a in current_timeline.articles
     ]
 
     refine_prompt = f"""
 Current Timeline Title: "{current_timeline.title}"
 Time Scale: {current_timeline.timeScale}
-Existing Lanes: {[l.model_dump() for l in current_timeline.lanes]}
-Existing Events (sample): {existing_articles_summary}
+Existing Lanes: {json.dumps(existing_lanes_summary, ensure_ascii=False)}
+Existing Events Inventory ({len(existing_events_summary)} events):
+{json.dumps(existing_events_summary, ensure_ascii=False, indent=2)}
 
-User Refinement Instruction:
+User Refinement / Restructuring Instruction:
 "{instruction}"
 
-Please generate a structured timeline that addresses the user's instruction.
-Lanes: Maintain the existing lane structure unless the user instruction explicitly requests dividing into multiple lanes/swimlanes/time-lines.
-Ensure events contain accurate dates and Wikipedia article titles.
-{"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else ""}
+Instructions for generating the refined timeline:
+1. LANES & STRUCTURE:
+   - If the user asks to split or divide events into multiple timelines or lanes (e.g. "divide into Europe and America", "separate into political and cultural tracks", "split by region"):
+     Create distinct, descriptive lanes in 'lanes' with meaningful IDs (e.g. "europe", "america", "political", "cultural") and titles.
+   - If the user did NOT request changing the lane structure, maintain the existing lanes.
+2. EVENT ALLOCATION & EDITING:
+   - For all existing events that should remain on the timeline, YOU MUST RETURN THEM in the 'events' list with their original 'id', and assign them to the appropriate 'lane' matching your lane structure!
+   - You may update their title, subtitle, or dates if the instruction specifically asks for edits.
+   - If the user asks to add new events, add them with a new unique id (e.g. "new_1", "new_2"), accurate dates, and Wikipedia article titles.
+   - If the user explicitly asks to remove, filter, or delete certain events (e.g., "remove events after 1945", "keep only top 10", "remove battles"), omit those events.
+   - Unless explicitly asked to filter or remove events, DO NOT drop existing events; preserve them and allocate them to the appropriate lanes.
+3. TITLE & DESCRIPTION:
+   - Maintain or subtly adapt the timeline title and description if the user instruction implies a narrower or broader focus.
+4. {"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else "Please respond in English and provide English Wikipedia titles."}
+
+Return a structured JSON timeline following the schema.
 """
 
     models_to_try = get_gemini_models_to_try()
@@ -464,115 +495,209 @@ Ensure events contain accurate dates and Wikipedia article titles.
                     logger.error(f"Refine JSON parse error for {model_name} (finish_reason={finish_reason}): {parse_err}")
                     raise parse_err
 
-            # Merge or add new events
-            existing_ids = {a.id for a in current_timeline.articles}
+            # Detect if user specifically asked to filter or remove items
+            filter_keywords = [
+                "remove", "delete", "filter", "prune", "drop", "omit", "exclude", "only keep", "keep only", "reduce to",
+                "מחק", "הסר", "סנן", "השמט", "צמצם", "השאר רק", "רק את", "ללא", "נקה"
+            ]
+            has_deletion_intent = any(kw in instruction.lower() for kw in filter_keywords)
+
+            # 1. Update Lanes: assign diverse colors from palette
+            if parsed_data.lanes:
+                unique_colors = {l.color for l in parsed_data.lanes if l.color and l.color.lower() not in ["#3b82f6", "#38bdf8", "#2563eb"]}
+                has_diverse = len(unique_colors) > 1
+                new_lanes = [
+                    TimelineLane(
+                        id=l.id,
+                        title=l.title,
+                        color=l.color if (has_diverse and l.color) else DEFAULT_LANE_PALETTE[idx % len(DEFAULT_LANE_PALETTE)],
+                        order=idx + 1
+                    )
+                    for idx, l in enumerate(parsed_data.lanes)
+                ]
+            else:
+                new_lanes = list(current_timeline.lanes) if current_timeline.lanes else [
+                    TimelineLane(id="main", title="Main Timeline", color=DEFAULT_LANE_PALETTE[0], order=1)
+                ]
+
+            valid_lane_ids = {l.id for l in new_lanes}
+            fallback_lane_id = new_lanes[0].id
+
+            # 2. Existing articles mapping
+            existing_by_id = {a.id: a for a in current_timeline.articles}
+            existing_by_title = {a.title.lower().strip(): a for a in current_timeline.articles}
+
+            processed_existing_ids = set()
+            updated_existing_articles = []
             new_articles_to_enrich = []
-            fallback_lane = current_timeline.lanes[0].id if current_timeline.lanes else "main"
 
             for ev in parsed_data.events:
-                ev_id = ev.id if ev.id and ev.id not in existing_ids else str(uuid.uuid4())[:8]
-                existing_ids.add(ev_id)
+                ev_id = (ev.id or "").strip()
+                matched_existing = None
 
-                art_dict = {
-                    "id": ev_id,
-                    "title": ev.title,
-                    "subtitle": ev.subtitle or "",
-                    "lane": ev.lane or fallback_lane,
-                    "from": {
-                        "year": ev.from_year,
-                        "month": ev.from_month,
-                        "day": ev.from_day,
-                        "precision": ev.from_precision
-                    },
-                    "rank": ev.importance_rank,
-                    "isToPresent": ev.is_to_present or False,
-                    "wikipedia_title": ev.wikipedia_title or ev.title,
-                    "location_name": ev.location_name,
-                    "lat": ev.lat,
-                    "lng": ev.lng
-                }
-                if ev.to_year is not None:
-                    art_dict["to"] = {
-                        "year": ev.to_year,
-                        "month": ev.to_month,
-                        "day": ev.to_day,
-                        "precision": ev.to_precision or ev.from_precision
+                if ev_id and ev_id in existing_by_id:
+                    matched_existing = existing_by_id[ev_id]
+                elif ev.title.lower().strip() in existing_by_title:
+                    matched_existing = existing_by_title[ev.title.lower().strip()]
+                    ev_id = matched_existing.id
+
+                assigned_lane = ev.lane if (ev.lane and ev.lane in valid_lane_ids) else fallback_lane_id
+
+                if matched_existing:
+                    processed_existing_ids.add(matched_existing.id)
+
+                    from_date = TimelineDate(
+                        year=ev.from_year,
+                        month=ev.from_month if ev.from_month is not None else matched_existing.from_.month,
+                        day=ev.from_day if ev.from_day is not None else matched_existing.from_.day,
+                        precision=ev.from_precision or matched_existing.from_.precision or "year"
+                    )
+                    to_date = matched_existing.to
+                    if ev.to_year is not None:
+                        to_date = TimelineDate(
+                            year=ev.to_year,
+                            month=ev.to_month,
+                            day=ev.to_day,
+                            precision=ev.to_precision or ev.from_precision or "year"
+                        )
+
+                    updated_art = matched_existing.model_copy(update={
+                        "lane": assigned_lane,
+                        "title": ev.title or matched_existing.title,
+                        "subtitle": ev.subtitle if ev.subtitle else matched_existing.subtitle,
+                        "from_": from_date,
+                        "to": to_date,
+                        "rank": ev.importance_rank if ev.importance_rank else matched_existing.rank,
+                        "locationName": ev.location_name or matched_existing.locationName,
+                        "lat": ev.lat if ev.lat is not None else matched_existing.lat,
+                        "lng": ev.lng if ev.lng is not None else matched_existing.lng,
+                    })
+
+                    if updated_art.lat is not None and updated_art.lng is not None:
+                        updated_art.googleMapsUrl = f"https://www.google.com/maps/search/?api=1&query={updated_art.lat},{updated_art.lng}"
+                    elif updated_art.locationName:
+                        updated_art.googleMapsUrl = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(updated_art.locationName)}"
+
+                    updated_existing_articles.append(updated_art)
+                else:
+                    # Truly new event
+                    new_id = ev_id if (ev_id and ev_id not in processed_existing_ids and ev_id not in existing_by_id) else str(uuid.uuid4())[:8]
+                    art_dict = {
+                        "id": new_id,
+                        "title": ev.title,
+                        "subtitle": ev.subtitle or "",
+                        "lane": assigned_lane,
+                        "from": {
+                            "year": ev.from_year,
+                            "month": ev.from_month,
+                            "day": ev.from_day,
+                            "precision": ev.from_precision
+                        },
+                        "rank": ev.importance_rank or 5,
+                        "isToPresent": ev.is_to_present or False,
+                        "wikipedia_title": ev.wikipedia_title or ev.title,
+                        "location_name": ev.location_name,
+                        "lat": ev.lat,
+                        "lng": ev.lng
                     }
-                new_articles_to_enrich.append(art_dict)
+                    if ev.to_year is not None:
+                        art_dict["to"] = {
+                            "year": ev.to_year,
+                            "month": ev.to_month,
+                            "day": ev.to_day,
+                            "precision": ev.to_precision or ev.from_precision
+                        }
+                    new_articles_to_enrich.append(art_dict)
+                    processed_existing_ids.add(new_id)
 
-            enriched = await enrich_events_with_wikipedia(new_articles_to_enrich, lang=target_lang, timeline_topic=current_timeline.title)
+            # If no deletion intent, safely retain any unmentioned existing articles
+            if not has_deletion_intent:
+                for a in current_timeline.articles:
+                    if a.id not in processed_existing_ids:
+                        kept_lane = a.lane if (a.lane and a.lane in valid_lane_ids) else fallback_lane_id
+                        preserved_art = a.model_copy(update={"lane": kept_lane})
+                        updated_existing_articles.append(preserved_art)
+                        processed_existing_ids.add(a.id)
 
-            new_articles = []
-            for item in enriched:
-                from_dict = item.get("from", {})
-                from_date = TimelineDate(
-                    year=from_dict.get("year", 0),
-                    month=from_dict.get("month"),
-                    day=from_dict.get("day"),
-                    precision=from_dict.get("precision", "year")
+            # Enrich new articles with Wikipedia metadata
+            enriched_new_articles = []
+            if new_articles_to_enrich:
+                enriched = await enrich_events_with_wikipedia(
+                    new_articles_to_enrich,
+                    lang=target_lang,
+                    timeline_topic=current_timeline.title
                 )
-                to_date = None
-                if "to" in item and item["to"]:
-                    to_dict = item["to"]
-                    to_date = TimelineDate(
-                        year=to_dict.get("year", 0),
-                        month=to_dict.get("month"),
-                        day=to_dict.get("day"),
-                        precision=to_dict.get("precision", "year")
+                for item in enriched:
+                    from_dict = item.get("from", {})
+                    from_date = TimelineDate(
+                        year=from_dict.get("year", 0),
+                        month=from_dict.get("month"),
+                        day=from_dict.get("day"),
+                        precision=from_dict.get("precision", "year")
+                    )
+                    to_date = None
+                    if "to" in item and item["to"]:
+                        to_dict = item["to"]
+                        to_date = TimelineDate(
+                            year=to_dict.get("year", 0),
+                            month=to_dict.get("month"),
+                            day=to_dict.get("day"),
+                            precision=to_dict.get("precision", "year")
+                        )
+
+                    lat = item.get("lat")
+                    lng = item.get("lng")
+                    loc_name = item.get("location_name")
+                    google_maps_url = None
+                    if lat is not None and lng is not None:
+                        google_maps_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lng}"
+                    elif loc_name:
+                        google_maps_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(loc_name)}"
+
+                    enriched_new_articles.append(
+                        TimelineArticle(
+                            id=str(item.get("id")),
+                            title=item.get("title", ""),
+                            subtitle=item.get("subtitle", ""),
+                            lane=item.get("lane"),
+                            from_=from_date,
+                            to=to_date,
+                            isToPresent=item.get("isToPresent", False),
+                            imageUrl=item.get("imageUrl"),
+                            wikiTitle=item.get("wikiTitle"),
+                            wikiUrl=item.get("wikiUrl"),
+                            extract=item.get("extract"),
+                            rank=item.get("rank", 5),
+                            locationName=loc_name,
+                            lat=lat,
+                            lng=lng,
+                            googleMapsUrl=google_maps_url
+                        )
                     )
 
-                lat = item.get("lat")
-                lng = item.get("lng")
-                loc_name = item.get("location_name")
-                google_maps_url = None
-                if lat is not None and lng is not None:
-                    google_maps_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lng}"
-                elif loc_name:
-                    google_maps_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(loc_name)}"
+            final_articles = updated_existing_articles + enriched_new_articles
+            final_articles.sort(key=lambda a: (a.from_.year, a.from_.month or 1, a.from_.day or 1))
 
-                new_articles.append(
-                    TimelineArticle(
-                        id=str(item.get("id")),
-                        title=item.get("title", ""),
-                        subtitle=item.get("subtitle", ""),
-                        lane=item.get("lane"),
-                        from_=from_date,
-                        to=to_date,
-                        isToPresent=item.get("isToPresent", False),
-                        imageUrl=item.get("imageUrl"),
-                        wikiTitle=item.get("wikiTitle"),
-                        wikiUrl=item.get("wikiUrl"),
-                        extract=item.get("extract"),
-                        rank=item.get("rank", 5),
-                        locationName=loc_name,
-                        lat=lat,
-                        lng=lng,
-                        googleMapsUrl=google_maps_url
+            current_timeline.articles = final_articles
+            current_timeline.lanes = new_lanes
+
+            if parsed_data.title and parsed_data.title.strip() and parsed_data.title != "Untitled Timeline":
+                current_timeline.title = parsed_data.title
+            if parsed_data.description and parsed_data.description.strip():
+                current_timeline.description = parsed_data.description
+
+            if parsed_data.time_bands:
+                current_timeline.timeBands = [
+                    TimelineTimeBand(
+                        id=tb.id or str(uuid.uuid4())[:8],
+                        title=tb.title,
+                        from_=TimelineDate(year=tb.from_year, precision=tb.precision),
+                        to=TimelineDate(year=tb.to_year, precision=tb.precision),
+                        color=tb.color or "rgba(59, 130, 246, 0.08)"
                     )
-                )
+                    for tb in parsed_data.time_bands
+                ]
 
-            # Combine existing articles + new articles (avoid exact duplicate titles)
-            current_titles = {a.title.lower() for a in current_timeline.articles}
-            merged_articles = list(current_timeline.articles)
-            for na in new_articles:
-                if na.title.lower() not in current_titles:
-                    merged_articles.append(na)
-                    current_titles.add(na.title.lower())
-
-            # Sort articles by year
-            merged_articles.sort(key=lambda a: (a.from_.year, a.from_.month or 1, a.from_.day or 1))
-
-            # Merge lanes if new lanes were added
-            existing_lane_ids = {l.id for l in current_timeline.lanes}
-            merged_lanes = list(current_timeline.lanes)
-            for l in parsed_data.lanes:
-                if l.id not in existing_lane_ids:
-                    lane_color = l.color if (l.color and l.color.lower() not in ["#3b82f6", "#38bdf8", "#2563eb"]) else DEFAULT_LANE_PALETTE[len(merged_lanes) % len(DEFAULT_LANE_PALETTE)]
-                    merged_lanes.append(TimelineLane(id=l.id, title=l.title, color=lane_color, order=len(merged_lanes)+1))
-                    existing_lane_ids.add(l.id)
-
-            current_timeline.articles = merged_articles
-            current_timeline.lanes = merged_lanes
             return current_timeline
 
         except Exception as e:

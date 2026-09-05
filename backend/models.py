@@ -75,7 +75,7 @@ class GenerateTimelineRequest(BaseModel):
 
 class RefineTimelineRequest(BaseModel):
     timeline: TimelineData
-    instruction: str = Field(..., min_length=2, max_length=300, description="Instruction for refining or adding events")
+    instruction: str = Field(..., min_length=2, max_length=500, description="Instruction for refining or adding events")
 
 class EventSuggestionRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=150, description="Event name, query, or phrase")
