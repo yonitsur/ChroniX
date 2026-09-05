@@ -543,6 +543,18 @@ export default function App() {
     setActiveDetailLevel('standard');
   };
 
+  // Navigate back to the home view (Logo click)
+  const handleGoHome = () => {
+    setCurrentTimeline(null);
+    setSelectedArticle(null);
+    setIsCardsListOpen(false);
+    setStarredArticleIds(new Set());
+    setFilterStarredOnly(false);
+    setActivePrompt('');
+    setActiveDetailLevel('standard');
+    setMobileTab('timeline');
+  };
+
   // Toggle star / favorite status on an article
   const handleToggleStar = useCallback((articleId, explicitState) => {
     setStarredArticleIds((prev) => {
@@ -646,6 +658,7 @@ export default function App() {
         onToggleTheme={handleToggleTheme}
         onGenerate={handleGenerate}
         onClearBoard={handleClearBoard}
+        onGoHome={handleGoHome}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
         activeDetailLevel={activeDetailLevel}

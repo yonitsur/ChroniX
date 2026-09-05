@@ -106,7 +106,7 @@ export default function CardsListDrawer({
 
   return (
     <aside
-      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-30 flex flex-col transition-all duration-300 ease-in-out select-none ${
+      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transition-all duration-300 ease-in-out select-none ${
         isRtl ? 'text-right' : 'text-left'
       }`}
       dir={isRtl ? 'rtl' : 'ltr'}
@@ -128,11 +128,11 @@ export default function CardsListDrawer({
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
           title={t('common.close')}
           aria-label={t('common.close')}
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
@@ -381,7 +381,7 @@ export default function CardsListDrawer({
         <button
           type="button"
           onClick={onClose}
-          className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
+          className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium cursor-pointer"
         >
           {t('common.close')}
         </button>

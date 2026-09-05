@@ -81,6 +81,7 @@ export default function Toolbar({
   onToggleTheme,
   onGenerate,
   onClearBoard,
+  onGoHome,
   onOpenAuth,
   activePrompt,
   activeDetailLevel,
@@ -250,6 +251,13 @@ export default function Toolbar({
       try {
         localStorage.setItem('vt_prompt_expanded', String(next));
       } catch (e) {}
+      // When collapsing, clear custom width so it reliably collapses back to compact size
+      if (!next) {
+        setPromptCustomWidth(null);
+        try {
+          localStorage.removeItem('vt_prompt_custom_width');
+        } catch (e) {}
+      }
       return next;
     });
   };
@@ -307,15 +315,28 @@ export default function Toolbar({
     >
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
-        {/* Left: Branding */}
+        {/* Left: Branding & Home button */}
         <div className="order-1 flex items-center shrink-0">
-          <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0" />
+          <button
+            type="button"
+            onClick={() => {
+              setPrompt('');
+              onGoHome?.();
+            }}
+            className="flex items-center cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none rounded-lg group"
+            title={t('toolbar.goHome')}
+            aria-label={t('toolbar.goHome')}
+          >
+            <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0 transition-opacity group-hover:opacity-90" />
+          </button>
         </div>
 
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
         <div
           ref={rightControlsRef}
-          className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto min-w-0"
+          className={`order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 min-w-0 transition-all duration-200 ${
+            isPromptExpanded ? 'ml-auto lg:ml-0' : 'ml-auto'
+          }`}
         >
           {/* Zoom Controls Pill (Desktop only) */}
           <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
@@ -751,18 +772,18 @@ export default function Toolbar({
         <div
           ref={formContainerRef}
           style={
-            promptCustomWidth && !isPromptExpanded
+            !isPromptExpanded && promptCustomWidth
               ? { width: `${promptCustomWidth}px`, maxWidth: '100%' }
               : undefined
           }
           className={`order-3 lg:order-2 w-full relative flex items-center group/prompt ${
-            isResizing ? 'transition-none' : 'transition-[width,max-width] duration-150'
+            isResizing ? 'transition-none' : 'transition-[width,max-width,flex] duration-200 ease-out'
           } min-w-0 mx-auto lg:mx-0 ${
             isPromptExpanded
-              ? 'lg:flex-1'
+              ? 'lg:flex-1 max-w-none'
               : promptCustomWidth
               ? 'lg:flex-initial'
-              : 'lg:flex-1 min-w-[280px] sm:min-w-[340px] max-w-2xl'
+              : 'lg:w-[380px] xl:w-[460px] max-w-xl'
           }`}
         >
           {/* Left resize handle (desktop only) */}
@@ -822,7 +843,11 @@ export default function Toolbar({
               {/* Expand / Minimize Toggle Button (Desktop/Tablet only) */}
               <button
                 type="button"
-                onClick={togglePromptExpanded}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  togglePromptExpanded();
+                }}
                 className="hidden sm:flex p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 rounded-md transition-colors shrink-0 mr-1 cursor-pointer"
                 title={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
                 aria-label={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
