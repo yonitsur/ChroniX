@@ -171,3 +171,12 @@ export async function searchWikiCandidates(query, context = '', lang = null) {
   if (!res.ok) return [];
   return res.json();
 }
+
+export async function fetchUserQuota() {
+  const res = await fetch(`${API_BASE}/user/quota`, {
+    headers: await getHeaders(),
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+

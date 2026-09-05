@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X, Key, CheckCircle, AlertCircle, Eye, EyeOff, Save, ExternalLink, Languages, Check } from 'lucide-react';
+import { X, Key, CheckCircle, AlertCircle, Eye, EyeOff, Save, ExternalLink, Languages, Check, Zap } from 'lucide-react';
 import { getApiKey, setApiKey, fetchHealth } from '../api';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function SettingsModal({ isOpen, onClose }) {
+export default function SettingsModal({ isOpen, onClose, quota, onRefreshQuota }) {
   const { language, setLanguage, t } = useLanguage();
   const [apiKey, setKeyValue] = useState('');
   const [showKey, setShowKey] = useState(false);
@@ -27,6 +27,7 @@ export default function SettingsModal({ isOpen, onClose }) {
     e.preventDefault();
     setApiKey(apiKey);
     setSavedSuccess(true);
+    if (onRefreshQuota) onRefreshQuota();
     setTimeout(() => {
       setSavedSuccess(false);
       onClose();
@@ -128,6 +129,31 @@ export default function SettingsModal({ isOpen, onClose }) {
                 </span>
               </>
             )}
+          </div>
+
+          {/* Daily Quota / Server Mode Info Box */}
+          <div className="p-3.5 bg-sky-50/70 dark:bg-sky-950/40 rounded-xl border border-sky-200/80 dark:border-sky-800/60 space-y-1.5 text-xs">
+            <div className="flex items-center justify-between font-semibold text-slate-900 dark:text-white">
+              <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                <Zap className="w-4 h-4" />
+                <span>{t('quota.modalTitle')}</span>
+              </span>
+              {quota?.is_admin ? (
+                <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">
+                  {t('quota.tierAdmin')}
+                </span>
+              ) : quota ? (
+                <span className="text-[11px] font-bold text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/60 border border-sky-300 dark:border-sky-700">
+                  {quota.remaining_paid > 0 ? `${quota.remaining_paid}/${quota.daily_paid_limit}` : t('quota.tierFree')}
+                </span>
+              ) : null}
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+              {t('quota.premiumDesc')}
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              {t('quota.freeDesc')}
+            </p>
           </div>
 
           <div>

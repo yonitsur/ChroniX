@@ -18,6 +18,7 @@ import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
 import AuthGate from './components/AuthGate';
+import QuotaModal from './components/QuotaModal';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 import ChroniXLogo from './components/ChroniXLogo';
@@ -30,7 +31,8 @@ import {
   refineTimeline,
   fetchTimeline,
   saveTimeline,
-  getApiKey
+  getApiKey,
+  fetchUserQuota
 } from './api';
 
 export default function App() {
@@ -215,6 +217,22 @@ export default function App() {
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isQuotaModalOpen, setIsQuotaModalOpen] = useState(false);
+  const [quota, setQuota] = useState(null);
+
+  const refreshQuota = useCallback(async () => {
+    if (!user) return;
+    try {
+      const q = await fetchUserQuota();
+      if (q) setQuota(q);
+    } catch (e) {
+      // ignore
+    }
+  }, [user]);
+
+  useEffect(() => {
+    refreshQuota();
+  }, [user, refreshQuota]);
 
   const timelineRef = useRef(null);
 
@@ -248,6 +266,7 @@ export default function App() {
       const data = await generateTimeline(prompt, detailLevel, '', controller.signal);
       setCurrentTimeline(data);
       triggerCelebration();
+      refreshQuota();
     } catch (err) {
       if (err.name === 'AbortError' || controller.signal.aborted) {
         console.log(t('app.generatingStopped'));
@@ -255,7 +274,9 @@ export default function App() {
       }
       console.error('Generation failed:', err);
       setErrorMessage(err.message || t('app.failedGenerate'));
-      if (err.message && err.message.includes('API Key')) {
+      if (err.message && (err.message.includes('Authentication') || err.message.includes('sign in'))) {
+        setIsAuthModalOpen(true);
+      } else if (err.message && err.message.includes('API Key')) {
         setIsSettingsOpen(true);
       }
     } finally {
@@ -318,6 +339,7 @@ export default function App() {
       setCurrentTimeline({ ...updated });
       setIsAiRefineOpen(false);
       triggerCelebration();
+      refreshQuota();
     } catch (err) {
       if (err.name === 'AbortError' || controller.signal.aborted) {
         console.log('Refinement stopped by user.');
@@ -325,6 +347,9 @@ export default function App() {
       }
       console.error('Refinement failed:', err);
       setErrorMessage(err.message || t('app.failedRefine'));
+      if (err.message && (err.message.includes('Authentication') || err.message.includes('sign in'))) {
+        setIsAuthModalOpen(true);
+      }
     } finally {
       if (refineAbortControllerRef.current === controller) {
         refineAbortControllerRef.current = null;
@@ -540,6 +565,8 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         activePrompt={activePrompt}
         activeDetailLevel={activeDetailLevel}
+        quota={quota}
+        onOpenQuota={() => setIsQuotaModalOpen(true)}
       />
 
       {/* Error banner */}
@@ -820,6 +847,15 @@ export default function App() {
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+        quota={quota}
+        onRefreshQuota={refreshQuota}
+      />
+
+      <QuotaModal
+        isOpen={isQuotaModalOpen}
+        onClose={() => setIsQuotaModalOpen(false)}
+        quota={quota}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       <AiDisclaimerModal

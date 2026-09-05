@@ -28,9 +28,11 @@ import {
   Square,
   Info,
   BookOpen,
-  Languages
+  Languages,
+  Zap
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
+import QuotaBadge from './QuotaBadge';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -81,7 +83,9 @@ export default function Toolbar({
   onClearBoard,
   onOpenAuth,
   activePrompt,
-  activeDetailLevel
+  activeDetailLevel,
+  quota,
+  onOpenQuota
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -296,6 +300,11 @@ export default function Toolbar({
             >
               <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500 transition-colors shrink-0" />
             </button>
+          )}
+
+          {/* Quota Indicator Badge */}
+          {user && (
+            <QuotaBadge quota={quota} onClick={onOpenQuota} />
           )}
 
           {/* Dedicated Language Switcher (EN / עב) */}
@@ -539,6 +548,49 @@ export default function Toolbar({
                       {user.email}
                     </p>
                   </div>
+
+                  {/* Daily Quota Summary in User Menu */}
+                  {quota && (
+                    <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+                      <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+                        <span className="text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                          <Zap className="w-3 h-3 text-sky-500 shrink-0" />
+                          <span>{quota.is_admin ? t('quota.tierAdmin') : t('quota.modalTitle')}</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            onOpenQuota?.();
+                          }}
+                          className="text-[10px] text-sky-600 dark:text-sky-400 hover:underline cursor-pointer"
+                        >
+                          {t('common.learnMore')}
+                        </button>
+                      </div>
+                      {!quota.is_admin && (
+                        <>
+                          <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden my-1">
+                            <div
+                              className="bg-sky-500 h-full rounded-full transition-all duration-300"
+                              style={{
+                                width: `${Math.min(
+                                  100,
+                                  Math.max(0, ((quota.remaining_paid ?? 0) / (quota.daily_paid_limit || 15)) * 100)
+                                )}%`
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            <span>{t('quota.statusUsed', { used: quota.used_today ?? 0, limit: quota.daily_paid_limit || 15 })}</span>
+                            <span className="font-bold text-sky-600 dark:text-sky-400">
+                              {quota.remaining_paid > 0 ? `${quota.remaining_paid}` : t('quota.tierFree')}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   <button
                     type="button"

@@ -228,7 +228,7 @@ export const translations = {
       toggleButton: 'Cards ({count})',
       buttonTooltip: 'Click to open Cards List | Drag up/down to reposition',
       resetFilters: 'Reset filters',
-      clickToFocusHint: '💡 Click a card to focus it on the timeline'
+      clickToFocusHint: 'Click a card to focus it on the timeline'
     },
     floatingMap: {
       title: 'Geo Map',
@@ -370,6 +370,27 @@ export const translations = {
       badgeMultiLane: 'Multi-Lane Historic Scales',
       badgeCloud: 'Cloud Saved & Synced',
       authRequired: 'Authentication required to access ChroniX'
+    },
+    quota: {
+      badgeAdmin: 'Admin: Unlimited',
+      badgeCustom: 'Custom Key Active',
+      badgeFast: '{remaining}/{limit} Fast Prompts Today',
+      badgeFastShort: '{remaining}/{limit} Fast',
+      badgeFreeTier: 'Free Tier Active',
+      modalTitle: 'ChroniX AI Daily Quota & Modes',
+      modalSubtitle: 'How AI prompt routing and daily speeds work',
+      premiumTitle: '15 Daily Premium Prompts',
+      premiumDesc: 'Every user gets 15 high-speed Gemini prompts daily on ChroniX. These use top-tier processing power with lightning response times.',
+      freeTitle: 'Unlimited Free Tier Fallback',
+      freeDesc: 'After your 15 daily premium prompts, the app automatically switches to our Free Tier key so you can keep creating without stopping. Free tier requests may occasionally be slightly slower during peak global Google traffic.',
+      byokTitle: 'Use Your Own Gemini Key (BYOK)',
+      byokDesc: 'Want unlimited maximum speed at all times? You can enter your personal free or paid Gemini API key in Settings.',
+      openSettings: 'Open Key Settings',
+      statusUsed: 'Used today: {used} of {limit}',
+      statusUnlimited: 'Unlimited admin access active',
+      tierPaid: 'Premium Tier (Fast)',
+      tierFree: 'Free Tier (Standard)',
+      tierAdmin: 'Admin Mode (Unlimited)'
     }
   },
 
@@ -602,7 +623,7 @@ export const translations = {
       toggleButton: 'אירועים ({count})',
       buttonTooltip: 'לחצו לפתיחת רשימת האירועים | גררו למעלה/למטה למיקום מחדש',
       resetFilters: 'איפוס סינונים',
-      clickToFocusHint: '💡 לחץ על כרטיס כדי להתמקד בו בציר הזמן'
+      clickToFocusHint: 'לחץ על כרטיס כדי להתמקד בו בציר הזמן'
     },
     floatingMap: {
       title: 'מפה גיאוגרפית',
@@ -744,6 +765,27 @@ export const translations = {
       badgeMultiLane: 'תצוגה רב-מסלולית כרונולוגית',
       badgeCloud: 'שמירה וסנכרון מאובטח בענן',
       authRequired: 'נדרשת התחברות כדי לגשת ל-ChroniX'
+    },
+    quota: {
+      badgeAdmin: 'מנהל: ללא הגבלה',
+      badgeCustom: 'מפתח אישי פעיל',
+      badgeFast: '{remaining}/{limit} מהירים להיום',
+      badgeFastShort: '{remaining}/{limit} מהירים',
+      badgeFreeTier: 'מצב חינמי פעיל',
+      modalTitle: 'מכסת פרומפטים יומית (ChroniX AI)',
+      modalSubtitle: 'הסבר על ניתוב המפתחות ומצבי הפעולה של ה-AI',
+      premiumTitle: '15 פרומפטים פרימיום ביום',
+      premiumDesc: 'כל משתמש מקבל 15 פרומפטים מהירים (Premium) בכל יממה על חשבון המערכת, עם זמני תגובה מואצים ועיבוד עדיף.',
+      freeTitle: 'מעבר אוטומטי למצב חינמי',
+      freeDesc: 'לאחר ניצול 15 הפרומפטים היומיים, המערכת אינה נעצרת! היא עוברת אוטומטית למפתח החינמי שלנו ומאפשרת לך להמשיך ליצור ללא הגבלה. שים לב: במצב החינמי זמני התגובה עשויים להיות מעט איטיים יותר בשעות עומס עולמיות של גוגל.',
+      byokTitle: 'מפתח אישי לביצועים מרביים (BYOK)',
+      byokDesc: 'רוצה מהירות מרבית בכל שעה ללא תלות במכסות? תוכל להזין מפתח Gemini אישי משלך בהגדרות המערכת בלחיצת כפתור.',
+      openSettings: 'פתיחת הגדרות מפתח',
+      statusUsed: 'נוצלו היום: {used} מתוך {limit}',
+      statusUnlimited: 'גישת מנהל מלאה ובלתי מוגבלת',
+      tierPaid: 'מצב פרימיום (מהיר)',
+      tierFree: 'מצב חינמי (סטנדרטי)',
+      tierAdmin: 'מצב מנהל (בלתי מוגבל)'
     }
   }
 };

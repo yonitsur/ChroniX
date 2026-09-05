@@ -15,6 +15,22 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 _TOKEN_CACHE: Dict[str, tuple] = {}
 CACHE_TTL = 300  # 5 minutes cache
 
+def get_admin_emails() -> set[str]:
+    raw = os.getenv("ADMIN_EMAILS", "")
+    return {email.strip().lower() for email in raw.split(",") if email.strip()}
+
+def is_admin_user(user_data: Optional[Dict[str, Any]]) -> bool:
+    if not user_data or not isinstance(user_data, dict):
+        return False
+    admin_emails = get_admin_emails()
+    email = (user_data.get("email") or "").strip().lower()
+    if email and email in admin_emails:
+        return True
+    meta_email = (user_data.get("user_metadata", {}).get("email") or "").strip().lower()
+    if meta_email and meta_email in admin_emails:
+        return True
+    return False
+
 async def verify_supabase_token(token: str) -> Optional[Dict[str, Any]]:
     """
     Verifies a Supabase JWT access token by calling the Supabase Auth API.
@@ -28,6 +44,8 @@ async def verify_supabase_token(token: str) -> Optional[Dict[str, Any]]:
     if token in _TOKEN_CACHE:
         user_info, expires_at = _TOKEN_CACHE[token]
         if now < expires_at:
+            # Recompute is_admin in case env changed
+            user_info["is_admin"] = is_admin_user(user_info)
             return user_info
         else:
             del _TOKEN_CACHE[token]
@@ -42,6 +60,7 @@ async def verify_supabase_token(token: str) -> Optional[Dict[str, Any]]:
             resp = await client.get(url, headers=headers)
             if resp.status_code == 200:
                 user_data = resp.json()
+                user_data["is_admin"] = is_admin_user(user_data)
                 _TOKEN_CACHE[token] = (user_data, now + CACHE_TTL)
                 return user_data
             else:
