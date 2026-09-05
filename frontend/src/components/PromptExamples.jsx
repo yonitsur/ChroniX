@@ -2,16 +2,16 @@ import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
 
 export const PROMPT_EXAMPLES = [
-  // 1. Hebrew - Standard
+  // 1. Hebrew - Overview
   {
-    prompt: 'מצרים העתיקה: פרעונים, פירמידות והשושלות הגדולות',
-    detailLevel: 'standard',
+    prompt: 'מצרים העתיקה: סקירה של ציוני הדרך והשושלות הגדולות מהפירמידות ועד לקלאופטרה',
+    detailLevel: 'overview',
     lang: 'he'
   },
-  // 2. English - Deep
+  // 2. English - Multi-lane (Space Race)
   {
-    prompt: 'The Space Race (1955–1975): Comparative timeline contrasting Soviet milestones with NASA achievements',
-    detailLevel: 'deep_dive',
+    prompt: 'The Space Race (1955–1975), divided into separate swimlanes for the Soviet Space Program and NASA',
+    detailLevel: 'standard',
     lang: 'en'
   },
   // 3. Hebrew - Deep
@@ -20,16 +20,16 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 4. English - Standard
+  // 4. English - Multi-lane (WWII)
   {
-    prompt: 'World War II: Major Battles and Turning Points (1939-1945)',
-    detailLevel: 'standard',
+    prompt: 'World War II (1939–1945), divided into parallel time lanes for the European Theater, Pacific Theater, and Diplomatic Summits',
+    detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 5. Hebrew - Standard
+  // 5. Hebrew - Overview
   {
-    prompt: 'עלילת הארי פוטר: מהצלקת בדרך פריווט ואבן החכמים ועד לקרב על הוגוורטס והבסת וולדמורט',
-    detailLevel: 'standard',
+    prompt: 'עלילת הארי פוטר: סקירה תמציתית של שבע שנות הלימוד מדרך פריווט ועד לקרב על הוגוורטס',
+    detailLevel: 'overview',
     lang: 'he'
   },
   // 6. English - Deep
@@ -44,34 +44,34 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 8. English - Standard
+  // 8. English - Overview
   {
-    prompt: 'The Viking Age: Raids, Trade and Exploration — From Lindisfarne to Normandy, Kievan Rus and Vinland',
-    detailLevel: 'standard',
+    prompt: 'The Viking Age: Quick overview of key raids, voyages, and settlements from Lindisfarne to Vinland',
+    detailLevel: 'overview',
     lang: 'en'
   },
-  // 9. Hebrew - Standard
+  // 9. Hebrew - Multi-lane (Dinosaurs)
   {
-    prompt: 'דינוזאורים: שלבי ההתפתחות לאורך תורי הטריאס, היורה והקרטיקון ועד לאירוע ההכחדה הגדול',
+    prompt: 'דינוזאורים: שלבי ההתפתחות לאורך הטריאס, היורה והקרטיקון בחלוקה למסלולים נפרדים עבור תרופודים (טורפים), זאורופודים (ענקים צמחוניים) ובעלי אגן עוף',
     detailLevel: 'standard',
     lang: 'he'
   },
-  // 10. English - Deep
+  // 10. English - Multi-lane (Industrial Revolution)
   {
-    prompt: 'The Industrial Revolution: Multi-phase chronology from Watt\'s steam engine to railways, Bessemer steel, and electrical power grids',
+    prompt: 'The Industrial Revolution, divided into separate lanes for Technological Inventions, Steam & Transportation, and Labor Movements',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 11. Hebrew - Deep
+  // 11. Hebrew - Overview
   {
-    prompt: 'האבולוציה של האדם: מההומינידים המוקדמים באפריקה (אוסטרלופיתקוס, לוסי), דרך הומו הביליס וארקטוס, ועד להומו סאפיינס והאדם הניאנדרטלי',
-    detailLevel: 'deep_dive',
+    prompt: 'האבולוציה של האדם: סקירת אבני הדרך המרכזיות מלוסי והאוסטרלופיתקוס ועד להומו סאפיינס והניאנדרטלים',
+    detailLevel: 'overview',
     lang: 'he'
   },
-  // 12. English - Standard
+  // 12. English - Overview
   {
-    prompt: 'Dinosaurs: Triassic, Jurassic and Cretaceous Eras — Rise of apex predators and the K-Pg extinction event',
-    detailLevel: 'standard',
+    prompt: 'Dinosaurs: High-level overview of the Triassic, Jurassic, and Cretaceous eras leading to the K-Pg extinction event',
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 13. Hebrew - Standard
@@ -86,27 +86,27 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 15. Hebrew - Deep
+  // 15. Hebrew - Multi-lane (First Temple Kings)
   {
-    prompt: 'תקופת בית ראשון ומלכי יהודה וישראל: ציר זמן מקביל בין מלכי יהודה למלכי ישראל, מפלג הממלכה ועד חורבן שומרון וחורבן בית המקדש הראשון',
-    detailLevel: 'deep_dive',
+    prompt: 'תקופת בית ראשון: ציר זמן בחלוקה לשני מסלולי זמן מקבילים עבור מלכי יהודה מול מלכי ישראל, מפלג הממלכה ועד חורבן בית ראשון',
+    detailLevel: 'standard',
     lang: 'he'
   },
-  // 16. English - Standard
+  // 16. English - Overview
   {
-    prompt: 'History of Aviation: From Wright Brothers to Commercial Jet Age',
-    detailLevel: 'standard',
+    prompt: 'History of Aviation: Milestone overview from the Wright Brothers at Kitty Hawk to commercial jets and space exploration',
+    detailLevel: 'overview',
     lang: 'en'
   },
-  // 17. Hebrew - Standard
+  // 17. Hebrew - Overview
   {
-    prompt: 'הנחיתה על הירח ומבצעי אפולו של נאס"א',
-    detailLevel: 'standard',
+    prompt: 'תוכנית אפולו והנחיתה על הירח: סקירה מהירה של טיסות המפתח מניסויי אפולו הראשונים ועד אפולו 11 ו-17',
+    detailLevel: 'overview',
     lang: 'he'
   },
-  // 18. English - Deep
+  // 18. English - Multi-lane (AI & Computing)
   {
-    prompt: 'History of Artificial Intelligence: From Turing Test and Dartmouth Workshop to modern LLMs and Generative AI',
+    prompt: 'History of Artificial Intelligence and Computing, divided into parallel swimlanes for Hardware Systems, Core Algorithms & Models, and Society & Ethics',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
@@ -116,10 +116,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 20. English - Standard
+  // 20. English - Overview
   {
-    prompt: 'Timeline of the Universe: Cosmic chronology from the Big Bang and inflation to star formation, the Solar System, and humanity',
-    detailLevel: 'standard',
+    prompt: 'Timeline of the Universe: Fast cosmic overview from the Big Bang and star formation to our Solar System and humanity',
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 21. Hebrew - Standard
@@ -128,34 +128,34 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'he'
   },
-  // 22. English - Deep
+  // 22. English - Multi-lane (Rock & Roll)
   {
-    prompt: 'History of Rock and Roll: Evolution across genres from 1950s rhythm & blues to the British Invasion, Psychedelic Rock, Punk, Grunge and Indie',
-    detailLevel: 'deep_dive',
-    lang: 'en'
-  },
-  // 23. Hebrew - Deep
-  {
-    prompt: 'מבצעי העלייה הגדולים לישראל במאה ה-20: חלוקה לנתיבים עבור עליות המזרח, אתיופיה וברה"מ לשעבר',
-    detailLevel: 'deep_dive',
-    lang: 'he'
-  },
-  // 24. English - Standard
-  {
-    prompt: 'The Golden Age of Islam: Scientific, medical and philosophical breakthroughs from Baghdad to Al-Andalus',
+    prompt: 'History of Rock Music: Multi-lane timeline with separate tracks for Classic Rock, Punk & Post-Punk, and Grunge / 90s Alternative',
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 25. Hebrew - Deep
+  // 23. Hebrew - Multi-lane (Aliyah Operations)
   {
-    prompt: 'מהלך מלחמת יום הכיפורים (אוקטובר 1973): ציר זמן מפורט המחולק לחזית סיני מול חזית רמת הגולן',
+    prompt: 'מבצעי העלייה הגדולים לישראל במאה ה-20: בחלוקה למסלולים נפרדים עבור עליות המזרח, מבצעי עליית יהודי אתיופיה ועליית ברה"מ',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 24. English - Overview
+  {
+    prompt: 'The Golden Age of Islam: Overview of major scientific, medical, and astronomical breakthroughs from Baghdad to Córdoba',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 25. Hebrew - Multi-lane (Yom Kippur War)
+  {
+    prompt: 'מהלך מלחמת יום הכיפורים (אוקטובר 1973): בחלוקה לשני מסלולים מקבילים עבור חזית הדרום (סיני) וחזית הצפון (רמת הגולן)',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 26. English - Standard
+  // 26. English - Overview
   {
-    prompt: "Harry Potter: Chronological storyline from the Philosopher's Stone to the Battle of Hogwarts",
-    detailLevel: 'standard',
+    prompt: "Harry Potter Storyline: Overview of the major plot turning points across Harry's seven years at Hogwarts",
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 27. Hebrew - Deep
@@ -164,46 +164,46 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 28. English - Standard
+  // 28. English - Overview
   {
-    prompt: 'Marvel Cinematic Universe: The Avengers and the Infinity Saga (2008–2019)',
-    detailLevel: 'standard',
+    prompt: 'Marvel Cinematic Universe: Overview of pivotal milestone events across Phase 1 to Phase 3 of the Infinity Saga',
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 29. English - Deep
   {
-    prompt: 'History of Quantum Mechanics: From Planck\'s radiation and Einstein\'s photons, through Heisenberg and Schrödinger, to quantum entanglement and computers',
+    prompt: "History of Quantum Mechanics: From Planck's radiation and Einstein's photons, through Heisenberg and Schrödinger, to quantum entanglement and computers",
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 30. Hebrew - Deep (Comparative / Parallel)
+  // 30. Hebrew - Multi-lane (Rome vs Han)
   {
-    prompt: 'מה קרה באימפריה הרומית במקביל למה שקרה בסין העתיקה (שושלת האן)? ציר זמן השוואתי מקביל של שתי אימפריות-העל באותן מאות שנים',
-    detailLevel: 'deep_dive',
-    lang: 'he'
-  },
-  // 31. English - Standard (Comparative / Parallel)
-  {
-    prompt: 'The Roman Empire vs. Han Dynasty China: Parallel timeline comparing Eurasia\'s twin classical superpowers (200 BCE – 220 CE)',
-    detailLevel: 'standard',
-    lang: 'en'
-  },
-  // 32. Hebrew - Standard (Comparative / Parallel)
-  {
-    prompt: 'ציר זמן מקביל: הרנסאנס באירופה במקביל לתור הזהב של האימפריה העות\'מאנית (1450–1600)',
+    prompt: 'האימפריה הרומית ושושלת האן בסין במקביל: ציר זמן בחלוקה לשני מסלולים מקבילים להשוואת אימפריות העל בעת העתיקה (200 לפנה"ס – 220 לספירה)',
     detailLevel: 'standard',
     lang: 'he'
   },
-  // 33. English - Standard
+  // 31. English - Multi-lane (Rome vs Han)
   {
-    prompt: 'Rise and Fall of the Roman Empire: From Republic to Fall of Rome',
+    prompt: 'The Roman Empire vs. Han Dynasty China (200 BCE – 220 CE), divided into two parallel lanes comparing the twin classical superpowers',
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 34. Hebrew - Deep (Comparative / Parallel)
+  // 32. Hebrew - Multi-lane (Renaissance vs Ottoman)
   {
-    prompt: 'המהפכה האמריקאית מול המהפכה הצרפתית: ציר זמן מקביל של שני המאבקים הגדולים לחירות ודמוקרטיה (1775–1799)',
-    detailLevel: 'deep_dive',
+    prompt: "ציר זמן בחלוקה למסלולים מקבילים: הרנסאנס באירופה מול תור הזהב של האימפריה העות'מאנית (1450–1600)",
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 33. English - Overview
+  {
+    prompt: 'Rise and Fall of the Roman Empire: Concise overview of defining eras from the Roman Republic to the Fall of Constantinople',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 34. Hebrew - Multi-lane (American vs French Revolution)
+  {
+    prompt: 'המהפכה האמריקאית מול המהפכה הצרפתית: ציר זמן בחלוקה לשני מסלולים נפרדים עבור שני המאבקים הגדולים לחירות (1775–1799)',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 35. English - Deep
@@ -212,24 +212,60 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 36. English - Standard (Comparative / Parallel)
+  // 36. English - Multi-lane (American vs French Revolution)
   {
-    prompt: 'American Revolution vs. French Revolution: Parallel chronology of two Atlantic struggles for liberty (1775–1799)',
+    prompt: 'American Revolution vs. French Revolution (1775–1799), divided into two parallel swimlanes contrasting both revolutions',
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 37. English - Deep (Comparative / Parallel)
+  // 37. English - Multi-lane (WWII Theaters)
   {
-    prompt: 'World War II Parallel Theaters: European Theater vs. Pacific Theater — Simultaneous timeline contrasting campaigns and turning points (1939–1945)',
+    prompt: 'World War II (1939–1945), divided into separate swimlanes for the European Theater and the Pacific Theater',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 38. English - Deep
+  // 38. English - Overview
   {
-    prompt: 'Human Evolution from the earliest hominids to Homo sapiens',
-    detailLevel: 'deep_dive',
+    prompt: 'Human Evolution: Overview of pivotal milestone hominids from Australopithecus to Neanderthals and modern Homo sapiens',
+    detailLevel: 'overview',
     lang: 'en'
   },
+  // 39. Hebrew - Overview (Israeli History)
+  {
+    prompt: 'תולדות מדינת ישראל: סקירה של אירועים מכוננים מהכרזת העצמאות ועד ימינו',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 40. English - Overview (The Beatles)
+  {
+    prompt: 'The Beatles: Overview of essential career milestones from Hamburg and the Cavern Club to Beatlemania, Sgt. Pepper and the Rooftop Concert',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 41. Hebrew - Overview (Scientific Revolution)
+  {
+    prompt: 'המהפכה המדעית: סקירת התגליות הגדולות מקופרניקוס וגלילאו ועד לאייזק ניוטון',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 42. English - Overview (Cold War)
+  {
+    prompt: 'The Cold War: Overview of defining crises from the Berlin Airlift and Cuban Missile Crisis to the Fall of the Berlin Wall',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 43. Hebrew - Multi-lane (Israeli Music)
+  {
+    prompt: 'תולדות המוזיקה הישראלית: ציר זמן בחלוקה למסלולים עבור שירי ארץ ישראל והלהקות הצבאיות, רוק ישראלי, ומוזיקה מזרחית ים-תיכונית',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 44. English - Overview (Renaissance)
+  {
+    prompt: 'The European Renaissance: High-level overview of milestone breakthroughs in art, architecture, and humanism from Florence to Rome',
+    detailLevel: 'overview',
+    lang: 'en'
+  }
 ];
 
 // Fisher-Yates array shuffle helper
@@ -414,10 +450,16 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                     className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
                       item.detailLevel === 'deep_dive'
                         ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                        : item.detailLevel === 'overview'
+                        ? 'bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 border-sky-200/70 dark:border-sky-800/60'
                         : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/50'
                     }`}
                   >
-                    {item.detailLevel === 'deep_dive' ? 'Deep Dive' : 'Standard'}
+                    {item.detailLevel === 'deep_dive'
+                      ? 'Deep Dive'
+                      : item.detailLevel === 'overview'
+                      ? 'Overview'
+                      : 'Standard'}
                   </span>
                 </div>
               </button>

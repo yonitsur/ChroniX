@@ -294,9 +294,9 @@ def test_system_instruction_single_lane_default():
     assert "EXPLICIT MULTI-LANE EXCEPTION" in inst_en
 
     inst_he = get_system_instruction(is_hebrew=True)
-    assert "מסלול יחיד בלבד" in inst_he
-    assert "חל איסור מוחלט לחלק את ציר הזמן למסלולים מרובים כברירת מחדל" in inst_he
-    assert "חריג יחיד - בקשה מפורשת" in inst_he
+    assert "EXACTLY ONE" in inst_he
+    assert "DO NOT divide or split the timeline into multiple lanes by default" in inst_he
+    assert "EXPLICIT MULTI-LANE EXCEPTION" in inst_he
 
 
 @pytest.mark.asyncio
