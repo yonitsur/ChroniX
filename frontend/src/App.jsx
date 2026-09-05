@@ -656,10 +656,9 @@ export default function App() {
             </>
           )
         ) : (
-          <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300">
+          <div className="w-full h-full overflow-y-auto flex flex-col items-center text-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300">
             {/* Hero Branding & Welcome */}
-            <div className="max-w-xl flex flex-col items-center gap-3.5 text-center mb-4">
-              <div className="mb-1 transition-transform duration-300 hover:scale-105">
+            <div className="mb-1 transition-transform duration-300 hover:scale-105">
                 <ChroniXLogo size="xl" className="w-auto drop-shadow-sm" />
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
@@ -667,9 +666,8 @@ export default function App() {
                   Discover and explore interactive chronologies
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-sans">
-                  Enter any historical epoch, scientific revolution, or biographical journey above — or select an exhibition below to begin:
+                  Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below:
                 </p>
-              </div>
             </div>
 
             {/* Prompt Cards (Simple & Complex) */}
