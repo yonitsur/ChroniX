@@ -76,7 +76,7 @@ export default function AuthGate() {
       <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-950/20 rounded-full blur-2xl pointer-events-none" />
 
       {/* Language Switcher in top corner */}
-      <div className={`absolute ${isRtl ? 'top-4 left-4 sm:top-6 sm:left-6' : 'top-4 right-4 sm:top-6 sm:right-6'} z-20`}>
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
         <button
           type="button"
           onClick={toggleLanguage}
@@ -92,10 +92,8 @@ export default function AuthGate() {
 
       {/* Main card */}
       <div
-        className={`relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 animate-fade-in ${
-          isRtl ? 'text-right' : 'text-left'
-        }`}
-        dir={isRtl ? 'rtl' : 'ltr'}
+        className="relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 animate-fade-in"
+        dir="ltr"
       >
         {/* Top Header */}
         <div className="flex flex-col items-center text-center mb-6">
@@ -152,16 +150,16 @@ export default function AuthGate() {
 
         {/* Feedback alerts */}
         {error && (
-          <div className="mb-4 p-3 rounded-2xl bg-red-950/50 border border-red-800/60 text-red-300 text-xs flex items-start gap-2.5">
+          <div className="mb-4 p-3 rounded-2xl bg-red-950/50 border border-red-800/60 text-red-300 text-xs flex items-start gap-2.5" dir="ltr">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
-            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{error}</span>
+            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-2xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 text-xs flex items-start gap-2.5">
+          <div className="mb-4 p-3 rounded-2xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 text-xs flex items-start gap-2.5" dir="ltr">
             <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{successMsg}</span>
+            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{successMsg}</span>
           </div>
         )}
 
@@ -170,7 +168,6 @@ export default function AuthGate() {
           {mode === 'signup' && (
             <div>
               <label
-                dir={isRtl ? 'rtl' : 'ltr'}
                 className={`block text-xs font-medium text-slate-300 mb-1 ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
@@ -185,7 +182,7 @@ export default function AuthGate() {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder={t('auth.fullNamePlaceholder')}
-                  className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                  className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
                     isRtl ? 'text-right' : 'text-left'
                   }`}
                 />
@@ -195,7 +192,6 @@ export default function AuthGate() {
 
           <div>
             <label
-              dir={isRtl ? 'rtl' : 'ltr'}
               className={`block text-xs font-medium text-slate-300 mb-1 ${
                 isRtl ? 'text-right' : 'text-left'
               }`}
@@ -211,7 +207,7 @@ export default function AuthGate() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('auth.emailPlaceholder')}
-                className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
               />
@@ -220,7 +216,6 @@ export default function AuthGate() {
 
           <div>
             <label
-              dir={isRtl ? 'rtl' : 'ltr'}
               className={`block text-xs font-medium text-slate-300 mb-1 ${
                 isRtl ? 'text-right' : 'text-left'
               }`}
@@ -237,7 +232,7 @@ export default function AuthGate() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('auth.passwordPlaceholder')}
                 minLength={6}
-                className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
               />
@@ -252,7 +247,7 @@ export default function AuthGate() {
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
+              <ArrowRight className="w-4 h-4" />
             )}
             <span>{mode === 'signin' ? t('auth.signInBtn') : t('auth.signUpBtn')}</span>
           </button>
@@ -293,7 +288,7 @@ export default function AuthGate() {
       </div>
 
       {/* Feature highlights footer */}
-      <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+      <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400" dir="ltr">
         <div className="flex items-center gap-1.5">
           <Sparkles className="w-4 h-4 text-sky-400" />
           <span>{t('auth.badgeAi')}</span>

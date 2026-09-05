@@ -81,10 +81,8 @@ export default function AuthModal({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
       <div
-        className={`relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden ${
-          isRtl ? 'text-right' : 'text-left'
-        }`}
-        dir={isRtl ? 'rtl' : 'ltr'}
+        className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+        dir="ltr"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header accent */}
@@ -93,7 +91,7 @@ export default function AuthModal({ isOpen, onClose }) {
         {/* Close button */}
         <button
           onClick={handleClose}
-          className={`absolute top-4 ${isRtl ? 'left-4' : 'right-4'} p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer`}
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           aria-label={t('common.close')}
         >
           <X className="w-5 h-5" />
@@ -157,16 +155,16 @@ export default function AuthModal({ isOpen, onClose }) {
 
           {/* Feedback messages */}
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 text-xs flex items-start gap-2">
+            <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 text-xs flex items-start gap-2" dir="ltr">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{error}</span>
+              <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{error}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-600 dark:text-emerald-400 text-xs flex items-start gap-2">
+            <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-600 dark:text-emerald-400 text-xs flex items-start gap-2" dir="ltr">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-              <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{successMsg}</span>
+              <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{successMsg}</span>
             </div>
           )}
 
@@ -175,7 +173,6 @@ export default function AuthModal({ isOpen, onClose }) {
             {mode === 'signup' && (
               <div>
                 <label
-                  dir={isRtl ? 'rtl' : 'ltr'}
                   className={`block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 ${
                     isRtl ? 'text-right' : 'text-left'
                   }`}
@@ -190,7 +187,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder={t('auth.fullNamePlaceholder')}
-                    className={`w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    className={`w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
                       isRtl ? 'text-right' : 'text-left'
                     }`}
                   />
@@ -200,7 +197,6 @@ export default function AuthModal({ isOpen, onClose }) {
 
             <div>
               <label
-                dir={isRtl ? 'rtl' : 'ltr'}
                 className={`block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
@@ -216,7 +212,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('auth.emailPlaceholder')}
-                  className={`w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                  className={`w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
                     isRtl ? 'text-right' : 'text-left'
                   }`}
                 />
@@ -225,7 +221,6 @@ export default function AuthModal({ isOpen, onClose }) {
 
             <div>
               <label
-                dir={isRtl ? 'rtl' : 'ltr'}
                 className={`block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
@@ -242,7 +237,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('auth.passwordPlaceholder')}
                   minLength={6}
-                  className={`w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                  className={`w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
                     isRtl ? 'text-right' : 'text-left'
                   }`}
                 />
