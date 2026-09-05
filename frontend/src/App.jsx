@@ -96,10 +96,10 @@ export default function App() {
     try {
       const saved = localStorage.getItem('chronix_map_mode');
       if (saved === 'icon' || saved === 'pip' || saved === 'split' || saved === 'full') return saved;
-      // Default to 'icon' (Timeline full, floating globe button in bottom-right)
-      return 'icon';
+      // Default to 'pip' (Compact floating PiP map window so new users discover the feature)
+      return 'pip';
     } catch (e) {
-      return 'icon';
+      return 'pip';
     }
   });
 

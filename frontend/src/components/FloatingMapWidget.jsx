@@ -24,7 +24,7 @@ export default function FloatingMapWidget({
   selectedArticleId,
   onSelectArticle,
   theme = 'light',
-  mapMode = 'icon', // 'icon' | 'pip' | 'full' | 'split'
+  mapMode = 'pip', // 'icon' | 'pip' | 'full' | 'split'
   onModeChange
 }) {
   const { t, isRtl } = useLanguage();

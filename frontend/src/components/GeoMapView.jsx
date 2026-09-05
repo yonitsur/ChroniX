@@ -340,7 +340,7 @@ export default function GeoMapView({
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-md text-slate-700 dark:text-slate-200">
           <MapPin className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
           <span className="font-semibold">{geoArticles.length}</span>
-          <span className="text-slate-400 dark:text-slate-500">{t('floatingMap.locationsCount', { count: geoArticles.length })}</span>
+          <span className="text-slate-400 dark:text-slate-500">{t('floatingMap.locations')}</span>
         </div>
 
         {nonGeoArticles.length > 0 && (

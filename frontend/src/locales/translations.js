@@ -36,7 +36,7 @@ export const translations = {
       lanesCount: '{count} lanes',
       zoomIn: 'Zoom In',
       zoomOut: 'Zoom Out',
-      fitAll: 'Fit All Articles',
+      fitAll: 'Fit',
       refine: 'Refine',
       refineTitle: 'Refine timeline using AI instructions',
       addEvent: 'Add Custom Event',
@@ -292,6 +292,7 @@ export const translations = {
     },
     floatingMap: {
       title: 'Geo Map',
+      locations: 'locations',
       locationsCount: '{count} locations',
       pipTooltip: 'Switch to Picture-in-Picture (PiP)',
       fullTooltip: 'Full Screen Map',
@@ -491,7 +492,7 @@ export const translations = {
       lanesCount: '{count} מסלולים',
       zoomIn: 'התקרב (Zoom In)',
       zoomOut: 'התרחק (Zoom Out)',
-      fitAll: 'התאם את כל האירועים לתצוגה',
+      fitAll:'התאם',
       refine: 'ליטוש',
       refineTitle: 'ליטוש והרחבת ציר הזמן באמצעות הוראות AI',
       addEvent: 'הוסף אירוע',
@@ -747,6 +748,7 @@ export const translations = {
     },
     floatingMap: {
       title: 'מפה גיאוגרפית',
+      locations: 'מיקומים',
       locationsCount: '{count} מיקומים',
       pipTooltip: 'מעבר לתמונה-בתוך-תמונה (PiP)',
       fullTooltip: 'מפה במסך מלא',
