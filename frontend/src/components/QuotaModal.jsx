@@ -24,16 +24,21 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200 font-sans"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
       role="dialog"
       aria-modal="true"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+      <div
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
+        dir={isRtl ? 'rtl' : 'ltr'}
+      >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
@@ -52,7 +57,7 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
               title={t('common.close')}
               aria-label={t('common.close')}
             >
@@ -64,7 +69,7 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
         {/* Content */}
         <div className="p-6 space-y-4 overflow-y-auto text-xs text-slate-600 dark:text-slate-300">
           {/* Status summary banner - clean slate styling */}
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between">
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
                 {isAdmin ? <Shield className="w-4 h-4 text-sky-500" /> : <Zap className="w-4 h-4 text-sky-500" />}
@@ -86,13 +91,13 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
             </div>
 
             {!isAdmin && (
-              <div className="text-end">
+              <div className={`shrink-0 ${isRtl ? 'text-left' : 'text-right'}`}>
                 <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {remaining}
                 </span>
                 <span className="text-slate-400 text-xs">/{limit}</span>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400">
-                  {isRtl ? 'נותרו היום' : 'remaining'}
+                  {isRtl ? 'נותרו היום' : 'remaining today'}
                 </div>
               </div>
             )}
@@ -148,7 +153,7 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3">
+        <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
