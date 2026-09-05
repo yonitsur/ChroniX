@@ -216,23 +216,6 @@ export default function App() {
 
   const timelineRef = useRef(null);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
-        <div className="relative flex items-center justify-center">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
-            <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
-          </div>
-        </div>
-        <span className="text-xs text-slate-400 font-medium tracking-wide">Starting ChroniX...</span>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <AuthGate />;
-  }
-
   const triggerCelebration = () => {
     try {
       confetti({
@@ -508,6 +491,23 @@ export default function App() {
       timelineRef.current?.focusArticle(id);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
+        <div className="relative flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
+          </div>
+        </div>
+        <span className="text-xs text-slate-400 font-medium tracking-wide">Starting ChroniX...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthGate />;
+  }
 
   return (
     <div className="flex flex-col h-screen w-screen bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 overflow-hidden font-sans transition-colors duration-200">
