@@ -131,7 +131,7 @@ export default function AuthGate() {
             {/* Value Props Bullet Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 mb-4">
               <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 shrink-0">
+                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export default function AuthGate() {
               </div>
 
               <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 shrink-0">
+                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default function AuthGate() {
               </div>
 
               <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0">
+                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
@@ -173,7 +173,7 @@ export default function AuthGate() {
               </div>
 
               <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
+                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
@@ -393,8 +393,8 @@ export default function AuthGate() {
             </div>
 
             {/* Card 2 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-indigo-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
                 <Sparkles className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature2Title')}</h3>
@@ -402,8 +402,8 @@ export default function AuthGate() {
             </div>
 
             {/* Card 3 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
                 <Compass className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature3Title')}</h3>
@@ -411,8 +411,8 @@ export default function AuthGate() {
             </div>
 
             {/* Card 4 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-amber-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature4Title')}</h3>
@@ -425,21 +425,21 @@ export default function AuthGate() {
       {/* Privacy Transparency Callout */}
       <section className="w-full py-12 border-t border-slate-800/60 bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs font-semibold mb-4">
-            <ShieldCheck className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950/70 border border-sky-800/60 text-sky-300 text-xs font-semibold mb-4">
+            <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
             <span>{t('auth.privacyCommitmentTitle')}</span>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto mb-6">
             {t('auth.privacyCommitmentDesc')}
           </p>
           <div className="flex items-center justify-center gap-6 text-xs text-sky-400 font-medium">
-            <a href="/privacy.html" className="hover:underline inline-flex items-center gap-1">
-              <FileText className="w-3.5 h-3.5" />
+            <a href="/privacy.html" className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors">
+              <FileText className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.privacyPolicyLink')}</span>
             </a>
             <span className="text-slate-700">&bull;</span>
-            <a href="/terms.html" className="hover:underline inline-flex items-center gap-1">
-              <ExternalLink className="w-3.5 h-3.5" />
+            <a href="/terms.html" className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors">
+              <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.termsLink')}</span>
             </a>
           </div>
