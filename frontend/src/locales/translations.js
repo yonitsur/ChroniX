@@ -61,7 +61,7 @@ export const translations = {
       myTimelines: 'My Timelines',
       signOut: 'Sign Out',
       signIn: 'Sign In',
-      inputPlaceholder: 'Enter timeline topic (e.g. Ancient Egypt, Space Race, תולדות הציונות)',
+      inputPlaceholder: 'Enter timeline topic (e.g. Ancient Egypt, Space Race, Dinosaurs)',
       clearInput: 'Clear input',
       detailLevel: 'Detail Level',
       detailOverview: 'Overview',

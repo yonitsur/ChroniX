@@ -172,7 +172,12 @@ export default function Toolbar({
   };
 
   return (
-    <header dir="ltr" className="relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 z-20 select-none transition-colors">
+    <header
+      dir="ltr"
+      className={`relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 select-none transition-colors ${
+        isMoreMenuOpen || isUserMenuOpen || isDetailDropdownOpen ? 'z-[45]' : 'z-40'
+      }`}
+    >
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
         {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}

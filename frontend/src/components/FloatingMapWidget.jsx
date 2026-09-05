@@ -260,7 +260,7 @@ export default function FloatingMapWidget({
                 touchAction: 'none'
               }
         }
-        className="fixed z-40 flex items-center select-none cursor-grab active:cursor-grabbing animate-in fade-in zoom-in-90 duration-200"
+        className="fixed z-30 flex items-center select-none cursor-grab active:cursor-grabbing animate-in fade-in zoom-in-90 duration-200"
       >
         <button
           type="button"
@@ -305,7 +305,7 @@ export default function FloatingMapWidget({
           width: `${pipSize.width}px`,
           height: `${pipSize.height}px`
         }}
-        className={`fixed z-40 min-w-[260px] min-h-[180px] max-w-[calc(100vw-24px)] max-h-[calc(100vh-80px)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl shadow-slate-900/25 overflow-hidden flex flex-col select-none ring-1 ring-black/5 dark:ring-white/10 ${
+        className={`fixed z-30 min-w-[260px] min-h-[180px] max-w-[calc(100vw-24px)] max-h-[calc(100vh-80px)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl shadow-slate-900/25 overflow-hidden flex flex-col select-none ring-1 ring-black/5 dark:ring-white/10 ${
           isDraggingPip || isResizingPip
             ? 'shadow-sky-500/25 ring-2 ring-sky-500/50'
             : 'animate-in fade-in zoom-in-95 duration-200'
