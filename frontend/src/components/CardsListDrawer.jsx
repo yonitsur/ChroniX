@@ -11,8 +11,8 @@ import {
   Check,
   MapPin
 } from 'lucide-react';
-import { formatTimeSpan } from './EventDrawer';
 import { getLaneColor } from '../data/laneColors';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CardsListDrawer({
   isOpen,
@@ -22,6 +22,7 @@ export default function CardsListDrawer({
   selectedArticleId,
   onSelectArticle
 }) {
+  const { t, isRtl, formatTimeSpan } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLaneId, setSelectedLaneId] = useState('all');
   const [sortBy, setSortBy] = useState('chronological_asc'); // 'chronological_asc' | 'chronological_desc' | 'alphabetical'
@@ -92,18 +93,18 @@ export default function CardsListDrawer({
   return (
     <aside
       className="fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-30 flex flex-col transition-all duration-300 ease-in-out select-none"
-      aria-label="Cards List Panel"
+      aria-label={t('cardsList.title')}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
         <div className="flex items-center gap-2">
           <h2 className="font-semibold text-sm text-slate-900 dark:text-white font-sans">
-            Timeline Events
+            {t('cardsList.title')}
           </h2>
           <span className="text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
             {filteredArticles.length === articles.length
-              ? articles.length
-              : `${filteredArticles.length} of ${articles.length}`}
+              ? t('cardsList.countLabel', { count: articles.length })
+              : `${filteredArticles.length} / ${articles.length}`}
           </span>
         </div>
 
@@ -111,8 +112,8 @@ export default function CardsListDrawer({
           type="button"
           onClick={onClose}
           className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-          title="Close panel"
-          aria-label="Close panel"
+          title={t('common.close')}
+          aria-label={t('common.close')}
         >
           <X className="w-4 h-4" />
         </button>
@@ -128,7 +129,7 @@ export default function CardsListDrawer({
             dir="auto"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search cards by title, year or lane..."
+            placeholder={t('cardsList.searchPlaceholder')}
             className="w-full pl-9 pr-8 py-1.5 text-xs bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 transition-all shadow-2xs"
           />
           {searchQuery && (
@@ -136,7 +137,7 @@ export default function CardsListDrawer({
               type="button"
               onClick={() => setSearchQuery('')}
               className="absolute right-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-0.5"
-              title="Clear search"
+              title={t('cardsList.clearSearch')}
             >
               ✕
             </button>
@@ -153,9 +154,9 @@ export default function CardsListDrawer({
               onChange={(e) => setSortBy(e.target.value)}
               className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500"
             >
-              <option value="chronological_asc">Chronological (Oldest first)</option>
-              <option value="chronological_desc">Chronological (Newest first)</option>
-              <option value="alphabetical">Alphabetical (A-Z)</option>
+              <option value="chronological_asc">{t('cardsList.sortChronologicalAsc')}</option>
+              <option value="chronological_desc">{t('cardsList.sortChronologicalDesc')}</option>
+              <option value="alphabetical">{t('cardsList.sortAlphabetical')}</option>
             </select>
           </div>
 
@@ -168,7 +169,7 @@ export default function CardsListDrawer({
                 onChange={(e) => setSelectedLaneId(e.target.value)}
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500 max-w-[130px] truncate"
               >
-                <option value="all">All Lanes</option>
+                <option value="all">{t('cardsList.allLanes')}</option>
                 {lanes.map((lane) => (
                   <option key={lane.id} value={lane.id}>
                     {lane.title}
@@ -185,7 +186,7 @@ export default function CardsListDrawer({
         {filteredArticles.length === 0 ? (
           <div className="h-48 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-2 text-center px-4">
             <Search className="w-8 h-8 opacity-40" />
-            <p className="text-xs">No cards matching your search</p>
+            <p className="text-xs">{t('cardsList.noResults')}</p>
             {searchQuery && (
               <button
                 type="button"
@@ -195,7 +196,7 @@ export default function CardsListDrawer({
                 }}
                 className="text-xs text-sky-600 dark:text-sky-400 underline font-medium"
               >
-                Reset filters
+                {t('cardsList.resetFilters')}
               </button>
             )}
           </div>
@@ -296,13 +297,13 @@ export default function CardsListDrawer({
 
       {/* Footer hint */}
       <div className="px-4 py-2 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
-        <span>💡 Click a card to focus it on the timeline</span>
+        <span>{t('cardsList.clickToFocusHint')}</span>
         <button
           type="button"
           onClick={onClose}
           className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
         >
-          Close
+          {t('common.close')}
         </button>
       </div>
     </aside>

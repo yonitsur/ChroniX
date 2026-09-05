@@ -9,6 +9,7 @@ import {
   GripHorizontal
 } from 'lucide-react';
 import GeoMapView from './GeoMapView';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * FloatingMapWidget:
@@ -26,6 +27,7 @@ export default function FloatingMapWidget({
   mapMode = 'icon', // 'icon' | 'pip' | 'full' | 'split'
   onModeChange
 }) {
+  const { t, isRtl } = useLanguage();
   const geoCount = (articles || []).filter(
     (a) => a.lat != null && a.lng != null && !isNaN(parseFloat(a.lat)) && !isNaN(parseFloat(a.lng))
   ).length;
@@ -266,7 +268,8 @@ export default function FloatingMapWidget({
           className={`relative flex items-center gap-2 ${
             geoCount > 0 ? 'px-3.5 py-2' : 'w-10 h-10 justify-center'
           } rounded-full bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-white shadow-lg shadow-slate-900/10 dark:shadow-xl dark:shadow-slate-950/30 border border-slate-200/90 dark:border-slate-700/80 backdrop-blur-md hover:scale-105 active:scale-95 transition-all cursor-grab active:cursor-grabbing group`}
-          title="Drag to reposition • Click to open Floating Map"
+          title={t('floatingMap.earthTooltip', { count: geoCount })}
+          aria-label={t('floatingMap.earthTooltip', { count: geoCount })}
         >
           <Globe className="w-4 h-4 text-sky-500 dark:text-sky-400 group-hover:rotate-12 transition-transform duration-300 pointer-events-none shrink-0" />
 
@@ -312,13 +315,13 @@ export default function FloatingMapWidget({
         <div
           onPointerDown={handlePipHeaderPointerDown}
           className="flex items-center justify-between px-3.5 py-2 bg-slate-50/95 dark:bg-slate-800/95 border-b border-slate-200/90 dark:border-slate-700/80 backdrop-blur-md shrink-0 cursor-grab active:cursor-grabbing select-none"
-          title="Drag header to move window"
+          title={t('floatingMap.pipTooltip')}
         >
           {/* Title, Grip Indicator & Count Badge */}
           <div
             className="flex items-center gap-2 cursor-pointer group"
             onDoubleClick={() => onModeChange?.('full')}
-            title="Drag header to move • Double-click to maximize"
+            title={t('floatingMap.fullTooltip')}
           >
             <GripHorizontal className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 transition-colors" />
             <div className="p-1 rounded-lg bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 group-hover:scale-110 transition-transform">
@@ -326,7 +329,7 @@ export default function FloatingMapWidget({
             </div>
             {geoCount > 0 && (
               <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300">
-                {geoCount} locations
+                {t('floatingMap.locationsCount', { count: geoCount })}
               </span>
             )}
           </div>
@@ -341,7 +344,7 @@ export default function FloatingMapWidget({
               type="button"
               onClick={() => onModeChange?.('split')}
               className="p-1.5 text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 rounded-lg transition-colors cursor-pointer"
-              title="Switch to Split Screen"
+              title={t('floatingMap.splitTooltip')}
             >
               <Columns2 className="w-3.5 h-3.5" />
             </button>
@@ -351,7 +354,7 @@ export default function FloatingMapWidget({
               type="button"
               onClick={() => onModeChange?.('full')}
               className="p-1.5 text-slate-500 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 rounded-lg transition-colors cursor-pointer"
-              title="Full Screen"
+              title={t('floatingMap.fullTooltip')}
             >
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
@@ -361,7 +364,7 @@ export default function FloatingMapWidget({
               type="button"
               onClick={() => onModeChange?.('icon')}
               className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
-              title="Minimize to Globe icon"
+              title={t('floatingMap.closeTooltip')}
             >
               <Minimize2 className="w-3.5 h-3.5" />
             </button>
@@ -384,21 +387,21 @@ export default function FloatingMapWidget({
           <div
             onPointerDown={(e) => handleResizePointerDown(e, 'w')}
             className="absolute left-0 top-0 bottom-5 w-2 z-30 cursor-w-resize hover:bg-sky-500/20 transition-colors"
-            title="Drag to resize width"
+            title={t('floatingMap.resizeTooltip')}
           />
 
           {/* Bottom Edge Resize */}
           <div
             onPointerDown={(e) => handleResizePointerDown(e, 's')}
             className="absolute bottom-0 left-6 right-6 h-2 z-30 cursor-s-resize hover:bg-sky-500/20 transition-colors"
-            title="Drag to resize height"
+            title={t('floatingMap.resizeTooltip')}
           />
 
           {/* Bottom-Left Corner Resize Handle (Primary expand direction) */}
           <div
             onPointerDown={(e) => handleResizePointerDown(e, 'sw')}
             className="absolute bottom-0 left-0 w-6 h-6 z-30 cursor-sw-resize flex items-end justify-start p-1 text-slate-400 hover:text-sky-500 transition-colors group/corner"
-            title="Drag to resize width and height"
+            title={t('floatingMap.resizeTooltip')}
           >
             <div className="w-2.5 h-2.5 border-b-2 border-l-2 border-slate-400 dark:border-slate-500 group-hover/corner:border-sky-500 transition-colors rounded-bl-xs" />
           </div>
@@ -407,7 +410,7 @@ export default function FloatingMapWidget({
           <div
             onPointerDown={(e) => handleResizePointerDown(e, 'se')}
             className="absolute bottom-0 right-0 w-6 h-6 z-30 cursor-se-resize flex items-end justify-end p-1 text-slate-400 hover:text-sky-500 transition-colors group/corner"
-            title="Drag to resize width and height"
+            title={t('floatingMap.resizeTooltip')}
           >
             <div className="w-2.5 h-2.5 border-b-2 border-r-2 border-slate-400 dark:border-slate-500 group-hover/corner:border-sky-500 transition-colors rounded-br-xs" />
           </div>
@@ -426,11 +429,11 @@ export default function FloatingMapWidget({
           <div className="flex items-center gap-2 pr-2 border-r border-slate-200 dark:border-slate-700">
             <Globe className="w-4 h-4 text-sky-500" />
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-              Geo Map
+              {t('floatingMap.title')}
             </span>
             {geoCount > 0 && (
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300">
-                {geoCount} locations
+                {t('floatingMap.locationsCount', { count: geoCount })}
               </span>
             )}
           </div>
@@ -440,7 +443,7 @@ export default function FloatingMapWidget({
             type="button"
             onClick={() => onModeChange?.('pip')}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-            title="Picture-in-Picture"
+            title={t('floatingMap.pipTooltip')}
           >
             <Minimize2 className="w-3.5 h-3.5 text-slate-500" />
             <span>PiP</span>
@@ -451,7 +454,7 @@ export default function FloatingMapWidget({
             type="button"
             onClick={() => onModeChange?.('split')}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-            title="Split Screen"
+            title={t('floatingMap.splitTooltip')}
           >
             <Columns2 className="w-3.5 h-3.5 text-slate-500" />
             <span>Split</span>
@@ -462,10 +465,10 @@ export default function FloatingMapWidget({
             type="button"
             onClick={() => onModeChange?.('icon')}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
-            title="Close map and return to timeline"
+            title={t('floatingMap.closeTooltip')}
           >
             <X className="w-3.5 h-3.5" />
-            <span>Close</span>
+            <span>{t('common.close')}</span>
           </button>
         </div>
 

@@ -1,12 +1,13 @@
 import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info } from 'lucide-react';
 import { getLaneColor } from '../data/laneColors';
+import { useLanguage } from '../context/LanguageContext';
 
 const MONTH_NAMES = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
-export function formatDatePart(d) {
+export function formatDatePart(d, lang = 'en') {
   if (!d) return '';
   if (typeof d === 'number') return String(d);
   if (typeof d === 'string') return d;
@@ -14,33 +15,41 @@ export function formatDatePart(d) {
   const y = Number(d.year);
   if (isNaN(y)) return String(d.year);
 
+  const isHe = lang === 'he';
+
   if (d.precision === 'million-years' || Math.abs(y) >= 1000000) {
     const ma = Math.abs(y / 1000000);
-    return `${ma % 1 === 0 ? ma.toFixed(0) : ma.toFixed(1)} Million Years Ago`;
+    const maStr = ma % 1 === 0 ? ma.toFixed(0) : ma.toFixed(1);
+    return isHe ? `${maStr} מיליון שנה לפני זמננו` : `${maStr} Million Years Ago`;
   }
 
   if (y < 0) {
-    return `${Math.abs(y)} BCE`;
+    return isHe ? `${Math.abs(y)} לפנה״ס` : `${Math.abs(y)} BCE`;
   }
 
+  const hebrewMonths = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
+  const monthList = isHe ? hebrewMonths : MONTH_NAMES;
+
   if (d.month && d.day) {
-    const m = MONTH_NAMES[Number(d.month) - 1] || d.month;
-    return `${m} ${d.day}, ${y}`;
+    const m = monthList[Number(d.month) - 1] || d.month;
+    return isHe ? `${d.day} ב${m} ${y}` : `${m} ${d.day}, ${y}`;
   }
 
   if (d.month) {
-    const m = MONTH_NAMES[Number(d.month) - 1] || d.month;
+    const m = monthList[Number(d.month) - 1] || d.month;
     return `${m} ${y}`;
   }
 
   return `${y}`;
 }
 
-export function formatTimeSpan(from, to, isToPresent) {
-  const fromStr = formatDatePart(from);
-  if (isToPresent) return fromStr ? `${fromStr} – Present` : 'Present';
+export function formatTimeSpan(from, to, isToPresent, lang = 'en') {
+  const isHe = lang === 'he';
+  const presentStr = isHe ? 'הווה' : 'Present';
+  const fromStr = formatDatePart(from, lang);
+  if (isToPresent) return fromStr ? `${fromStr} – ${presentStr}` : presentStr;
   if (!to) return fromStr;
-  const toStr = formatDatePart(to);
+  const toStr = formatDatePart(to, lang);
   if (!fromStr) return toStr;
   if (fromStr === toStr) return fromStr;
   return `${fromStr} – ${toStr}`;
@@ -54,24 +63,28 @@ export default function EventDrawer({
   onDelete,
   onOpenDisclaimer
 }) {
+  const { language, isRtl, t, formatTimeSpan: localizedTimeSpan } = useLanguage();
+
   if (!article) return null;
 
   const laneIndex = lanes.findIndex((l) => l.id === article.lane);
   const laneObj = laneIndex >= 0 ? lanes[laneIndex] : null;
   const laneColor = laneObj ? getLaneColor(laneObj, laneIndex, lanes) : null;
-  const timeSpan = formatTimeSpan(article.from, article.to, article.isToPresent);
+  const timeSpan = localizedTimeSpan(article.from, article.to, article.isToPresent);
 
   return (
     <div className="fixed inset-y-0 right-0 w-full sm:w-96 md:w-[420px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-l border-slate-200/90 dark:border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out font-sans">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
-          Event Details
+          {t('eventDrawer.title')}
         </span>
         <button
           type="button"
           onClick={onClose}
           className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+          title={t('common.close')}
+          aria-label={t('common.close')}
         >
           <X className="w-5 h-5" />
         </button>
@@ -94,7 +107,7 @@ export default function EventDrawer({
         ) : (
           <div className="w-full h-28 rounded-xl bg-slate-100/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-1">
             <ImageIcon className="w-6 h-6 opacity-40" />
-            <span className="text-xs">No image preview available</span>
+            <span className="text-xs">{t('eventDrawer.noImage')}</span>
           </div>
         )}
 
@@ -153,9 +166,9 @@ export default function EventDrawer({
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 shrink-0 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-[11px] border border-slate-200 dark:border-slate-700 shadow-2xs transition-colors cursor-pointer"
-                title="Open location in Google Maps"
+                title={t('eventDrawer.mapsTitle')}
               >
-                <span>Google Maps</span>
+                <span>{t('eventDrawer.googleMaps')}</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             )}
@@ -166,14 +179,15 @@ export default function EventDrawer({
         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs">
           <Info className="w-4 h-4 shrink-0 mt-0.5 text-slate-400" />
           <div className="leading-snug">
-            <span className="font-semibold text-slate-700 dark:text-slate-300">AI Synthesized:</span> Events and dates are automatically assembled and may contain inaccuracies.
+            <span className="font-semibold text-slate-700 dark:text-slate-300">{t('eventDrawer.aiSynthesized')} </span>
+            <span>{t('eventDrawer.aiSynthesizedDesc')}</span>
             {onOpenDisclaimer && (
               <button
                 type="button"
                 onClick={onOpenDisclaimer}
-                className="ml-1.5 text-sky-600 dark:text-sky-400 underline font-medium hover:text-sky-700 cursor-pointer inline"
+                className="mx-1 text-sky-600 dark:text-sky-400 underline font-medium hover:text-sky-700 cursor-pointer inline"
               >
-                Learn more
+                {t('common.learnMore')}
               </button>
             )}
           </div>
@@ -189,7 +203,7 @@ export default function EventDrawer({
           </div>
         ) : (
           <p className="text-xs text-slate-400 dark:text-slate-500 italic">
-            No summary extract available.
+            {t('eventDrawer.noSummary')}
           </p>
         )}
 
@@ -201,7 +215,7 @@ export default function EventDrawer({
             rel="noreferrer"
             className="flex items-center justify-between w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/70 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors group shadow-2xs"
           >
-            <span>Read full article on Wikipedia</span>
+            <span>{t('eventDrawer.wikiLink')}</span>
             <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         )}
@@ -215,14 +229,15 @@ export default function EventDrawer({
           className="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 border border-slate-200 dark:border-slate-700 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
         >
           <Edit className="w-3.5 h-3.5" />
-          <span>Edit Event</span>
+          <span>{t('eventDrawer.editEvent')}</span>
         </button>
 
         <button
           type="button"
           onClick={() => onDelete?.(article.id)}
           className="flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-rose-50 dark:bg-slate-900 dark:hover:bg-rose-950/40 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-800 hover:border-rose-300 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
-          title="Delete Event"
+          title={t('eventDrawer.deleteEvent')}
+          aria-label={t('eventDrawer.deleteEvent')}
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>

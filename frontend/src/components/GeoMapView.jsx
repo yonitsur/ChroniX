@@ -13,8 +13,8 @@ import {
   Calendar,
   Eye
 } from 'lucide-react';
-import { formatDatePart } from './EventDrawer';
 import { getLaneColor } from '../data/laneColors';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function GeoMapView({
   articles = [],
@@ -24,6 +24,7 @@ export default function GeoMapView({
   theme = 'light',
   className = ''
 }) {
+  const { t, formatDatePart } = useLanguage();
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
@@ -234,14 +235,14 @@ export default function GeoMapView({
               id="popup-select-${art.id}"
               class="flex-1 text-center py-1.5 px-2 text-[11px] font-medium rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition-colors cursor-pointer"
             >
-              Open in Timeline
+              ${t('floatingMap.showDetails')}
             </button>
             <a
               href="${gMapsUrl}"
               target="_blank"
               rel="noreferrer"
               class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors"
-              title="Open in Google Maps"
+              title="${t('floatingMap.openGoogleMaps')}"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
             </a>
@@ -327,10 +328,10 @@ export default function GeoMapView({
           type="button"
           onClick={handleFitAll}
           className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-md backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          title="Fit all markers on screen"
+          title={t('toolbar.fitAll')}
         >
           <Maximize2 className="w-3.5 h-3.5 text-sky-500" />
-          <span>Fit All</span>
+          <span>{t('toolbar.fitAll')}</span>
         </button>
       </div>
 
@@ -339,7 +340,7 @@ export default function GeoMapView({
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-md text-slate-700 dark:text-slate-200">
           <MapPin className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
           <span className="font-semibold">{geoArticles.length}</span>
-          <span className="text-slate-400 dark:text-slate-500">events on map</span>
+          <span className="text-slate-400 dark:text-slate-500">{t('floatingMap.locationsCount', { count: geoArticles.length })}</span>
         </div>
 
         {nonGeoArticles.length > 0 && (
@@ -347,10 +348,10 @@ export default function GeoMapView({
             type="button"
             onClick={() => setShowGlobalEvents((prev) => !prev)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-500/10 dark:bg-amber-500/20 text-amber-800 dark:text-amber-200 border border-amber-500/30 backdrop-blur-md shadow-md hover:bg-amber-500/20 transition-all cursor-pointer"
-            title="Click to view events without a specific location"
+            title={t('floatingMap.globalEventsTooltip')}
           >
             <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-            <span>+{nonGeoArticles.length} Global</span>
+            <span>{t('floatingMap.globalEventsBtn', { count: nonGeoArticles.length })}</span>
           </button>
         )}
       </div>
@@ -360,7 +361,7 @@ export default function GeoMapView({
         <div className="absolute top-16 left-4 z-30 w-72 max-h-80 overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-4 text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-              Global / Unmapped Events ({nonGeoArticles.length})
+              {t('floatingMap.globalEvents', { count: nonGeoArticles.length })}
             </span>
             <button
               type="button"

@@ -8,8 +8,10 @@ import {
   Globe,
   Info
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AiDisclaimerModal({ isOpen, onClose }) {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   return (
@@ -23,10 +25,10 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
-                AI Generation Disclaimer
+                {t('aiDisclaimer.modalTitle')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Important notice regarding historical data & accuracy
+                {t('aiDisclaimer.modalSubtitle')}
               </p>
             </div>
           </div>
@@ -34,8 +36,9 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
+            aria-label={t('common.close')}
             className="text-slate-400 hover:text-slate-800 dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-            title="Close"
+            title={t('common.close')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -46,9 +49,7 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
           <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-medium flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <p>
-              The timeline data and historical events displayed are generated using AI
-              models (Google Gemini). This content <strong>may contain inaccuracies, incorrect
-              dates, or hallucinated events</strong>.
+              {t('aiDisclaimer.bannerWarning')}
             </p>
           </div>
 
@@ -59,12 +60,10 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
-                  AI Hallucinations
+                  {t('aiDisclaimer.hallucinationsTitle')}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Language models can generate plausible-sounding but fictitious events,
-                  confuse historical figures with similar names, or construct facts that have no
-                  factual basis.
+                  {t('aiDisclaimer.hallucinationsText')}
                 </p>
               </div>
             </div>
@@ -75,11 +74,10 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
-                  Date & Chronological Precision
+                  {t('aiDisclaimer.datesPrecisionTitle')}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Historical dates (especially BCE eras, pre-modern history, or events spanning
-                  several years) may be approximated, rounded, or placed in incorrect sequence.
+                  {t('aiDisclaimer.datesPrecisionText')}
                 </p>
               </div>
             </div>
@@ -90,12 +88,10 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
-                  Automated Wikipedia & Image Linking
+                  {t('aiDisclaimer.wikiLinkingTitle')}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Articles and thumbnail images are queried automatically from Wikimedia Commons.
-                  Occasionally, automated matching may pick an entity with a similar name
-                  rather than the intended historical subject.
+                  {t('aiDisclaimer.wikiLinkingText')}
                 </p>
               </div>
             </div>
@@ -106,11 +102,10 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
-                  You Have Full Control to Edit
+                  {t('aiDisclaimer.fullControlTitle')}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  ChroniX allows you to select any event card to edit its title, date,
-                  summary, or image, and remove inaccurate events completely.
+                  {t('aiDisclaimer.fullControlText')}
                 </p>
               </div>
             </div>
@@ -121,14 +116,14 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
         <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 flex items-center justify-between">
           <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
             <Info className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-            Cross-reference important historical facts with authoritative sources.
+            {t('aiDisclaimer.footerNote')}
           </span>
           <button
             type="button"
             onClick={onClose}
             className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 shadow-sm transition-all active:scale-95 cursor-pointer"
           >
-            Got it
+            {t('aiDisclaimer.gotIt')}
           </button>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AiDisclaimerBar({ onOpenModal }) {
+  const { t, isRtl } = useLanguage();
   const [isMinimized, setIsMinimized] = useState(() => {
     try {
       return localStorage.getItem('chronix_disclaimer_minimized') === 'true';
@@ -24,10 +26,10 @@ export default function AiDisclaimerBar({ onOpenModal }) {
           type="button"
           onClick={() => setIsMinimized(false)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 shadow-md backdrop-blur-md text-[11px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          title="Show AI Disclaimer"
+          title={t('aiDisclaimer.showDisclaimer')}
         >
           <Info className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
-          <span>AI Disclaimer</span>
+          <span>{t('aiDisclaimer.badgeTitle')}</span>
           <ChevronUp className="w-3 h-3 text-slate-400" />
         </button>
       </div>
@@ -43,7 +45,7 @@ export default function AiDisclaimerBar({ onOpenModal }) {
         </div>
         <p className="text-[11px] truncate font-medium text-slate-600 dark:text-slate-400">
           <span>
-            <strong className="text-slate-700 dark:text-slate-300 font-semibold">AI Historical Disclaimer:</strong> Timeline articles are synthetically generated and may occasionally contain inaccuracies or anachronisms. Please verify critical facts.
+            <strong className="text-slate-700 dark:text-slate-300 font-semibold">{t('aiDisclaimer.barPrefix')}</strong> {t('aiDisclaimer.barText')}
           </span>
         </p>
       </div>
@@ -56,7 +58,7 @@ export default function AiDisclaimerBar({ onOpenModal }) {
           onClick={onOpenModal}
           className="flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-colors shadow-2xs active:scale-95 cursor-pointer"
         >
-          <span>Learn More</span>
+          <span>{t('aiDisclaimer.learnMore')}</span>
         </button>
 
         {/* Minimize button */}
@@ -64,7 +66,7 @@ export default function AiDisclaimerBar({ onOpenModal }) {
           type="button"
           onClick={() => setIsMinimized(true)}
           className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-          title="Minimize disclaimer bar"
+          title={t('aiDisclaimer.minimize')}
         >
           <ChevronDown className="w-3.5 h-3.5" />
         </button>

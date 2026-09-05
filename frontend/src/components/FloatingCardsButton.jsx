@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LayoutList, GripVertical } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
- * Floating button on the left edge that opens the Cards List Drawer.
+ * Floating button on the edge that opens the Cards List Drawer.
  * Supports vertical dragging up and down so it doesn't obscure timeline text.
  * Persists chosen position in localStorage.
  */
 export default function FloatingCardsButton({ count = 0, onClick, side = 'right' }) {
+  const { t } = useLanguage();
   // Read saved top percentage or default to 50%
   const [topPercent, setTopPercent] = useState(() => {
     try {
@@ -174,8 +176,8 @@ export default function FloatingCardsButton({ count = 0, onClick, side = 'right'
           ? 'cursor-grabbing transition-none bg-white dark:bg-slate-900 border-sky-500 shadow-xl ring-2 ring-sky-500/20 scale-105'
           : 'cursor-grab transition-[background-color,border-color,box-shadow,transform] duration-150 bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border-slate-200 dark:border-slate-800'
       }`}
-      title="Click to open Cards List | Drag up/down to reposition"
-      aria-label="Open Cards List (drag up or down to reposition)"
+      title={t('cardsList.buttonTooltip')}
+      aria-label={t('cardsList.buttonTooltip')}
     >
       {/* Subtle Drag Grip Handle */}
       <div
@@ -194,7 +196,7 @@ export default function FloatingCardsButton({ count = 0, onClick, side = 'right'
         className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white select-none tracking-wider font-sans"
         style={{ writingMode: 'vertical-rl' }}
       >
-        Cards ({count})
+        {t('cardsList.toggleButton', { count })}
       </span>
     </button>
   );

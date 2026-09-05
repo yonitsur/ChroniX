@@ -373,10 +373,14 @@ const TimelineView = forwardRef(({
   }, [timelineData, theme]);
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-slate-100 dark:bg-slate-950 select-none transition-colors duration-200">
+    <div
+      dir="ltr"
+      className="w-full h-full relative overflow-hidden bg-slate-100 dark:bg-slate-950 select-none transition-colors duration-200 histropedia-timeline-wrapper"
+    >
       <div
         ref={containerRef}
         id="histropedia-container"
+        dir="ltr"
         className="w-full h-full absolute inset-0"
       />
     </div>

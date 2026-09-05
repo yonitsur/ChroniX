@@ -14,6 +14,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { enrichItem, suggestEventData, searchWikiCandidates } from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function EventEditModal({
   isOpen,
@@ -24,6 +25,7 @@ export default function EventEditModal({
   timelineTopic = '',
   timeScale = 'calendar'
 }) {
+  const { t, isRtl } = useLanguage();
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [lane, setLane] = useState('');
@@ -138,12 +140,12 @@ export default function EventEditModal({
         if (data.locationName) setLocationName(data.locationName);
         if (data.lat !== undefined && data.lat !== null) setLat(String(data.lat));
         if (data.lng !== undefined && data.lng !== null) setLng(String(data.lng));
-        setStatusMessage('Auto-filled with AI based on timeline context!');
+        setStatusMessage(t('eventEditModal.autoFilledSuccess'));
         setTimeout(() => setStatusMessage(null), 5000);
       }
     } catch (err) {
       console.warn('AI auto-fill error:', err);
-      setErrorMessage(err.message || 'Failed to auto-fill event with AI');
+      setErrorMessage(err.message || t('eventEditModal.autoFilledError'));
     } finally {
       setIsSuggesting(false);
     }
@@ -171,11 +173,11 @@ export default function EventEditModal({
           if (data.to.month !== undefined && data.to.month !== null) setToMonth(data.to.month);
           if (data.to.day !== undefined && data.to.day !== null) setToDay(data.to.day);
         }
-        setStatusMessage('Dates updated using AI estimate.');
+        setStatusMessage(t('eventEditModal.datesUpdatedSuccess'));
         setTimeout(() => setStatusMessage(null), 4000);
       }
     } catch (err) {
-      setErrorMessage('Could not estimate dates');
+      setErrorMessage(t('eventEditModal.datesUpdatedError'));
     } finally {
       setIsSuggesting(false);
     }
@@ -193,7 +195,7 @@ export default function EventEditModal({
         if (candidates.length === 1) {
           // Single match -> apply directly
           applyCandidate(candidates[0]);
-          setStatusMessage(`Linked to "${candidates[0].wikiTitle}"`);
+          setStatusMessage(t('eventEditModal.linkedCandidateSuccess', { title: candidates[0].wikiTitle }));
           setTimeout(() => setStatusMessage(null), 4000);
         } else {
           // Multiple candidates -> show interactive selection dropdown
@@ -208,15 +210,15 @@ export default function EventEditModal({
           if (fallback.extract) setExtract(fallback.extract);
           if (fallback.description && !subtitle) setSubtitle(fallback.description);
           if (fallback.wikiUrl) setWikiUrl(fallback.wikiUrl);
-          setStatusMessage('Wikipedia details found.');
+          setStatusMessage(t('eventEditModal.wikiDetailsFound'));
           setTimeout(() => setStatusMessage(null), 4000);
         } else {
-          setErrorMessage('No matching Wikipedia article found.');
+          setErrorMessage(t('eventEditModal.noWikiFound'));
         }
       }
     } catch (e) {
       console.warn('Enrichment failed:', e);
-      setErrorMessage('Failed to search Wikipedia');
+      setErrorMessage(t('eventEditModal.wikiSearchFailed'));
     } finally {
       setIsSearchingWiki(false);
     }
@@ -300,11 +302,12 @@ export default function EventEditModal({
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
-                {initialEvent ? 'Edit Event' : 'Add New Event'}
+                {initialEvent ? t('eventEditModal.editTitle') : t('eventEditModal.addTitle')}
               </h3>
               {timelineTopic && (
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-xs">
-                  Context: <span className="font-medium text-slate-700 dark:text-slate-300">{timelineTopic}</span>
+                  {t('eventEditModal.contextLabel')}{' '}
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{timelineTopic}</span>
                 </p>
               )}
             </div>
@@ -312,6 +315,7 @@ export default function EventEditModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label={t('common.close')}
             className="text-slate-400 hover:text-slate-800 dark:hover:text-white p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -333,6 +337,7 @@ export default function EventEditModal({
             <button
               type="button"
               onClick={() => setErrorMessage(null)}
+              aria-label={t('common.close')}
               className="text-rose-400 hover:text-rose-700 dark:hover:text-rose-200"
             >
               <X className="w-3.5 h-3.5" />
@@ -346,10 +351,10 @@ export default function EventEditModal({
           <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                Event / Person Title *
+                {t('eventEditModal.titleLabel')}
               </label>
               <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                Type a name & click Auto-Fill
+                {t('eventEditModal.titleHint')}
               </span>
             </div>
 
@@ -364,7 +369,7 @@ export default function EventEditModal({
                   setTitle(e.target.value);
                   setShowCandidatePicker(false);
                 }}
-                placeholder="e.g. Lucy, Battle of Waterloo, Tyrannosaurus, Churchill..."
+                placeholder={t('eventEditModal.titlePlaceholder')}
                 className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm"
               />
 
@@ -375,14 +380,14 @@ export default function EventEditModal({
                   onClick={handleAiAutoFill}
                   disabled={isSuggesting || !title.trim()}
                   className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
-                  title="Auto-fill dates, subtitle, lane, and Wikipedia using AI"
+                  title={t('eventEditModal.autoFillTooltip')}
                 >
                   {isSuggesting ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin text-purple-200" />
                   ) : (
                     <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
                   )}
-                  <span>Auto-Fill AI</span>
+                  <span>{t('eventEditModal.autoFillAi')}</span>
                 </button>
 
                 {/* Wikipedia Search & Disambiguation Button */}
@@ -391,14 +396,14 @@ export default function EventEditModal({
                   onClick={handleFetchWikiData}
                   disabled={isSearchingWiki || !title.trim()}
                   className="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-2.5 py-2 rounded-xl text-xs font-medium border border-slate-300 dark:border-slate-700 transition-colors disabled:opacity-50"
-                  title="Search Wikipedia & pick candidate"
+                  title={t('eventEditModal.wikiTooltip')}
                 >
                   {isSearchingWiki ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Search className="w-3.5 h-3.5 text-sky-500" />
                   )}
-                  <span className="hidden sm:inline">Wiki</span>
+                  <span className="hidden sm:inline">{t('eventEditModal.wikiBtn')}</span>
                 </button>
               </div>
             </div>
@@ -409,11 +414,12 @@ export default function EventEditModal({
                 <div className="px-3 py-2 bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
                   <span className="flex items-center gap-1.5">
                     <Search className="w-3.5 h-3.5 text-sky-500" />
-                    Select matching Wikipedia article ({wikiCandidates.length} found):
+                    {t('eventEditModal.wikiCandidatesHeader', { count: wikiCandidates.length })}
                   </span>
                   <button
                     type="button"
                     onClick={() => setShowCandidatePicker(false)}
+                    aria-label={t('common.close')}
                     className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -425,7 +431,7 @@ export default function EventEditModal({
                     <div
                       key={cand.wikiTitle || idx}
                       onClick={() => applyCandidate(cand)}
-                      className="p-2.5 hover:bg-sky-50/70 dark:hover:bg-sky-950/40 cursor-pointer transition-colors flex items-start gap-3 group text-left"
+                      className="p-2.5 hover:bg-sky-50/70 dark:hover:bg-sky-950/40 cursor-pointer transition-colors flex items-start gap-3 group ltr:text-left rtl:text-right"
                     >
                       {cand.imageUrl ? (
                         <img
@@ -446,7 +452,7 @@ export default function EventEditModal({
                           </h4>
                           {idx === 0 && (
                             <span className="text-[10px] bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 font-medium px-1.5 py-0.5 rounded">
-                              Best Match
+                              {t('eventEditModal.bestMatchBadge')}
                             </span>
                           )}
                         </div>
@@ -471,7 +477,7 @@ export default function EventEditModal({
           {/* Subtitle */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Subtitle / One-line Description
+              {t('eventEditModal.subtitleLabel')}
             </label>
             <input
               type="text"
@@ -479,7 +485,7 @@ export default function EventEditModal({
               maxLength={300}
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
-              placeholder="e.g. 3.2-million-year-old fossilized hominid skeleton"
+              placeholder={t('eventEditModal.subtitlePlaceholder')}
               className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm"
             />
           </div>
@@ -488,14 +494,14 @@ export default function EventEditModal({
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-sky-500" />
-              <span>Swimlane / Category</span>
+              <span>{t('eventEditModal.laneLabel')}</span>
             </label>
             <select
               value={lane}
               onChange={(e) => setLane(e.target.value)}
               className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm"
             >
-              <option value="">(None - Main timeline)</option>
+              <option value="">{t('eventEditModal.laneNone')}</option>
               {lanes.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.title}
@@ -509,24 +515,24 @@ export default function EventEditModal({
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-xs font-semibold text-sky-600 dark:text-sky-400">
                 <Calendar className="w-3.5 h-3.5" />
-                Start Date (From) *
+                {t('eventEditModal.startDateLabel')}
               </span>
               <button
                 type="button"
                 onClick={handleSuggestDatesOnly}
                 disabled={isSuggesting || !title.trim()}
                 className="flex items-center gap-1 text-[11px] text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium px-2 py-0.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors disabled:opacity-40"
-                title="Use AI to estimate or refine dates"
+                title={t('eventEditModal.suggestDatesTooltip')}
               >
                 <Sparkles className="w-3 h-3" />
-                <span>Suggest Dates</span>
+                <span>{t('eventEditModal.suggestDatesBtn')}</span>
               </button>
             </div>
 
             <div className="grid grid-cols-4 gap-2">
               <div className="col-span-2">
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">
-                  Year (Negative for BCE / Ma)
+                  {t('eventEditModal.yearLabel')}
                 </label>
                 <input
                   type="number"
@@ -538,7 +544,7 @@ export default function EventEditModal({
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Month (1-12)</label>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.monthLabel')}</label>
                 <input
                   type="number"
                   min={1}
@@ -550,7 +556,7 @@ export default function EventEditModal({
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Day (1-31)</label>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.dayLabel')}</label>
                 <input
                   type="number"
                   min={1}
@@ -564,20 +570,20 @@ export default function EventEditModal({
             </div>
 
             <div>
-              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Time Precision</label>
+              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.precisionLabel')}</label>
               <select
                 value={fromPrecision}
                 onChange={(e) => setFromPrecision(e.target.value)}
                 className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
               >
-                <option value="day">Day</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-                <option value="decade">Decade</option>
-                <option value="century">Century</option>
-                <option value="millennium">Millennium</option>
-                <option value="million-years">Million Years (Prehistoric)</option>
-                <option value="billion-years">Billion Years</option>
+                <option value="day">{t('eventEditModal.precisionDay')}</option>
+                <option value="month">{t('eventEditModal.precisionMonth')}</option>
+                <option value="year">{t('eventEditModal.precisionYear')}</option>
+                <option value="decade">{t('eventEditModal.precisionDecade')}</option>
+                <option value="century">{t('eventEditModal.precisionCentury')}</option>
+                <option value="millennium">{t('eventEditModal.precisionMillennium')}</option>
+                <option value="million-years">{t('eventEditModal.precisionMillionYears')}</option>
+                <option value="billion-years">{t('eventEditModal.precisionBillionYears')}</option>
               </select>
             </div>
           </div>
@@ -586,7 +592,7 @@ export default function EventEditModal({
           <div className="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2.5">
             <div className="flex items-center justify-between">
               <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                End Date (To - Optional)
+                {t('eventEditModal.endDateLabel')}
               </span>
               <label className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 cursor-pointer">
                 <input
@@ -595,14 +601,14 @@ export default function EventEditModal({
                   onChange={(e) => setIsToPresent(e.target.checked)}
                   className="rounded border-slate-300 dark:border-slate-700 text-sky-500 focus:ring-sky-500"
                 />
-                <span>Ongoing to Present</span>
+                <span>{t('eventEditModal.ongoingToPresent')}</span>
               </label>
             </div>
 
             {!isToPresent && (
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">End Year</label>
+                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.endYearLabel')}</label>
                   <input
                     type="number"
                     value={toYear}
@@ -612,7 +618,7 @@ export default function EventEditModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">End Month</label>
+                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.endMonthLabel')}</label>
                   <input
                     type="number"
                     min={1}
@@ -624,7 +630,7 @@ export default function EventEditModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">End Day</label>
+                  <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.endDayLabel')}</label>
                   <input
                     type="number"
                     min={1}
@@ -644,7 +650,7 @@ export default function EventEditModal({
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
                 <MapPin className="w-3.5 h-3.5 text-rose-500" />
-                <span>Geographic Location (Optional)</span>
+                <span>{t('eventEditModal.geoLabel')}</span>
               </label>
               {lat !== '' && lng !== '' && (
                 <a
@@ -653,26 +659,26 @@ export default function EventEditModal({
                   rel="noreferrer"
                   className="text-[11px] text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
-                  <span>Test in Google Maps</span>
+                  <span>{t('eventEditModal.testGoogleMaps')}</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
 
             <div>
-              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Location Name</label>
+              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.locationNameLabel')}</label>
               <input
                 type="text"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
-                placeholder="e.g. Normandy, France or Jerusalem"
+                placeholder={t('eventEditModal.locationNamePlaceholder')}
                 className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Latitude (lat)</label>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.latitudeLabel')}</label>
                 <input
                   type="number"
                   step="any"
@@ -683,7 +689,7 @@ export default function EventEditModal({
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">Longitude (lng)</label>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-0.5">{t('eventEditModal.longitudeLabel')}</label>
                 <input
                   type="number"
                   step="any"
@@ -699,7 +705,7 @@ export default function EventEditModal({
           {/* Image URL with thumbnail preview */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Image URL
+              {t('eventEditModal.imageUrlLabel')}
             </label>
             <div className="flex gap-2">
               <input
@@ -727,14 +733,14 @@ export default function EventEditModal({
           {/* Extract / Summary */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Full Description / Extract
+              {t('eventEditModal.fullDescLabel')}
             </label>
             <textarea
               rows={3}
               dir="auto"
               value={extract}
               onChange={(e) => setExtract(e.target.value)}
-              placeholder="Detailed description of the event or person..."
+              placeholder={t('eventEditModal.fullDescPlaceholder')}
               className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 resize-none text-xs leading-relaxed"
             />
           </div>
@@ -742,7 +748,7 @@ export default function EventEditModal({
           {/* Wikipedia URL */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
-              <span>Wikipedia URL</span>
+              <span>{t('eventEditModal.wikiUrlLabel')}</span>
               {wikiUrl && (
                 <a
                   href={wikiUrl}
@@ -750,7 +756,7 @@ export default function EventEditModal({
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-[11px] text-sky-600 dark:text-sky-400 hover:underline font-normal"
                 >
-                  <span>Open Page</span>
+                  <span>{t('eventEditModal.openPage')}</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               )}
@@ -771,14 +777,14 @@ export default function EventEditModal({
               onClick={onClose}
               className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors text-xs"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               className="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-semibold shadow-lg shadow-sky-500/25 transition-all text-xs flex items-center gap-1.5"
             >
               <Check className="w-3.5 h-3.5" />
-              <span>Save Event</span>
+              <span>{t('eventEditModal.saveEvent')}</span>
             </button>
           </div>
         </form>

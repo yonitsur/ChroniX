@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Dices } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const PROMPT_EXAMPLES = [
   // 1. Hebrew - Overview
@@ -735,49 +736,44 @@ function shuffleArray(arr) {
 }
 
 /**
- * Smart balanced shuffle:
- * Randomizes all prompt examples while balancing Hebrew and English prompts
- * so users always see both languages upfront in a fresh random order every time.
+ * Filter and shuffle prompt examples strictly by selected language:
+ * If 'he' is selected, returns ONLY Hebrew prompts.
+ * If 'en' is selected, returns ONLY English prompts.
  */
-export function getSmartShuffledExamples() {
-  const hebrew = shuffleArray(PROMPT_EXAMPLES.filter((p) => p.lang === 'he'));
-  const english = shuffleArray(PROMPT_EXAMPLES.filter((p) => p.lang === 'en'));
-
-  const merged = [];
-  let h = 0;
-  let e = 0;
-  // 50% chance to start with Hebrew or English
-  let pickHebrewNext = Math.random() < 0.5;
-
-  while (h < hebrew.length || e < english.length) {
-    if (pickHebrewNext && h < hebrew.length) {
-      merged.push(hebrew[h++]);
-      if (e < english.length) pickHebrewNext = false;
-    } else if (!pickHebrewNext && e < english.length) {
-      merged.push(english[e++]);
-      // If one language has slightly more remaining items, allow a 2nd card with ~25% chance
-      if (e < english.length && (english.length - e) > (hebrew.length - h) && Math.random() < 0.25) {
-        merged.push(english[e++]);
-      }
-      if (h < hebrew.length) pickHebrewNext = true;
-    } else if (h < hebrew.length) {
-      merged.push(hebrew[h++]);
-    } else if (e < english.length) {
-      merged.push(english[e++]);
-    }
+export function getSmartShuffledExamples(preferredLang = null) {
+  if (preferredLang === 'he') {
+    const hebrew = PROMPT_EXAMPLES.filter((p) => p.lang === 'he');
+    return shuffleArray(hebrew);
   }
-
-  return merged;
+  if (preferredLang === 'en') {
+    const english = PROMPT_EXAMPLES.filter((p) => p.lang === 'en');
+    return shuffleArray(english);
+  }
+  return shuffleArray(PROMPT_EXAMPLES);
 }
 
 export default function PromptExamples({ onSelectPrompt, isGenerating = false }) {
+  const { t, language } = useLanguage();
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isManualScrollingRef = useRef(false);
   const lastPickedPromptRef = useRef(null);
 
-  // Initialize with a fresh smart-shuffled order every time the component mounts
-  const [examples, setExamples] = useState(() => getSmartShuffledExamples());
+  // Initialize with examples strictly matching the current language
+  const [examples, setExamples] = useState(() => getSmartShuffledExamples(language));
+
+  useEffect(() => {
+    setExamples(getSmartShuffledExamples(language));
+    const el = scrollRef.current;
+    if (el) {
+      setTimeout(() => {
+        const segmentWidth = el.scrollWidth / 3;
+        if (segmentWidth > 0) {
+          el.scrollLeft = segmentWidth;
+        }
+      }, 50);
+    }
+  }, [language]);
 
   // Triple array for seamless infinite wrapping in both directions
   const triplicatedExamples = useMemo(() => [
@@ -788,15 +784,16 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
 
   const handleSelectRandomPrompt = useCallback(() => {
     if (isGenerating || !onSelectPrompt) return;
-    // Pick a random prompt avoiding immediately repeating the last selection
-    const pool = PROMPT_EXAMPLES.filter((p) => p.prompt !== lastPickedPromptRef.current);
+    // Pick a random prompt avoiding immediately repeating the last selection and matching language if available
+    const langPool = PROMPT_EXAMPLES.filter((p) => p.prompt !== lastPickedPromptRef.current && (language ? p.lang === language : true));
+    const pool = langPool.length > 0 ? langPool : PROMPT_EXAMPLES.filter((p) => p.prompt !== lastPickedPromptRef.current);
     const candidateList = pool.length > 0 ? pool : PROMPT_EXAMPLES;
     const randomItem = candidateList[Math.floor(Math.random() * candidateList.length)];
     if (randomItem) {
       lastPickedPromptRef.current = randomItem.prompt;
       onSelectPrompt(randomItem.prompt, randomItem.detailLevel);
     }
-  }, [isGenerating, onSelectPrompt]);
+  }, [isGenerating, onSelectPrompt, language]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -912,10 +909,10 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                     }`}
                   >
                     {item.detailLevel === 'deep_dive'
-                      ? 'Deep Dive'
+                      ? t('toolbar.detailDeep')
                       : item.detailLevel === 'overview'
-                      ? 'Overview'
-                      : 'Standard'}
+                      ? t('toolbar.detailOverview')
+                      : t('toolbar.detailStandard')}
                   </span>
                 </div>
               </button>
@@ -956,11 +953,11 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           type="button"
           onClick={handleSelectRandomPrompt}
           disabled={isGenerating}
-          title="Select a random prompt"
+          title={t('home.surpriseMe')}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
         >
           <Dices className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
-          <span>Surprise Me!</span>
+          <span>{t('home.surpriseMe')}</span>
         </button>
       </div>
     </div>

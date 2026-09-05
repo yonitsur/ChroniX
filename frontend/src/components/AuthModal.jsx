@@ -10,10 +10,12 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ChroniXLogo from './ChroniXLogo';
 
 export default function AuthModal({ isOpen, onClose }) {
   const { loginWithGoogle, loginWithEmail, signUpWithEmail } = useAuth();
+  const { t, isRtl } = useLanguage();
 
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
   const [email, setEmail] = useState('');
@@ -44,7 +46,7 @@ export default function AuthModal({ isOpen, onClose }) {
       setError('');
       await loginWithGoogle();
     } catch (err) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(err.message || t('auth.googleFailed'));
       setLoading(false);
     }
   };
@@ -52,7 +54,7 @@ export default function AuthModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Please fill in all required fields');
+      setError(t('auth.fillRequired'));
       return;
     }
 
@@ -66,11 +68,11 @@ export default function AuthModal({ isOpen, onClose }) {
         handleClose();
       } else {
         await signUpWithEmail(email, password, displayName);
-        setSuccessMsg('Account created successfully! Check your email to confirm or sign in now.');
+        setSuccessMsg(t('auth.accountCreatedSuccess'));
         setMode('signin');
       }
     } catch (err) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || t('auth.authFailed'));
     } finally {
       setLoading(false);
     }
@@ -89,7 +91,7 @@ export default function AuthModal({ isOpen, onClose }) {
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          aria-label="Close modal"
+          aria-label={t('common.close')}
         >
           <X className="w-5 h-5" />
         </button>
@@ -101,12 +103,12 @@ export default function AuthModal({ isOpen, onClose }) {
               <ChroniXLogo size="md" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-              {mode === 'signin' ? 'Welcome Back' : 'Create Your ChroniX Account'}
+              {mode === 'signin' ? t('auth.welcomeBack') : t('auth.signUpTitle')}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               {mode === 'signin'
-                ? 'Sign in to access your personal timelines and history'
-                : 'Save timelines, personalize views, and sync across devices'}
+                ? t('auth.welcomeSignInSub')
+                : t('auth.welcomeSignUpSub')}
             </p>
           </div>
 
@@ -137,7 +139,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>Continue with Google</span>
+              <span>{t('auth.googleBtn')}</span>
             </button>
           </div>
 
@@ -145,7 +147,7 @@ export default function AuthModal({ isOpen, onClose }) {
           <div className="relative flex items-center justify-center mb-6">
             <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
             <span className="bg-white dark:bg-slate-900 px-3 text-xs uppercase tracking-wider text-slate-400">
-              or with email
+              {t('auth.orEmail')}
             </span>
             <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
           </div>
@@ -170,15 +172,16 @@ export default function AuthModal({ isOpen, onClose }) {
             {mode === 'signup' && (
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Full Name
+                  {t('auth.fullNameLabel')}
                 </label>
                 <div className="relative">
                   <UserIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
+                    dir="auto"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Your Name"
+                    placeholder={t('auth.fullNamePlaceholder')}
                     className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
@@ -187,16 +190,17 @@ export default function AuthModal({ isOpen, onClose }) {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Email Address
+                {t('auth.emailLabel')}
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
+                  dir="auto"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
@@ -204,16 +208,17 @@ export default function AuthModal({ isOpen, onClose }) {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Password
+                {t('auth.passwordLabel')}
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="password"
+                  dir="auto"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={t('auth.passwordPlaceholder')}
                   minLength={6}
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
@@ -230,7 +235,7 @@ export default function AuthModal({ isOpen, onClose }) {
               ) : (
                 <Sparkles className="w-4 h-4" />
               )}
-              <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
+              <span>{mode === 'signin' ? t('auth.signInBtn') : t('auth.signUpBtn')}</span>
             </button>
           </form>
 
@@ -238,7 +243,7 @@ export default function AuthModal({ isOpen, onClose }) {
           <div className="mt-5 text-center text-xs text-slate-500 dark:text-slate-400">
             {mode === 'signin' ? (
               <span>
-                Don't have an account?{' '}
+                {t('auth.noAccount')}{' '}
                 <button
                   type="button"
                   onClick={() => {
@@ -247,12 +252,12 @@ export default function AuthModal({ isOpen, onClose }) {
                   }}
                   className="text-sky-600 dark:text-sky-400 font-semibold hover:underline"
                 >
-                  Sign up
+                  {t('auth.signUpLink')}
                 </button>
               </span>
             ) : (
               <span>
-                Already have an account?{' '}
+                {t('auth.hasAccount')}{' '}
                 <button
                   type="button"
                   onClick={() => {
@@ -261,7 +266,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   }}
                   className="text-sky-600 dark:text-sky-400 font-semibold hover:underline"
                 >
-                  Sign in
+                  {t('auth.signInLink')}
                 </button>
               </span>
             )}
@@ -271,3 +276,4 @@ export default function AuthModal({ isOpen, onClose }) {
     </div>
   );
 }
+

@@ -8,15 +8,19 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   ShieldCheck,
   History,
-  Layers
+  Layers,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import ChroniXLogo from './ChroniXLogo';
 
 export default function AuthGate() {
   const { loginWithGoogle, loginWithEmail, signUpWithEmail } = useAuth();
+  const { t, language, toggleLanguage, isRtl } = useLanguage();
 
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
   const [email, setEmail] = useState('');
@@ -32,7 +36,7 @@ export default function AuthGate() {
       setError('');
       await loginWithGoogle();
     } catch (err) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(err.message || t('auth.googleFailed'));
       setLoading(false);
     }
   };
@@ -40,7 +44,7 @@ export default function AuthGate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Please fill in all required fields');
+      setError(t('auth.fillRequired'));
       return;
     }
 
@@ -53,22 +57,39 @@ export default function AuthGate() {
         await loginWithEmail(email, password);
       } else {
         await signUpWithEmail(email, password, displayName);
-        setSuccessMsg('Account created successfully! Check your email to confirm or sign in.');
+        setSuccessMsg(t('auth.accountCreatedSuccess'));
         setMode('signin');
       }
     } catch (err) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || t('auth.authFailed'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div
+      className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative overflow-hidden"
+    >
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-tr from-sky-600/20 via-indigo-600/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute -top-20 -right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+
+      {/* Language Switcher in top corner */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 shadow-lg backdrop-blur-md transition-all text-xs font-medium cursor-pointer"
+        >
+          <Globe className="w-3.5 h-3.5 text-sky-400" />
+          <span className="font-semibold text-slate-200">
+            {language === 'en' ? 'עברית' : 'English'}
+          </span>
+        </button>
+      </div>
 
       {/* Main card */}
       <div className="relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 animate-fade-in">
@@ -78,10 +99,10 @@ export default function AuthGate() {
             <ChroniXLogo size="lg" variant="dark" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            {mode === 'signin' ? 'Sign in to ChroniX' : 'Create your ChroniX account'}
+            {mode === 'signin' ? t('auth.signInTitle') : t('auth.signUpTitle')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1.5 max-w-xs">
-            Generate, explore and share interactive visual chronologies powered by Gemini AI
+            {t('auth.tagline')}
           </p>
         </div>
 
@@ -112,7 +133,7 @@ export default function AuthGate() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Continue with Google</span>
+            <span>{t('auth.googleBtn')}</span>
           </button>
         </div>
 
@@ -120,7 +141,7 @@ export default function AuthGate() {
         <div className="relative flex items-center justify-center mb-6">
           <div className="border-t border-slate-800 w-full" />
           <span className="bg-slate-900 px-3 text-[11px] uppercase tracking-wider text-slate-500 font-medium">
-            or with email
+            {t('auth.orEmail')}
           </span>
           <div className="border-t border-slate-800 w-full" />
         </div>
@@ -145,15 +166,16 @@ export default function AuthGate() {
           {mode === 'signup' && (
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Full Name
+                {t('auth.fullNameLabel')}
               </label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="text"
+                  dir="auto"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Your Name"
+                  placeholder={t('auth.fullNamePlaceholder')}
                   className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
                 />
               </div>
@@ -162,16 +184,17 @@ export default function AuthGate() {
 
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1">
-              Email Address
+              {t('auth.emailLabel')}
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
                 type="email"
+                dir="auto"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
+                placeholder={t('auth.emailPlaceholder')}
                 className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
               />
             </div>
@@ -179,16 +202,17 @@ export default function AuthGate() {
 
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1">
-              Password
+              {t('auth.passwordLabel')}
             </label>
             <div className="relative">
               <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
                 type="password"
+                dir="auto"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t('auth.passwordPlaceholder')}
                 minLength={6}
                 className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
               />
@@ -205,7 +229,7 @@ export default function AuthGate() {
             ) : (
               <ArrowRight className="w-4 h-4" />
             )}
-            <span>{mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
+            <span>{mode === 'signin' ? t('auth.signInBtn') : t('auth.signUpBtn')}</span>
           </button>
         </form>
 
@@ -213,7 +237,7 @@ export default function AuthGate() {
         <div className="mt-5 text-center text-xs text-slate-400">
           {mode === 'signin' ? (
             <span>
-              Don't have an account yet?{' '}
+              {t('auth.noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => {
@@ -222,12 +246,12 @@ export default function AuthGate() {
                 }}
                 className="text-sky-400 font-semibold hover:underline"
               >
-                Sign up
+                {t('auth.signUpLink')}
               </button>
             </span>
           ) : (
             <span>
-              Already have an account?{' '}
+              {t('auth.hasAccount')}{' '}
               <button
                 type="button"
                 onClick={() => {
@@ -236,7 +260,7 @@ export default function AuthGate() {
                 }}
                 className="text-sky-400 font-semibold hover:underline"
               >
-                Sign in
+                {t('auth.signInLink')}
               </button>
             </span>
           )}
@@ -247,17 +271,18 @@ export default function AuthGate() {
       <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
         <div className="flex items-center gap-1.5">
           <Sparkles className="w-4 h-4 text-sky-400" />
-          <span>Gemini AI Generated</span>
+          <span>{t('auth.badgeAi')}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Layers className="w-4 h-4 text-indigo-400" />
-          <span>Multi-Lane Historic Scales</span>
+          <span>{t('auth.badgeMultiLane')}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>Cloud Saved & Synced</span>
+          <span>{t('auth.badgeCloud')}</span>
         </div>
       </div>
     </div>
   );
 }
+

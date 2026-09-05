@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, FolderOpen, Calendar, Trash2, Upload, Loader2, Play } from 'lucide-react';
 import { fetchTimelines, deleteTimeline } from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SavedTimelinesModal({
   isOpen,
@@ -8,6 +9,7 @@ export default function SavedTimelinesModal({
   onSelectTimeline,
   onImportJson
 }) {
+  const { t, language, isRtl } = useLanguage();
   const [timelines, setTimelines] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
@@ -34,13 +36,13 @@ export default function SavedTimelinesModal({
 
   const handleDelete = async (id, e) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this timeline?')) return;
+    if (!confirm(t('savedTimelines.confirmDelete'))) return;
     setDeletingId(id);
     try {
       await deleteTimeline(id);
       setTimelines((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
-      alert('Failed to delete timeline');
+      alert(t('savedTimelines.deleteError'));
     } finally {
       setDeletingId(null);
     }
@@ -55,12 +57,12 @@ export default function SavedTimelinesModal({
       try {
         const parsed = JSON.parse(event.target?.result);
         if (!parsed.articles || !parsed.title) {
-          throw new Error('Invalid timeline JSON structure');
+          throw new Error(t('savedTimelines.invalidJsonStructure'));
         }
         onImportJson(parsed);
         onClose();
       } catch (err) {
-        alert('Invalid timeline JSON file: ' + err.message);
+        alert(t('savedTimelines.invalidJson', { err: err.message }));
       }
     };
     reader.readAsText(file);
@@ -77,10 +79,10 @@ export default function SavedTimelinesModal({
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
-                Saved Timelines
+                {t('savedTimelines.title')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Switch between previously generated timelines or import a file
+                {t('savedTimelines.subtitle')}
               </p>
             </div>
           </div>
@@ -88,6 +90,7 @@ export default function SavedTimelinesModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label={t('common.close')}
             className="text-slate-400 hover:text-slate-800 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -97,11 +100,13 @@ export default function SavedTimelinesModal({
         {/* Action bar: Import JSON */}
         <div className="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            {timelines.length} {timelines.length === 1 ? 'timeline' : 'timelines'} found
+            {timelines.length === 1
+              ? t('savedTimelines.foundCountSingle')
+              : t('savedTimelines.foundCount', { count: timelines.length })}
           </span>
           <label className="flex items-center gap-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 shadow-2xs cursor-pointer transition-colors">
             <Upload className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-            <span>Import JSON</span>
+            <span>{t('savedTimelines.importJson')}</span>
             <input
               type="file"
               accept=".json"
@@ -116,11 +121,11 @@ export default function SavedTimelinesModal({
           {loading ? (
             <div className="py-12 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 gap-2">
               <Loader2 className="w-6 h-6 animate-spin text-sky-500 dark:text-sky-400" />
-              <span className="text-xs">Loading timelines...</span>
+              <span className="text-xs">{t('savedTimelines.loading')}</span>
             </div>
           ) : timelines.length === 0 ? (
             <div className="py-12 text-center text-slate-400 dark:text-slate-500 text-xs">
-              No saved timelines found yet. Generate your first one!
+              {t('savedTimelines.empty')}
             </div>
           ) : (
             timelines.map((item) => (
@@ -139,7 +144,7 @@ export default function SavedTimelinesModal({
                     </h4>
                     {item.timeScale === 'prehistoric' && (
                       <span className="text-[10px] bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 px-1.5 py-0.5 rounded">
-                        Prehistoric
+                        {t('savedTimelines.prehistoricBadge')}
                       </span>
                     )}
                   </div>
@@ -151,10 +156,14 @@ export default function SavedTimelinesModal({
                   <div className="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {item.articleCount} events
+                      {t('savedTimelines.eventsCount', { count: item.articleCount })}
                     </span>
                     {item.updatedAt && (
-                      <span>Updated {new Date(item.updatedAt).toLocaleDateString()}</span>
+                      <span>
+                        {t('savedTimelines.updatedDate', {
+                          date: new Date(item.updatedAt).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')
+                        })}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -162,7 +171,7 @@ export default function SavedTimelinesModal({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    title="Load timeline"
+                    title={t('savedTimelines.loadTooltip')}
                     className="p-2 text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 hover:bg-slate-200/60 dark:hover:bg-slate-700 rounded-lg transition-colors"
                   >
                     <Play className="w-4 h-4 fill-current" />
@@ -171,7 +180,7 @@ export default function SavedTimelinesModal({
                     type="button"
                     onClick={(e) => handleDelete(item.id, e)}
                     disabled={deletingId === item.id}
-                    title="Delete timeline"
+                    title={t('savedTimelines.deleteTooltip')}
                     className="p-2 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-slate-700 rounded-lg transition-colors"
                   >
                     {deletingId === item.id ? (

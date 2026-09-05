@@ -19,6 +19,7 @@ import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
 import AuthGate from './components/AuthGate';
 import { useAuth } from './context/AuthContext';
+import { useLanguage } from './context/LanguageContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
@@ -34,6 +35,7 @@ import {
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
+  const { language, isRtl, t } = useLanguage();
   const [currentTimeline, setCurrentTimeline] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -248,11 +250,11 @@ export default function App() {
       triggerCelebration();
     } catch (err) {
       if (err.name === 'AbortError' || controller.signal.aborted) {
-        console.log('Generation stopped by user.');
+        console.log(t('app.generatingStopped'));
         return;
       }
       console.error('Generation failed:', err);
-      setErrorMessage(err.message || 'Failed to generate timeline');
+      setErrorMessage(err.message || t('app.failedGenerate'));
       if (err.message && err.message.includes('API Key')) {
         setIsSettingsOpen(true);
       }
@@ -322,7 +324,7 @@ export default function App() {
         return;
       }
       console.error('Refinement failed:', err);
-      setErrorMessage(err.message || 'Failed to refine timeline');
+      setErrorMessage(err.message || t('app.failedRefine'));
     } finally {
       if (refineAbortControllerRef.current === controller) {
         refineAbortControllerRef.current = null;
@@ -374,7 +376,7 @@ export default function App() {
   // Handle deleting an event
   const handleDeleteEvent = async (articleId) => {
     if (!currentTimeline) return;
-    if (!confirm('Are you sure you want to delete this event?')) return;
+    if (!confirm(t('eventDrawer.deleteConfirm'))) return;
 
     const updatedArticles = currentTimeline.articles.filter((a) => a.id !== articleId);
     const updatedTimeline = {
@@ -432,7 +434,7 @@ export default function App() {
           a.click();
         })
         .catch((err) => {
-          alert('Failed to export image: ' + err.message);
+          alert(t('app.failedExportImg') + err.message);
         });
     }
   };
@@ -446,7 +448,7 @@ export default function App() {
         setActivePrompt(data.title);
       }
     } catch (err) {
-      alert('Failed to load timeline: ' + err.message);
+      alert(t('app.failedLoad') + err.message);
     }
   };
 
@@ -500,7 +502,7 @@ export default function App() {
             <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
           </div>
         </div>
-        <span className="text-xs text-slate-400 font-medium tracking-wide">Starting ChroniX...</span>
+        <span className="text-xs text-slate-400 font-medium tracking-wide">{t('app.starting')}</span>
       </div>
     );
   }
@@ -556,15 +558,16 @@ export default function App() {
 
       {/* Main Canvas Area */}
       <main className="flex-1 relative w-full h-full">
-        {/* Floating Left Edge Toggle for Cards List when closed and cards exist */}
+        {/* Floating Edge Toggle for Cards List when closed and cards exist */}
         {currentTimeline?.articles?.length > 0 && !isCardsListOpen && (
           <FloatingCardsButton
             count={currentTimeline.articles.length}
             onClick={() => setIsCardsListOpen(true)}
+            side="right"
           />
         )}
 
-        {/* Cards List Drawer (Left Panel) */}
+        {/* Cards List Drawer (Panel) */}
         <CardsListDrawer
           isOpen={isCardsListOpen}
           onClose={() => setIsCardsListOpen(false)}
@@ -595,7 +598,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('pip')}
                     className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title="Switch to Picture-in-Picture (PiP)"
+                    title={t('floatingMap.pipTooltip')}
                   >
                     <Minimize2 className="w-3.5 h-3.5" />
                   </button>
@@ -603,7 +606,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('full')}
                     className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title="Full Screen"
+                    title={t('floatingMap.fullTooltip')}
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
@@ -611,7 +614,7 @@ export default function App() {
                     type="button"
                     onClick={() => handleMapDisplayModeChange('icon')}
                     className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
-                    title="Close split and return to timeline"
+                    title={t('floatingMap.closeTooltip')}
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -642,7 +645,7 @@ export default function App() {
                 className={`group relative w-full h-3.5 flex items-center justify-center cursor-row-resize bg-slate-200/90 dark:bg-slate-800/90 border-y border-slate-300 dark:border-slate-700 hover:bg-sky-500/20 dark:hover:bg-sky-500/30 transition-colors shrink-0 z-30 select-none ${
                   isDraggingSplit ? 'bg-sky-500/30 dark:bg-sky-500/40 ring-1 ring-sky-500/60' : ''
                 }`}
-                title="Drag to resize map & timeline • Double-click to reset 50/50"
+                title={t('floatingMap.resizeTooltip')}
               >
                 {/* Visual Grip pill */}
                 <div className="flex items-center gap-1 px-3 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-2xs group-hover:border-sky-400 group-hover:scale-105 transition-all pointer-events-none">
@@ -697,10 +700,10 @@ export default function App() {
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight font-sans">
-                  Discover and explore interactive chronologies
+                  {t('home.title')}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-sans">
-                  Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below
+                  {t('home.subtitle')}
                 </p>
             </div>
 
@@ -713,7 +716,7 @@ export default function App() {
                 className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 text-xs font-semibold shadow-xs hover:shadow-md transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer backdrop-blur-md"
               >
                 <BookOpen className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-6 transition-transform" />
-                <span>Explore our User Guide</span>
+                <span>{t('home.exploreGuide')}</span>
                 <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all" />
               </button>
             </div>
@@ -737,7 +740,7 @@ export default function App() {
                   onClick={reset}
                   className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded text-white font-medium cursor-pointer"
                 >
-                  Close
+                  {t('common.close')}
                 </button>
               </div>
             )}
@@ -762,7 +765,7 @@ export default function App() {
             <div className="flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-sky-500 shrink-0" />
               <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
-                Generating chronology...
+                {t('app.generatingChronology')}
               </span>
             </div>
             <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-0.5" />
@@ -770,10 +773,10 @@ export default function App() {
               type="button"
               onClick={handleStopGenerate}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 text-xs font-semibold border border-rose-200/80 dark:border-rose-800/80 transition-all cursor-pointer active:scale-95 shadow-2xs group"
-              title="Stop generation (Esc)"
+              title={t('toolbar.stopGenerateBtn')}
             >
               <Square className="w-2.5 h-2.5 fill-current text-rose-500 group-hover:scale-110 transition-transform" />
-              <span>Stop generate</span>
+              <span>{t('app.stopGenerate')}</span>
             </button>
           </div>
         )}

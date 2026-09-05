@@ -27,10 +27,12 @@ import {
   User as UserIcon,
   Square,
   Info,
-  BookOpen
+  BookOpen,
+  Languages
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const DETAIL_LEVEL_OPTIONS = [
   {
@@ -83,6 +85,7 @@ export default function Toolbar({
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
+  const { language, toggleLanguage, isRtl, t } = useLanguage();
   
   // Dropdown states
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -124,19 +127,41 @@ export default function Toolbar({
   }, [activeDetailLevel]);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
 
+  const detailOptions = [
+    {
+      id: 'overview',
+      label: t('toolbar.detailOverview'),
+      description: t('toolbar.detailOverviewDesc')
+    },
+    {
+      id: 'standard',
+      label: t('toolbar.detailStandard'),
+      description: t('toolbar.detailStandardDesc')
+    },
+    {
+      id: 'deep_dive',
+      label: t('toolbar.detailDeep'),
+      description: t('toolbar.detailDeepDesc')
+    }
+  ];
+
   const activeDetailOption =
-    DETAIL_LEVEL_OPTIONS.find((opt) => opt.id === detailLevel) || DETAIL_LEVEL_OPTIONS[1];
+    detailOptions.find((opt) => opt.id === detailLevel) || detailOptions[1];
+
+  const loadingSteps = Array.isArray(t('toolbar.loadingSteps'))
+    ? t('toolbar.loadingSteps')
+    : LOADING_STEPS;
 
   useEffect(() => {
     let interval;
     if (isGenerating) {
       setLoadingStepIdx(0);
       interval = setInterval(() => {
-        setLoadingStepIdx((prev) => (prev + 1) % LOADING_STEPS.length);
+        setLoadingStepIdx((prev) => (prev + 1) % loadingSteps.length);
       }, 2200);
     }
     return () => clearInterval(interval);
-  }, [isGenerating]);
+  }, [isGenerating, loadingSteps.length]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -147,7 +172,7 @@ export default function Toolbar({
   };
 
   return (
-    <header className="relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 z-20 select-none transition-colors">
+    <header dir="ltr" className="relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 z-20 select-none transition-colors">
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
         {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
@@ -166,14 +191,14 @@ export default function Toolbar({
                 <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate">
                   <span className="flex items-center gap-1 shrink-0 font-medium">
                     <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                    {timelineData?.articles?.length || 0} events
+                    {t('toolbar.eventsCount', { count: timelineData?.articles?.length || 0 })}
                   </span>
                   {timelineData?.lanes?.length > 0 && (
                     <>
                       <span className="shrink-0 opacity-40">•</span>
                       <span className="flex items-center gap-1 shrink-0 font-medium">
                         <Layers className="w-3 h-3 text-slate-400 dark:text-slate-500" />
-                        {timelineData.lanes.length} lanes
+                        {t('toolbar.lanesCount', { count: timelineData.lanes.length })}
                       </span>
                     </>
                   )}
@@ -183,7 +208,7 @@ export default function Toolbar({
               <div className="hidden sm:flex flex-col pl-2.5 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 shrink-0">
                 <span className="flex items-center gap-1 font-medium tracking-wide">
                   <Calendar className="w-3 h-3 text-sky-500/80 dark:text-sky-400/80" />
-                  Visual Chronology
+                  {t('toolbar.visualChronology')}
                 </span>
               </div>
             )}
@@ -198,8 +223,8 @@ export default function Toolbar({
               type="button"
               onClick={onZoomIn}
               className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title="Zoom In"
-              aria-label="Zoom In"
+              title={t('toolbar.zoomIn')}
+              aria-label={t('toolbar.zoomIn')}
             >
               <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
@@ -207,8 +232,8 @@ export default function Toolbar({
               type="button"
               onClick={onZoomOut}
               className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title="Zoom Out"
-              aria-label="Zoom Out"
+              title={t('toolbar.zoomOut')}
+              aria-label={t('toolbar.zoomOut')}
             >
               <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
@@ -216,8 +241,8 @@ export default function Toolbar({
               type="button"
               onClick={onFitAll}
               className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title="Fit All Articles"
-              aria-label="Fit All Articles"
+              title={t('toolbar.fitAll')}
+              aria-label={t('toolbar.fitAll')}
             >
               <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
@@ -230,10 +255,10 @@ export default function Toolbar({
               disabled={isGenerating}
               onClick={onOpenRefine}
               className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
-              title="Refine timeline using AI instructions"
+              title={t('toolbar.refineTitle')}
             >
               <Sparkles className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-              <span className="hidden sm:inline">Refine</span>
+              <span className="hidden sm:inline">{t('toolbar.refine')}</span>
             </button>
           )}
 
@@ -243,8 +268,8 @@ export default function Toolbar({
               type="button"
               onClick={onAddEvent}
               className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
-              title="Add Custom Event"
-              aria-label="Add Custom Event"
+              title={t('toolbar.addEvent')}
+              aria-label={t('toolbar.addEvent')}
             >
               <PlusCircle className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
             </button>
@@ -255,26 +280,44 @@ export default function Toolbar({
             <button
               type="button"
               onClick={() => {
-                if (window.confirm('Are you sure you want to clear the board and start a new timeline? All unsaved events will be deleted.')) {
+                if (window.confirm(t('toolbar.clearConfirm'))) {
                   setPrompt('');
                   onClearBoard?.();
                 }
               }}
               className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-rose-50/80 dark:hover:bg-rose-950/30 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-900/50 shadow-2xs transition-all active:scale-95 cursor-pointer group"
-              title="Clear Board / New Board"
-              aria-label="Clear Board / New Board"
+              title={t('toolbar.clearBoard')}
+              aria-label={t('toolbar.clearBoard')}
             >
               <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500 transition-colors shrink-0" />
             </button>
           )}
+
+          {/* Dedicated Language Switcher (EN / עב) */}
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer text-xs font-semibold"
+            title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
+            aria-label={language === 'en' ? 'Switch to Hebrew' : 'Switch to English'}
+          >
+            <Languages className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+            <span className="tracking-wide">
+              {language === 'en' ? (
+                <span><strong className="text-sky-600 dark:text-sky-400">EN</strong> / עב</span>
+              ) : (
+                <span><strong className="text-sky-600 dark:text-sky-400">עב</strong> / EN</span>
+              )}
+            </span>
+          </button>
 
           {/* Light / Dark Mode Toggle Button */}
           <button
             type="button"
             onClick={onToggleTheme}
             className="p-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
+            aria-label={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
           >
             {isDark ? (
               <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
@@ -293,8 +336,8 @@ export default function Toolbar({
                   ? 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white'
                   : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800'
               }`}
-              title="More Actions & Settings"
-              aria-label="More Actions & Settings"
+              title={t('toolbar.moreActions')}
+              aria-label={t('toolbar.moreActions')}
             >
               <MoreVertical className="w-4 h-4" />
             </button>
@@ -304,7 +347,7 @@ export default function Toolbar({
                 
                 {/* Timeline Actions */}
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                  Timeline
+                  {t('toolbar.timelineSection')}
                 </div>
 
                 <button
@@ -313,10 +356,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onOpenSaved();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span className="font-medium">Saved Timelines</span>
+                  <span className="font-medium">{t('toolbar.savedTimelines')}</span>
                 </button>
 
                 <button
@@ -326,16 +369,16 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onAddEvent();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span className="font-medium">Add Custom Event</span>
+                  <span className="font-medium">{t('toolbar.addEvent')}</span>
                 </button>
 
                 {/* Export Options */}
                 <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                  Export
+                  {t('toolbar.exportSection')}
                 </div>
 
                 <button
@@ -345,10 +388,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onExportImage();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
                 >
                   <ImageIcon className="w-4 h-4 text-sky-500 shrink-0" />
-                  <span className="font-medium">Export Snapshot (PNG)</span>
+                  <span className="font-medium">{t('toolbar.exportPng')}</span>
                 </button>
 
                 <button
@@ -358,10 +401,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onExportJson();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
                 >
                   <Download className="w-4 h-4 text-indigo-500 shrink-0" />
-                  <span className="font-medium">Export Data (JSON)</span>
+                  <span className="font-medium">{t('toolbar.exportJson')}</span>
                 </button>
 
                 {/* Clear Board option */}
@@ -370,23 +413,41 @@ export default function Toolbar({
                     type="button"
                     onClick={() => {
                       setIsMoreMenuOpen(false);
-                      if (window.confirm('Are you sure you want to clear the board? All unsaved events will be deleted.')) {
+                      if (window.confirm(t('toolbar.clearConfirm'))) {
                         setPrompt('');
                         onClearBoard?.();
                       }
                     }}
-                    className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                    className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4 text-rose-500 shrink-0" />
-                    <span className="font-medium">Clear Board</span>
+                    <span className="font-medium">{t('toolbar.clearBoard')}</span>
                   </button>
                 )}
 
                 {/* System Settings & Info */}
                 <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                  System & Info
+                  {t('toolbar.systemSection')}
                 </div>
+
+                {/* Language switch option in More Menu */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    toggleLanguage();
+                  }}
+                  className="w-full text-start px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Languages className="w-4 h-4 text-sky-500 shrink-0" />
+                    <span className="font-medium">{t('toolbar.language')}: {language === 'en' ? 'English' : 'עברית'}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800">
+                    {language === 'en' ? 'עברית' : 'English'}
+                  </span>
+                </button>
 
                 <button
                   type="button"
@@ -395,10 +456,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onOpenGuide?.();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
-                  <span className="font-medium">User Guide</span>
+                  <span className="font-medium">{t('toolbar.userGuide')}</span>
                 </button>
 
                 <button
@@ -407,10 +468,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onOpenAbout?.();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <Info className="w-4 h-4 text-sky-500 shrink-0" />
-                  <span className="font-medium">About ChroniX</span>
+                  <span className="font-medium">{t('toolbar.aboutChronix')}</span>
                 </button>
 
                 <button
@@ -419,10 +480,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onOpenSettings();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <Key className="w-4 h-4 text-sky-500 shrink-0" />
-                  <span className="font-medium">API Key Settings</span>
+                  <span className="font-medium">{t('toolbar.apiKeySettings')}</span>
                 </button>
 
                 <button
@@ -431,10 +492,10 @@ export default function Toolbar({
                     setIsMoreMenuOpen(false);
                     onOpenDisclaimer();
                   }}
-                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span className="font-medium">AI Accuracy Disclaimer</span>
+                  <span className="font-medium">{t('toolbar.aiDisclaimer')}</span>
                 </button>
               </div>
             )}
@@ -480,10 +541,10 @@ export default function Toolbar({
                       setIsUserMenuOpen(false);
                       onOpenSaved();
                     }}
-                    className="w-full text-left px-3 py-2 flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="w-full text-start px-3 py-2 flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     <FolderOpen className="w-3.5 h-3.5 text-amber-500" />
-                    <span>My Timelines</span>
+                    <span>{t('toolbar.myTimelines')}</span>
                   </button>
 
                   <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
@@ -494,10 +555,10 @@ export default function Toolbar({
                       setIsUserMenuOpen(false);
                       await logout();
                     }}
-                    className="w-full text-left px-3 py-2 flex items-center gap-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                    className="w-full text-start px-3 py-2 flex items-center gap-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
+                    <span>{t('toolbar.signOut')}</span>
                   </button>
                 </div>
               )}
@@ -507,10 +568,10 @@ export default function Toolbar({
               type="button"
               onClick={onOpenAuth}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
-              title="Sign In with Google, Facebook or Email"
+              title={t('toolbar.signIn')}
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Sign In</span>
+              <span className="hidden sm:inline">{t('toolbar.signIn')}</span>
             </button>
           )}
         </div>
@@ -536,11 +597,11 @@ export default function Toolbar({
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isGenerating}
-              title={prompt || "Enter timeline topic"}
+              title={prompt || t('toolbar.inputPlaceholder')}
               placeholder={
                 isGenerating
-                  ? LOADING_STEPS[loadingStepIdx]
-                  : "Enter timeline topic (e.g. Ancient Egypt, Space Race, תולדות הציונות)"
+                  ? loadingSteps[loadingStepIdx % loadingSteps.length]
+                  : t('toolbar.inputPlaceholder')
               }
               className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans"
             />
@@ -551,8 +612,8 @@ export default function Toolbar({
                 type="button"
                 onClick={() => setPrompt('')}
                 className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0 mr-1 cursor-pointer"
-                title="Clear input"
-                aria-label="Clear input"
+                title={t('toolbar.clearInput')}
+                aria-label={t('toolbar.clearInput')}
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -565,7 +626,7 @@ export default function Toolbar({
                 onClick={() => setIsDetailDropdownOpen((prev) => !prev)}
                 disabled={isGenerating}
                 className="flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold transition-all mr-1 shadow-2xs active:scale-95 cursor-pointer"
-                title={`Detail level: ${activeDetailOption.label} (${activeDetailOption.description})`}
+                title={`${t('toolbar.detailLevel')}: ${activeDetailOption.label} (${activeDetailOption.description})`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
                 <span className="hidden sm:inline">{activeDetailOption.label}</span>
@@ -579,9 +640,9 @@ export default function Toolbar({
               {isDetailDropdownOpen && (
                 <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-2 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                    Detail Level
+                    {t('toolbar.detailLevel')}
                   </div>
-                  {DETAIL_LEVEL_OPTIONS.map((opt) => {
+                  {detailOptions.map((opt) => {
                     const isSelected = detailLevel === opt.id;
                     return (
                       <button
@@ -591,13 +652,13 @@ export default function Toolbar({
                           setDetailLevel(opt.id);
                           setIsDetailDropdownOpen(false);
                         }}
-                        className={`w-full text-left flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                        className={`w-full text-start flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                           isSelected
                             ? 'bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white font-semibold'
                             : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                         }`}
                       >
-                        <div className="flex flex-col text-left">
+                        <div className="flex flex-col text-start">
                           <span className="font-medium text-xs text-slate-900 dark:text-slate-100">
                             {opt.label}
                           </span>
@@ -625,8 +686,8 @@ export default function Toolbar({
                   onStopGenerate?.();
                 }}
                 className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-medium px-2 sm:px-2.5 py-1.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
-                title="Stop generation"
-                aria-label="Stop generation"
+                title={t('toolbar.stopGenerateBtn')}
+                aria-label={t('toolbar.stopGenerateBtn')}
               >
                 <Square className="w-3 h-3 fill-current shrink-0" />
               </button>
@@ -635,8 +696,8 @@ export default function Toolbar({
                 type="submit"
                 disabled={!prompt.trim()}
                 className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
-                title="Generate timeline"
-                aria-label="Generate timeline"
+                title={t('toolbar.generateBtn')}
+                aria-label={t('toolbar.generateBtn')}
               >
                 <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </button>
