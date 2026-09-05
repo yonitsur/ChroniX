@@ -172,7 +172,12 @@ export default function EventEditModal({
           if (data.to.year !== undefined && data.to.year !== null) setToYear(data.to.year);
           if (data.to.month !== undefined && data.to.month !== null) setToMonth(data.to.month);
           if (data.to.day !== undefined && data.to.day !== null) setToDay(data.to.day);
+        } else {
+          setToYear('');
+          setToMonth('');
+          setToDay('');
         }
+        setIsToPresent(Boolean(data.isToPresent));
         setStatusMessage(t('eventEditModal.datesUpdatedSuccess'));
         setTimeout(() => setStatusMessage(null), 4000);
       }

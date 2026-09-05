@@ -532,3 +532,80 @@ async def test_refine_timeline_restructuring_and_preservation():
         assert bulge.from_.year == 1944
         assert bulge.from_.month == 12
 
+
+def test_normalize_event_dates_point_in_time():
+    from services.gemini_service import normalize_event_dates
+    from_dict, to_dict, is_present = normalize_event_dates(
+        from_year=1969, from_month=7, from_day=20, from_precision="day",
+        to_year=None, to_month=None, to_day=None, to_precision=None,
+        is_to_present=False
+    )
+    assert from_dict["year"] == 1969
+    assert from_dict["month"] == 7
+    assert from_dict["day"] == 20
+    assert to_dict is None
+    assert is_present is False
+
+
+def test_normalize_event_dates_valid_span():
+    from services.gemini_service import normalize_event_dates
+    from_dict, to_dict, is_present = normalize_event_dates(
+        from_year=1939, from_month=9, from_day=1, from_precision="day",
+        to_year=1945, to_month=9, to_day=2, to_precision="day",
+        is_to_present=False
+    )
+    assert from_dict["year"] == 1939
+    assert to_dict["year"] == 1945
+    assert is_present is False
+
+
+def test_normalize_event_dates_ongoing_to_present():
+    from services.gemini_service import normalize_event_dates
+    from_dict, to_dict, is_present = normalize_event_dates(
+        from_year=1948, from_month=5, from_day=14, from_precision="day",
+        to_year=2024, to_month=1, to_day=1, to_precision="day",
+        is_to_present=True
+    )
+    assert from_dict["year"] == 1948
+    assert to_dict is None
+    assert is_present is True
+
+
+def test_normalize_event_dates_reversed_bce():
+    from services.gemini_service import normalize_event_dates
+    # Peloponnesian War: -431 to -404 BCE. If model erroneously returned from=-404, to=-431:
+    from_dict, to_dict, is_present = normalize_event_dates(
+        from_year=-404, from_month=None, from_day=None, from_precision="year",
+        to_year=-431, to_month=None, to_day=None, to_precision="year",
+        is_to_present=False
+    )
+    assert from_dict["year"] == -431
+    assert to_dict["year"] == -404
+    assert is_present is False
+
+
+def test_normalize_event_dates_identical_collapses():
+    from services.gemini_service import normalize_event_dates
+    # If identical from and to are provided, collapse to point-in-time
+    from_dict, to_dict, is_present = normalize_event_dates(
+        from_year=1776, from_month=7, from_day=4, from_precision="day",
+        to_year=1776, to_month=7, to_day=4, to_precision="day",
+        is_to_present=False
+    )
+    assert from_dict["year"] == 1776
+    assert to_dict is None
+    assert is_present is False
+
+
+def test_schema_descriptions_for_gemini():
+    from models import GeminiEventItem, EventSuggestionOutput
+    gemini_schema = GeminiEventItem.model_json_schema()
+    assert "description" in gemini_schema["properties"]["to_year"]
+    assert "MANDATORY" in gemini_schema["properties"]["to_year"]["description"]
+    assert "description" in gemini_schema["properties"]["is_to_present"]
+
+    sugg_schema = EventSuggestionOutput.model_json_schema()
+    assert "description" in sugg_schema["properties"]["to_year"]
+    assert "description" in sugg_schema["properties"]["is_to_present"]
+
+

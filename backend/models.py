@@ -89,15 +89,15 @@ class EventSuggestionOutput(BaseModel):
     title: str = Field(description="Display title of the event or person")
     subtitle: Optional[str] = Field(default="", description="Crisp one-line summary or historical significance")
     wikipedia_title: Optional[str] = Field(default=None, description="Exact canonical Wikipedia title (with disambiguation parenthetical if needed, e.g. 'Lucy (hominid)' or 'לוסי (שלד)')")
-    from_year: int = Field(description="Calendar year, negative for BCE or astronomical years ago if prehistoric")
-    from_month: Optional[int] = Field(default=None, ge=1, le=12)
-    from_day: Optional[int] = Field(default=None, ge=1, le=31)
-    from_precision: Optional[PrecisionType] = Field(default="year")
-    to_year: Optional[int] = None
-    to_month: Optional[int] = Field(default=None, ge=1, le=12)
-    to_day: Optional[int] = Field(default=None, ge=1, le=31)
-    to_precision: Optional[PrecisionType] = None
-    is_to_present: Optional[bool] = False
+    from_year: int = Field(description="Start calendar year. Negative for BCE (e.g. -753) or astronomical years ago if prehistoric (e.g. -3200000)")
+    from_month: Optional[int] = Field(default=None, ge=1, le=12, description="Start month (1-12) if known")
+    from_day: Optional[int] = Field(default=None, ge=1, le=31, description="Start day (1-31) if known")
+    from_precision: Optional[PrecisionType] = Field(default="year", description="Precision of start date")
+    to_year: Optional[int] = Field(default=None, description="End calendar year. MANDATORY for any prolonged event, war, reign, era, movement, or span. Leave null ONLY for single-moment / single-day events.")
+    to_month: Optional[int] = Field(default=None, ge=1, le=12, description="End month (1-12) if known")
+    to_day: Optional[int] = Field(default=None, ge=1, le=31, description="End day (1-31) if known")
+    to_precision: Optional[PrecisionType] = Field(default=None, description="Precision of end date")
+    is_to_present: Optional[bool] = Field(default=False, description="Set to true if this event, reign, organization, or movement began in the past and is still ongoing today.")
     lane_id: Optional[str] = Field(default=None, description="Matching lane id from available lanes, or null")
     location_name: Optional[str] = Field(default=None, description="City, region, landmark, or country where the event took place, or null")
     lat: Optional[float] = Field(default=None, description="Latitude coordinate, or null")
@@ -106,24 +106,30 @@ class EventSuggestionOutput(BaseModel):
 
 # Gemini Raw Structured Response Models
 class GeminiEventItem(BaseModel):
-    id: str
-    title: str
-    subtitle: Optional[str] = ""
-    lane: Optional[str] = ""
-    from_year: int
-    from_month: Optional[int] = None
-    from_day: Optional[int] = None
-    from_precision: PrecisionType = "year"
-    to_year: Optional[int] = None
-    to_month: Optional[int] = None
-    to_day: Optional[int] = None
-    to_precision: Optional[PrecisionType] = None
-    is_to_present: Optional[bool] = False
-    wikipedia_title: Optional[str] = ""
-    importance_rank: int = 5
-    location_name: Optional[str] = None
-    lat: Optional[float] = None
-    lng: Optional[float] = None
+    id: str = Field(description="Unique short ID for the event, e.g. 'ev-1'")
+    title: str = Field(description="Display title of the event or entity")
+    subtitle: Optional[str] = Field(default="", description="Crisp one-line summary of historical significance")
+    lane: Optional[str] = Field(default="", description="Target lane id from the lanes list")
+    from_year: int = Field(description="Start calendar year. Negative for BCE (e.g. -509) or astronomical years ago if prehistoric (e.g. -66000000)")
+    from_month: Optional[int] = Field(default=None, ge=1, le=12, description="Start month (1-12) if known")
+    from_day: Optional[int] = Field(default=None, ge=1, le=31, description="Start day (1-31) if known")
+    from_precision: PrecisionType = Field(default="year", description="Precision of start date")
+    to_year: Optional[int] = Field(
+        default=None,
+        description="End calendar year. MANDATORY for any event, war, reign, era, presidency, movement, dynasty, or prolonged span. Leave null ONLY for instantaneous point-in-time milestones."
+    )
+    to_month: Optional[int] = Field(default=None, ge=1, le=12, description="End month (1-12) if known")
+    to_day: Optional[int] = Field(default=None, ge=1, le=31, description="End day (1-31) if known")
+    to_precision: Optional[PrecisionType] = Field(default=None, description="Precision of end date")
+    is_to_present: Optional[bool] = Field(
+        default=False,
+        description="Set to true if this entity, movement, reign, or event began in history and continues actively to this day."
+    )
+    wikipedia_title: Optional[str] = Field(default="", description="Exact canonical Wikipedia title (with parenthetical qualifier if disambiguation needed)")
+    importance_rank: int = Field(default=5, ge=1, le=10, description="Visual prominence rank from 1 (minor) to 10 (defining milestone)")
+    location_name: Optional[str] = Field(default=None, description="City, region, archaeological site, or country where the event took place, or null")
+    lat: Optional[float] = Field(default=None, description="Approximate latitude coordinate (-90.0 to 90.0), or null")
+    lng: Optional[float] = Field(default=None, description="Approximate longitude coordinate (-180.0 to 180.0), or null")
 
 class GeminiLaneItem(BaseModel):
     id: str
