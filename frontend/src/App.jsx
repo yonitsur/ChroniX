@@ -700,7 +700,7 @@ export default function App() {
                   Discover and explore interactive chronologies
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-sans">
-                  Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below:
+                  Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below
                 </p>
             </div>
 
@@ -713,7 +713,7 @@ export default function App() {
                 className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 text-xs font-semibold shadow-xs hover:shadow-md transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer backdrop-blur-md"
               >
                 <BookOpen className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-6 transition-transform" />
-                <span>Need prompt tips & feature guides? Explore our User Guide</span>
+                <span>Explore our User Guide</span>
                 <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all" />
               </button>
             </div>

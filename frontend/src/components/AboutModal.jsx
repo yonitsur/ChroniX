@@ -70,26 +70,19 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
         {/* Header with Logo & Hero */}
         <div className="relative px-6 pt-6 pb-4 border-b border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-50 via-sky-50/30 to-white dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950">
           <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-sky-500/15 to-indigo-500/15 dark:from-sky-500/25 dark:to-indigo-500/25 border border-sky-500/20 shadow-xs flex items-center justify-center">
-                <ChroniXLogo size="sm" mode="minimal" variant="auto" />
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h2 id="about-chronix-title" className="sr-only">
+                  ChroniX
+                </h2>
+                <ChroniXLogo mode="minimal" size="md" className="h-7 w-auto" />
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                  v1.0
+                </span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2
-                    id="about-chronix-title"
-                    className="font-black text-xl text-slate-900 dark:text-white tracking-tight"
-                  >
-                    ChroniX
-                  </h2>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
-                    v1.0
-                  </span>
-                </div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-                  AI-Powered Interactive Visual Chronology
-                </p>
-              </div>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
+                AI-Powered Interactive Visual Chronology
+              </p>
             </div>
 
             <button
