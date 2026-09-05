@@ -19,7 +19,6 @@ import {
   ChevronDown,
   SlidersHorizontal,
   Check,
-  Dices,
   LogIn,
   LogOut,
   MoreVertical,
@@ -29,7 +28,6 @@ import {
   Square
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
-import { getRandomSurpriseTopic } from '../data/surpriseTopics';
 import { useAuth } from '../context/AuthContext';
 
 const DETAIL_LEVEL_OPTIONS = [
@@ -121,27 +119,6 @@ export default function Toolbar({
     setDetailLevel(activeDetailLevel || 'standard');
   }, [activeDetailLevel]);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
-  const [recentSurprises, setRecentSurprises] = useState(() => {
-    try {
-      const saved = localStorage.getItem('chronix_recent_surprises');
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
-
-  const handleSurpriseMe = () => {
-    if (isGenerating) return;
-    const { topic, nextHistory } = getRandomSurpriseTopic(recentSurprises);
-    setRecentSurprises(nextHistory);
-    try {
-      localStorage.setItem('chronix_recent_surprises', JSON.stringify(nextHistory));
-    } catch (e) {}
-    setPrompt(topic);
-    if (onGenerate) {
-      onGenerate(topic, detailLevel);
-    }
-  };
 
   const activeDetailOption =
     DETAIL_LEVEL_OPTIONS.find((opt) => opt.id === detailLevel) || DETAIL_LEVEL_OPTIONS[1];
@@ -608,17 +585,6 @@ export default function Toolbar({
                 </div>
               )}
             </div>
-
-            {/* Surprise Me Button */}
-            <button
-              type="button"
-              onClick={handleSurpriseMe}
-              disabled={isGenerating}
-              className="flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-400 border border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-700/60 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed font-medium p-1.5 sm:px-2 rounded-lg shadow-2xs transition-all text-xs shrink-0 mr-1 cursor-pointer group"
-              title="Surprise me with a random fascinating timeline topic!"
-            >
-              <Dices className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
-            </button>
 
             {/* Generate / Stop Button - Stays firmly inside the prompt container */}
             {isGenerating ? (
