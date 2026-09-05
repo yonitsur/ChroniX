@@ -9,7 +9,8 @@ import {
   ChevronLeft,
   Filter,
   Check,
-  MapPin
+  MapPin,
+  Star
 } from 'lucide-react';
 import { getLaneColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
@@ -20,12 +21,20 @@ export default function CardsListDrawer({
   articles = [],
   lanes = [],
   selectedArticleId,
-  onSelectArticle
+  onSelectArticle,
+  starredArticleIds,
+  onToggleStar,
+  filterStarredOnly = false,
+  onToggleFilterStarredOnly
 }) {
   const { t, isRtl, formatTimeSpan } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLaneId, setSelectedLaneId] = useState('all');
   const [sortBy, setSortBy] = useState('chronological_asc'); // 'chronological_asc' | 'chronological_desc' | 'alphabetical'
+
+  const starredCount = useMemo(() => {
+    return articles.filter((a) => starredArticleIds?.has(a.id)).length;
+  }, [articles, starredArticleIds]);
 
   // Map lanes for fast lookup
   const laneMap = useMemo(() => {
@@ -43,6 +52,11 @@ export default function CardsListDrawer({
   const filteredArticles = useMemo(() => {
     return articles
       .filter((art) => {
+        // Filter by starred if enabled
+        if (filterStarredOnly && !starredArticleIds?.has(art.id)) {
+          return false;
+        }
+
         // Filter by lane
         if (selectedLaneId !== 'all') {
           if (art.lane !== selectedLaneId) return false;
@@ -147,40 +161,67 @@ export default function CardsListDrawer({
           )}
         </div>
 
-        {/* Sort & Lane Filters Bar */}
-        <div className="flex items-center justify-between gap-2 text-xs">
-          {/* Sort Selector */}
-          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500"
-            >
-              <option value="chronological_asc">{t('cardsList.sortChronologicalAsc')}</option>
-              <option value="chronological_desc">{t('cardsList.sortChronologicalDesc')}</option>
-              <option value="alphabetical">{t('cardsList.sortAlphabetical')}</option>
-            </select>
-          </div>
+        {/* Sort, Lane & Star Filters Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+          {/* Left: Star filter toggle button */}
+          <button
+            type="button"
+            onClick={onToggleFilterStarredOnly}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
+              filterStarredOnly
+                ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-700/80 text-amber-700 dark:text-amber-300 shadow-2xs'
+                : 'bg-white dark:bg-slate-800/90 border-slate-200 dark:border-slate-700/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+            title={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
+            aria-pressed={filterStarredOnly}
+          >
+            <Star className={`w-3.5 h-3.5 ${filterStarredOnly ? 'fill-amber-400 text-amber-500' : 'text-slate-400'}`} />
+            <span>{t('cardsList.filterStarred')}</span>
+            {starredCount > 0 && (
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                filterStarredOnly
+                  ? 'bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+              }`}>
+                {starredCount}
+              </span>
+            )}
+          </button>
 
-          {/* Lane Filter dropdown if lanes exist */}
-          {lanes.length > 0 && (
+          <div className="flex items-center gap-2">
+            {/* Sort Selector */}
             <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-              <Filter className="w-3 h-3 text-slate-400" />
+              <ArrowUpDown className="w-3 h-3 text-slate-400" />
               <select
-                value={selectedLaneId}
-                onChange={(e) => setSelectedLaneId(e.target.value)}
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500 max-w-[130px] truncate"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500"
               >
-                <option value="all">{t('cardsList.allLanes')}</option>
-                {lanes.map((lane) => (
-                  <option key={lane.id} value={lane.id}>
-                    {lane.title}
-                  </option>
-                ))}
+                <option value="chronological_asc">{t('cardsList.sortChronologicalAsc')}</option>
+                <option value="chronological_desc">{t('cardsList.sortChronologicalDesc')}</option>
+                <option value="alphabetical">{t('cardsList.sortAlphabetical')}</option>
               </select>
             </div>
-          )}
+
+            {/* Lane Filter dropdown if lanes exist */}
+            {lanes.length > 0 && (
+              <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                <Filter className="w-3 h-3 text-slate-400" />
+                <select
+                  value={selectedLaneId}
+                  onChange={(e) => setSelectedLaneId(e.target.value)}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500 max-w-[110px] truncate"
+                >
+                  <option value="all">{t('cardsList.allLanes')}</option>
+                  {lanes.map((lane) => (
+                    <option key={lane.id} value={lane.id}>
+                      {lane.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -188,24 +229,41 @@ export default function CardsListDrawer({
       <div className="flex-1 overflow-y-auto p-3 space-y-2 divide-y-0 pb-20 md:pb-3">
         {filteredArticles.length === 0 ? (
           <div className="h-48 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-2 text-center px-4">
-            <Search className="w-8 h-8 opacity-40" />
-            <p className="text-xs">{t('cardsList.noResults')}</p>
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedLaneId('all');
-                }}
-                className="text-xs text-sky-600 dark:text-sky-400 underline font-medium"
-              >
-                {t('cardsList.resetFilters')}
-              </button>
+            {filterStarredOnly ? (
+              <>
+                <Star className="w-8 h-8 opacity-40 text-amber-500" />
+                <p className="text-xs max-w-xs">{t('cardsList.noStarredResults')}</p>
+                <button
+                  type="button"
+                  onClick={onToggleFilterStarredOnly}
+                  className="text-xs text-sky-600 dark:text-sky-400 underline font-medium cursor-pointer"
+                >
+                  {t('toolbar.filterStarredActive')}
+                </button>
+              </>
+            ) : (
+              <>
+                <Search className="w-8 h-8 opacity-40" />
+                <p className="text-xs">{t('cardsList.noResults')}</p>
+                {(searchQuery || selectedLaneId !== 'all') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedLaneId('all');
+                    }}
+                    className="text-xs text-sky-600 dark:text-sky-400 underline font-medium cursor-pointer"
+                  >
+                    {t('cardsList.resetFilters')}
+                  </button>
+                )}
+              </>
             )}
           </div>
         ) : (
           filteredArticles.map((art) => {
             const isSelected = selectedArticleId === art.id;
+            const isStarred = Boolean(starredArticleIds?.has(art.id));
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
             const laneInfo = laneMap.get(art.lane);
 
@@ -282,15 +340,34 @@ export default function CardsListDrawer({
                   </div>
                 </div>
 
-                {/* Chevron indicator / Select marker */}
-                <div className="shrink-0 text-slate-300 group-hover:text-sky-500 dark:text-slate-600 dark:group-hover:text-sky-400 transition-colors">
-                  {isSelected ? (
-                    <div className="w-5 h-5 rounded-full bg-sky-500 text-white flex items-center justify-center shadow-xs">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                  ) : (
-                    <ChevronLeft className="w-4 h-4" />
-                  )}
+                {/* Right action area: Star Button + Select marker */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleStar?.(art.id);
+                    }}
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                      isStarred
+                        ? 'text-amber-500 hover:text-amber-600 bg-amber-500/10 dark:bg-amber-400/15'
+                        : 'text-slate-300 dark:text-slate-600 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                    }`}
+                    title={isStarred ? t('cardsList.unstar') : t('cardsList.star')}
+                    aria-label={isStarred ? t('cardsList.unstar') : t('cardsList.star')}
+                  >
+                    <Star className={`w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  </button>
+
+                  <div className="text-slate-300 group-hover:text-sky-500 dark:text-slate-600 dark:group-hover:text-sky-400 transition-colors">
+                    {isSelected ? (
+                      <div className="w-5 h-5 rounded-full bg-sky-500 text-white flex items-center justify-center shadow-xs">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                    ) : (
+                      <ChevronLeft className="w-4 h-4" />
+                    )}
+                  </div>
                 </div>
               </div>
             );

@@ -12,7 +12,8 @@ import {
   Filter,
   Image as ImageIcon,
   Sparkles,
-  ArrowUpDown
+  ArrowUpDown,
+  Star
 } from 'lucide-react';
 import { getLaneColor, isColorLight } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
@@ -65,6 +66,10 @@ export default function MobileTimelineView({
   onSelectArticle,
   selectedArticleId,
   onFocusOnMap,
+  starredArticleIds,
+  onToggleStar,
+  filterStarredOnly = false,
+  onToggleFilterStarredOnly,
   theme = 'light'
 }) {
   const { t, isRtl, formatTimeSpan, formatDatePart } = useLanguage();
@@ -76,6 +81,10 @@ export default function MobileTimelineView({
 
   const articles = timelineData?.articles || [];
   const lanes = timelineData?.lanes || [];
+
+  const starredCount = useMemo(() => {
+    return articles.filter((a) => starredArticleIds?.has(a.id)).length;
+  }, [articles, starredArticleIds]);
 
   // Map lanes for fast lookup
   const laneMap = useMemo(() => {
@@ -201,6 +210,7 @@ export default function MobileTimelineView({
   // 3. Resolve overlapping sub-columns within each lane and assign ruler period tracks
   const { layoutArticles, rulerPeriodArticles } = useMemo(() => {
     const visible = processedArticles.filter((art) => {
+      if (filterStarredOnly && !starredArticleIds?.has(art.id)) return false;
       if (selectedLaneId !== 'all' && art.lane !== selectedLaneId) return false;
       return true;
     });
@@ -305,12 +315,15 @@ export default function MobileTimelineView({
   // Feed view articles
   const feedArticles = useMemo(() => {
     return [...processedArticles]
-      .filter((art) => selectedLaneId === 'all' || art.lane === selectedLaneId)
+      .filter((art) => {
+        if (filterStarredOnly && !starredArticleIds?.has(art.id)) return false;
+        return selectedLaneId === 'all' || art.lane === selectedLaneId;
+      })
       .sort((a, b) => {
         if (feedSortOrder === 'desc') return b.startYear - a.startYear;
         return a.startYear - b.startYear;
       });
-  }, [processedArticles, selectedLaneId, feedSortOrder]);
+  }, [processedArticles, selectedLaneId, feedSortOrder, filterStarredOnly, starredArticleIds]);
 
   return (
     <div
@@ -390,27 +403,47 @@ export default function MobileTimelineView({
           )}
         </div>
 
-        {/* Row 2: Horizontal Swimlane Filter Chips */}
-        {lanes.length > 0 && (
-          <div
-            className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-0.5"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        {/* Row 2: Horizontal Swimlane & Star Filter Chips */}
+        <div
+          className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-0.5"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {/* "Starred Only" chip */}
+          <button
+            type="button"
+            onClick={onToggleFilterStarredOnly}
+            className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer active:scale-95 ${
+              filterStarredOnly
+                ? 'bg-amber-500 text-slate-950 font-bold border-amber-400 shadow-xs'
+                : 'bg-white dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
           >
-            {/* "All Lanes" chip */}
-            <button
-              type="button"
-              onClick={() => setSelectedLaneId('all')}
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
-                selectedLaneId === 'all'
-                  ? 'bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950 shadow-xs'
-                  : 'bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-              }`}
-            >
-              <span>{t('mobile.allLanes')}</span>
-              <span className="text-[10px] opacity-75 font-bold bg-black/15 dark:bg-white/20 px-1.5 py-0.2 rounded-full">
-                {articles.length}
+            <Star className={`w-3 h-3 ${filterStarredOnly ? 'fill-current text-slate-950' : 'text-amber-500'}`} />
+            <span>{t('cardsList.filterStarred')}</span>
+            {starredCount > 0 && (
+              <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                filterStarredOnly ? 'bg-black/20 text-slate-950' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+              }`}>
+                {starredCount}
               </span>
-            </button>
+            )}
+          </button>
+
+          {/* "All Lanes" chip */}
+          <button
+            type="button"
+            onClick={() => setSelectedLaneId('all')}
+            className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
+              selectedLaneId === 'all'
+                ? 'bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950 shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+            }`}
+          >
+            <span>{t('mobile.allLanes')}</span>
+            <span className="text-[10px] opacity-75 font-bold bg-black/15 dark:bg-white/20 px-1.5 py-0.2 rounded-full">
+              {articles.length}
+            </span>
+          </button>
 
             {/* Individual Lane chips */}
             {lanes.map((lane) => {
@@ -463,7 +496,6 @@ export default function MobileTimelineView({
               );
             })}
           </div>
-        )}
       </div>
 
       {/* ─── Mode 1: Visual Proportional Time Ruler & Parallel Spans ─── */}
@@ -667,16 +699,10 @@ export default function MobileTimelineView({
                             {/* ─── Main Event Card ─── */}
                             <div
                               onClick={() => onSelectArticle?.(art)}
-                              onMouseEnter={() => setHoveredArticleId(art.id)}
-                              onMouseLeave={() => setHoveredArticleId(null)}
-                              className={`relative w-full h-full rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-lg active:scale-[0.99] group/card ${
+                              className={`w-full h-full rounded-xl border relative transition-all cursor-pointer overflow-hidden group/card select-none ${
                                 isSelected
-                                  ? 'ring-2 ring-sky-500 shadow-md z-30'
-                                  : 'hover:z-20'
-                              } ${
-                                art.isRange
-                                  ? 'bg-white/95 dark:bg-slate-900/95'
-                                  : 'bg-white/95 dark:bg-slate-900/95'
+                                  ? 'bg-sky-50 dark:bg-sky-950/80 border-sky-400 dark:border-sky-500 shadow-md ring-2 ring-sky-500/20'
+                                  : 'bg-white dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700'
                               }`}
                             >
                               {/* Left/Right Duration Stem Accent on the Card */}
@@ -688,17 +714,34 @@ export default function MobileTimelineView({
                                 }}
                               />
 
-                              {/* Card Body */}
+                              {/* Card Content */}
                               <div
                                 className={`p-2.5 sm:p-3 flex flex-col justify-between h-full space-y-1.5 ${
                                   isRtl ? 'pr-4' : 'pl-4'
                                 }`}
                               >
-                                {/* 1. Title at the very TOP */}
+                                {/* 1. Title + Star Button at the TOP */}
                                 <div className="min-w-0">
-                                  <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-tight line-clamp-2">
-                                    {art.title}
-                                  </h4>
+                                  <div className="flex items-start justify-between gap-1.5">
+                                    <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-tight line-clamp-2 flex-1">
+                                      {art.title}
+                                    </h4>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onToggleStar?.(art.id);
+                                      }}
+                                      className={`p-1 rounded-md transition-colors cursor-pointer shrink-0 ${
+                                        isStarred
+                                          ? 'text-amber-500 bg-amber-500/10'
+                                          : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
+                                      }`}
+                                      title={isStarred ? t('cardsList.unstar') : t('cardsList.star')}
+                                    >
+                                      <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                                    </button>
+                                  </div>
 
                                   {/* Date badge + Range span badge underneath title */}
                                   <div className="flex items-center justify-between gap-1 mt-1">
@@ -744,36 +787,6 @@ export default function MobileTimelineView({
                                     {art.subtitle || art.extract}
                                   </p>
                                 )}
-
-                                {/* Bottom Footer */}
-                                {height >= 70 && (
-                                  <div className="pt-1 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800/80">
-                                    {art.lat && art.lng ? (
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          onFocusOnMap?.(art);
-                                        }}
-                                        className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 hover:underline"
-                                      >
-                                        <MapPin className="w-2.5 h-2.5" />
-                                        <span className="truncate max-w-[90px]">
-                                          {art.locationName || t('mobile.tapToViewMap')}
-                                        </span>
-                                      </button>
-                                    ) : (
-                                      <span>{art.wikiTitle ? 'Wiki' : ''}</span>
-                                    )}
-
-                                    <span className="inline-flex items-center text-slate-400 group-hover/card:text-sky-500">
-                                      {t('common.learnMore')}
-                                      <ChevronRight
-                                        className={`w-3 h-3 ${isRtl ? 'rotate-180' : ''}`}
-                                      />
-                                    </span>
-                                  </div>
-                                )}
                               </div>
                             </div>
                           </div>
@@ -793,9 +806,10 @@ export default function MobileTimelineView({
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {feedArticles.map((art) => {
+            const isSelected = selectedArticleId === art.id;
+            const isStarred = Boolean(starredArticleIds?.has(art.id));
             const laneInfo = laneMap.get(art.lane);
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
-            const isSelected = selectedArticleId === art.id;
 
             return (
               <article
@@ -818,9 +832,26 @@ export default function MobileTimelineView({
                   </div>
                 )}
                 <div className="space-y-1.5">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                    {art.title}
-                  </h3>
+                  <div className="flex items-start justify-between gap-1.5">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug flex-1">
+                      {art.title}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleStar?.(art.id);
+                      }}
+                      className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
+                        isStarred
+                          ? 'text-amber-500 bg-amber-500/10'
+                          : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
+                      }`}
+                      title={isStarred ? t('cardsList.unstar') : t('cardsList.star')}
+                    >
+                      <Star className={`w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    </button>
+                  </div>
                   <div className="flex items-center justify-between gap-1.5">
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                       {timeSpan}

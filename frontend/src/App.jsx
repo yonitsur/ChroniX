@@ -48,6 +48,10 @@ export default function App() {
   const [activePrompt, setActivePrompt] = useState('');
   const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
 
+  // Starred events state (in-session favorites)
+  const [starredArticleIds, setStarredArticleIds] = useState(() => new Set());
+  const [filterStarredOnly, setFilterStarredOnly] = useState(false);
+
   // Mobile layout detection and state
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -293,6 +297,8 @@ export default function App() {
     setIsLoading(true);
     setErrorMessage(null);
     setSelectedArticle(null);
+    setStarredArticleIds(new Set());
+    setFilterStarredOnly(false);
 
     try {
       const data = await generateTimeline(prompt, detailLevel, '', controller.signal);
@@ -501,6 +507,8 @@ export default function App() {
       const data = await fetchTimeline(id);
       setCurrentTimeline(data);
       setSelectedArticle(null);
+      setStarredArticleIds(new Set());
+      setFilterStarredOnly(false);
       if (data?.title) {
         setActivePrompt(data.title);
       }
@@ -512,6 +520,8 @@ export default function App() {
   const handleImportJson = async (imported) => {
     setCurrentTimeline(imported);
     setSelectedArticle(null);
+    setStarredArticleIds(new Set());
+    setFilterStarredOnly(false);
     if (imported?.title) {
       setActivePrompt(imported.title);
     }
@@ -527,9 +537,45 @@ export default function App() {
     setCurrentTimeline(null);
     setSelectedArticle(null);
     setIsCardsListOpen(false);
+    setStarredArticleIds(new Set());
+    setFilterStarredOnly(false);
     setActivePrompt('');
     setActiveDetailLevel('standard');
   };
+
+  // Toggle star / favorite status on an article
+  const handleToggleStar = useCallback((articleId, explicitState) => {
+    setStarredArticleIds((prev) => {
+      const next = new Set(prev);
+      const shouldBeStarred = explicitState !== undefined ? explicitState : !next.has(articleId);
+      if (shouldBeStarred) {
+        next.add(articleId);
+      } else {
+        next.delete(articleId);
+      }
+      // Update canvas instance directly without remounting
+      timelineRef.current?.setArticleStarred(articleId, shouldBeStarred);
+
+      // If currently filtering by starred only, re-apply canvas filter with updated set
+      setFilterStarredOnly((currentFilter) => {
+        if (currentFilter) {
+          timelineRef.current?.setFilterStarredOnly(true, next);
+        }
+        return currentFilter;
+      });
+
+      return next;
+    });
+  }, []);
+
+  // Toggle filtering by starred events only
+  const handleToggleFilterStarredOnly = useCallback(() => {
+    setFilterStarredOnly((prev) => {
+      const next = !prev;
+      timelineRef.current?.setFilterStarredOnly(next, starredArticleIds);
+      return next;
+    });
+  }, [starredArticleIds]);
 
   // Helper to ensure we always have the full article object with all metadata (locationName, lat, lng, etc.)
   const handleSelectArticle = (article) => {
@@ -605,6 +651,9 @@ export default function App() {
         activeDetailLevel={activeDetailLevel}
         quota={quota}
         onOpenQuota={() => setIsQuotaModalOpen(true)}
+        filterStarredOnly={filterStarredOnly}
+        onToggleFilterStarredOnly={handleToggleFilterStarredOnly}
+        starredCount={starredArticleIds.size}
       />
 
       {/* Error banner */}
@@ -641,6 +690,10 @@ export default function App() {
             lanes={currentTimeline?.lanes || []}
             selectedArticleId={selectedArticle?.id}
             onSelectArticle={handleFocusArticle}
+            starredArticleIds={starredArticleIds}
+            onToggleStar={handleToggleStar}
+            filterStarredOnly={filterStarredOnly}
+            onToggleFilterStarredOnly={handleToggleFilterStarredOnly}
           />
         )}
 
@@ -655,6 +708,8 @@ export default function App() {
                     timelineData={currentTimeline}
                     onSelectArticle={handleSelectArticle}
                     selectedArticleId={selectedArticle?.id}
+                    starredArticleIds={starredArticleIds}
+                    onToggleStar={handleToggleStar}
                     theme={theme}
                   />
                 ) : (
@@ -663,6 +718,10 @@ export default function App() {
                     onSelectArticle={handleSelectArticle}
                     selectedArticleId={selectedArticle?.id}
                     onFocusOnMap={handleFocusOnMapMobile}
+                    starredArticleIds={starredArticleIds}
+                    onToggleStar={handleToggleStar}
+                    filterStarredOnly={filterStarredOnly}
+                    onToggleFilterStarredOnly={handleToggleFilterStarredOnly}
                     theme={theme}
                   />
                 )
@@ -690,6 +749,10 @@ export default function App() {
                   lanes={currentTimeline?.lanes || []}
                   selectedArticleId={selectedArticle?.id}
                   onSelectArticle={handleSelectArticle}
+                  starredArticleIds={starredArticleIds}
+                  onToggleStar={handleToggleStar}
+                  filterStarredOnly={filterStarredOnly}
+                  onToggleFilterStarredOnly={handleToggleFilterStarredOnly}
                 />
               )}
 
@@ -793,6 +856,8 @@ export default function App() {
                     timelineData={currentTimeline}
                     onSelectArticle={handleSelectArticle}
                     selectedArticleId={selectedArticle?.id}
+                    starredArticleIds={starredArticleIds}
+                    onToggleStar={handleToggleStar}
                     theme={theme}
                   />
                 </div>
@@ -805,6 +870,8 @@ export default function App() {
                   timelineData={currentTimeline}
                   onSelectArticle={handleSelectArticle}
                   selectedArticleId={selectedArticle?.id}
+                  starredArticleIds={starredArticleIds}
+                  onToggleStar={handleToggleStar}
                   theme={theme}
                 />
 
@@ -877,6 +944,8 @@ export default function App() {
             <EventDrawer
               article={selectedArticle}
               lanes={currentTimeline?.lanes || []}
+              isStarred={selectedArticle ? starredArticleIds.has(selectedArticle.id) : false}
+              onToggleStar={handleToggleStar}
               onClose={() => setSelectedArticle(null)}
               onEdit={(art) => {
                 setEventBeingEdited(art);

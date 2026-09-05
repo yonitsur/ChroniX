@@ -28,7 +28,8 @@ import {
   Info,
   BookOpen,
   Languages,
-  Zap
+  Zap,
+  Star
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import QuotaBadge from './QuotaBadge';
@@ -84,7 +85,10 @@ export default function Toolbar({
   activePrompt,
   activeDetailLevel,
   quota,
-  onOpenQuota
+  onOpenQuota,
+  filterStarredOnly = false,
+  onToggleFilterStarredOnly,
+  starredCount = 0
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -343,6 +347,32 @@ export default function Toolbar({
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Starred Filter Quick Access Button (when timeline exists) */}
+          {timelineData && (
+            <button
+              type="button"
+              onClick={onToggleFilterStarredOnly}
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 px-2.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs ${
+                filterStarredOnly
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold ring-2 ring-amber-400/40 shadow-xs'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-amber-300 dark:hover:border-amber-700/60'
+              }`}
+              title={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
+              aria-label={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
+              aria-pressed={filterStarredOnly}
+            >
+              <Star className={`w-3.5 h-3.5 ${filterStarredOnly ? 'fill-current text-slate-950' : 'text-amber-500 fill-amber-500/20'}`} />
+              <span className="hidden xl:inline">{t('cardsList.filterStarred')}</span>
+              {starredCount > 0 && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                  filterStarredOnly ? 'bg-black/20 text-slate-950' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300'
+                }`}>
+                  {starredCount}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
           {timelineData && (

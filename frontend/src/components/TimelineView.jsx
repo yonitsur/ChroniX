@@ -6,10 +6,17 @@ const TimelineView = forwardRef(({
   timelineData,
   onSelectArticle,
   selectedArticleId,
+  starredArticleIds,
+  onToggleStar,
   theme = 'light'
 }, ref) => {
   const containerRef = useRef(null);
   const timelineInstanceRef = useRef(null);
+  const starredArticleIdsRef = useRef(starredArticleIds);
+
+  useEffect(() => {
+    starredArticleIdsRef.current = starredArticleIds;
+  }, [starredArticleIds]);
 
   useImperativeHandle(ref, () => ({
     zoomIn: () => {
@@ -52,6 +59,31 @@ const TimelineView = forwardRef(({
           } catch (e) {
             // ignore
           }
+        }
+      }
+    },
+    setArticleStarred: (articleId, isStarred) => {
+      const tl = timelineInstanceRef.current;
+      if (tl && articleId) {
+        const art = tl.getArticleById(articleId);
+        if (art) {
+          art.setOption('starred', isStarred);
+          tl.redraw();
+        }
+      }
+    },
+    setFilterStarredOnly: (onlyStarred, currentStarredIds) => {
+      const tl = timelineInstanceRef.current;
+      if (tl && tl.articles) {
+        const ids = currentStarredIds || starredArticleIdsRef.current || new Set();
+        tl.articles.forEach((art) => {
+          art.setOption('hiddenByFilter', onlyStarred ? !ids.has(art.id) : false);
+        });
+        tl.redraw();
+        try {
+          tl.fitArticles({ padding: 70 });
+        } catch (e) {
+          // ignore
         }
       }
     },
@@ -313,6 +345,7 @@ const TimelineView = forwardRef(({
           isToPresent: art.isToPresent || false,
           imageUrl: art.imageUrl || undefined,
           rank: art.rank || 5,
+          starred: starredArticleIdsRef.current?.has(art.id) || !!art.starred,
           style: articleStyle,
           // Attach custom rich data into article object for drawer
           wikiUrl: art.wikiUrl,
@@ -338,8 +371,16 @@ const TimelineView = forwardRef(({
 
       // Event listener for article clicks
       timeline.on('article-click', (article) => {
+        const clickedId = article?.id || article?.data?.id;
+        if (!clickedId) return;
+
+        // If the user clicked specifically on the star icon on canvas
+        if (article.isMouseOverStar) {
+          onToggleStar?.(clickedId, article.isStarred);
+          return;
+        }
+
         if (onSelectArticle) {
-          const clickedId = article?.id || article?.data?.id;
           const original = timelineData.articles?.find((a) => a.id === clickedId);
           onSelectArticle(original || article.data || article);
         }

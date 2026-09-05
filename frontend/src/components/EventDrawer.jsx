@@ -1,4 +1,4 @@
-import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info } from 'lucide-react';
+import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info, Star } from 'lucide-react';
 import { getLaneColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -58,6 +58,8 @@ export function formatTimeSpan(from, to, isToPresent, lang = 'en') {
 export default function EventDrawer({
   article,
   lanes = [],
+  isStarred = false,
+  onToggleStar,
   onClose,
   onEdit,
   onDelete,
@@ -84,15 +86,30 @@ export default function EventDrawer({
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
           {t('eventDrawer.title')}
         </span>
-        <button
-          type="button"
-          onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-          title={t('common.close')}
-          aria-label={t('common.close')}
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => onToggleStar?.(article.id)}
+            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+              isStarred
+                ? 'text-amber-500 hover:text-amber-600 bg-amber-500/10 dark:bg-amber-400/15'
+                : 'text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+            title={isStarred ? t('eventDrawer.unstarEvent') : t('eventDrawer.starEvent')}
+            aria-label={isStarred ? t('eventDrawer.unstarEvent') : t('eventDrawer.starEvent')}
+          >
+            <Star className={`w-4 h-4 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+            title={t('common.close')}
+            aria-label={t('common.close')}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Content scroll area */}
