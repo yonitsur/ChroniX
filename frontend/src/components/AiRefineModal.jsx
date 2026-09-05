@@ -16,7 +16,7 @@ export default function AiRefineModal({
   isLoading,
   currentTimelineTitle
 }) {
-  const { t } = useLanguage();
+  const { t, isRtl } = useLanguage();
   const [instruction, setInstruction] = useState('');
 
   if (!isOpen) return null;
@@ -37,11 +37,16 @@ export default function AiRefineModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
+      <div
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
+        dir={isRtl ? 'rtl' : 'ltr'}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/50">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -84,7 +89,7 @@ export default function AiRefineModal({
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}
               placeholder={t('aiRefine.placeholder')}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none text-sm"
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all resize-none text-sm"
             />
           </div>
 
@@ -103,7 +108,7 @@ export default function AiRefineModal({
                   className="text-start text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/60 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group cursor-pointer"
                 >
                   <span className="truncate">{sug}</span>
-                  <ArrowRight className="w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors shrink-0 ml-2" />
+                  <ArrowRight className={`w-3 h-3 text-slate-400 dark:text-slate-500 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors shrink-0 ${isRtl ? 'rotate-180 mr-2' : 'ml-2'}`} />
                 </button>
               ))}
             </div>
@@ -127,7 +132,7 @@ export default function AiRefineModal({
               <button
                 type="submit"
                 disabled={!instruction.trim() || isLoading}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50 text-xs cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-medium shadow-sm transition-all active:scale-95 disabled:opacity-50 text-xs cursor-pointer"
               >
                 {isLoading ? (
                   <>

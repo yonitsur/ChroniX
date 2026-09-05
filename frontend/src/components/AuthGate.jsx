@@ -72,12 +72,11 @@ export default function AuthGate() {
       className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative overflow-hidden"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-tr from-sky-600/20 via-indigo-600/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute -top-20 -right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-sky-900/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-sky-950/20 rounded-full blur-2xl pointer-events-none" />
 
       {/* Language Switcher in top corner */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+      <div className={`absolute ${isRtl ? 'top-4 left-4 sm:top-6 sm:left-6' : 'top-4 right-4 sm:top-6 sm:right-6'} z-20`}>
         <button
           type="button"
           onClick={toggleLanguage}
@@ -92,7 +91,12 @@ export default function AuthGate() {
       </div>
 
       {/* Main card */}
-      <div className="relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 animate-fade-in">
+      <div
+        className={`relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 animate-fade-in ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
+        dir={isRtl ? 'rtl' : 'ltr'}
+      >
         {/* Top Header */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="mb-3 scale-110">
@@ -243,12 +247,12 @@ export default function AuthGate() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-3 py-3 px-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:via-blue-700 hover:to-indigo-700 text-white font-medium text-sm rounded-2xl shadow-lg shadow-sky-950/50 hover:shadow-sky-900/60 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60 cursor-pointer"
+            className="w-full mt-3 py-3 px-4 bg-sky-600 hover:bg-sky-500 text-white font-medium text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60 cursor-pointer"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
             )}
             <span>{mode === 'signin' ? t('auth.signInBtn') : t('auth.signUpBtn')}</span>
           </button>

@@ -73,7 +73,12 @@ export default function EventDrawer({
   const timeSpan = localizedTimeSpan(article.from, article.to, article.isToPresent);
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-96 md:w-[420px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-l border-slate-200/90 dark:border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out font-sans">
+    <div
+      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[420px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-l border-slate-200/90 dark:border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out font-sans ${
+        isRtl ? 'text-right' : 'text-left'
+      }`}
+      dir={isRtl ? 'rtl' : 'ltr'}
+    >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
         <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">

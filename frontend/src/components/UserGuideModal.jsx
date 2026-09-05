@@ -145,11 +145,16 @@ export default function UserGuideModal({ isOpen, onClose }) {
       aria-modal="true"
       aria-labelledby="user-guide-title"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
+      <div
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${
+          language === 'he' ? 'text-right' : 'text-left'
+        }`}
+        dir={language === 'he' ? 'rtl' : 'ltr'}
+      >
 
         {/* Top Header */}
         <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
-          <div className="flex items-center justify-between gap-4" dir="ltr">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-sky-500" />
@@ -175,7 +180,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
             <div className="flex items-center gap-2">
               {/* Global search within guide */}
               <div className="relative hidden md:block w-56">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className={`w-3.5 h-3.5 absolute ${language === 'he' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-slate-400`} />
                 <input
                   type="text"
                   dir="auto"
@@ -183,15 +188,13 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('userGuide.searchPlaceholder')}
                   id="user-guide-search-input"
-                  className={`w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all ${
-                    language === 'he' ? 'text-right' : 'text-left'
-                  }`}
+                  className={`w-full ${language === 'he' ? 'pr-8 pl-3 text-right' : 'pl-8 pr-3 text-left'} py-1.5 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all`}
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer"
+                    className={`absolute ${language === 'he' ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer`}
                   >
                     ✕
                   </button>
@@ -212,7 +215,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
           </div>
 
           {/* Section Navigation Tabs */}
-          <div className="flex items-center gap-1.5 mt-4 overflow-x-auto no-scrollbar pb-1 pt-0.5" dir="ltr">
+          <div className="flex items-center gap-1.5 mt-4 overflow-x-auto no-scrollbar pb-1 pt-0.5" dir={language === 'he' ? 'rtl' : 'ltr'}>
             {SECTIONS.map((sec) => {
               const Icon = sec.icon;
               const isActive = activeSection === sec.id;

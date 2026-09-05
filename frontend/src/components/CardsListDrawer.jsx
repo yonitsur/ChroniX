@@ -92,7 +92,10 @@ export default function CardsListDrawer({
 
   return (
     <aside
-      className="fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-30 flex flex-col transition-all duration-300 ease-in-out select-none"
+      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-30 flex flex-col transition-all duration-300 ease-in-out select-none ${
+        isRtl ? 'text-right' : 'text-left'
+      }`}
+      dir={isRtl ? 'rtl' : 'ltr'}
       aria-label={t('cardsList.title')}
     >
       {/* Header */}

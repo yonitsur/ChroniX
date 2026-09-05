@@ -293,11 +293,16 @@ export default function EventEditModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      <div
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
+        dir={isRtl ? 'rtl' : 'ltr'}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-sm">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
@@ -379,13 +384,13 @@ export default function EventEditModal({
                   type="button"
                   onClick={handleAiAutoFill}
                   disabled={isSuggesting || !title.trim()}
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                  className="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white px-3 py-2 rounded-xl text-xs font-medium shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   title={t('eventEditModal.autoFillTooltip')}
                 >
                   {isSuggesting ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-purple-200" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                   ) : (
-                    <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                    <Sparkles className="w-3.5 h-3.5 text-sky-200" />
                   )}
                   <span>{t('eventEditModal.autoFillAi')}</span>
                 </button>
@@ -521,7 +526,7 @@ export default function EventEditModal({
                 type="button"
                 onClick={handleSuggestDatesOnly}
                 disabled={isSuggesting || !title.trim()}
-                className="flex items-center gap-1 text-[11px] text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium px-2 py-0.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors disabled:opacity-40"
+                className="flex items-center gap-1 text-[11px] text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium px-2 py-0.5 rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/50 transition-colors disabled:opacity-40 cursor-pointer"
                 title={t('eventEditModal.suggestDatesTooltip')}
               >
                 <Sparkles className="w-3 h-3" />
@@ -682,10 +687,11 @@ export default function EventEditModal({
                 <input
                   type="number"
                   step="any"
+                  dir="ltr"
                   value={lat}
                   onChange={(e) => setLat(e.target.value)}
                   placeholder="e.g. 49.33"
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono text-left"
                 />
               </div>
               <div>
@@ -693,10 +699,11 @@ export default function EventEditModal({
                 <input
                   type="number"
                   step="any"
+                  dir="ltr"
                   value={lng}
                   onChange={(e) => setLng(e.target.value)}
                   placeholder="e.g. -0.45"
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs font-mono text-left"
                 />
               </div>
             </div>
@@ -710,10 +717,11 @@ export default function EventEditModal({
             <div className="flex gap-2">
               <input
                 type="url"
+                dir="ltr"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://upload.wikimedia.org/..."
-                className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
+                className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs text-left"
               />
               {imageUrl && (
                 <div className="w-9 h-9 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100 dark:bg-slate-800">
@@ -763,10 +771,11 @@ export default function EventEditModal({
             </label>
             <input
               type="url"
+              dir="ltr"
               value={wikiUrl}
               onChange={(e) => setWikiUrl(e.target.value)}
               placeholder="https://en.wikipedia.org/wiki/..."
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs"
+              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 text-xs text-left"
             />
           </div>
 

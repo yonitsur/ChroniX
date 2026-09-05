@@ -63,11 +63,16 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
       aria-modal="true"
       aria-labelledby="about-chronix-title"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
+      <div
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
+        dir={isRtl ? 'rtl' : 'ltr'}
+      >
         
         {/* Header with Logo & Hero */}
         <div className="px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-4" dir="ltr">
+          <div className="flex items-start justify-between gap-4" dir={isRtl ? 'rtl' : 'ltr'}>
             <div>
               <div className="flex items-center gap-2.5">
                 <h2 id="about-chronix-title" className="sr-only">
@@ -95,7 +100,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex items-center gap-1 mt-5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg" dir="ltr">
+          <div className="flex items-center gap-1 mt-5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg" dir={isRtl ? 'rtl' : 'ltr'}>
             {TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;

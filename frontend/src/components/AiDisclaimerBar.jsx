@@ -37,7 +37,10 @@ export default function AiDisclaimerBar({ onOpenModal }) {
   }
 
   return (
-    <footer className="relative z-20 w-full bg-white/85 dark:bg-slate-950/85 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 px-3 sm:px-4 py-1 text-xs select-none transition-all flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 shadow-2xs shrink-0">
+    <footer
+      className="relative z-20 w-full bg-white/85 dark:bg-slate-950/85 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 px-3 sm:px-4 py-1 text-xs select-none transition-all flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 shadow-2xs shrink-0"
+      dir={isRtl ? 'rtl' : 'ltr'}
+    >
       {/* Disclaimer Message */}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <div className="p-1 rounded-md bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 shrink-0">

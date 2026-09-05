@@ -357,7 +357,12 @@ export default function Toolbar({
             </button>
 
             {isMoreMenuOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl">
+              <div
+                className={`absolute right-0 mt-2 w-60 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
+                  language === 'he' ? 'text-right' : 'text-left'
+                }`}
+                dir={language === 'he' ? 'rtl' : 'ltr'}
+              >
                 
                 {/* Timeline Actions */}
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -531,7 +536,7 @@ export default function Toolbar({
                     className="w-6 h-6 rounded-lg object-cover"
                   />
                 ) : (
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-[11px] font-bold uppercase">
+                  <div className="w-6 h-6 rounded-lg bg-sky-600 flex items-center justify-center text-white text-[11px] font-bold uppercase">
                     {(user.user_metadata?.full_name || user.email || 'U')[0]}
                   </div>
                 )}
@@ -539,7 +544,12 @@ export default function Toolbar({
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl">
+                <div
+                  className={`absolute right-0 mt-2 w-56 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
+                    language === 'he' ? 'text-right' : 'text-left'
+                  }`}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                >
                   <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                     <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">
                       {user.user_metadata?.full_name || 'User'}
@@ -695,7 +705,12 @@ export default function Toolbar({
               </button>
 
               {isDetailDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div
+                  className={`absolute right-0 top-full mt-1.5 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                    language === 'he' ? 'text-right' : 'text-left'
+                  }`}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                >
                   <div className="px-2 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                     {t('toolbar.detailLevel')}
                   </div>

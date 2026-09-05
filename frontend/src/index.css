@@ -16,11 +16,47 @@ html[dir="rtl"], html.rtl-mode, html.lang-he {
   font-family: Heebo, 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Ensure the UI layout, toolbar, and canvas always maintain strict LTR positioning */
-html, body,
-#histropedia-container,
-.histropedia-timeline-wrapper {
+/* Ensure right-to-left text alignment across pages, modals, cards, tabs, and drawers in Hebrew mode */
+html.rtl-mode body,
+html.lang-he body {
+  text-align: right;
+}
+
+/* Dialogs, modals, and drawers default to RTL in Hebrew mode */
+html.rtl-mode [role="dialog"],
+html.lang-he [role="dialog"],
+html.rtl-mode aside,
+html.lang-he aside,
+html.rtl-mode .modal-card,
+html.lang-he .modal-card {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Text inputs and textareas in RTL mode (unless explicitly LTR for URLs/coordinates) */
+html.rtl-mode input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.lang-he input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.rtl-mode textarea:not([dir="ltr"]),
+html.lang-he textarea:not([dir="ltr"]),
+html.rtl-mode select:not([dir="ltr"]),
+html.lang-he select:not([dir="ltr"]) {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Explicit LTR overrides for technical data (coordinates, URLs, code, numbers) */
+[dir="ltr"],
+.ltr-text {
   direction: ltr !important;
+  text-align: left !important;
+}
+
+/* The timeline canvas and container MUST always maintain strict LTR coordinate positioning */
+#histropedia-container,
+.histropedia-timeline-wrapper,
+.histropedia-canvas {
+  direction: ltr !important;
+  text-align: left !important;
 }
 
 body {
