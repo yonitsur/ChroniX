@@ -651,6 +651,7 @@ export default function MobileTimelineView({
                         const isSelected = selectedArticleId === art.id;
                         const isHovered = hoveredArticleId === art.id;
                         const isHigh = isSelected || isHovered;
+                        const isStarred = Boolean(starredArticleIds?.has(art.id));
                         const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
                         const top = art.startY;
                         const height = art.heightY;
