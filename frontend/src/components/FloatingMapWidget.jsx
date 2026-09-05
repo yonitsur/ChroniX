@@ -263,14 +263,16 @@ export default function FloatingMapWidget({
         <button
           type="button"
           onClick={handleIconClick}
-          className="relative flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/90 dark:bg-slate-900/90 hover:bg-slate-950 dark:hover:bg-slate-800 text-white shadow-xl shadow-slate-950/25 border border-slate-700/80 dark:border-slate-700/80 backdrop-blur-md hover:scale-105 active:scale-95 transition-all cursor-grab active:cursor-grabbing group"
+          className={`relative flex items-center gap-2 ${
+            geoCount > 0 ? 'px-3.5 py-2' : 'w-10 h-10 justify-center'
+          } rounded-full bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-white shadow-lg shadow-slate-900/10 dark:shadow-xl dark:shadow-slate-950/30 border border-slate-200/90 dark:border-slate-700/80 backdrop-blur-md hover:scale-105 active:scale-95 transition-all cursor-grab active:cursor-grabbing group`}
           title="Drag to reposition • Click to open Floating Map"
         >
-          <Globe className="w-4 h-4 text-sky-400 group-hover:rotate-12 transition-transform duration-300 pointer-events-none" />
+          <Globe className="w-4 h-4 text-sky-500 dark:text-sky-400 group-hover:rotate-12 transition-transform duration-300 pointer-events-none shrink-0" />
 
           {geoCount > 0 && (
-            <span className="flex items-center gap-0.5 bg-white/15 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-md border border-white/10 pointer-events-none">
-              <MapPin className="w-2.5 h-2.5 text-rose-400" />
+            <span className="flex items-center gap-0.5 bg-slate-100 dark:bg-white/15 text-slate-700 dark:text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full border border-slate-200/80 dark:border-white/10 pointer-events-none">
+              <MapPin className="w-2.5 h-2.5 text-rose-500 dark:text-rose-400" />
               {geoCount}
             </span>
           )}
