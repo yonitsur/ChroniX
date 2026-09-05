@@ -16,14 +16,14 @@ const TimelineView = forwardRef(({
       const tl = timelineInstanceRef.current;
       if (tl) {
         const currentZoom = tl.getZoom();
-        tl.setZoom(currentZoom + 4);
+        tl.setZoom(Math.max(0, currentZoom - 4));
       }
     },
     zoomOut: () => {
       const tl = timelineInstanceRef.current;
       if (tl) {
         const currentZoom = tl.getZoom();
-        tl.setZoom(Math.max(0, currentZoom - 4));
+        tl.setZoom(currentZoom + 4);
       }
     },
     fitAll: () => {

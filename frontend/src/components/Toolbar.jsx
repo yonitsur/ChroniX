@@ -3,6 +3,7 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Minimize2,
   Sparkles,
   PlusCircle,
   FolderOpen,
@@ -131,6 +132,103 @@ export default function Toolbar({
   }, [activeDetailLevel]);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
 
+  // Prompt bar expansion & custom width states
+  const [isPromptExpanded, setIsPromptExpanded] = useState(() => {
+    try {
+      return localStorage.getItem('vt_prompt_expanded') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const [promptCustomWidth, setPromptCustomWidth] = useState(() => {
+    try {
+      const saved = localStorage.getItem('vt_prompt_custom_width');
+      return saved ? Number(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const formContainerRef = useRef(null);
+  const isResizingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+  const resizeDirRef = useRef('right');
+
+  const handleResizeStart = (e, direction) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isResizingRef.current = true;
+    resizeDirRef.current = direction;
+    startXRef.current = e.touches ? e.touches[0].clientX : e.clientX;
+
+    if (formContainerRef.current) {
+      startWidthRef.current = formContainerRef.current.getBoundingClientRect().width;
+    } else {
+      startWidthRef.current = promptCustomWidth || 450;
+    }
+
+    const onMouseMove = (moveEvent) => {
+      if (!isResizingRef.current) return;
+      const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const deltaX = clientX - startXRef.current;
+      // Header layout is LTR: dragging right handle to the right (+deltaX) expands width.
+      // Dragging left handle to the left (-deltaX) expands width.
+      const change = resizeDirRef.current === 'right' ? deltaX : -deltaX;
+
+      // Limit max width to 820px (80% of what was previously max-w-5xl / 1024px)
+      const maxWidth = Math.min(820, Math.max(360, window.innerWidth - 200));
+      const newWidth = Math.min(maxWidth, Math.max(260, Math.round(startWidthRef.current + change)));
+
+      setPromptCustomWidth(newWidth);
+    };
+
+    const onMouseUp = () => {
+      if (isResizingRef.current) {
+        isResizingRef.current = false;
+        setPromptCustomWidth((finalWidth) => {
+          if (finalWidth) {
+            try {
+              localStorage.setItem('vt_prompt_custom_width', String(finalWidth));
+            } catch (err) {}
+          }
+          return finalWidth;
+        });
+      }
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('touchmove', onMouseMove);
+      window.removeEventListener('touchend', onMouseUp);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('touchmove', onMouseMove);
+    window.addEventListener('touchend', onMouseUp);
+  };
+
+  const handleResetResize = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPromptCustomWidth(null);
+    setIsPromptExpanded(false);
+    try {
+      localStorage.removeItem('vt_prompt_custom_width');
+      localStorage.removeItem('vt_prompt_expanded');
+    } catch (err) {}
+  };
+
+  const togglePromptExpanded = () => {
+    setIsPromptExpanded((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('vt_prompt_expanded', String(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
   const detailOptions = [
     {
       id: 'overview',
@@ -185,19 +283,33 @@ export default function Toolbar({
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
         {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
-        <div className="order-1 flex items-center gap-2 sm:gap-3 min-w-0 max-w-[58%] sm:max-w-[62%] lg:max-w-[30%] xl:max-w-[34%] overflow-hidden shrink-0">
+        <div
+          className={`order-1 flex items-center gap-2 sm:gap-3 min-w-0 transition-all duration-200 shrink ${
+            isPromptExpanded
+              ? 'max-w-[14%] sm:max-w-[18%] lg:max-w-[18%]'
+              : 'max-w-[58%] sm:max-w-[62%] lg:max-w-[26%] xl:max-w-[30%]'
+          } overflow-hidden`}
+        >
           <div className="flex items-center gap-2 min-w-0 w-full overflow-hidden">
             <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0" />
             
             {timelineData?.title && timelineData.title !== 'ChroniX' ? (
-              <div className="flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-200 dark:border-slate-800">
+              <div
+                className={`flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-200 dark:border-slate-800 ${
+                  isPromptExpanded ? 'hidden md:flex' : 'flex'
+                }`}
+              >
                 <h1
                   className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate min-w-0 w-full font-sans tracking-tight"
                   title={timelineData.title}
                 >
                   {timelineData.title}
                 </h1>
-                <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate">
+                <div
+                  className={`items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate ${
+                    isPromptExpanded ? 'hidden' : 'hidden xl:flex'
+                  }`}
+                >
                   <span className="flex items-center gap-1 shrink-0 font-medium">
                     <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                     {t('toolbar.eventsCount', { count: timelineData?.articles?.length || 0 })}
@@ -214,7 +326,11 @@ export default function Toolbar({
                 </div>
               </div>
             ) : (
-              <div className="hidden sm:flex flex-col pl-2.5 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 shrink-0">
+              <div
+                className={`hidden ${
+                  isPromptExpanded ? '2xl:flex' : 'xl:flex'
+                } flex-col pl-2.5 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 shrink-0`}
+              >
                 <span className="flex items-center gap-1 font-medium tracking-wide">
                   <Calendar className="w-3 h-3 text-sky-500/80 dark:text-sky-400/80" />
                   {t('toolbar.visualChronology')}
@@ -225,7 +341,7 @@ export default function Toolbar({
         </div>
 
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
-        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto lg:ml-0">
+        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink ml-auto lg:ml-0 min-w-0">
           {/* Zoom Controls Pill */}
           <div className="flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs">
             <button
@@ -257,32 +373,7 @@ export default function Toolbar({
             </button>
           </div>
 
-          {/* AI Refine Button (when timeline exists) */}
-          {timelineData && (
-            <button
-              type="button"
-              disabled={isGenerating}
-              onClick={onOpenRefine}
-              className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs transition-all disabled:opacity-50 active:scale-95 cursor-pointer"
-              title={t('toolbar.refineTitle')}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-              <span className="hidden sm:inline">{t('toolbar.refine')}</span>
-            </button>
-          )}
 
-          {/* Add Custom Event Button (Quick Access) */}
-          {timelineData && (
-            <button
-              type="button"
-              onClick={onAddEvent}
-              className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
-              title={t('toolbar.addEvent')}
-              aria-label={t('toolbar.addEvent')}
-            >
-              <PlusCircle className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
-            </button>
-          )}
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
           {timelineData && (
@@ -371,14 +462,16 @@ export default function Toolbar({
 
                 <button
                   type="button"
+                  disabled={!timelineData || isGenerating}
                   onClick={() => {
                     setIsMoreMenuOpen(false);
-                    onOpenSaved();
+                    onOpenRefine();
                   }}
-                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                  title={t('toolbar.refineTitle')}
                 >
-                  <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span className="font-medium">{t('toolbar.savedTimelines')}</span>
+                  <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
+                  <span className="font-medium">{t('toolbar.refine')}</span>
                 </button>
 
                 <button
@@ -392,6 +485,18 @@ export default function Toolbar({
                 >
                   <PlusCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                   <span className="font-medium">{t('toolbar.addEvent')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onOpenSaved();
+                  }}
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span className="font-medium">{t('toolbar.savedTimelines')}</span>
                 </button>
 
                 {/* Export Options */}
@@ -644,47 +749,89 @@ export default function Toolbar({
         </div>
 
         {/* Center: Search / Prompt Form (Full-width row on mobile/tablet, centered on desktop) */}
-        <form
-          onSubmit={handleSubmit}
-          className="order-3 lg:order-2 w-full lg:w-auto lg:flex-1 min-w-0 max-w-2xl mx-auto lg:mx-2"
+        <div
+          ref={formContainerRef}
+          style={
+            promptCustomWidth && !isPromptExpanded
+              ? { width: `${promptCustomWidth}px`, maxWidth: '100%' }
+              : undefined
+          }
+          className={`order-3 lg:order-2 w-full relative flex items-center group/prompt transition-[width,max-width] duration-150 min-w-0 mx-auto lg:mx-2 ${
+            isPromptExpanded
+              ? 'lg:flex-1 max-w-[820px]'
+              : promptCustomWidth
+              ? 'lg:flex-none'
+              : 'lg:flex-1 min-w-[280px] sm:min-w-[340px] max-w-2xl'
+          }`}
         >
-          <div className="relative flex items-center bg-slate-100/80 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 focus-within:bg-white dark:focus-within:bg-slate-950 border border-slate-200 dark:border-slate-800 focus-within:border-sky-500/80 focus-within:ring-2 focus-within:ring-sky-500/15 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs w-full min-w-0">
-            
-            <div className="text-slate-400 dark:text-slate-400 pl-0.5 pr-1.5 flex items-center shrink-0">
-              {isGenerating ? (
-                <Loader2 className="w-4 h-4 animate-spin text-sky-500 dark:text-sky-400" />
-              ) : (
-                <Sparkles className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+          {/* Left resize handle (desktop only) */}
+          <div
+            onMouseDown={(e) => handleResizeStart(e, 'left')}
+            onTouchStart={(e) => handleResizeStart(e, 'left')}
+            onDoubleClick={handleResetResize}
+            className="hidden lg:flex items-center justify-center absolute -left-2 top-1/2 -translate-y-1/2 w-3.5 h-8 cursor-ew-resize opacity-0 group-hover/prompt:opacity-100 hover:!opacity-100 transition-opacity z-20"
+            title={t('toolbar.resizePrompt')}
+            aria-label={t('toolbar.resizePrompt')}
+          >
+            <div className="w-1 h-4 rounded-full bg-slate-300 dark:bg-slate-600 hover:bg-sky-500 dark:hover:bg-sky-400 transition-colors shadow-xs" />
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="w-full min-w-0"
+          >
+            <div className="relative flex items-center bg-slate-100/80 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 focus-within:bg-white dark:focus-within:bg-slate-950 border border-slate-200 dark:border-slate-800 focus-within:border-sky-500/80 focus-within:ring-2 focus-within:ring-sky-500/15 rounded-xl px-2 sm:px-2.5 py-1 transition-all shadow-2xs w-full min-w-0">
+              
+              <div className="text-slate-400 dark:text-slate-400 pl-0.5 pr-1.5 flex items-center shrink-0">
+                {isGenerating ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-sky-500 dark:text-sky-400" />
+                ) : (
+                  <Sparkles className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+                )}
+              </div>
+
+              <input
+                type="text"
+                dir="auto"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                disabled={isGenerating}
+                title={prompt || t('toolbar.inputPlaceholder')}
+                placeholder={
+                  isGenerating
+                    ? loadingSteps[loadingStepIdx % loadingSteps.length]
+                    : t('toolbar.inputPlaceholder')
+                }
+                className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans"
+              />
+
+              {/* Quick Clear Button when text entered */}
+              {prompt && !isGenerating && (
+                <button
+                  type="button"
+                  onClick={() => setPrompt('')}
+                  className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0 mr-1 cursor-pointer"
+                  title={t('toolbar.clearInput')}
+                  aria-label={t('toolbar.clearInput')}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               )}
-            </div>
 
-            <input
-              type="text"
-              dir="auto"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              disabled={isGenerating}
-              title={prompt || t('toolbar.inputPlaceholder')}
-              placeholder={
-                isGenerating
-                  ? loadingSteps[loadingStepIdx % loadingSteps.length]
-                  : t('toolbar.inputPlaceholder')
-              }
-              className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans"
-            />
-
-            {/* Quick Clear Button when text entered */}
-            {prompt && !isGenerating && (
+              {/* Expand / Minimize Toggle Button */}
               <button
                 type="button"
-                onClick={() => setPrompt('')}
-                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0 mr-1 cursor-pointer"
-                title={t('toolbar.clearInput')}
-                aria-label={t('toolbar.clearInput')}
+                onClick={togglePromptExpanded}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 rounded-md transition-colors shrink-0 mr-1 cursor-pointer"
+                title={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
+                aria-label={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
               >
-                <X className="w-3.5 h-3.5" />
+                {isPromptExpanded ? (
+                  <Minimize2 className="w-3.5 h-3.5 text-sky-500" />
+                ) : (
+                  <Maximize2 className="w-3.5 h-3.5" />
+                )}
               </button>
-            )}
 
             {/* Detail Level Dropdown */}
             <div className="relative shrink-0" ref={detailDropdownRef}>
@@ -744,38 +891,50 @@ export default function Toolbar({
                       </button>
                     );
                   })}
-                </div>
+                  </div>
+                )}
+              </div>
+                {/* Generate / Stop Button - Stays firmly inside the prompt container */}
+              {isGenerating ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onStopGenerate?.();
+                  }}
+                  className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-medium px-2 sm:px-2.5 py-1.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+                  title={t('toolbar.stopGenerateBtn')}
+                  aria-label={t('toolbar.stopGenerateBtn')}
+                >
+                  <Square className="w-3.5 h-3.5 fill-current shrink-0" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!prompt.trim()}
+                  className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+                  title={t('toolbar.generateBtn')}
+                  aria-label={t('toolbar.generateBtn')}
+                >
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                </button>
               )}
             </div>
+          </form>
 
-            {/* Generate / Stop Button - Stays firmly inside the prompt container */}
-            {isGenerating ? (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onStopGenerate?.();
-                }}
-                className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-medium px-2 sm:px-2.5 py-1.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
-                title={t('toolbar.stopGenerateBtn')}
-                aria-label={t('toolbar.stopGenerateBtn')}
-              >
-                <Square className="w-3 h-3 fill-current shrink-0" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={!prompt.trim()}
-                className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
-                title={t('toolbar.generateBtn')}
-                aria-label={t('toolbar.generateBtn')}
-              >
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
-            )}
+          {/* Right resize handle (desktop only) */}
+          <div
+            onMouseDown={(e) => handleResizeStart(e, 'right')}
+            onTouchStart={(e) => handleResizeStart(e, 'right')}
+            onDoubleClick={handleResetResize}
+            className="hidden lg:flex items-center justify-center absolute -right-2 top-1/2 -translate-y-1/2 w-3.5 h-8 cursor-ew-resize opacity-0 group-hover/prompt:opacity-100 hover:!opacity-100 transition-opacity z-20"
+            title={t('toolbar.resizePrompt')}
+            aria-label={t('toolbar.resizePrompt')}
+          >
+            <div className="w-1 h-4 rounded-full bg-slate-300 dark:bg-slate-600 hover:bg-sky-500 dark:hover:bg-sky-400 transition-colors shadow-xs" />
           </div>
-        </form>
+        </div>
       </div>
 
       {/* Loading Progress Bar */}

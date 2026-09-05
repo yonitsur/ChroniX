@@ -72,6 +72,9 @@ export const translations = {
       detailDeepDesc: '~35-50 granular events',
       generateBtn: 'Generate timeline',
       stopGenerateBtn: 'Stop generation (Esc)',
+      expandPrompt: 'Expand prompt bar',
+      collapsePrompt: 'Collapse prompt bar',
+      resizePrompt: 'Drag to resize prompt bar (Double-click to reset)',
       loadingSteps: [
         'Consulting Gemini AI...',
         'Structuring chronology & swimlanes...',
@@ -528,6 +531,9 @@ export const translations = {
       detailDeepDesc: '~35-50 אירועים מפורטים',
       generateBtn: 'צור ציר זמן',
       stopGenerateBtn: 'עצור יצירה (Esc)',
+      expandPrompt: 'הרחבת תיבת הפרומפט',
+      collapsePrompt: 'צמצום תיבת הפרומפט',
+      resizePrompt: 'גרור לשינוי גודל תיבת הפרומפט (לחיצה כפולה לאיפוס)',
       loadingSteps: [
         'מתייעץ עם מודל Gemini AI...',
         'מבנה את הכרונולוגיה ומסלולי הזמן...',
