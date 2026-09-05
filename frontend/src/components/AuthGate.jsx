@@ -71,13 +71,16 @@ export default function AuthGate() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-950 text-slate-100 flex flex-col overflow-y-auto selection:bg-sky-500/30 selection:text-sky-200">
-      {/* Background ambient lighting */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-sky-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="fixed bottom-0 right-10 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+    <div
+      className="min-h-screen w-full text-slate-100 flex flex-col overflow-y-auto selection:bg-sky-500/30 selection:text-sky-200 relative bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: "radial-gradient(circle at 50% 30%, rgba(6, 9, 19, 0.15) 0%, rgba(6, 9, 19, 0.45) 100%), url('/stars-bg.jpg')",
+        backgroundColor: '#060913'
+      }}
+    >
 
       {/* Top Navigation Bar */}
-      <header className="w-full border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-50">
+      <header className="w-full border-b border-white/10 bg-slate-950/30 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <ChroniXLogo size="md" variant="dark" />
@@ -85,7 +88,7 @@ export default function AuthGate() {
 
           <div className="flex items-center gap-3 sm:gap-6">
             <nav className="hidden md:flex items-center gap-6 text-sm text-slate-400 font-medium">
-              <a href="#features" className="hover:text-white transition-colors">
+              <a href="/features.html" className="hover:text-white transition-colors">
                 {language === 'he' ? 'תכונות' : 'Features'}
               </a>
               <a href="/privacy.html" className="hover:text-white transition-colors">
@@ -115,72 +118,72 @@ export default function AuthGate() {
           
           {/* Left Column: Narrative Introduction & Public Info */}
           <div className={`lg:col-span-7 flex flex-col ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-950/70 border border-sky-800/60 text-sky-300 text-xs font-semibold w-fit mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-semibold w-fit mb-6 shadow-sm backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.landingHeroBadge')}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6 drop-shadow-md">
               {t('auth.landingHeroTitle')}
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-2xl font-normal">
+            <p className="text-base sm:text-lg text-slate-200 leading-relaxed mb-8 max-w-2xl font-normal drop-shadow">
               {t('auth.landingHeroSubtitle')}
             </p>
 
-            {/* Value Props Bullet Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 mb-4">
-              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+            {/* Value Props Bullet Grid - Clean & Unframed */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 mb-4">
+              <div className="flex items-start gap-3.5">
+                <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-400 shrink-0 shadow-sm backdrop-blur-md">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white mb-0.5">
+                  <h4 className="text-sm font-bold text-white mb-0.5 drop-shadow">
                     {language === 'he' ? 'ציר זמן קרטזי' : 'Cartesian Timeline'}
                   </h4>
-                  <p className="text-xs text-slate-400 leading-normal">
+                  <p className="text-xs text-slate-300 leading-relaxed drop-shadow-sm">
                     {language === 'he' ? 'ניווט חלק על פני אלפי שנות היסטוריה.' : 'Navigate fluidly across millennia and eras.'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+              <div className="flex items-start gap-3.5">
+                <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-400 shrink-0 shadow-sm backdrop-blur-md">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white mb-0.5">
+                  <h4 className="text-sm font-bold text-white mb-0.5 drop-shadow">
                     {language === 'he' ? 'השוואת מסלולים' : 'Parallel Lanes'}
                   </h4>
-                  <p className="text-xs text-slate-400 leading-normal">
+                  <p className="text-xs text-slate-300 leading-relaxed drop-shadow-sm">
                     {language === 'he' ? 'השוואת תרבויות ואירועים במקביל.' : 'Compare cultures and events side-by-side.'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+              <div className="flex items-start gap-3.5">
+                <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-400 shrink-0 shadow-sm backdrop-blur-md">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white mb-0.5">
+                  <h4 className="text-sm font-bold text-white mb-0.5 drop-shadow">
                     {language === 'he' ? 'מיפוי גלובלי' : 'Geospatial Maps'}
                   </h4>
-                  <p className="text-xs text-slate-400 leading-normal">
+                  <p className="text-xs text-slate-300 leading-relaxed drop-shadow-sm">
                     {language === 'he' ? 'איתור מוקדי האירועים במפת עולם.' : 'Pinpoint where milestones unfolded globally.'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 backdrop-blur-sm">
-                <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+              <div className="flex items-start gap-3.5">
+                <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-400/30 text-sky-400 shrink-0 shadow-sm backdrop-blur-md">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-white mb-0.5">
+                  <h4 className="text-sm font-bold text-white mb-0.5 drop-shadow">
                     {language === 'he' ? 'סנכרון מאובטח' : 'Cloud Research'}
                   </h4>
-                  <p className="text-xs text-slate-400 leading-normal">
+                  <p className="text-xs text-slate-300 leading-relaxed drop-shadow-sm">
                     {language === 'he' ? 'שמירת צירי זמן והערות אישיות.' : 'Save custom timelines and private annotations.'}
                   </p>
                 </div>
@@ -191,7 +194,7 @@ export default function AuthGate() {
           {/* Right Column: Sign In & Registration Card */}
           <div className="lg:col-span-5 flex justify-center w-full">
             <div
-              className="w-full max-w-md bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80"
+              className="w-full max-w-md bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60"
               dir="ltr"
             >
               {/* Card Header */}
@@ -239,11 +242,11 @@ export default function AuthGate() {
 
               {/* Divider */}
               <div className="relative flex items-center justify-center mb-5">
-                <div className="border-t border-slate-800 w-full" />
-                <span className="bg-slate-900 px-3 text-[11px] uppercase tracking-wider text-slate-500 font-medium shrink-0">
+                <div className="border-t border-white/10 w-full" />
+                <span className="bg-slate-950/60 px-3 text-[11px] uppercase tracking-wider text-slate-400 font-medium shrink-0 rounded-full">
                   {t('auth.orEmail')}
                 </span>
-                <div className="border-t border-slate-800 w-full" />
+                <div className="border-t border-white/10 w-full" />
               </div>
 
               {/* Feedback alerts */}
@@ -275,7 +278,7 @@ export default function AuthGate() {
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder={t('auth.fullNamePlaceholder')}
-                        className="w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all text-left"
+                        className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
                       />
                     </div>
                   </div>
@@ -293,7 +296,7 @@ export default function AuthGate() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t('auth.emailPlaceholder')}
-                      className="w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all text-left"
+                      className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
                     />
                   </div>
                 </div>
@@ -311,7 +314,7 @@ export default function AuthGate() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t('auth.passwordPlaceholder')}
                       minLength={6}
-                      className="w-full pl-10 pr-3.5 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all text-left"
+                      className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
                     />
                   </div>
                 </div>
@@ -368,14 +371,14 @@ export default function AuthGate() {
         </div>
       </main>
 
-      {/* Feature Showcase Section – Directly satisfies Google Home Page public info requirement */}
-      <section id="features" className="w-full border-t border-slate-800/80 bg-slate-900/30 py-16 sm:py-24">
+      {/* Feature Showcase Section */}
+      <section id="features" className="w-full border-t border-white/10 py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-4 drop-shadow-md">
               {language === 'he' ? 'חוויית חקר היסטורית מהדור הבא' : 'Next-Generation Historical Exploration'}
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed drop-shadow-sm">
               {language === 'he' 
                 ? 'ChroniX משלבת טכנולוגיות ויזואליזציה מתקדמות עם בינה מלאכותית כדי לפענח את זרימת הזמן והקשרים בין תרבויות.'
                 : 'ChroniX unifies advanced data visualization with artificial intelligence to reveal the flow of human history and cross-cultural milestones.'}
@@ -384,52 +387,52 @@ export default function AuthGate() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-950/35 backdrop-blur-md border border-white/10 hover:border-sky-400/40 hover:bg-slate-950/50 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center mb-5">
                 <Clock className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature1Title')}</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{t('auth.feature1Desc')}</p>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{t('auth.feature1Desc')}</p>
             </div>
 
             {/* Card 2 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-950/35 backdrop-blur-md border border-white/10 hover:border-sky-400/40 hover:bg-slate-950/50 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center mb-5">
                 <Sparkles className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature2Title')}</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{t('auth.feature2Desc')}</p>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{t('auth.feature2Desc')}</p>
             </div>
 
             {/* Card 3 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-950/35 backdrop-blur-md border border-white/10 hover:border-sky-400/40 hover:bg-slate-950/50 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center mb-5">
                 <Compass className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature3Title')}</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{t('auth.feature3Desc')}</p>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{t('auth.feature3Desc')}</p>
             </div>
 
             {/* Card 4 */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all shadow-xl">
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-5">
+            <div className="p-6 rounded-3xl bg-slate-950/35 backdrop-blur-md border border-white/10 hover:border-sky-400/40 hover:bg-slate-950/50 transition-all shadow-xl">
+              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center mb-5">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{t('auth.feature4Title')}</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{t('auth.feature4Desc')}</p>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{t('auth.feature4Desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Privacy Transparency Callout */}
-      <section className="w-full py-12 border-t border-slate-800/60 bg-slate-950">
+      <section className="w-full py-12 border-t border-white/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950/70 border border-sky-800/60 text-sky-300 text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-semibold mb-4 backdrop-blur-md">
             <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
             <span>{t('auth.privacyCommitmentTitle')}</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto mb-6">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto mb-6 drop-shadow-sm">
             {t('auth.privacyCommitmentDesc')}
           </p>
           <div className="flex items-center justify-center gap-6 text-xs text-sky-400 font-medium">
@@ -437,7 +440,7 @@ export default function AuthGate() {
               <FileText className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.privacyPolicyLink')}</span>
             </a>
-            <span className="text-slate-700">&bull;</span>
+            <span className="text-slate-500">&bull;</span>
             <a href="/terms.html" className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors">
               <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.termsLink')}</span>
@@ -447,21 +450,24 @@ export default function AuthGate() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-800/80 bg-slate-950 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <footer className="w-full border-t border-white/10 bg-slate-950/30 backdrop-blur-md py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <ChroniXLogo size="sm" variant="dark" />
             <span className="ml-2">&copy; 2026 ChroniX. {t('auth.copyright')}</span>
           </div>
 
           <div className="flex items-center gap-6">
-            <a href="/privacy.html" className="hover:text-slate-300 transition-colors">
+            <a href="/features.html" className="hover:text-slate-200 transition-colors">
+              {language === 'he' ? 'תכונות' : 'Features'}
+            </a>
+            <a href="/privacy.html" className="hover:text-slate-200 transition-colors">
               {t('auth.privacyPolicyLink')}
             </a>
-            <a href="/terms.html" className="hover:text-slate-300 transition-colors">
+            <a href="/terms.html" className="hover:text-slate-200 transition-colors">
               {t('auth.termsLink')}
             </a>
-            <a href="mailto:support@chronix-ai.com" className="hover:text-slate-300 transition-colors">
+            <a href="mailto:support@chronix-ai.com" className="hover:text-slate-200 transition-colors">
               {t('auth.supportContact')}
             </a>
           </div>
