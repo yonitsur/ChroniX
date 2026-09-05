@@ -72,21 +72,54 @@ export default function AuthGate() {
 
   return (
     <div
-      className="min-h-screen w-full text-slate-100 flex flex-col overflow-y-auto selection:bg-sky-500/30 selection:text-sky-200 relative bg-cover bg-center bg-fixed"
+      className="min-h-screen w-full text-slate-100 flex flex-col selection:bg-sky-500/30 selection:text-sky-200 relative bg-cover bg-center bg-fixed"
       style={{
         backgroundImage: "radial-gradient(circle at 50% 30%, rgba(6, 9, 19, 0.15) 0%, rgba(6, 9, 19, 0.45) 100%), url('/stars-bg.jpg')",
         backgroundColor: '#060913'
       }}
     >
 
-      <div className="max-w-[1160px] w-full mx-auto px-4 sm:px-6 pt-8 pb-12 flex flex-col flex-1">
+      <div className="max-w-[1160px] w-full mx-auto px-6 pt-8 pb-12 flex flex-col flex-1">
         {/* Top Navigation Header - Exactly matching features.html */}
-        <header className="flex items-center justify-between pb-6 mb-9 border-b border-white/10 w-full">
-          <a href="/" className="inline-block transition-transform hover:-translate-y-0.5 hover:opacity-90" title="ChroniX Home">
-            <ChroniXLogo size="md" variant="dark" />
+        <header
+          className="flex items-center justify-between border-b border-white/10 w-full"
+          style={{
+            height: '36px',
+            boxSizing: 'content-box',
+            paddingBottom: '24px',
+            marginBottom: '36px'
+          }}
+        >
+          <a
+            href="/"
+            className="transition-transform hover:-translate-y-0.5 hover:opacity-90"
+            title="ChroniX Home"
+            style={{ display: 'flex', alignItems: 'center', height: '36px' }}
+          >
+            <svg viewBox="0 0 96 28" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+              <defs>
+                <linearGradient id="chronix-min-auth-x-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#38bdf8" />
+                  <stop offset="100%" stopColor="#0284c7" />
+                </linearGradient>
+              </defs>
+              <text
+                x="1"
+                y="21.5"
+                fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+                fontWeight="800"
+                fontSize="23"
+                letterSpacing="-0.5px"
+              >
+                <tspan fill="#ffffff">Chroni</tspan><tspan fill="url(#chronix-min-auth-x-grad)" fontWeight="900">X</tspan>
+              </text>
+            </svg>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <nav
+            className="hidden md:flex items-center gap-6 text-sm font-medium"
+            style={{ height: '36px', display: 'flex', alignItems: 'center' }}
+          >
             <a href="/" className="text-white hover:text-sky-400 transition-colors">
               {language === 'he' ? 'בית' : 'Home'}
             </a>
@@ -101,12 +134,13 @@ export default function AuthGate() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div style={{ height: '36px', display: 'flex', alignItems: 'center' }}>
             <button
               type="button"
               onClick={toggleLanguage}
               title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 shadow-sm backdrop-blur-md transition-all text-xs font-semibold cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 rounded-full bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 shadow-sm backdrop-blur-md transition-all text-xs font-semibold cursor-pointer"
+              style={{ height: '36px', boxSizing: 'border-box' }}
             >
               <Globe className="w-3.5 h-3.5 text-sky-400" />
               <span>{language === 'en' ? 'עברית' : 'English'}</span>

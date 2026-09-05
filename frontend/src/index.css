@@ -8,6 +8,10 @@
   letter-spacing: -0.011em;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html.dark {
   color-scheme: dark;
 }
