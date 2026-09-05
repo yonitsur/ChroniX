@@ -265,6 +265,462 @@ export const PROMPT_EXAMPLES = [
     prompt: 'The European Renaissance: High-level overview of milestone breakthroughs in art, architecture, and humanism from Florence to Rome',
     detailLevel: 'overview',
     lang: 'en'
+  },
+  // 45. Hebrew - Concise Overview
+  {
+    prompt: 'המהפכה הצרפתית',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 46. Hebrew - Concise Overview
+  {
+    prompt: 'נפילת ברית המועצות וקץ המלחמה הקרה',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 47. Hebrew - Concise Overview
+  {
+    prompt: "האימפריה המונגולית וכיבושי ג'ינגיס חאן",
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 48. Hebrew - Concise Overview
+  {
+    prompt: 'שושלות סין העתיקה',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 49. Hebrew - Concise Overview
+  {
+    prompt: 'תולדות הצילום מראשיתו ועד לעידן הדיגיטלי',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 50. Hebrew - Concise Standard
+  {
+    prompt: 'מבצע יונתן באנטבה (1976)',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 51. Hebrew - Concise Overview
+  {
+    prompt: 'האימפריה הביזנטית ונפילת קונסטנטינופול',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 52. Hebrew - Concise Overview
+  {
+    prompt: 'עידן התגליות ומסעות קולומבוס',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 53. Hebrew - Concise Standard
+  {
+    prompt: 'מלחמת ששת הימים: מהלך הקרבות יום אחר יום',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 54. Hebrew - Concise Overview
+  {
+    prompt: 'תולדות הבירה והיין בעולם העתיק',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 55. Hebrew - Multi-lane (WWI)
+  {
+    prompt: 'מלחמת העולם הראשונה (1914–1918): בחלוקה למסלולים נפרדים עבור החזית המערבית, החזית המזרחית והמערכה במזרח התיכון',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 56. Hebrew - Multi-lane (Modern Medicine)
+  {
+    prompt: 'תולדות הרפואה המודרנית: ציר זמן בחלוקה למסלולים מקבילים עבור פיתוח תרופות ואנטיביוטיקה, כירורגיה והרדמה, וחיסונים ומחקר גנטי',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 57. Hebrew - Multi-lane (Hasmoneans)
+  {
+    prompt: 'מרד החשמונאים וממלכת החשמונאים: בחלוקה לשני מסלולים מקבילים עבור מאבקים צבאיים ומדיניים מול תמורות דתיות ותרבותיות ביהודה',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 58. Hebrew - Multi-lane (Jerusalem)
+  {
+    prompt: 'תולדות ירושלים לאורך הדורות: ציר זמן בחלוקה למסלולים נפרדים עבור ביצורים ושליטים, מקומות קדושים ומבני דת, וחיי התרבות והמסחר',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 59. Hebrew - Multi-lane (Cold War Race)
+  {
+    prompt: 'מרוץ החימוש מול מרוץ החלל במלחמה הקרה: ציר זמן בחלוקה לשני מסלולים מקבילים המציגים את התחרות בין ארה"ב לברית המועצות',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 60. Hebrew - Multi-lane (Israeli Cinema)
+  {
+    prompt: 'תולדות הקולנוע הישראלי: בחלוקה לשלושה מסלולים נפרדים עבור סרטי בורקס, קולנוע אישי ופוליטי, ויצירות עכשוויות שזכו להכרה עולמית',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 61. Hebrew - Multi-lane (Aliyah 1 & 2)
+  {
+    prompt: 'העלייה הראשונה והשנייה (1882–1914): ציר זמן בחלוקה לשני מסלולים להשוואת המושבות החקלאיות של הברון רוטשילד מול תנועת הפועלים והקמת הקיבוץ הראשון',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 62. Hebrew - Multi-lane (Apple vs Microsoft)
+  {
+    prompt: 'מהפכת המחשוב האישי: ציר זמן בחלוקה לשני מסלולים מקבילים עבור חברת אפל (Apple) מול מיקרוסופט (Microsoft) משנות ה-70 ועד ימינו',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 63. Hebrew - Multi-lane (Great Revolt vs Bar Kokhba)
+  {
+    prompt: 'המרד הגדול ומרד בר כוכבא: ציר זמן בחלוקה לשני מסלולים מקבילים להשוואת המהלכים הצבאיים, המנהיגים והתוצאות ההיסטוריות מול האימפריה הרומית',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 64. Hebrew - Multi-lane (Media & Press)
+  {
+    prompt: 'תולדות התקשורת והדפוס: בחלוקה לשני מסלולים נפרדים עבור התפתחות הכתב והדפוס המסורתי מול מהפכת הרדיו, הטלוויזיה והאינטרנט',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 65. Hebrew - Deep Dive (Alexander the Great)
+  {
+    prompt: 'חייו ומסעותיו של אלכסנדר מוקדון: מחינוכו אצל אריסטו ורצח פיליפוס, דרך כיבוש פרס, מצרים וסוריה, קרב גאוגמלה, ועד לחציית נהר ההידספס בהודו ומותו בבבל',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 66. Hebrew - Deep Dive (Holocaust & WWII)
+  {
+    prompt: 'תולדות השואה ומלחמת העולם השנייה (1933–1945): מעליית המפלגה הנאצית וחוקי נירנברג, ליל הבדולח והקמת הגטאות, דרך מבצע ברברוסה, "הפתרון הסופי" ומחנות ההשמדה, ועד למרידות בגטאות, צעדות המוות והשחרור',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 67. Hebrew - Deep Dive (Ancient Philosophy)
+  {
+    prompt: 'המהפכה הפילוסופית של העת העתיקה: מסוקרטס, אפלטון והאקדמיה באתונה, דרך אריסטו והאסכולה הפריפטטית, ועד לאסכולה הסטואית והאפיקוראית',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 68. Hebrew - Deep Dive (South Pole Race)
+  {
+    prompt: 'מסעות הקוטב הדרומי: המרוץ הדרמטי של רואלד אמונדסן מול רוברט פלקון סקוט (1910–1912), כולל ההכנות, השיט באוניות, הקמת מחנות הבסיס והמסע הרגלי לכיבוש הקוטב',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 69. Hebrew - Deep Dive (Israel-Egypt Peace)
+  {
+    prompt: "הסכם השלום בין ישראל למצרים: מביקור סאדאת בירושלים ב-1977, שיחות ועידת קמפ דייוויד עם מנחם בגין וג'ימי קרטר, חתימת ההסכם בוושינגטון ב-1979 ועד פינוי סיני",
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 70. Hebrew - Deep Dive (Spanish Jewry Golden Age)
+  {
+    prompt: 'תור הזהב של יהדות ספרד: מיוסוף אבן נגרילה וחסדאי אבן שפרוט, דרך שירת שלמה אבן גבירול ויהודה הלוי, פסיקותיו וכתביו של הרמב"ם, ועד לגירוש ספרד ב-1492',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 71. Hebrew - Deep Dive (AI History)
+  {
+    prompt: "תולדות הבינה המלאכותית: ממבחן טיורינג ב-1950, כנס דארטמות' ב-1956, חורפי הבינה המלאכותית, ניצחון Deep Blue על קספרוב, מהפכת הלמידה העמוקה ועד ל-ChatGPT ומודלי שפה ענקיים",
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 72. Hebrew - Deep Dive (Modern Astronomy)
+  {
+    prompt: "תולדות האסטרונומיה המודרנית: מהמודל ההליוצנטרי של קופרניקוס ותצפיות גלילאו, דרך חוקי קפלר, עבודתו של אדווין האבל על התפשטות היקום, ועד לשיגור טלסקופ החלל ג'יימס ווב",
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 73. Hebrew - Standard (Hebrew Language)
+  {
+    prompt: 'תולדות השפה העברית: מעברית מקראית ומגילות ים המלח, דרך לשון חז"ל וימי הביניים, ועד למפעל תחיית הלשון של אליעזר בן-יהודה והעברית בת זמננו',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 74. Hebrew - Standard (Leonardo da Vinci)
+  {
+    prompt: "חייו ויצירותיו של לאונרדו דה וינצ'י: ציור המונה ליזה, הסעודה האחרונה, מחברות הרישום והמצאותיו ההנדסיות והאנטומיות",
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 75. Hebrew - Standard (Tel Aviv)
+  {
+    prompt: 'תולדות תל אביב-יפו: מהגרלת המגרשים באחוזת בית ב-1909, דרך תוכנית גדס, בניית העיר הלבנה בסגנון הבאוהאוס, ועד להפיכתה למרכז הייטק ותרבות גלובלי',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 76. Hebrew - Standard (Deep Sea Exploration)
+  {
+    prompt: 'חקר מעמקי האוקיינוס: מגילוי שקע מריאנה וצלילת הבתיסקף טריאסטה ועד לגילוי הריסות הטיטניק ורובוטים תת-ימיים חדישים',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 77. Hebrew - Standard (Classical Music)
+  {
+    prompt: "תולדות המוזיקה הקלאסית: מהבארוק של באך וויואלדי, דרך הקלאסיציזם של מוצרט ובטהובן, ועד לרומנטיקה של שופן וצ'ייקובסקי",
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 78. Hebrew - Standard (Video Games)
+  {
+    prompt: 'התפתחות משחקי הווידאו: מ-Pong ומשחקי הארקייד של שנות ה-70, דרך עידן ה-8-ביט וה-16-ביט של נינטנדו וסגה, ועד לקונסולות תלת-ממד ומציאות מדומה',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 79. Hebrew - Standard (Israeli Agriculture & Water)
+  {
+    prompt: 'המהפכה החקלאית בארץ ישראל וההתיישבות העובדת: מייבוש ביצות החולה ועמק יזרעאל, פיתוח הטפטפות ומשק המים, ועד לחקלאות מדברית מתקדמת',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 80. Hebrew - Overview (Maritime Explorers)
+  {
+    prompt: "מסעות גילוי העולם הימיים: מסעות ואסקו דה גאמה להודו, מגלן והקפת כדור הארץ, וג'יימס קוק באוקיינוס השקט",
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 81. Hebrew - Standard (Lord of the Rings)
+  {
+    prompt: 'עלילת שר הטבעות: ציר זמן כרונולוגי של מסע אחוות הטבעת מפלך ההוביטים ועד להשמדת הטבעת בהר הגזירה',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 82. Hebrew - Standard (Israeli Tech & Internet)
+  {
+    prompt: 'ההיסטוריה של האינטרנט בישראל: מחיבור האוניברסיטאות הראשון לרשת מחשבים בשנות ה-80, הקמת אתרי החדשות הראשונים, ועד להפיכת ישראל ל"סטארט-אפ ניישן"',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 83. English - Concise Overview
+  {
+    prompt: 'The French Revolution',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 84. English - Concise Overview
+  {
+    prompt: 'Fall of the Soviet Union (1985–1991)',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 85. English - Concise Overview
+  {
+    prompt: 'The Mongol Empire and Genghis Khan',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 86. English - Concise Standard
+  {
+    prompt: 'The Black Death (1346–1353)',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 87. English - Concise Overview
+  {
+    prompt: 'James Bond Movies: 60 Years of 007',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 88. English - Concise Overview
+  {
+    prompt: 'Ancient Mesopotamia: Sumer, Babylon, and Assyria',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 89. English - Concise Overview
+  {
+    prompt: 'History of Photography: From Daguerreotypes to Smartphones',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 90. English - Concise Overview
+  {
+    prompt: 'The Maya Civilization: Preclassic to Postclassic Periods',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 91. English - Concise Overview
+  {
+    prompt: 'History of Coffee: From Ethiopian Forests to Global Cafes',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 92. English - Concise Overview
+  {
+    prompt: 'The Space Shuttle Era (1981–2011)',
+    detailLevel: 'overview',
+    lang: 'en'
+  },
+  // 93. English - Multi-lane (WWI Theaters)
+  {
+    prompt: 'World War I (1914–1918), divided into separate swimlanes for the Western Front, Eastern Front, and Middle Eastern Theater',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 94. English - Multi-lane (Gaming Consoles)
+  {
+    prompt: 'History of Video Game Consoles, divided into separate lanes for Nintendo, Sega, Sony PlayStation, and Microsoft Xbox',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 95. English - Multi-lane (Reformation)
+  {
+    prompt: 'The Protestant Reformation and Counter-Reformation (1517–1648), divided into separate swimlanes for Protestant Reformers, Catholic Response, and Religious Wars',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 96. English - Multi-lane (Silk Road)
+  {
+    prompt: 'The Silk Road: divided into parallel lanes for Overland Caravan Routes, Maritime Trade Routes, and Religious & Cultural Diffusion',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 97. English - Multi-lane (US Civil War)
+  {
+    prompt: 'The American Civil War (1861–1865), divided into separate swimlanes for Eastern Theater Battles, Western Theater Campaigns, and Political & Emancipation Milestones',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 98. English - Multi-lane (Cinema History)
+  {
+    prompt: 'History of Cinema: divided into parallel lanes for Hollywood Studio System, European Art Cinema, and Asian & World Cinema',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 99. English - Multi-lane (Internet Evolution)
+  {
+    prompt: 'Evolution of the Internet, divided into separate swimlanes for Network Protocols & Hardware, Web Browsers & Platforms, and Mobile & Social Media',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 100. English - Multi-lane (Classical Music)
+  {
+    prompt: 'History of Western Classical Music: divided into parallel tracks for Orchestral & Instrumental Works and Opera & Choral Music',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 101. English - Multi-lane (Jazz & Blues)
+  {
+    prompt: 'Evolution of Jazz & Blues: divided into parallel lanes for Delta & Chicago Blues, Traditional New Orleans to Bebop, and Cool Jazz to Modern Fusion',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 102. English - Multi-lane (Cold War Space vs Arms)
+  {
+    prompt: 'The Cold War: Space Race vs. Nuclear Arms Race, divided into two parallel lanes tracking orbital missions and nuclear weapon development',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 103. English - Deep Dive (Alexander the Great)
+  {
+    prompt: "The Life and Campaigns of Alexander the Great: From Philip's assassination and the Battle of the Granicus, through the Siege of Tyre and Alexandria, to Gaugamela, the Hindu Kush, and his death in Babylon",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 104. English - Deep Dive (Roman Empire)
+  {
+    prompt: 'The Rise of the Roman Empire: From the assassination of Julius Caesar and the Second Triumvirate, through the Battle of Actium, the Pax Romana of Augustus, to Marcus Aurelius and the Antonine Plague',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 105. English - Deep Dive (Scientific Revolution)
+  {
+    prompt: "The Scientific Revolution (1543–1687): From Copernicus's heliocentric model and Vesalius's anatomy, through Kepler's planetary laws and Galileo's telescopic discoveries, to Newton's Principia Mathematica",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 106. English - Deep Dive (History of Medicine)
+  {
+    prompt: "The History of Medicine and Surgery: From Hippocrates and Galen's humors, to Harvey's blood circulation, Jenner's smallpox vaccine, Lister's antiseptics, Fleming's penicillin, and CRISPR gene editing",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 107. English - Deep Dive (The Crusades)
+  {
+    prompt: "The Crusades (1095–1291): From Pope Urban II's Council of Clermont and the capture of Jerusalem, through Saladin and the Third Crusade with Richard the Lionheart, to the Fourth Crusade's sack of Constantinople and the fall of Acre",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 108. English - Deep Dive (AI History)
+  {
+    prompt: "The Evolution of Artificial Intelligence: From Turing's 1950 imitation game and the 1956 Dartmouth workshop, through AI winters and expert systems, to Deep Blue, AlphaGo, and Large Language Models",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 109. English - Deep Dive (Race to South Pole)
+  {
+    prompt: "The Race to the South Pole (1910–1912): Chronology of Roald Amundsen's Fram expedition versus Robert Falcon Scott's Terra Nova expedition, from depot laying to the polar summit and Scott's tragic return",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 110. English - Deep Dive (Origins of WWI)
+  {
+    prompt: "Origins of World War I: From the 1871 Franco-Prussian War and Bismarck's alliance systems, through the Balkan Wars, the assassination of Archduke Franz Ferdinand in Sarajevo, to the July Crisis and declarations of war",
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 111. English - Standard (Lord of the Rings)
+  {
+    prompt: "The Lord of the Rings: Chronology of the War of the Ring from Bilbo's farewell birthday party in the Shire to Aragorn's coronation and the Grey Havens",
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 112. English - Standard (Star Wars)
+  {
+    prompt: 'Star Wars Canon: Major galactic timeline from the Fall of the Republic and Order 66, through the Galactic Civil War and Battle of Endor, to the Rise of the First Order',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 113. English - Standard (Studio Ghibli)
+  {
+    prompt: "Studio Ghibli: Chronological history of Hayao Miyazaki and Isao Takahata's films from Nausicaä and Castle in the Sky to The Boy and the Heron",
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 114. English - Standard (Cybersecurity)
+  {
+    prompt: 'History of Cybersecurity: From the 1988 Morris Worm and early computer viruses, through Stuxnet and ransomware, to modern zero-day exploits and encryption wars',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 115. English - Standard (Mass Extinctions)
+  {
+    prompt: "The Five Great Mass Extinction Events in Earth's History: Ordovician, Late Devonian, Permian Great Dying, Triassic-Jurassic, and Cretaceous-Paleogene",
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 116. English - Standard (Modern Architecture)
+  {
+    prompt: 'History of Modern Architecture: From the Crystal Palace and Chicago School skyscrapers, through Bauhaus and Le Corbusier, to Frank Gehry and sustainable biomimetic design',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 117. English - Standard (FIFA World Cup)
+  {
+    prompt: "History of the FIFA World Cup: Landmark tournaments and iconic matches from Uruguay 1930 and Pelé's 1958 debut, to Maradona's 1986 heroics and Qatar 2022",
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 118. English - Standard (Modern Olympics)
+  {
+    prompt: "The Modern Olympic Games: From Pierre de Coubertin's revival in Athens 1896, through the Berlin 1936 games, Cold War boycotts, to the 2024 Paris Olympics",
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 119. English - Standard (Silicon Valley)
+  {
+    prompt: 'History of Silicon Valley: From Shockley Semiconductor and the "Traitorous Eight", through Fairchild, Intel, Apple, and Google, to modern venture capital giants',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 120. English - Standard (Mars Exploration)
+  {
+    prompt: 'The Exploration of Mars: From Mariner 4 flybys and Viking landers, through Pathfinder, Spirit, Opportunity, and Curiosity, to the Perseverance rover and Ingenuity helicopter',
+    detailLevel: 'standard',
+    lang: 'en'
   }
 ];
 
@@ -299,8 +755,8 @@ export function getSmartShuffledExamples() {
       if (e < english.length) pickHebrewNext = false;
     } else if (!pickHebrewNext && e < english.length) {
       merged.push(english[e++]);
-      // English has 24 items vs Hebrew's 14, so allow a 2nd English card with ~45% chance
-      if (e < english.length && (english.length - e) > (hebrew.length - h) && Math.random() < 0.45) {
+      // If one language has slightly more remaining items, allow a 2nd card with ~25% chance
+      if (e < english.length && (english.length - e) > (hebrew.length - h) && Math.random() < 0.25) {
         merged.push(english[e++]);
       }
       if (h < hebrew.length) pickHebrewNext = true;
