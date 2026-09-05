@@ -113,7 +113,7 @@ export default function AuthGate() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-slate-100 text-slate-800 font-semibold text-sm rounded-2xl shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-slate-100 text-slate-800 font-semibold text-sm rounded-2xl shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -150,14 +150,14 @@ export default function AuthGate() {
         {error && (
           <div className="mb-4 p-3 rounded-2xl bg-red-950/50 border border-red-800/60 text-red-300 text-xs flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
-            <span>{error}</span>
+            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{error}</span>
           </div>
         )}
 
         {successMsg && (
           <div className="mb-4 p-3 rounded-2xl bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 text-xs flex items-start gap-2.5">
             <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-            <span>{successMsg}</span>
+            <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>{successMsg}</span>
           </div>
         )}
 
@@ -165,56 +165,77 @@ export default function AuthGate() {
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {mode === 'signup' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
+              <label
+                dir={isRtl ? 'rtl' : 'ltr'}
+                className={`block text-xs font-medium text-slate-300 mb-1 ${
+                  isRtl ? 'text-right' : 'text-left'
+                }`}
+              >
                 {t('auth.fullNameLabel')}
               </label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <UserIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
                 <input
                   type="text"
-                  dir="auto"
+                  dir={isRtl ? 'rtl' : 'ltr'}
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder={t('auth.fullNamePlaceholder')}
-                  className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                  className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                    isRtl ? 'text-right' : 'text-left'
+                  }`}
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
+            <label
+              dir={isRtl ? 'rtl' : 'ltr'}
+              className={`block text-xs font-medium text-slate-300 mb-1 ${
+                isRtl ? 'text-right' : 'text-left'
+              }`}
+            >
               {t('auth.emailLabel')}
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               <input
                 type="email"
-                dir="auto"
+                dir={isRtl ? 'rtl' : 'ltr'}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('auth.emailPlaceholder')}
-                className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                  isRtl ? 'text-right' : 'text-left'
+                }`}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
+            <label
+              dir={isRtl ? 'rtl' : 'ltr'}
+              className={`block text-xs font-medium text-slate-300 mb-1 ${
+                isRtl ? 'text-right' : 'text-left'
+              }`}
+            >
               {t('auth.passwordLabel')}
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               <input
                 type="password"
-                dir="auto"
+                dir={isRtl ? 'rtl' : 'ltr'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('auth.passwordPlaceholder')}
                 minLength={6}
-                className="w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
+                className={`w-full pl-10 pr-3 py-2.5 bg-slate-800/70 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                  isRtl ? 'text-right' : 'text-left'
+                }`}
               />
             </div>
           </div>
@@ -222,7 +243,7 @@ export default function AuthGate() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-3 py-3 px-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:via-blue-700 hover:to-indigo-700 text-white font-medium text-sm rounded-2xl shadow-lg shadow-sky-950/50 hover:shadow-sky-900/60 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+            className="w-full mt-3 py-3 px-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:via-blue-700 hover:to-indigo-700 text-white font-medium text-sm rounded-2xl shadow-lg shadow-sky-950/50 hover:shadow-sky-900/60 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60 cursor-pointer"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
