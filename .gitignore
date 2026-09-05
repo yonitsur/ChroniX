@@ -6,7 +6,7 @@ backend/.env
 !backend/.env.example
 
 backend/data/timelines.json
-
+backend/data/daily_usage.json
 # Python
 .venv/
 venv/

@@ -358,6 +358,27 @@ export const SHOWCASE_PROMPTS_DATA = [
       en: 'Demonstrates how to explore a fascinating linguistic and historical topic: parallel swimlanes let you view the visual evolution of letterforms and scripts alongside the peoples, languages, and historical events that shaped them.',
       he: 'מדגים כיצד לחקור נושא בלשני-היסטורי מרתק: החלוקה לשני מסלולים מקבילים מאפשרת לראות זה לצד זה את השינויים הצורניים של האותיות והכתב מול העמים, השפות והמאורעות ההיסטוריים שהובילו לתמורות אלו.'
     }
+  },
+  {
+    id: 'ancient-wonders',
+    categoryKey: 'ancient',
+    detailLevel: 'overview',
+    title: {
+      en: 'Seven Wonders of the Ancient World',
+      he: 'שבעת פלאי תבל של העולם העתיק'
+    },
+    category: {
+      en: 'Ancient Civilizations',
+      he: 'עת עתיקה ותרבויות קדומות'
+    },
+    prompt: {
+      en: 'The Seven Wonders of the Ancient World: When the famous monuments were built and what happened to them',
+      he: 'שבעת פלאי תבל של העולם העתיק: מתי נבנו המבנים המפורסמים ומה עלה בגורלם'
+    },
+    whyItWorks: {
+      en: 'A classic curiosity-driven prompt: without needing any BCE dates, names of architects, or ancient rulers, the AI maps when the great monuments stood and how they were lost.',
+      he: 'מדגים חקר היסטורי מתוך סקרנות טהורה: אין צורך להכיר תאריכים לפנה״ס או שמות שליטים – ה-AI ממפה מתי עמדו המבנים האגדיים ומה הוביל לחורבנם בציר זמן בהיר ומרתק.'
+    }
   }
 ];
 

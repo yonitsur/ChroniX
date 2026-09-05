@@ -806,6 +806,18 @@ export const PROMPT_EXAMPLES = [
     prompt: 'The Evolution of the Hebrew Alphabet from ancient origins to modern times, divided into parallel swimlanes for Script Styles & Typography (from Proto-Canaanite and Paleo-Hebrew to Square Script and modern print) vs. Languages, Peoples & Cultural Influences',
     detailLevel: 'standard',
     lang: 'en'
+  },
+  // 135. Hebrew - Overview (Seven Wonders of the Ancient World)
+  {
+    prompt: 'שבעת פלאי תבל של העולם העתיק: מתי נבנו המבנים המפורסמים ומה עלה בגורלם',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 136. English - Overview (Seven Wonders of the Ancient World)
+  {
+    prompt: 'The Seven Wonders of the Ancient World: When the famous monuments were built and how they were lost',
+    detailLevel: 'overview',
+    lang: 'en'
   }
 ];
 
