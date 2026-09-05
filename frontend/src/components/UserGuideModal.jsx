@@ -104,7 +104,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
       guide?.prompt_showcase?.detailLevels?.[level] ||
       t(`userGuide.detailLevels.${level}`) ||
       (language === 'he'
-        ? (level === 'deep_dive' ? 'מעמיק' : level === 'overview' ? 'מבט-על' : 'סטנדרטי')
+        ? (level === 'deep_dive' ? 'מעמיק' : level === 'overview' ? 'סקירה' : 'סטנדרטי')
         : (level === 'deep_dive' ? 'Deep Dive' : level === 'overview' ? 'Overview' : 'Standard'))
     );
   };
@@ -146,9 +146,8 @@ export default function UserGuideModal({ isOpen, onClose }) {
       aria-labelledby="user-guide-title"
     >
       <div
-        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${
-          language === 'he' ? 'text-right' : 'text-left'
-        }`}
+        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${language === 'he' ? 'text-right' : 'text-left'
+          }`}
         dir={language === 'he' ? 'rtl' : 'ltr'}
       >
 
@@ -226,11 +225,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   type="button"
                   id={`user-guide-tab-${sec.id}`}
                   onClick={() => setActiveSection(sec.id)}
-                  className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-medium shrink-0 transition-colors cursor-pointer select-none ${
-                    isActive
+                  className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-medium shrink-0 transition-colors cursor-pointer select-none ${isActive
                       ? 'bg-sky-500 text-white shadow-xs'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-3.5 h-3.5 shrink-0" />
                   <span>{label}</span>
@@ -242,9 +240,8 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
         {/* Scrollable Content Body */}
         <div
-          className={`flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed text-xs sm:text-sm ${
-            language === 'he' ? 'text-right' : 'text-left'
-          }`}
+          className={`flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed text-xs sm:text-sm ${language === 'he' ? 'text-right' : 'text-left'
+            }`}
           dir={language === 'he' ? 'rtl' : 'ltr'}
         >
 
@@ -513,11 +510,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
                       key={cat.key}
                       type="button"
                       onClick={() => setSelectedCategoryKey(cat.key)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer shrink-0 ${
-                        selectedCategoryKey === cat.key
+                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer shrink-0 ${selectedCategoryKey === cat.key
                           ? 'bg-sky-500 text-white shadow-xs'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
-                      }`}
+                        }`}
                     >
                       {cat.label}
                     </button>
@@ -547,10 +543,9 @@ export default function UserGuideModal({ isOpen, onClose }) {
                           </span>
                           <div className="flex items-center gap-1.5">
                             <span
-                              className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
-                                DETAIL_LEVEL_STYLES[item.detailLevel] ||
+                              className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${DETAIL_LEVEL_STYLES[item.detailLevel] ||
                                 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-                              }`}
+                                }`}
                             >
                               {getDetailLevelLabel(item.detailLevel)}
                             </span>

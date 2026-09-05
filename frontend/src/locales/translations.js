@@ -516,7 +516,7 @@ export const translations = {
       lanesCount: '{count} מסלולים',
       zoomIn: 'התקרב (Zoom In)',
       zoomOut: 'התרחק (Zoom Out)',
-      fitAll:'התאם',
+      fitAll: 'התאם',
       refine: 'ליטוש',
       refineTitle: 'ליטוש והרחבת ציר הזמן באמצעות הוראות AI',
       addEvent: 'הוסף אירוע',
@@ -544,7 +544,7 @@ export const translations = {
       inputPlaceholder: 'הזן נושא לציר זמן (לדוגמה: מצרים העתיקה, המרוץ לחלל, תולדות הציונות)',
       clearInput: 'נקה קלט',
       detailLevel: 'רמת פירוט',
-      detailOverview: 'מבט-על',
+      detailOverview: 'סקירה',
       detailOverviewDesc: '~10-15 אירועי מפתח',
       detailStandard: 'סטנדרטי',
       detailStandardDesc: '~20-30 אירועים מאוזנים',
@@ -794,7 +794,7 @@ export const translations = {
       version: 'גרסה 1.0',
       tagline: 'כרונולוגיה ויזואלית אינטראקטיבית מבוססת בינה מלאכותית',
       tabs: {
-        overview: 'מבט-על',
+        overview: 'סקירה',
         credits: 'קרדיטים ותודות',
         guide: 'מדריך מקוצר'
       },
@@ -873,7 +873,7 @@ export const translations = {
         export_saving: 'ייצוא ושמירה'
       },
       detailLevels: {
-        overview: 'מבט-על',
+        overview: 'סקירה',
         standard: 'סטנדרטי',
         deep_dive: 'מעמיק'
       },

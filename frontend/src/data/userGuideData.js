@@ -548,7 +548,7 @@ export const USER_GUIDE_DATA = {
       detailHeading: '1. בחירת רמת הפירוט המתאימה',
       levels: {
         overview: {
-          name: 'מבט-על (Overview)',
+          name: 'סקירה (Overview)',
           count: '~10–15 אירועים',
           bestFor: 'תקופות היסטוריות ארוכות, סקירת ציוויליזציות שלמות, או אירועים, מבצעים ומשלחות ממוקדות (כגון משלחות קוטב או מבצעי חילוץ).',
           example: '"מצרים העתיקה: סקירה תמציתית מהממלכה הקדומה ועד קלאופטרה" או "המרוץ לקוטב הדרומי: אמונדסן מול סקוט"'
@@ -600,7 +600,7 @@ export const USER_GUIDE_DATA = {
       copied: 'הועתק!',
       whyItWorksLabel: 'למה זה עובד:',
       detailLevels: {
-        overview: 'מבט-על',
+        overview: 'סקירה',
         standard: 'סטנדרטי',
         deep_dive: 'מעמיק'
       }
