@@ -74,6 +74,8 @@ export default function ChroniXLogo({
           viewBox="0 0 36 36"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          dir="ltr"
+          style={{ direction: 'ltr' }}
           className={`shrink-0 select-none ${computedClass}`}
           aria-label="ChroniX Icon"
         >
@@ -89,6 +91,8 @@ export default function ChroniXLogo({
             x="18"
             y="26"
             textAnchor="middle"
+            direction="ltr"
+            style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
             fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
             fontWeight="900"
             fontSize="26"
@@ -105,6 +109,8 @@ export default function ChroniXLogo({
         viewBox="0 0 36 36"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        dir="ltr"
+        style={{ direction: 'ltr' }}
         className={`shrink-0 select-none ${computedClass}`}
         aria-label="ChroniX Icon"
       >
@@ -126,6 +132,8 @@ export default function ChroniXLogo({
         <text
           x="16"
           y="27"
+          direction="ltr"
+          style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
           fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
           fontWeight="900"
           fontSize="24"
@@ -144,6 +152,8 @@ export default function ChroniXLogo({
         viewBox="0 0 100 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        dir="ltr"
+        style={{ direction: 'ltr' }}
         className={`shrink-0 select-none ${computedClass}`}
         aria-label="ChroniX Logo"
       >
@@ -167,6 +177,8 @@ export default function ChroniXLogo({
         <text
           x="8.8"
           y="21.5"
+          direction="ltr"
+          style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
           fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
           fontWeight="800"
           fontSize="23"
@@ -196,6 +208,8 @@ export default function ChroniXLogo({
         viewBox="0 0 96 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        dir="ltr"
+        style={{ direction: 'ltr' }}
         className={`shrink-0 select-none ${computedClass}`}
         aria-label="ChroniX Logo"
       >
@@ -209,6 +223,8 @@ export default function ChroniXLogo({
         <text
           x="1"
           y="21.5"
+          direction="ltr"
+          style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
           fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
           fontWeight="800"
           fontSize="23"
@@ -236,6 +252,8 @@ export default function ChroniXLogo({
       viewBox="2 2 119 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      dir="ltr"
+      style={{ direction: 'ltr' }}
       className={`shrink-0 select-none ${computedClass}`}
       aria-label="ChroniX Logo"
     >
@@ -308,6 +326,8 @@ export default function ChroniXLogo({
       <text
         x="19"
         y="27"
+        direction="ltr"
+        style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
         fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
         fontWeight="800"
         fontSize="21"

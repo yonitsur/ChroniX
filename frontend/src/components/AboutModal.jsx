@@ -64,15 +64,14 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
       aria-labelledby="about-chronix-title"
     >
       <div
-        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${
-          isRtl ? 'text-right' : 'text-left'
-        }`}
-        dir={isRtl ? 'rtl' : 'ltr'}
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
+        dir="ltr"
+        style={{ direction: 'ltr' }}
       >
         
         {/* Header with Logo & Hero */}
         <div className="px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-4" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5">
                 <h2 id="about-chronix-title" className="sr-only">
@@ -83,7 +82,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                   v1.0
                 </span>
               </div>
-              <p className={`text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+              <p className={`text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 ${isRtl ? 'text-right' : 'text-left'}`}>
                 {t('about.tagline')}
               </p>
             </div>
@@ -100,7 +99,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex items-center gap-1 mt-5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="flex items-center gap-1 mt-5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
             {TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -124,12 +123,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
         </div>
 
         {/* Scrollable Content Body */}
-        <div
-          className={`p-6 overflow-y-auto space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed max-h-[calc(92vh-180px)] ${
-            isRtl ? 'text-right' : 'text-left'
-          }`}
-          dir={isRtl ? 'rtl' : 'ltr'}
-        >
+        <div className="p-6 overflow-y-auto space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed max-h-[calc(92vh-180px)]">
           
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
@@ -140,55 +134,55 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 </p>
               </div>
 
-              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <h3 className={`text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                 {t('about.featuresHeading')}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-sky-500" />
+                    <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
                     <span className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.features.0.title')}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                     {t('about.features.0.desc')}
                   </p>
                 </div>
 
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-sky-500" />
+                    <Layers className="w-4 h-4 text-sky-500 shrink-0" />
                     <span className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.features.1.title')}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                     {t('about.features.1.desc')}
                   </p>
                 </div>
 
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-sky-500" />
+                    <Globe className="w-4 h-4 text-sky-500 shrink-0" />
                     <span className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.features.2.title')}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                     {t('about.features.2.desc')}
                   </p>
                 </div>
 
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Edit3 className="w-4 h-4 text-sky-500" />
+                    <Edit3 className="w-4 h-4 text-sky-500 shrink-0" />
                     <span className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.features.3.title')}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                     {t('about.features.3.desc')}
                   </p>
                 </div>
@@ -201,10 +195,10 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <Mail className="w-4 h-4 text-sky-500" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
+                    <h4 className={`font-semibold text-xs sm:text-sm text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.contactTitle')}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className={`text-xs text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.contactDesc')}
                     </p>
                   </div>
@@ -240,7 +234,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
           {/* TAB 2: CREDITS & ATTRIBUTIONS */}
           {activeTab === 'credits' && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className={`text-xs text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                 {t('about.creditsIntro')}
               </p>
 
@@ -270,7 +264,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300">
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t('about.creditsHistropediaDesc')}
                 </p>
                 <div className="pt-1.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between border-t border-slate-200/80 dark:border-slate-800">
@@ -312,7 +306,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300">
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t('about.creditsGeminiDesc')}
                 </p>
               </div>
@@ -343,7 +337,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300">
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t('about.creditsWikiDesc')}
                 </p>
               </div>
@@ -368,7 +362,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     {t('about.creditsLeafletLicense')}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300">
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
                   {t('about.creditsLeafletDesc')}
                 </p>
               </div>
@@ -380,10 +374,10 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <Mail className="w-3.5 h-3.5 text-sky-500" />
                   </div>
                   <div>
-                    <h5 className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <h5 className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.contactTitle')}
                     </h5>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <p className={`text-[11px] text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.contactDesc')}
                     </p>
                   </div>
@@ -409,7 +403,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <BookOpen className="w-4 h-4 text-sky-500" />
                     {t('about.guideCalloutTitle')}
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
                     {t('about.guideCalloutDesc')}
                   </p>
                 </div>
@@ -427,7 +421,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 </button>
               </div>
 
-              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <h3 className={`text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider ${isRtl ? 'text-right' : 'text-left'}`}>
                 {t('about.guideHeading')}
               </h3>
 
@@ -440,7 +434,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.0.title')}
                     </h4>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.guides.0.desc')}
                     </p>
                   </div>
@@ -454,7 +448,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.1.title')}
                     </h4>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.guides.1.desc')}
                     </p>
                   </div>
@@ -468,7 +462,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.2.title')}
                     </h4>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.guides.2.desc')}
                     </p>
                   </div>
@@ -479,8 +473,8 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-2.5" dir="ltr">
-          <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-2.5" dir="ltr" style={{ direction: 'ltr' }}>
+          <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
               <span>{t('about.footerTagline')}</span>
