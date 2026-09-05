@@ -911,7 +911,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
     if (!el) return;
 
     isManualScrollingRef.current = true;
-    const scrollAmount = 320; // roughly one card width + gap
+    const scrollAmount = 260; // roughly one card width + gap
     el.scrollBy({
       left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth'
@@ -931,21 +931,21 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
 
   return (
     <div
-      className="w-full max-w-6xl mx-auto mt-4 px-2 sm:px-4 relative select-none group/carousel isolate"
+      className="w-full max-w-5xl mx-auto mt-2 sm:mt-3 px-2 sm:px-4 relative select-none group/carousel isolate"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
       {/* Edge gradient fade masks for that infinite cinema look */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-16 bg-gradient-to-r from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-16 bg-gradient-to-l from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
 
       {/* Scrollable Reel Track */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto overflow-y-hidden py-4 px-10 sm:px-14 scrollbar-none"
+        className="overflow-x-auto overflow-y-hidden py-2.5 sm:py-3 px-8 sm:px-12 scrollbar-none"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex gap-3.5 w-max group/track transition-all duration-300 opacity-100 scale-100">
+        <div className="flex gap-2.5 sm:gap-3 w-max group/track transition-all duration-300 opacity-100 scale-100">
           {triplicatedExamples.map((item, idx) => {
             const isHebrew = item.lang === 'he';
 
@@ -956,13 +956,13 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 disabled={isGenerating}
                 onClick={() => onSelectPrompt?.(item.prompt, item.detailLevel)}
                 dir={isHebrew ? 'rtl' : 'ltr'}
-                className={`group/card relative flex flex-col justify-between text-start p-4 sm:p-5 rounded-xl border transition-all duration-200 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`group/card relative flex flex-col justify-between text-start p-3 sm:p-3.5 rounded-lg sm:rounded-xl border transition-all duration-200 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                   isHebrew ? 'text-right' : 'text-left'
-                } w-72 sm:w-80 h-40 sm:h-44 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-1 hover:shadow-lg shadow-2xs group-hover/track:opacity-85 hover:!opacity-100`}
+                } w-56 sm:w-64 h-28 sm:h-32 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-0.5 hover:shadow-md shadow-2xs group-hover/track:opacity-85 hover:!opacity-100`}
               >
                 {/* Prompt Title at the Top */}
                 <p
-                  className={`text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 group-hover/card:text-sky-600 dark:group-hover/card:text-sky-400 leading-relaxed line-clamp-4 font-medium transition-colors ${
+                  className={`text-[11.5px] sm:text-xs text-slate-800 dark:text-slate-100 group-hover/card:text-sky-600 dark:group-hover/card:text-sky-400 leading-snug line-clamp-3 font-medium transition-colors ${
                     isHebrew ? 'font-sans' : 'font-sans'
                   }`}
                 >
@@ -970,9 +970,9 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 </p>
 
                 {/* Card Bottom Metadata Bar - Always LTR for uniform left alignment */}
-                <div className="flex items-center justify-start w-full mt-auto pt-2" dir="ltr">
+                <div className="flex items-center justify-start w-full mt-auto pt-1.5" dir="ltr">
                   <span
-                    className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${
+                    className={`text-[9.5px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded border ${
                       item.detailLevel === 'deep_dive'
                         ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                         : item.detailLevel === 'overview'
@@ -1001,9 +1001,9 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           handleManualScroll('left');
         }}
         aria-label="Scroll left"
-        className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        className="absolute left-0 sm:left-1.5 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
       >
-        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+        <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </button>
 
       {/* Right Navigation Arrow */}
@@ -1014,19 +1014,19 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
           handleManualScroll('right');
         }}
         aria-label="Scroll right"
-        className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+        className="absolute right-0 sm:right-1.5 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-white/95 dark:bg-slate-900/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer pointer-events-auto"
       >
-        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </button>
 
       {/* Random prompt selection button */}
-      <div className="flex justify-center mt-3">
+      <div className="flex justify-center mt-2">
         <button
           type="button"
           onClick={handleSelectRandomPrompt}
           disabled={isGenerating}
           title={t('home.surpriseMe')}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
         >
           <Dices className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
           <span>{t('home.surpriseMe')}</span>
