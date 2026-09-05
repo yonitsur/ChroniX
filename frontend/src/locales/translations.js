@@ -455,6 +455,27 @@ export const translations = {
       tierPaid: 'Premium Tier (Fast)',
       tierFree: 'Free Tier (Standard)',
       tierAdmin: 'Admin Mode (Unlimited)'
+    },
+    mobile: {
+      timeline: 'Timeline',
+      map: 'Map',
+      cards: 'Cards',
+      refine: 'Refine',
+      viewCanvas: 'Canvas',
+      viewFeed: 'Feed',
+      viewRuler: 'Visual Ruler',
+      zoomInRuler: 'Zoom in scale',
+      zoomOutRuler: 'Zoom out scale',
+      fitRuler: 'Reset scale',
+      parallelEvents: 'Concurrent events',
+      rulerScale: 'Scale',
+      rotateHint: 'Rotate device for full widescreen canvas',
+      locationsCount: '{count} locations',
+      filterLanes: 'Filter by lane',
+      allLanes: 'All Lanes',
+      sortAsc: 'Oldest first',
+      sortDesc: 'Newest first',
+      tapToViewMap: 'View on map'
     }
   },
 
@@ -914,6 +935,27 @@ export const translations = {
       tierPaid: 'מצב פרימיום (מהיר)',
       tierFree: 'מצב חינמי (סטנדרטי)',
       tierAdmin: 'מצב מנהל (בלתי מוגבל)'
+    },
+    mobile: {
+      timeline: 'ציר זמן',
+      map: 'מפה',
+      cards: 'כרטיסים',
+      refine: 'שכלול',
+      viewCanvas: 'ציר אופקי',
+      viewFeed: 'רשימה',
+      viewRuler: 'סרגל שנתות',
+      zoomInRuler: 'הגדל מרווחי זמן',
+      zoomOutRuler: 'הקטן מרווחי זמן',
+      fitRuler: 'איפוס קנה מידה',
+      parallelEvents: 'אירועים במקביל',
+      rulerScale: 'קנה מידה',
+      rotateHint: 'סובב את המכשיר לרוחב לצפייה בגרף המלא',
+      locationsCount: '{count} מיקומים',
+      filterLanes: 'סינון לפי מסלול',
+      allLanes: 'כל המסלולים',
+      sortAsc: 'מהמוקדם למאוחר',
+      sortDesc: 'מהמאוחר למוקדם',
+      tapToViewMap: 'הצג במפה'
     }
   }
 };

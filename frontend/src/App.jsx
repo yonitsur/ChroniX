@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { toPng } from 'html-to-image';
 import Toolbar from './components/Toolbar';
@@ -24,6 +24,8 @@ import { useLanguage } from './context/LanguageContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
+import MobileTimelineView from './components/MobileTimelineView';
+import MobileNavBar from './components/MobileNavBar';
 import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight } from 'lucide-react';
 
 import {
@@ -45,6 +47,36 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [activePrompt, setActivePrompt] = useState('');
   const [activeDetailLevel, setActiveDetailLevel] = useState('standard');
+
+  // Mobile layout detection and state
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
+  const [mobileTab, setMobileTab] = useState('timeline'); // 'timeline' | 'map' | 'cards'
+  const [isMobileCanvasView, setIsMobileCanvasView] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Compute count of geocoded locations
+  const locationsCount = useMemo(() => {
+    if (!currentTimeline?.articles) return 0;
+    return currentTimeline.articles.filter(
+      (a) =>
+        a.lat !== undefined &&
+        a.lat !== null &&
+        a.lng !== undefined &&
+        a.lng !== null &&
+        !isNaN(Number(a.lat)) &&
+        !isNaN(Number(a.lng))
+    ).length;
+  }, [currentTimeline]);
 
   // AbortControllers for active AI requests
   const generateAbortControllerRef = useRef(null);
@@ -519,6 +551,12 @@ export default function App() {
     }
   };
 
+  // Jump directly to map on mobile and focus article
+  const handleFocusOnMapMobile = useCallback((article) => {
+    handleSelectArticle(article);
+    setMobileTab('map');
+  }, []);
+
   if (authLoading) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
@@ -585,8 +623,8 @@ export default function App() {
 
       {/* Main Canvas Area */}
       <main className="flex-1 relative w-full h-full">
-        {/* Floating Edge Toggle for Cards List when closed and cards exist */}
-        {currentTimeline?.articles?.length > 0 && !isCardsListOpen && (
+        {/* Floating Edge Toggle for Cards List when closed and cards exist (Desktop only) */}
+        {currentTimeline?.articles?.length > 0 && !isCardsListOpen && !isMobile && (
           <FloatingCardsButton
             count={currentTimeline.articles.length}
             onClick={() => setIsCardsListOpen(true)}
@@ -594,99 +632,174 @@ export default function App() {
           />
         )}
 
-        {/* Cards List Drawer (Panel) */}
-        <CardsListDrawer
-          isOpen={isCardsListOpen}
-          onClose={() => setIsCardsListOpen(false)}
-          articles={currentTimeline?.articles || []}
-          lanes={currentTimeline?.lanes || []}
-          selectedArticleId={selectedArticle?.id}
-          onSelectArticle={handleFocusArticle}
-        />
+        {/* Cards List Drawer (Panel - Desktop only; on mobile handled inside tab) */}
+        {!isMobile && (
+          <CardsListDrawer
+            isOpen={isCardsListOpen}
+            onClose={() => setIsCardsListOpen(false)}
+            articles={currentTimeline?.articles || []}
+            lanes={currentTimeline?.lanes || []}
+            selectedArticleId={selectedArticle?.id}
+            onSelectArticle={handleFocusArticle}
+          />
+        )}
 
         {currentTimeline ? (
-          mapDisplayMode === 'split' ? (
-            <div
-              ref={splitContainerRef}
-              className={`w-full h-full flex flex-col overflow-hidden ${
-                isDraggingSplit ? 'select-none cursor-row-resize' : ''
-              }`}
-            >
-              {/* Top: Geo Map pane */}
-              <div
-                style={{ height: `${splitRatio}%` }}
-                className={`w-full relative shrink-0 overflow-hidden ${
-                  isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
-                }`}
-              >
-                {/* Floating Quick Controls inside Split Map pane */}
-                <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 p-1 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 backdrop-blur-md select-none">
-                  <button
-                    type="button"
-                    onClick={() => handleMapDisplayModeChange('pip')}
-                    className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title={t('floatingMap.pipTooltip')}
-                  >
-                    <Minimize2 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleMapDisplayModeChange('full')}
-                    className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title={t('floatingMap.fullTooltip')}
-                  >
-                    <Maximize2 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleMapDisplayModeChange('icon')}
-                    className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
-                    title={t('floatingMap.closeTooltip')}
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+          isMobile ? (
+            <div className="w-full h-full relative overflow-hidden">
+              {/* Tab 1: Timeline (Vertical Feed or Canvas if toggled) */}
+              {mobileTab === 'timeline' && (
+                isMobileCanvasView ? (
+                  <TimelineView
+                    ref={timelineRef}
+                    timelineData={currentTimeline}
+                    onSelectArticle={handleSelectArticle}
+                    selectedArticleId={selectedArticle?.id}
+                    theme={theme}
+                  />
+                ) : (
+                  <MobileTimelineView
+                    timelineData={currentTimeline}
+                    onSelectArticle={handleSelectArticle}
+                    selectedArticleId={selectedArticle?.id}
+                    onFocusOnMap={handleFocusOnMapMobile}
+                    theme={theme}
+                  />
+                )
+              )}
 
-                <GeoMapView
+              {/* Tab 2: Full-screen Geo Map */}
+              {mobileTab === 'map' && (
+                <div className="w-full h-full relative pb-14">
+                  <GeoMapView
+                    articles={currentTimeline?.articles || []}
+                    lanes={currentTimeline?.lanes || []}
+                    selectedArticleId={selectedArticle?.id}
+                    onSelectArticle={handleSelectArticle}
+                    theme={theme}
+                  />
+                </div>
+              )}
+
+              {/* Tab 3: Full-screen Cards List & Search */}
+              {mobileTab === 'cards' && (
+                <CardsListDrawer
+                  isOpen={true}
+                  onClose={() => setMobileTab('timeline')}
                   articles={currentTimeline?.articles || []}
                   lanes={currentTimeline?.lanes || []}
                   selectedArticleId={selectedArticle?.id}
-                  onSelectArticle={handleFocusArticle}
-                  theme={theme}
+                  onSelectArticle={handleSelectArticle}
                 />
-              </div>
+              )}
 
-              {/* Draggable Divider Bar */}
+              {/* Fixed Mobile Bottom Navigation Bar */}
+              <MobileNavBar
+                activeTab={mobileTab}
+                onTabChange={setMobileTab}
+                onOpenRefine={() => setIsAiRefineOpen(true)}
+                locationsCount={locationsCount}
+                cardsCount={currentTimeline?.articles?.length || 0}
+                isGenerating={isLoading}
+                isCanvasView={isMobileCanvasView}
+                onToggleCanvasView={() => setIsMobileCanvasView((prev) => !prev)}
+              />
+            </div>
+          ) : (
+            mapDisplayMode === 'split' ? (
               <div
-                role="separator"
-                aria-orientation="horizontal"
-                tabIndex={0}
-                onMouseDown={handleSplitMouseDown}
-                onTouchStart={handleSplitTouchStart}
-                onDoubleClick={() => {
-                  setSplitRatio(50);
-                  try {
-                    localStorage.setItem('vt_split_ratio', '50');
-                  } catch (e) {}
-                }}
-                className={`group relative w-full h-3.5 flex items-center justify-center cursor-row-resize bg-slate-200/90 dark:bg-slate-800/90 border-y border-slate-300 dark:border-slate-700 hover:bg-sky-500/20 dark:hover:bg-sky-500/30 transition-colors shrink-0 z-30 select-none ${
-                  isDraggingSplit ? 'bg-sky-500/30 dark:bg-sky-500/40 ring-1 ring-sky-500/60' : ''
+                ref={splitContainerRef}
+                className={`w-full h-full flex flex-col overflow-hidden ${
+                  isDraggingSplit ? 'select-none cursor-row-resize' : ''
                 }`}
-                title={t('floatingMap.resizeTooltip')}
               >
-                {/* Visual Grip pill */}
-                <div className="flex items-center gap-1 px-3 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-2xs group-hover:border-sky-400 group-hover:scale-105 transition-all pointer-events-none">
-                  <div className="w-6 h-1 rounded-full bg-slate-400 dark:bg-slate-500 group-hover:bg-sky-500 transition-colors" />
+                {/* Top: Geo Map pane */}
+                <div
+                  style={{ height: `${splitRatio}%` }}
+                  className={`w-full relative shrink-0 overflow-hidden ${
+                    isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
+                  }`}
+                >
+                  {/* Floating Quick Controls inside Split Map pane */}
+                  <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 p-1 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 backdrop-blur-md select-none">
+                    <button
+                      type="button"
+                      onClick={() => handleMapDisplayModeChange('pip')}
+                      className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      title={t('floatingMap.pipTooltip')}
+                    >
+                      <Minimize2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleMapDisplayModeChange('full')}
+                      className="p-1.5 text-slate-600 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      title={t('floatingMap.fullTooltip')}
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleMapDisplayModeChange('icon')}
+                      className="p-1.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                      title={t('floatingMap.closeTooltip')}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <GeoMapView
+                    articles={currentTimeline?.articles || []}
+                    lanes={currentTimeline?.lanes || []}
+                    selectedArticleId={selectedArticle?.id}
+                    onSelectArticle={handleFocusArticle}
+                    theme={theme}
+                  />
+                </div>
+
+                {/* Draggable Divider Bar */}
+                <div
+                  role="separator"
+                  aria-orientation="horizontal"
+                  tabIndex={0}
+                  onMouseDown={handleSplitMouseDown}
+                  onTouchStart={handleSplitTouchStart}
+                  onDoubleClick={() => {
+                    setSplitRatio(50);
+                    try {
+                      localStorage.setItem('vt_split_ratio', '50');
+                    } catch (e) {}
+                  }}
+                  className={`group relative w-full h-3.5 flex items-center justify-center cursor-row-resize bg-slate-200/90 dark:bg-slate-800/90 border-y border-slate-300 dark:border-slate-700 hover:bg-sky-500/20 dark:hover:bg-sky-500/30 transition-colors shrink-0 z-30 select-none ${
+                    isDraggingSplit ? 'bg-sky-500/30 dark:bg-sky-500/40 ring-1 ring-sky-500/60' : ''
+                  }`}
+                  title={t('floatingMap.resizeTooltip')}
+                >
+                  {/* Visual Grip pill */}
+                  <div className="flex items-center gap-1 px-3 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-2xs group-hover:border-sky-400 group-hover:scale-105 transition-all pointer-events-none">
+                    <div className="w-6 h-1 rounded-full bg-slate-400 dark:bg-slate-500 group-hover:bg-sky-500 transition-colors" />
+                  </div>
+                </div>
+
+                {/* Bottom: Timeline pane */}
+                <div
+                  style={{ height: `calc(${100 - splitRatio}% - 14px)` }}
+                  className={`w-full relative overflow-hidden shrink-0 ${
+                    isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
+                  }`}
+                >
+                  <TimelineView
+                    ref={timelineRef}
+                    timelineData={currentTimeline}
+                    onSelectArticle={handleSelectArticle}
+                    selectedArticleId={selectedArticle?.id}
+                    theme={theme}
+                  />
                 </div>
               </div>
-
-              {/* Bottom: Timeline pane */}
-              <div
-                style={{ height: `calc(${100 - splitRatio}% - 14px)` }}
-                className={`w-full relative overflow-hidden shrink-0 ${
-                  isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
-                }`}
-              >
+            ) : (
+              <>
+                {/* Full Height Timeline */}
                 <TimelineView
                   ref={timelineRef}
                   timelineData={currentTimeline}
@@ -694,30 +807,19 @@ export default function App() {
                   selectedArticleId={selectedArticle?.id}
                   theme={theme}
                 />
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* Full Height Timeline */}
-              <TimelineView
-                ref={timelineRef}
-                timelineData={currentTimeline}
-                onSelectArticle={handleSelectArticle}
-                selectedArticleId={selectedArticle?.id}
-                theme={theme}
-              />
 
-              {/* Floating Map Widget (Icon | PiP | Full) */}
-              <FloatingMapWidget
-                articles={currentTimeline?.articles || []}
-                lanes={currentTimeline?.lanes || []}
-                selectedArticleId={selectedArticle?.id}
-                onSelectArticle={handleFocusArticle}
-                theme={theme}
-                mapMode={mapDisplayMode}
-                onModeChange={handleMapDisplayModeChange}
-              />
-            </>
+                {/* Floating Map Widget (Icon | PiP | Full) */}
+                <FloatingMapWidget
+                  articles={currentTimeline?.articles || []}
+                  lanes={currentTimeline?.lanes || []}
+                  selectedArticleId={selectedArticle?.id}
+                  onSelectArticle={handleFocusArticle}
+                  theme={theme}
+                  mapMode={mapDisplayMode}
+                  onModeChange={handleMapDisplayModeChange}
+                />
+              </>
+            )
           )
         ) : (
           <div className="w-full h-full overflow-y-auto flex flex-col items-center text-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300">
@@ -788,7 +890,7 @@ export default function App() {
 
         {/* Floating Generation Status Pill with Stop Button */}
         {isLoading && (
-          <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 pl-4 pr-2 py-1.5 rounded-full shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-200 select-none">
+          <div className={`fixed ${isMobile ? 'bottom-16' : 'bottom-12'} left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 pl-4 pr-2 py-1.5 rounded-full shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-200 select-none`}>
             <div className="flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-sky-500 shrink-0" />
               <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
@@ -809,8 +911,10 @@ export default function App() {
         )}
       </main>
 
-      {/* Bottom AI Disclaimer Bar */}
-      <AiDisclaimerBar onOpenModal={() => setIsDisclaimerModalOpen(true)} />
+      {/* Bottom AI Disclaimer Bar (hidden on mobile when timeline is active to leave room for MobileNavBar) */}
+      {(!isMobile || !currentTimeline) && (
+        <AiDisclaimerBar onOpenModal={() => setIsDisclaimerModalOpen(true)} />
+      )}
 
       {/* Modals */}
       <EventEditModal

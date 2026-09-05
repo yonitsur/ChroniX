@@ -185,7 +185,7 @@ export default function CardsListDrawer({
       </div>
 
       {/* Cards Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2 divide-y-0">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 divide-y-0 pb-20 md:pb-3">
         {filteredArticles.length === 0 ? (
           <div className="h-48 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-2 text-center px-4">
             <Search className="w-8 h-8 opacity-40" />

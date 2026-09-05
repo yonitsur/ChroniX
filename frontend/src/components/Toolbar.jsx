@@ -313,8 +313,8 @@ export default function Toolbar({
           ref={rightControlsRef}
           className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto min-w-0"
         >
-          {/* Zoom Controls Pill */}
-          <div className="h-8 flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
+          {/* Zoom Controls Pill (Desktop only) */}
+          <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
             <button
               type="button"
               onClick={onZoomIn}
@@ -789,11 +789,11 @@ export default function Toolbar({
                 </button>
               )}
 
-              {/* Expand / Minimize Toggle Button */}
+              {/* Expand / Minimize Toggle Button (Desktop/Tablet only) */}
               <button
                 type="button"
                 onClick={togglePromptExpanded}
-                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 rounded-md transition-colors shrink-0 mr-1 cursor-pointer"
+                className="hidden sm:flex p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 rounded-md transition-colors shrink-0 mr-1 cursor-pointer"
                 title={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
                 aria-label={isPromptExpanded ? t('toolbar.collapsePrompt') : t('toolbar.expandPrompt')}
               >

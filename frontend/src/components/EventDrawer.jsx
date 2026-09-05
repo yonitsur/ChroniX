@@ -74,7 +74,7 @@ export default function EventDrawer({
 
   return (
     <div
-      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[420px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-l border-slate-200/90 dark:border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out font-sans ${
+      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[420px] bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-l border-slate-200/90 dark:border-slate-800/90 shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-in-out font-sans ${
         isRtl ? 'text-right' : 'text-left'
       }`}
       dir={isRtl ? 'rtl' : 'ltr'}

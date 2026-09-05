@@ -415,6 +415,11 @@ export default function GeoMapView({
         .leaflet-container {
           font-family: inherit;
         }
+        @media (max-width: 768px) {
+          .leaflet-bottom.leaflet-right {
+            margin-bottom: 56px;
+          }
+        }
       `}</style>
     </div>
   );
