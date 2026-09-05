@@ -10,13 +10,10 @@
   <!-- Rounded modern dark background tile -->
   <rect width="48" height="48" rx="12" fill="#090d16" />
   <rect width="46" height="46" x="1" y="1" rx="11" stroke="#1e293b" stroke-width="1.2" />
-  
-  <!-- Origin Coordinate Dot with brand cyan gradient -->
-  <circle cx="11.5" cy="34" r="4.2" fill="url(#chronix-fav-x-grad)" />
 
-  <!-- Authentic Plus Jakarta Sans ExtraBold 'X' matching the ChroniX logo typography -->
+  <!-- Authentic Plus Jakarta Sans ExtraBold 'X' centered matching the ChroniX logo typography -->
   <path
-    d="M 25.55 34.00 L 19.85 34.00 L 27.66 22.06 L 19.85 10.16 L 25.55 10.16 L 31.82 19.70 L 29.04 19.70 L 35.28 10.16 L 40.97 10.16 L 33.20 22.06 L 40.97 34.00 L 35.28 34.00 L 29.04 24.43 L 31.82 24.46 Z"
+    d="M 19.14 35.92 L 13.44 35.92 L 21.25 23.98 L 13.44 12.08 L 19.14 12.08 L 25.41 21.62 L 22.63 21.62 L 28.87 12.08 L 34.56 12.08 L 26.79 23.98 L 34.56 35.92 L 28.87 35.92 L 22.63 26.35 L 25.41 26.38 Z"
     fill="url(#chronix-fav-x-grad)"
   />
 </svg>
