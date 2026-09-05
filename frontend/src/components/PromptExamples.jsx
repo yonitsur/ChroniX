@@ -29,31 +29,31 @@ export const PROMPT_EXAMPLES = [
   },
   // 5. Hebrew - Overview
   {
-    prompt: 'עלילת הארי פוטר: סקירה תמציתית של שבע שנות הלימוד מדרך פריווט ועד לקרב על הוגוורטס',
+    prompt: 'עלילת הארי פוטר לאורך שבע שנות הלימוד בהוגוורטס',
     detailLevel: 'overview',
     lang: 'he'
   },
   // 6. English - Deep
   {
-    prompt: 'Ancient Egypt: Complete dynastic history from the Old Kingdom pyramids to the New Kingdom empires of Tutankhamun and Ramesses II',
+    prompt: 'Ancient Egypt: The story of the great pharaohs and pyramids to Cleopatra',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 7. Hebrew - Deep
   {
-    prompt: 'יוון העתיקה: מעליית ערי-המדינה ואתונה הדמוקרטית, דרך מלחמות פרס-יוון והתור הפילוסופי, ועד למלחמה הפלופונסית וכיבושי אלכסנדר מוקדון',
+    prompt: 'יוון העתיקה: מעליית הדמוקרטיה באתונה ועד לכיבושי אלכסנדר מוקדון',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 8. English - Overview
   {
-    prompt: 'The Viking Age: Quick overview of key raids, voyages, and settlements from Lindisfarne to Vinland',
+    prompt: 'The Viking Age: Viking voyages, raids, and discoveries across Europe',
     detailLevel: 'overview',
     lang: 'en'
   },
   // 9. Hebrew - Multi-lane (Dinosaurs)
   {
-    prompt: 'דינוזאורים: שלבי ההתפתחות לאורך הטריאס, היורה והקרטיקון בחלוקה למסלולים נפרדים עבור תרופודים (טורפים), זאורופודים (ענקים צמחוניים) ובעלי אגן עוף',
+    prompt: 'עולם הדינוזאורים: סקירה של המינים המפורסמים, בחלוקה למסלולים: דינוזאורים טורפים מול דינוזאורים צמחוניים',
     detailLevel: 'standard',
     lang: 'he'
   },
@@ -65,19 +65,19 @@ export const PROMPT_EXAMPLES = [
   },
   // 11. Hebrew - Overview
   {
-    prompt: 'האבולוציה של האדם: סקירת אבני הדרך המרכזיות מלוסי והאוסטרלופיתקוס ועד להומו סאפיינס והניאנדרטלים',
+    prompt: 'האבולוציה של האדם: המסע מהקופים הקדומים ועד לאדם המודרני',
     detailLevel: 'overview',
     lang: 'he'
   },
   // 12. English - Overview
   {
-    prompt: 'Dinosaurs: High-level overview of the Triassic, Jurassic, and Cretaceous eras leading to the K-Pg extinction event',
+    prompt: 'Dinosaurs: From their early rise to their dramatic extinction',
     detailLevel: 'overview',
     lang: 'en'
   },
   // 13. Hebrew - Standard
   {
-    prompt: 'פרהיסטוריה בארץ ישראל: מהאדם הקדמון בעובדיה ומערות הכרמל ועד למהפכה החקלאית והתרבות הנאטופית',
+    prompt: 'פרהיסטוריה בארץ ישראל: חיי האדם הקדמון במערות ועד להמצאת החקלאות',
     detailLevel: 'standard',
     lang: 'he'
   },
@@ -95,13 +95,13 @@ export const PROMPT_EXAMPLES = [
   },
   // 16. English - Overview
   {
-    prompt: 'History of Aviation: Milestone overview from the Wright Brothers at Kitty Hawk to commercial jets and space exploration',
+    prompt: "History of Aviation: From the Wright brothers' first flight to supersonic jets and space exploration",
     detailLevel: 'overview',
     lang: 'en'
   },
   // 17. Hebrew - Overview
   {
-    prompt: 'תוכנית אפולו והנחיתה על הירח: סקירה מהירה של טיסות המפתח מניסויי אפולו הראשונים ועד אפולו 11 ו-17',
+    prompt: 'תוכנית אפולו: המסע של נאס״א להנחתת האדם הראשון על הירח',
     detailLevel: 'overview',
     lang: 'he'
   },
@@ -113,19 +113,19 @@ export const PROMPT_EXAMPLES = [
   },
   // 19. Hebrew - Deep
   {
-    prompt: 'אירועים ותקופות גאולוגיים: מהפרקמבריון והמפץ הקמבריוני, דרך עידן הפלאוזואיקון והמזוזואיקון, ועד לקנוזואיקון ועידן הקרח',
+    prompt: 'ההיסטוריה הגאולוגית של כדור הארץ: מעידן היווצרות הכוכב ועד לעידן הקרח',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 20. English - Overview
   {
-    prompt: 'Timeline of the Universe: Fast cosmic overview from the Big Bang and star formation to our Solar System and humanity',
+    prompt: 'Timeline of the Universe: From the Big Bang to our Solar System and life on Earth',
     detailLevel: 'overview',
     lang: 'en'
   },
   // 21. Hebrew - Standard
   {
-    prompt: 'מגילות ים המלח, קומראן ומצדה: כת מדבר יהודה, גניזת המגילות, המרד הגדול ונפילת מצדה',
+    prompt: 'מגילות ים המלח ומצדה: תעלומת המגילות הגנוזות והמרד הגדול',
     detailLevel: 'standard',
     lang: 'he'
   },
@@ -143,7 +143,7 @@ export const PROMPT_EXAMPLES = [
   },
   // 24. English - Overview
   {
-    prompt: 'The Golden Age of Islam: Overview of major scientific, medical, and astronomical breakthroughs from Baghdad to Córdoba',
+    prompt: 'The Golden Age of Islam: Great scientific, medical, and philosophical discoveries',
     detailLevel: 'overview',
     lang: 'en'
   },
@@ -155,25 +155,25 @@ export const PROMPT_EXAMPLES = [
   },
   // 26. English - Overview
   {
-    prompt: "Harry Potter Storyline: Overview of the major plot turning points across Harry's seven years at Hogwarts",
+    prompt: "Harry Potter Storyline: Key plot points across the seven years at Hogwarts",
     detailLevel: 'overview',
     lang: 'en'
   },
-  // 27. Hebrew - Deep
+  // 27. Hebrew - Standard
   {
-    prompt: 'הסכסוך הישראלי-פלסטיני: ממאורעות תרפ"ט ותוכנית החלוקה, דרך מלחמת ששת הימים, הסכמי אוסלו והאינתיפאדות, ועד להסכמי אברהם וימינו',
-    detailLevel: 'deep_dive',
+    prompt: 'ההיסטוריה של הסכסוך הישראלי-פלסטיני: האירועים, המלחמות והסכמי השלום מראשיתו ועד ימינו',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 28. English - Overview
   {
-    prompt: 'Marvel Cinematic Universe: Overview of pivotal milestone events across Phase 1 to Phase 3 of the Infinity Saga',
+    prompt: 'Marvel Cinematic Universe: Major events from Iron Man to Avengers: Endgame',
     detailLevel: 'overview',
     lang: 'en'
   },
   // 29. English - Deep
   {
-    prompt: "History of Quantum Mechanics: From Planck's radiation and Einstein's photons, through Heisenberg and Schrödinger, to quantum entanglement and computers",
+    prompt: 'History of Quantum Physics: Discoveries that changed our understanding of the subatomic world',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
@@ -197,7 +197,7 @@ export const PROMPT_EXAMPLES = [
   },
   // 33. English - Overview
   {
-    prompt: 'Rise and Fall of the Roman Empire: Concise overview of defining eras from the Roman Republic to the Fall of Constantinople',
+    prompt: 'Rise and Fall of the Roman Empire: From the Republic to the fall of Rome',
     detailLevel: 'overview',
     lang: 'en'
   },
@@ -227,7 +227,7 @@ export const PROMPT_EXAMPLES = [
   },
   // 38. English - Overview
   {
-    prompt: 'Human Evolution: Overview of pivotal milestone hominids from Australopithecus to Neanderthals and modern Homo sapiens',
+    prompt: 'Human Evolution: The journey of humanity from early hominid ancestors to modern humans',
     detailLevel: 'overview',
     lang: 'en'
   },
@@ -239,19 +239,19 @@ export const PROMPT_EXAMPLES = [
   },
   // 40. English - Overview (The Beatles)
   {
-    prompt: 'The Beatles: Overview of essential career milestones from Hamburg and the Cavern Club to Beatlemania, Sgt. Pepper and the Rooftop Concert',
+    prompt: 'The Beatles: The story of the legendary band from their early days to Beatlemania and breakup',
     detailLevel: 'overview',
     lang: 'en'
   },
   // 41. Hebrew - Overview (Scientific Revolution)
   {
-    prompt: 'המהפכה המדעית: סקירת התגליות הגדולות מקופרניקוס וגלילאו ועד לאייזק ניוטון',
+    prompt: 'המהפכה המדעית: התגליות והמדענים הגדולים ששינו את העולם',
     detailLevel: 'overview',
     lang: 'he'
   },
   // 42. English - Overview (Cold War)
   {
-    prompt: 'The Cold War: Overview of defining crises from the Berlin Airlift and Cuban Missile Crisis to the Fall of the Berlin Wall',
+    prompt: 'The Cold War: Major crises and showdowns between the US and the Soviet Union',
     detailLevel: 'overview',
     lang: 'en'
   },
@@ -263,7 +263,7 @@ export const PROMPT_EXAMPLES = [
   },
   // 44. English - Overview (Renaissance)
   {
-    prompt: 'The European Renaissance: High-level overview of milestone breakthroughs in art, architecture, and humanism from Florence to Rome',
+    prompt: 'The European Renaissance: Great artists, masterworks, and ideas from Florence to Rome',
     detailLevel: 'overview',
     lang: 'en'
   },
@@ -389,109 +389,109 @@ export const PROMPT_EXAMPLES = [
   },
   // 65. Hebrew - Deep Dive (Alexander the Great)
   {
-    prompt: 'חייו ומסעותיו של אלכסנדר מוקדון: מחינוכו אצל אריסטו ורצח פיליפוס, דרך כיבוש פרס, מצרים וסוריה, קרב גאוגמלה, ועד לחציית נהר ההידספס בהודו ומותו בבבל',
+    prompt: 'אלכסנדר מוקדון: מסעות הכיבוש והאימפריה מיוון ועד להודו',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 66. Hebrew - Deep Dive (Holocaust & WWII)
   {
-    prompt: 'תולדות השואה ומלחמת העולם השנייה (1933–1945): מעליית המפלגה הנאצית וחוקי נירנברג, ליל הבדולח והקמת הגטאות, דרך מבצע ברברוסה, "הפתרון הסופי" ומחנות ההשמדה, ועד למרידות בגטאות, צעדות המוות והשחרור',
+    prompt: 'תולדות השואה ומלחמת העולם השנייה: האירועים המרכזיים מעליית הנאצים ועד לשחרור',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 67. Hebrew - Deep Dive (Ancient Philosophy)
   {
-    prompt: 'המהפכה הפילוסופית של העת העתיקה: מסוקרטס, אפלטון והאקדמיה באתונה, דרך אריסטו והאסכולה הפריפטטית, ועד לאסכולה הסטואית והאפיקוראית',
+    prompt: 'הפילוסופיה ביוון העתיקה: מסוקרטס ואפלטון ועד לאריסטו',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 68. Hebrew - Deep Dive (South Pole Race)
   {
-    prompt: 'מסעות הקוטב הדרומי: המרוץ הדרמטי של רואלד אמונדסן מול רוברט פלקון סקוט (1910–1912), כולל ההכנות, השיט באוניות, הקמת מחנות הבסיס והמסע הרגלי לכיבוש הקוטב',
+    prompt: 'המרוץ לקוטב הדרומי: התחרות הדרמטית בין אמונדסן לסקוט באנטארקטיקה',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 69. Hebrew - Deep Dive (Israel-Egypt Peace)
   {
-    prompt: "הסכם השלום בין ישראל למצרים: מביקור סאדאת בירושלים ב-1977, שיחות ועידת קמפ דייוויד עם מנחם בגין וג'ימי קרטר, חתימת ההסכם בוושינגטון ב-1979 ועד פינוי סיני",
+    prompt: 'הסכם השלום בין ישראל למצרים: מביקור סאדאת בירושלים ועד להסכם ההיסטורי',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 70. Hebrew - Deep Dive (Spanish Jewry Golden Age)
   {
-    prompt: 'תור הזהב של יהדות ספרד: מיוסוף אבן נגרילה וחסדאי אבן שפרוט, דרך שירת שלמה אבן גבירול ויהודה הלוי, פסיקותיו וכתביו של הרמב"ם, ועד לגירוש ספרד ב-1492',
+    prompt: 'תור הזהב של יהדות ספרד: שירה, הגות ומדע עד לגירוש ספרד',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 71. Hebrew - Deep Dive (AI History)
   {
-    prompt: "תולדות הבינה המלאכותית: ממבחן טיורינג ב-1950, כנס דארטמות' ב-1956, חורפי הבינה המלאכותית, ניצחון Deep Blue על קספרוב, מהפכת הלמידה העמוקה ועד ל-ChatGPT ומודלי שפה ענקיים",
+    prompt: 'ההיסטוריה של הבינה המלאכותית: ממחשבי שנות ה-50 ועד ל-ChatGPT',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 72. Hebrew - Deep Dive (Modern Astronomy)
   {
-    prompt: "תולדות האסטרונומיה המודרנית: מהמודל ההליוצנטרי של קופרניקוס ותצפיות גלילאו, דרך חוקי קפלר, עבודתו של אדווין האבל על התפשטות היקום, ועד לשיגור טלסקופ החלל ג'יימס ווב",
+    prompt: 'תולדות האסטרונומיה: מהטלסקופ של גלילאו ועד לטלסקופ החלל ג\'יימס ווב',
     detailLevel: 'deep_dive',
     lang: 'he'
   },
   // 73. Hebrew - Standard (Hebrew Language)
   {
-    prompt: 'תולדות השפה העברית: מעברית מקראית ומגילות ים המלח, דרך לשון חז"ל וימי הביניים, ועד למפעל תחיית הלשון של אליעזר בן-יהודה והעברית בת זמננו',
+    prompt: 'תולדות השפה העברית: מתקופת התנ"ך ועד לתחיית השפה בימינו',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 74. Hebrew - Standard (Leonardo da Vinci)
   {
-    prompt: "חייו ויצירותיו של לאונרדו דה וינצ'י: ציור המונה ליזה, הסעודה האחרונה, מחברות הרישום והמצאותיו ההנדסיות והאנטומיות",
+    prompt: 'לאונרדו דה וינצ\'י: הציורים, המחברות וההמצאות של הגאון מתקופת הרנסאנס',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 75. Hebrew - Standard (Tel Aviv)
   {
-    prompt: 'תולדות תל אביב-יפו: מהגרלת המגרשים באחוזת בית ב-1909, דרך תוכנית גדס, בניית העיר הלבנה בסגנון הבאוהאוס, ועד להפיכתה למרכז הייטק ותרבות גלובלי',
+    prompt: 'תולדות תל אביב: מהקמת השכונה הראשונה בחולות ועד לעיר העברית הגדולה',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 76. Hebrew - Standard (Deep Sea Exploration)
   {
-    prompt: 'חקר מעמקי האוקיינוס: מגילוי שקע מריאנה וצלילת הבתיסקף טריאסטה ועד לגילוי הריסות הטיטניק ורובוטים תת-ימיים חדישים',
+    prompt: 'חקר מעמקי האוקיינוס: מהצלילות הראשונות ועד לגילוי הטיטניק והתהומות העמוקים בעולם',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 77. Hebrew - Standard (Classical Music)
   {
-    prompt: "תולדות המוזיקה הקלאסית: מהבארוק של באך וויואלדי, דרך הקלאסיציזם של מוצרט ובטהובן, ועד לרומנטיקה של שופן וצ'ייקובסקי",
+    prompt: 'תולדות המוזיקה הקלאסית: המלחינים והיצירות הגדולות מבאך ומוצרט ועד בטהובן',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 78. Hebrew - Standard (Video Games)
   {
-    prompt: 'התפתחות משחקי הווידאו: מ-Pong ומשחקי הארקייד של שנות ה-70, דרך עידן ה-8-ביט וה-16-ביט של נינטנדו וסגה, ועד לקונסולות תלת-ממד ומציאות מדומה',
+    prompt: 'ההיסטוריה של משחקי הווידאו: ממשחקי הארקייד של שנות ה-70 ועד לקונסולות המודרניות',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 79. Hebrew - Standard (Israeli Agriculture & Water)
   {
-    prompt: 'המהפכה החקלאית בארץ ישראל וההתיישבות העובדת: מייבוש ביצות החולה ועמק יזרעאל, פיתוח הטפטפות ומשק המים, ועד לחקלאות מדברית מתקדמת',
+    prompt: 'המהפכה החקלאית בישראל: מייבוש הביצות והמצאת הטפטפות ועד לחקלאות מדברית',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 80. Hebrew - Overview (Maritime Explorers)
   {
-    prompt: "מסעות גילוי העולם הימיים: מסעות ואסקו דה גאמה להודו, מגלן והקפת כדור הארץ, וג'יימס קוק באוקיינוס השקט",
+    prompt: 'עידן התגליות הימי: המסעות הגדולים שגילו יבשות והקיפו את העולם',
     detailLevel: 'overview',
     lang: 'he'
   },
   // 81. Hebrew - Standard (Lord of the Rings)
   {
-    prompt: 'עלילת שר הטבעות: ציר זמן כרונולוגי של מסע אחוות הטבעת מפלך ההוביטים ועד להשמדת הטבעת בהר הגזירה',
+    prompt: 'עלילת שר הטבעות: מסע אחוות הטבעת מהפלך ועד להר הגזירה',
     detailLevel: 'standard',
     lang: 'he'
   },
   // 82. Hebrew - Standard (Israeli Tech & Internet)
   {
-    prompt: 'ההיסטוריה של האינטרנט בישראל: מחיבור האוניברסיטאות הראשון לרשת מחשבים בשנות ה-80, הקמת אתרי החדשות הראשונים, ועד להפיכת ישראל ל"סטארט-אפ ניישן"',
+    prompt: 'ההיסטוריה של האינטרנט בישראל: מחיבורי המחשבים הראשונים ועד לסטארט-אפ ניישן',
     detailLevel: 'standard',
     lang: 'he'
   },
@@ -617,43 +617,43 @@ export const PROMPT_EXAMPLES = [
   },
   // 103. English - Deep Dive (Alexander the Great)
   {
-    prompt: "The Life and Campaigns of Alexander the Great: From Philip's assassination and the Battle of the Granicus, through the Siege of Tyre and Alexandria, to Gaugamela, the Hindu Kush, and his death in Babylon",
+    prompt: 'The Life and Campaigns of Alexander the Great: The conquest of the ancient world from Greece and Egypt to India',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 104. English - Deep Dive (Roman Empire)
   {
-    prompt: 'The Rise of the Roman Empire: From the assassination of Julius Caesar and the Second Triumvirate, through the Battle of Actium, the Pax Romana of Augustus, to Marcus Aurelius and the Antonine Plague',
+    prompt: 'The Rise of the Roman Empire: From the fall of the Republic to Pax Romana',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 105. English - Deep Dive (Scientific Revolution)
   {
-    prompt: "The Scientific Revolution (1543–1687): From Copernicus's heliocentric model and Vesalius's anatomy, through Kepler's planetary laws and Galileo's telescopic discoveries, to Newton's Principia Mathematica",
+    prompt: 'The Scientific Revolution: Discoveries and thinkers that transformed our view of the universe',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 106. English - Deep Dive (History of Medicine)
   {
-    prompt: "The History of Medicine and Surgery: From Hippocrates and Galen's humors, to Harvey's blood circulation, Jenner's smallpox vaccine, Lister's antiseptics, Fleming's penicillin, and CRISPR gene editing",
+    prompt: 'History of Medicine: Landmark breakthroughs from ancient cures to vaccines and antibiotics',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 107. English - Deep Dive (The Crusades)
   {
-    prompt: "The Crusades (1095–1291): From Pope Urban II's Council of Clermont and the capture of Jerusalem, through Saladin and the Third Crusade with Richard the Lionheart, to the Fourth Crusade's sack of Constantinople and the fall of Acre",
+    prompt: 'The Crusades: The medieval clash of empires and the struggle for Jerusalem',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 108. English - Deep Dive (AI History)
   {
-    prompt: "The Evolution of Artificial Intelligence: From Turing's 1950 imitation game and the 1956 Dartmouth workshop, through AI winters and expert systems, to Deep Blue, AlphaGo, and Large Language Models",
+    prompt: "History of Artificial Intelligence: From Alan Turing's earliest tests to modern AI and ChatGPT",
     detailLevel: 'deep_dive',
     lang: 'en'
   },
   // 109. English - Deep Dive (Race to South Pole)
   {
-    prompt: "The Race to the South Pole (1910–1912): Chronology of Roald Amundsen's Fram expedition versus Robert Falcon Scott's Terra Nova expedition, from depot laying to the polar summit and Scott's tragic return",
+    prompt: 'The Race to the South Pole: The dramatic journey of Amundsen and Scott across Antarctica',
     detailLevel: 'deep_dive',
     lang: 'en'
   },
@@ -665,62 +665,134 @@ export const PROMPT_EXAMPLES = [
   },
   // 111. English - Standard (Lord of the Rings)
   {
-    prompt: "The Lord of the Rings: Chronology of the War of the Ring from Bilbo's farewell birthday party in the Shire to Aragorn's coronation and the Grey Havens",
+    prompt: 'The Lord of the Rings: The epic journey of the Fellowship from the Shire to Mount Doom',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 112. English - Standard (Star Wars)
   {
-    prompt: 'Star Wars Canon: Major galactic timeline from the Fall of the Republic and Order 66, through the Galactic Civil War and Battle of Endor, to the Rise of the First Order',
+    prompt: 'Star Wars: Major milestones from the fall of the Republic to the Galactic Rebellion',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 113. English - Standard (Studio Ghibli)
   {
-    prompt: "Studio Ghibli: Chronological history of Hayao Miyazaki and Isao Takahata's films from Nausicaä and Castle in the Sky to The Boy and the Heron",
+    prompt: "Studio Ghibli: Chronological history of Hayao Miyazaki's famous animated films",
     detailLevel: 'standard',
     lang: 'en'
   },
   // 114. English - Standard (Cybersecurity)
   {
-    prompt: 'History of Cybersecurity: From the 1988 Morris Worm and early computer viruses, through Stuxnet and ransomware, to modern zero-day exploits and encryption wars',
+    prompt: 'History of Cybersecurity: The evolution of computer viruses, hacking, and digital defense',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 115. English - Standard (Mass Extinctions)
   {
-    prompt: "The Five Great Mass Extinction Events in Earth's History: Ordovician, Late Devonian, Permian Great Dying, Triassic-Jurassic, and Cretaceous-Paleogene",
+    prompt: "Mass Extinctions in Earth's History: The catastrophic events that reshaped life on Earth",
     detailLevel: 'standard',
     lang: 'en'
   },
   // 116. English - Standard (Modern Architecture)
   {
-    prompt: 'History of Modern Architecture: From the Crystal Palace and Chicago School skyscrapers, through Bauhaus and Le Corbusier, to Frank Gehry and sustainable biomimetic design',
+    prompt: 'History of Modern Architecture: The rise of skyscrapers and innovative city design',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 117. English - Standard (FIFA World Cup)
   {
-    prompt: "History of the FIFA World Cup: Landmark tournaments and iconic matches from Uruguay 1930 and Pelé's 1958 debut, to Maradona's 1986 heroics and Qatar 2022",
+    prompt: 'History of the FIFA World Cup: Iconic tournaments, champions, and legends in soccer history',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 118. English - Standard (Modern Olympics)
   {
-    prompt: "The Modern Olympic Games: From Pierre de Coubertin's revival in Athens 1896, through the Berlin 1936 games, Cold War boycotts, to the 2024 Paris Olympics",
+    prompt: 'The Modern Olympic Games: Key moments and historic milestones from 1896 to today',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 119. English - Standard (Silicon Valley)
   {
-    prompt: 'History of Silicon Valley: From Shockley Semiconductor and the "Traitorous Eight", through Fairchild, Intel, Apple, and Google, to modern venture capital giants',
+    prompt: 'History of Silicon Valley: The rise of personal computers, the internet, and tech giants',
     detailLevel: 'standard',
     lang: 'en'
   },
   // 120. English - Standard (Mars Exploration)
   {
-    prompt: 'The Exploration of Mars: From Mariner 4 flybys and Viking landers, through Pathfinder, Spirit, Opportunity, and Curiosity, to the Perseverance rover and Ingenuity helicopter',
+    prompt: 'The Exploration of Mars: Key robotic missions and rovers that explored the Red Planet',
     detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 121. Hebrew - Deep (Evolution of Life)
+  {
+    prompt: 'התפתחות החיים על פני כדור הארץ מראשיתם ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: בעלי חיים, צמחים, ומיקרואורגניזמים (יצורים חד-תאיים)',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 122. English - Deep (Evolution of Life)
+  {
+    prompt: 'The Evolution of Life on Earth from the beginning to the present day, divided into parallel swimlanes for Animals, Plants, and Microorganisms',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 123. Hebrew - Standard (Evolution of the Universe)
+  {
+    prompt: 'התפתחות היקום מהמפץ הגדול ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: שלבי התפשטות היקום, היווצרות כוכבים וגלקסיות, והיווצרות מערכת השמש וכדור הארץ',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 124. English - Standard (Evolution of the Universe)
+  {
+    prompt: 'The Evolution of the Universe from the Big Bang to today, divided into parallel swimlanes for Early Universe Expansion, Stars & Galaxies Formation, and the Solar System & Earth',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 125. Hebrew - Standard (Game of Thrones Houses)
+  {
+    prompt: 'עלילת משחקי הכס, בחלוקה לשלושה מסלולים מקבילים עבור בית סטארק, בית לאניסטר ובית טרגאריין',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 126. English - Standard (Game of Thrones Houses)
+  {
+    prompt: 'The storyline of Game of Thrones, divided into three parallel swimlanes for House Stark, House Lannister, and House Targaryen',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 127. Hebrew - Standard (Israeli-Palestinian Conflict)
+  {
+    prompt: 'ההיסטוריה של הסכסוך הישראלי-פלסטיני: סקירה של האירועים, המלחמות והסכמי השלום המרכזיים מראשיתו ועד ימינו',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 128. English - Standard (Israeli-Palestinian Conflict)
+  {
+    prompt: 'The history of the Israeli-Palestinian conflict: Major events, wars, and peace agreements from its beginnings to the present day',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  // 129. Hebrew - Deep (History of Rock & Roll)
+  {
+    prompt: 'תולדות מוזיקת הרוק משנות ה-50 ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: רוק קלאסי, פאנק ומטאל, ורוק אלטרנטיבי וגראנג\'',
+    detailLevel: 'deep_dive',
+    lang: 'he'
+  },
+  // 130. English - Deep (History of Rock & Roll)
+  {
+    prompt: 'History of rock music from the 1950s to the present day, divided into parallel swimlanes for Classic Rock, Punk & Heavy Metal, and Alternative & Grunge',
+    detailLevel: 'deep_dive',
+    lang: 'en'
+  },
+  // 131. Hebrew - Overview (Whale Evolution)
+  {
+    prompt: 'האבולוציה של הלווייתן: כיצד התפתח הלווייתן מיונק יבשתי שהלך על ארבע ועד ללווייתן הענק באוקיינוס',
+    detailLevel: 'overview',
+    lang: 'he'
+  },
+  // 132. English - Overview (Whale Evolution)
+  {
+    prompt: 'The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants',
+    detailLevel: 'overview',
     lang: 'en'
   }
 ];

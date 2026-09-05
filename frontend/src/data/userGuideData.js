@@ -19,8 +19,8 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'המרוץ לחלל (1955–1975), בחלוקה לשני מסלולי זמן מקבילים: תוכנית החלל הסובייטית מול נאס״א'
     },
     whyItWorks: {
-      en: 'Explicitly requests two parallel swimlanes (NASA vs Soviet Space Program), creating a side-by-side comparative chronology with clear start/end dates.',
-      he: 'מגדיר שני מסלולי זמן מקבילים (נאס״א מול תוכנית החלל הסובייטית), המייצרים השוואה כרונולוגית עשירה זו לצד זו עם תאריכים מוגדרים.'
+      en: 'Demonstrates how to instruct the AI to compare two historical adversaries (NASA vs Soviet Space Program) across parallel tracks.',
+      he: 'מדגים כיצד להורות ל-AI להשוות במקביל בין שני יריבים היסטוריים (נאס״א מול תוכנית החלל הסובייטית) במסלולים נפרדים.'
     }
   },
   {
@@ -40,8 +40,8 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'מלחמת העולם השנייה (1939–1945), בחלוקה למסלולים מקבילים: הזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות'
     },
     whyItWorks: {
-      en: 'Utilizes Deep Dive granularity with three separate swimlanes to organize complex simultaneous military and diplomatic events without clutter.',
-      he: 'מנצל רמת פירוט מעמיקה (Deep Dive) עם שלושה מסלולים מקבילים כדי לארגן אירועים צבאיים ומדיניים מורכבים במקביל ללא עומס.'
+      en: 'Shows how to direct the AI into three distinct geographical/political theaters at Deep Dive granularity.',
+      he: 'מראה כיצד להנחות את ה-AI בדיוק לזירות גיאוגרפיות ומדיניות מוגדרות ברמת פירוט מעמיקה.'
     }
   },
   {
@@ -61,8 +61,8 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'תולדות הציונות והקמת מדינת ישראל: מהקונגרס הציוני בבזל והצהרת בלפור, דרך גלי העלייה ומחתרות היישוב, ועד להחלטת כ"ט בנובמבר והכרזת העצמאות'
     },
     whyItWorks: {
-      en: 'Explicitly specifies pivotal chronological milestones from Basel to Independence, guiding Gemini to pinpoint essential national turning points.',
-      he: 'מגדיר תחנות מפתח מפורטות מהקונגרס בבזל ועד להכרזת העצמאות, המנחות את ה-AI לבחור בדיוק את האירועים המרכזיים החשובים.'
+      en: 'Listing key historical bookends explicitly (Basel to Independence) ensures the AI focuses on these exact moments.',
+      he: 'ציון אבני דרך מרכזיות במפורש (מבזל ועד העצמאות) מבטיח שה-AI יתמקד בדיוק בתחנות אלו.'
     }
   },
   {
@@ -82,8 +82,8 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'תקופת בית ראשון: ציר זמן בחלוקה לשני מסלולי זמן מקבילים עבור מלכי יהודה מול מלכי ישראל, מפלג הממלכה ועד חורבן בית ראשון'
     },
     whyItWorks: {
-      en: 'Instructs Gemini to split the era into two parallel tracks (Judah vs Israel), creating a clear, accurate comparative chronology between the monarchs.',
-      he: 'מורה ל-AI לחלק את התקופה לשני מסלולים מקבילים של ממלכת יהודה וממלכת ישראל, מה שיוצר השוואה כרונולוגית ברורה ומדויקת בין המלכים.'
+      en: 'Splits the monarchy era into parallel tracks for Judah and Israel for direct chronological comparison.',
+      he: 'מפצל את תקופת המלוכה לשני מסלולים מקבילים עבור יהודה וישראל לצורך השוואה כרונולוגית ישירה.'
     }
   },
   {
@@ -99,12 +99,12 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'עת עתיקה ותרבויות קדומות'
     },
     prompt: {
-      en: 'Ancient Egypt: High-level overview of the major kingdoms and dynasties from the unification of Narmer and the Great Pyramids to Cleopatra',
-      he: 'מצרים העתיקה: סקירה תמציתית של הממלכות והשושלות המרכזיות מאיחוד מצרים בידי נערמר והפירמידות הגדולות ועד לקלאופטרה'
+      en: 'Ancient Egypt: The story of the great pharaohs and monuments from the pyramids to Cleopatra',
+      he: 'מצרים העתיקה: ציר זמן של הפרעונים והמונומנטים הגדולים מהפירמידות ועד לקלאופטרה'
     },
     whyItWorks: {
-      en: 'Uses the "Overview" setting (~10–15 events) to deliver a clean, non-overwhelming timeline spanning thousands of years of dynastic transitions.',
-      he: 'עושה שימוש ברמת "סקירה" (~10–15 אירועים) להפקת ציר זמן בהיר ולא עמוס, המקיף אלפי שנות היסטוריה שושלתית.'
+      en: 'No need to know dynasty names or archaeological jargon. Stating the broad epoch lets the AI build a rich, digestible timeline.',
+      he: 'אין צורך לדעת שמות שושלות או מונחים ארכאולוגיים. פשוט מציינים את התקופה וה-AI פורס ציר זמן היסטורי מרתק.'
     }
   },
   {
@@ -120,12 +120,12 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'פרה-היסטוריה וטבע'
     },
     prompt: {
-      en: 'Dinosaurs: Evolutionary stages through the Triassic, Jurassic, and Cretaceous, divided into separate lanes for Theropods (predators), Sauropods (giant herbivores), and Ornithischians',
-      he: 'דינוזאורים: שלבי ההתפתחות לאורך הטריאס, היורה והקרטיקון בחלוקה למסלולים נפרדים עבור תרופודים (טורפים), זאורופודים (ענקים צמחוניים) ובעלי אגן עוף'
+      en: 'Dinosaurs: Timeline of major eras and famous species, divided into swimlanes for Carnivores vs Herbivores',
+      he: 'עולם הדינוזאורים: סקירה של התקופות והמינים המפורסמים, בחלוקה למסלולים: דינוזאורים טורפים מול דינוזאורים צמחוניים'
     },
     whyItWorks: {
-      en: 'Spans a prehistoric deep-time scale (millions of years) and categorizes dinosaurs taxonomically across parallel lanes.',
-      he: 'עושה שימוש בסקאלה פרה-היסטורית (מיליוני שנים אחורה) וחלוקה למסלולים טקסונומיים, המאפשרת לצפות בהתפתחות במקביל של קבוצות דינוזאורים שונות.'
+      en: 'Uses intuitive swimlanes (Carnivores vs Herbivores) to explore prehistoric species without taxonomic jargon.',
+      he: 'חלוקה אינטואיטיבית לשני מסלולים (טורפים מול צמחוניים) מאפשרת להכיר את ענקי העבר בלי להסתבך בשמות מדעיים.'
     }
   },
   {
@@ -141,12 +141,12 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'מדע וחלל'
     },
     prompt: {
-      en: 'The Industrial Revolution, divided into separate lanes for Technological Inventions, Steam & Transportation, and Labor Movements',
-      he: 'המהפכה התעשייתית: ציר זמן בחלוקה למסלולים מקבילים של המצאות טכנולוגיות, מנועי קיטור ותחבורה, ותנועות פועלים ומאבקים חברתיים'
+      en: 'The Industrial Revolution: The major inventions and breakthroughs that shaped our modern world',
+      he: 'המהפכה התעשייתית: ההמצאות הגדולות והטכנולוגיות ששינו את חיי האדם'
     },
     whyItWorks: {
-      en: 'Pairs technological milestones with social and labor movements across parallel lanes, revealing the human impact of technological evolution.',
-      he: 'משלב אבני דרך טכנולוגיות לצד תנועות חברתיות ופועלים במסלולים מקבילים, וממחיש את השפעת הטכנולוגיה על חיי האדם.'
+      en: 'A simple, direct prompt that lets the AI discover and map pivotal inventions (steam, railways, electricity, factories) automatically.',
+      he: 'ניסוח קצר וישיר שנותן ל-AI למפות את המצאות המפתח (קיטור, רכבות, חשמל ובתי חרושת) לאורך ציר הזמן.'
     }
   },
   {
@@ -162,12 +162,12 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'פרה-היסטוריה וטבע'
     },
     prompt: {
-      en: 'Human Evolution: Overview of key milestones from Lucy and Australopithecus to Neanderthals and Homo Sapiens',
-      he: 'האבולוציה של האדם: סקירת אבני הדרך המרכזיות מלוסי והאוסטרלופיתקוס ועד להומו סאפיינס והאדם הניאנדרטלי'
+      en: 'Human Evolution: The journey of humanity from early hominid ancestors to modern humans',
+      he: 'האבולוציה של האדם: המסע של האנושות מהקופים הקדומים ועד לאדם המודרני'
     },
     whyItWorks: {
-      en: 'Demonstrates a concise deep-time evolutionary timeline spanning millions of years highlighting hominid ancestors.',
-      he: 'מדגים ציר זמן אבולוציוני תמציתי וממוקד שנע לאורך מיליוני שנים ומדגיש את אבות המין האנושי.'
+      en: 'Demonstrates how a simple topic yields a complete evolutionary journey of millions of years without needing complex anthropology terms.',
+      he: 'מדגים איך נושא פשוט מניב ציר זמן אבולוציוני שלם של מיליוני שנים, ללא צורך במונחים מסובכים באנתרופולוגיה.'
     }
   },
   {
@@ -183,12 +183,12 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'מדע וחלל'
     },
     prompt: {
-      en: 'History of Aviation: Milestone overview from the Wright Brothers at Kitty Hawk to commercial jets and supersonic flight',
-      he: 'תולדות התעופה: סקירת אבני דרך מהאחים רייט בקיטי הוק, דרך מטוסי סילון מסחריים ועד לטיסות על-קוליות ומטוסי חמקן'
+      en: "History of Aviation: From the Wright brothers' first flight to jet aircraft and space exploration",
+      he: 'תולדות התעופה: מהטיסה הראשונה של האחים רייט ועד למטוסי הסילון והחלל'
     },
     whyItWorks: {
-      en: 'Concise, focused single-track prompt that delivers an inspirational journey through 20th-century aerospace engineering.',
-      he: 'פרומפט ממוקד ומעורר השראה המציג מסע כרונולוגי של התפתחות ההנדסה האווירית במאה ה-20.'
+      en: 'A clear journey through aerospace history phrased in everyday, accessible language.',
+      he: 'מסע כרונולוגי של התפתחות הטיסה במאה ה-20 בשפה פשוטה, בהירה ונגישה.'
     }
   },
   {
@@ -204,12 +204,138 @@ export const SHOWCASE_PROMPTS_DATA = [
       he: 'תרבות וספרות'
     },
     prompt: {
-      en: 'Harry Potter: Chronological overview of the seven years at Hogwarts from Privet Drive to the Battle of Hogwarts',
-      he: 'עלילת הארי פוטר: סקירה תמציתית של שבע שנות הלימוד מדרך פריווט ועד לקרב על הוגוורטס'
+      en: 'Harry Potter: Chronological journey through the seven school years at Hogwarts',
+      he: 'עלילת הארי פוטר לאורך שבע שנות הלימוד בהוגוורטס'
     },
     whyItWorks: {
-      en: 'Demonstrates how ChroniX can timeline fictional literary universes and book sagas just as effectively as real history.',
-      he: 'מדגים כיצד ChroniX מסוגלת לבנות ציר זמן של עולמות בדיוניים וספרותיים בדיוק כמו אירועים היסטוריים אמיתיים.'
+      en: 'Shows that ChroniX timelines fictional worlds and literary sagas with simple, natural language just as easily as real history.',
+      he: 'מדגים כיצד ChroniX מסוגלת לבנות ציר זמן של עולמות ספרותיים ובדיוניים בשפה טבעית בדיוק כמו היסטוריה אמיתית.'
+    }
+  },
+  {
+    id: 'life-evolution',
+    categoryKey: 'prehistory',
+    detailLevel: 'deep_dive',
+    title: {
+      en: 'Evolution of Life on Earth',
+      he: 'התפתחות החיים על פני כדור הארץ'
+    },
+    category: {
+      en: 'Prehistory & Nature',
+      he: 'פרה-היסטוריה וטבע'
+    },
+    prompt: {
+      en: 'The Evolution of Life on Earth from the beginning to the present day, divided into parallel swimlanes for Animals, Plants, and Microorganisms',
+      he: 'התפתחות החיים על פני כדור הארץ מראשיתם ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: בעלי חיים, צמחים, ומיקרואורגניזמים (יצורים חד-תאיים)'
+    },
+    whyItWorks: {
+      en: 'Asks for a comprehensive evolutionary story using three simple, intuitive tracks (Animals, Plants, Microorganisms). The AI handles the scientific timeline and discovers key fossil milestones for you.',
+      he: 'מגדיר נושא רחב ומרתק ומבקש לחלק אותו לשלושה מסלולים פשוטים וברורים (בעלי חיים, צמחים וחד-תאיים). ה-AI מוצא בעצמו את נקודות המפנה והמאובנים החשובים ללא צורך בידע מוקדם.'
+    }
+  },
+  {
+    id: 'universe-evolution',
+    categoryKey: 'science',
+    detailLevel: 'standard',
+    title: {
+      en: 'Evolution of the Universe',
+      he: 'התפתחות היקום'
+    },
+    category: {
+      en: 'Science & Space',
+      he: 'מדע וחלל'
+    },
+    prompt: {
+      en: 'The Evolution of the Universe from the Big Bang to today, divided into parallel swimlanes for Early Universe Expansion, Stars & Galaxies Formation, and the Solar System & Earth',
+      he: 'התפתחות היקום מהמפץ הגדול ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: שלבי התפשטות היקום, היווצרות כוכבים וגלקסיות, והיווצרות מערכת השמש וכדור הארץ'
+    },
+    whyItWorks: {
+      en: 'Allows anyone to see side-by-side how the cosmos expanded, when stars and galaxies were born, and how our solar system formed — in clear, natural language without complex astrophysics jargon.',
+      he: 'מאפשר לראות זה לצד זה איך היקום התפשט, מתי נולדו הכוכבים והגלקסיות, ומתי נוצרו כדור הארץ ומערכת השמש – בניסוח טבעי וללא מונחים אסטרופיזיקליים מסובכים.'
+    }
+  },
+  {
+    id: 'game-of-thrones-houses',
+    categoryKey: 'culture',
+    detailLevel: 'standard',
+    title: {
+      en: 'Game of Thrones: The Great Houses',
+      he: 'עלילת משחקי הכס לפי בתי מלוכה'
+    },
+    category: {
+      en: 'Culture & Lore',
+      he: 'תרבות וספרות'
+    },
+    prompt: {
+      en: 'The storyline of Game of Thrones, divided into three parallel swimlanes for House Stark, House Lannister, and House Targaryen',
+      he: 'עלילת משחקי הכס, בחלוקה לשלושה מסלולים מקבילים עבור בית סטארק, בית לאניסטר ובית טרגאריין'
+    },
+    whyItWorks: {
+      en: 'Organizes the expansive storyline by major rival factions, letting you easily follow the journey of each great house without getting lost in the cast of characters.',
+      he: 'מארגן את העלילה המפותלת לפי שלושת בתי האב המרכזיים, ומאפשר לעקוב בקלות אחרי הקורות של כל בית בנפרד בלי ללכת לאיבוד בשפע הדמויות.'
+    }
+  },
+  {
+    id: 'israeli-palestinian-conflict',
+    categoryKey: 'modern_history',
+    detailLevel: 'standard',
+    title: {
+      en: 'The Israeli-Palestinian Conflict',
+      he: 'הסכסוך הישראלי-פלסטיני'
+    },
+    category: {
+      en: 'Modern History',
+      he: 'היסטוריה מודרנית'
+    },
+    prompt: {
+      en: 'The history of the Israeli-Palestinian conflict: Major events, wars, and peace agreements from its beginnings to the present day',
+      he: 'ההיסטוריה של הסכסוך הישראלי-פלסטיני: סקירה של האירועים, המלחמות והסכמי השלום המרכזיים מראשיתו ועד ימינו'
+    },
+    whyItWorks: {
+      en: 'A neutral, single-track prompt that creates a clear, step-by-step chronological timeline of major events, clashes, and treaties for someone learning the history.',
+      he: 'פרומפט ממוקד וניטרלי במסלול יחיד שיוצר ציר זמן כרונולוגי שלב אחר שלב של האירועים, העימותים וההסכמים העיקריים, בצורה מסודרת ונוחה ללמידה.'
+    }
+  },
+  {
+    id: 'history-of-rock',
+    categoryKey: 'culture',
+    detailLevel: 'deep_dive',
+    title: {
+      en: 'History of Rock Music',
+      he: 'תולדות מוזיקת הרוק'
+    },
+    category: {
+      en: 'Culture & Lore',
+      he: 'תרבות וספרות'
+    },
+    prompt: {
+      en: 'History of rock music from the 1950s to the present day, divided into parallel swimlanes for Classic Rock, Punk & Heavy Metal, and Alternative & Grunge',
+      he: 'תולדות מוזיקת הרוק משנות ה-50 ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: רוק קלאסי, פאנק ומטאל, ורוק אלטרנטיבי וגראנג\''
+    },
+    whyItWorks: {
+      en: 'Shows how to organize a massive, 70-year musical history by instructing the AI to split by stylistic movements across parallel swimlanes.',
+      he: 'מראה כיצד לארגן עשרות שנות מוזיקה עמוסות על ידי הנחיית ה-AI לחלוקה לפי זרמים סגנוניים במסלולים מקבילים.'
+    }
+  },
+  {
+    id: 'whale-evolution',
+    categoryKey: 'prehistory',
+    detailLevel: 'overview',
+    title: {
+      en: 'Evolution of the Whale',
+      he: 'האבולוציה של הלווייתן'
+    },
+    category: {
+      en: 'Prehistory & Nature',
+      he: 'פרה-היסטוריה וטבע'
+    },
+    prompt: {
+      en: 'The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants',
+      he: 'האבולוציה של הלווייתן: כיצד התפתח הלווייתן מיונק יבשתי שהלך על ארבע ועד ללווייתן הענק באוקיינוס'
+    },
+    whyItWorks: {
+      en: 'A fascinating, accessible prompt: land mammals returning to the sea is easy to understand, and the AI lays out the sequence of transitional forms on the timeline.',
+      he: 'פרומפט מרתק ונגיש: הרעיון של יונק יבשתי שהלך על ארבע וחזר לים קל להבנה, וה-AI חושף בציר הזמן את שלבי המעבר המפתיעים בדרך.'
     }
   }
 ];
@@ -279,11 +405,11 @@ export const USER_GUIDE_DATA = {
           desc: '"...בחלוקה למסלולים נפרדים עבור מלכי יהודה מול מלכי ישראל"'
         }
       ],
-      framingHeading: '3. Prompt Framing: Concise vs Detailed',
-      conciseTitle: 'When to use Concise Prompts',
-      conciseDesc: 'Short prompts like "The French Revolution" or "History of Aviation" allow Gemini creative freedom to choose the most recognized consensus milestones. Perfect for quick exploration!',
-      detailedTitle: 'When to use Detailed Prompts',
-      detailedDesc: 'If you want specific bookends, specify them explicitly: "The French Revolution from the Storming of the Bastille (1789) to Napoleon\'s 18 Brumaire coup (1799), focusing on political factions".'
+      framingHeading: '3. Prompt Framing: Concise vs. Detailed',
+      conciseTitle: 'Concise & Natural Prompts: Exploring Topics with Ease',
+      conciseDesc: 'Prompts can be simple, natural, and direct. There is no need for specialized dates or technical jargon. Prompts like "The Industrial Revolution", "Evolution of the Whale", or "The French Revolution" let the AI discover and organize the pivotal milestones and verified imagery automatically.',
+      detailedTitle: 'Detailed & Structured Prompts: Custom Focus & Specific Angles',
+      detailedDesc: 'When you want to study a targeted angle, you can guide the AI explicitly: specify bookend dates ("from 1789 to 1799"), define distinct geographical theaters ("WWII divided into European and Pacific Theaters"), or group opposing factions into parallel swimlanes.'
     },
     prompt_showcase: {
       title: 'Interactive Prompt Showcase',
@@ -460,11 +586,11 @@ export const USER_GUIDE_DATA = {
           desc: '"...בחלוקה למסלולים נפרדים עבור מלכי יהודה מול מלכי ישראל"'
         }
       ],
-      framingHeading: '3. מבנה הפרומפט: קצר ותמציתי מול מפורט',
-      conciseTitle: 'מתי להשתמש בפרומפט קצר',
-      conciseDesc: 'פרומפטים קצרים כמו "המהפכה הצרפתית" או "תולדות התעופה" מאפשרים ל-Gemini חופש יצירתי לבחור את אבני הדרך המוסכמות והחשובות ביותר. מעולה לגילוי ראשוני מהיר!',
-      detailedTitle: 'מתי להשתמש בפרומפט מפורט',
-      detailedDesc: 'אם יש לכם תחימה ספציפית, ציינו אותה במפורש: "המהפכה הצרפתית מנפילת הבסטיליה (1789) ועד לעליית נפוליאון (1799), תוך התמקדות בפלגים הפוליטיים והמאבקים הפנימיים".'
+      framingHeading: '3. מבנה הפרומפט: קצר ופשוט מול מפורט ומובנה',
+      conciseTitle: 'פרומפט קצר ופשוט: חקר נושאים בבהירות ובטבעיות',
+      conciseDesc: 'פרומפטים יכולים להיות פשוטים, קצרים וטבעיים. אין צורך להכיר שמות היסטוריים או מונחים מדעיים מראש. פרומפטים כמו "המהפכה התעשייתית", "האבולוציה של הלווייתן" או "המהפכה הצרפתית" מאפשרים ל-AI לגלות באופן אוטומטי את כל ציוני הדרך והאישים המרכזיים.',
+      detailedTitle: 'פרומפט מפורט ומובנה: מיקוד והכוונה מדויקת',
+      detailedDesc: 'כאשר רוצים להתמקד בהיבט מסוים, ניתן להנחות את ה-AI במפורש: להגדיר תאריכי התחלה וסיום מדויקים ("המהפכה הצרפתית מ-1789 עד 1799"), לחלק לזירות גיאוגרפיות ("מלחמת העולם השנייה בחלוקה לזירה האירופית וזירת האוקיינוס השקט") או להשוות פלגים ומסלולים מקבילים.'
     },
     prompt_showcase: {
       title: 'מאגר פרומפטים אינטראקטיבי',
