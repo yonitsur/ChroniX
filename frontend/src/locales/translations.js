@@ -328,6 +328,11 @@ export const translations = {
         geo_map: 'Geographic Map',
         export_saving: 'Export & Saving'
       },
+      detailLevels: {
+        overview: 'Overview',
+        standard: 'Standard',
+        deep_dive: 'Deep Dive'
+      },
       tryNow: 'Try Now',
       copyPrompt: 'Copy Prompt',
       copied: 'Copied!',
@@ -619,7 +624,7 @@ export const translations = {
       version: 'גרסה 1.0',
       tagline: 'כרונולוגיה ויזואלית אינטראקטיבית מבוססת בינה מלאכותית',
       tabs: {
-        overview: 'סקירה כללית',
+        overview: 'מבט-על',
         credits: 'קרדיטים ותודות',
         guide: 'מדריך מקוצר'
       },
@@ -696,6 +701,11 @@ export const translations = {
         ai_refine: 'ליטוש ב-AI',
         geo_map: 'מפה גיאוגרפית',
         export_saving: 'ייצוא ושמירה'
+      },
+      detailLevels: {
+        overview: 'מבט-על',
+        standard: 'סטנדרטי',
+        deep_dive: 'מעמיק'
       },
       tryNow: 'נסו עכשיו',
       copyPrompt: 'העתקת פרומפט',

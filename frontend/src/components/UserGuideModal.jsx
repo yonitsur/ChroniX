@@ -39,6 +39,12 @@ const SECTIONS = [
   { id: 'export_saving', icon: Download }
 ];
 
+const DETAIL_LEVEL_STYLES = {
+  overview: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+  standard: 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800',
+  deep_dive: 'bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+};
+
 export default function UserGuideModal({ isOpen, onClose }) {
   const { t, language } = useLanguage();
   const [activeSection, setActiveSection] = useState('getting_started');
@@ -92,6 +98,17 @@ export default function UserGuideModal({ isOpen, onClose }) {
     return Array.from(map.entries()).map(([key, label]) => ({ key, label }));
   }, [language, t]);
 
+  // Get localized label for detail level
+  const getDetailLevelLabel = (level) => {
+    return (
+      guide?.prompt_showcase?.detailLevels?.[level] ||
+      t(`userGuide.detailLevels.${level}`) ||
+      (language === 'he'
+        ? (level === 'deep_dive' ? 'מעמיק' : level === 'overview' ? 'מבט-על' : 'סטנדרטי')
+        : (level === 'deep_dive' ? 'Deep Dive' : level === 'overview' ? 'Overview' : 'Standard'))
+    );
+  };
+
   // Filtered Showcase Prompts
   const filteredPrompts = useMemo(() => {
     return SHOWCASE_PROMPTS_DATA.filter((item) => {
@@ -101,17 +118,20 @@ export default function UserGuideModal({ isOpen, onClose }) {
       const title = (item.title[language] || item.title.en || '').toLowerCase();
       const prompt = (item.prompt[language] || item.prompt.en || '').toLowerCase();
       const whyItWorks = (item.whyItWorks[language] || item.whyItWorks.en || '').toLowerCase();
+      const levelLabel = getDetailLevelLabel(item.detailLevel).toLowerCase();
       const q = searchQuery.toLowerCase().trim();
 
       const matchesSearch =
         !q ||
         title.includes(q) ||
         prompt.includes(q) ||
-        whyItWorks.includes(q);
+        whyItWorks.includes(q) ||
+        item.detailLevel.includes(q) ||
+        levelLabel.includes(q);
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategoryKey, searchQuery, language]);
+  }, [selectedCategoryKey, searchQuery, language, guide, t]);
 
   if (!isOpen) return null;
 
@@ -126,7 +146,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
       aria-labelledby="user-guide-title"
     >
       <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200">
-        
+
         {/* Top Header */}
         <div className="relative px-5 sm:px-6 pt-5 pb-4 border-b border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-50 via-sky-50/25 to-white dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950 shrink-0">
           <div className="flex items-center justify-between gap-4" dir="ltr">
@@ -163,9 +183,8 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('userGuide.searchPlaceholder')}
                   id="user-guide-search-input"
-                  className={`w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all ${
-                    language === 'he' ? 'text-right' : 'text-left'
-                  }`}
+                  className={`w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all ${language === 'he' ? 'text-right' : 'text-left'
+                    }`}
                 />
                 {searchQuery && (
                   <button
@@ -203,11 +222,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   type="button"
                   id={`user-guide-tab-${sec.id}`}
                   onClick={() => setActiveSection(sec.id)}
-                  className={`flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer select-none ${
-                    isActive
-                      ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
-                  }`}
+                  className={`flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer select-none ${isActive
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200/80 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
+                    }`}
                 >
                   <Icon className="w-3.5 h-3.5 shrink-0" />
                   <span>{label}</span>
@@ -219,12 +237,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
         {/* Scrollable Content Body */}
         <div
-          className={`flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed text-xs sm:text-sm ${
-            language === 'he' ? 'text-right' : 'text-left'
-          }`}
+          className={`flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed text-xs sm:text-sm ${language === 'he' ? 'text-right' : 'text-left'
+            }`}
           dir={language === 'he' ? 'rtl' : 'ltr'}
         >
-          
+
           {/* SECTION 1: GETTING STARTED */}
           {activeSection === 'getting_started' && (
             <div className="space-y-6 animate-in fade-in duration-150">
@@ -419,7 +436,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
                     {guide.prompt_mastery.swimlanesDesc}
                   </p>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {guide.prompt_mastery.swimlanesExamples.map((ex, i) => (
                       <div
@@ -427,12 +444,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
                         className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1"
                         dir="auto"
                       >
-                        <span className={`font-semibold text-xs ${
-                          i === 0 ? 'text-sky-600 dark:text-sky-400' :
+                        <span className={`font-semibold text-xs ${i === 0 ? 'text-sky-600 dark:text-sky-400' :
                           i === 1 ? 'text-indigo-600 dark:text-indigo-400' :
-                          i === 2 ? 'text-purple-600 dark:text-purple-400' :
-                          'text-emerald-600 dark:text-emerald-400'
-                        }`}>
+                            i === 2 ? 'text-purple-600 dark:text-purple-400' :
+                              'text-emerald-600 dark:text-emerald-400'
+                          }`}>
                           {ex.title}
                         </span>
                         <p className="text-xs text-slate-600 dark:text-slate-400 italic">
@@ -495,11 +511,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
                       key={cat.key}
                       type="button"
                       onClick={() => setSelectedCategoryKey(cat.key)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer shrink-0 ${
-                        selectedCategoryKey === cat.key
-                          ? 'bg-sky-500 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer shrink-0 ${selectedCategoryKey === cat.key
+                        ? 'bg-sky-500 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        }`}
                     >
                       {cat.label}
                     </button>
@@ -528,8 +543,12 @@ export default function UserGuideModal({ isOpen, onClose }) {
                             {itemCategory}
                           </span>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 uppercase">
-                              {item.detailLevel.replace('_', ' ')}
+                            <span
+                              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${DETAIL_LEVEL_STYLES[item.detailLevel] ||
+                                'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800'
+                                } ${language === 'en' ? 'uppercase tracking-wider' : ''}`}
+                            >
+                              {getDetailLevelLabel(item.detailLevel)}
                             </span>
                           </div>
                         </div>

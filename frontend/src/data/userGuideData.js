@@ -291,7 +291,12 @@ export const USER_GUIDE_DATA = {
       tryNow: 'Try Now',
       copyPrompt: 'Copy Prompt',
       copied: 'Copied!',
-      whyItWorksLabel: 'Why it works:'
+      whyItWorksLabel: 'Why it works:',
+      detailLevels: {
+        overview: 'Overview',
+        standard: 'Standard',
+        deep_dive: 'Deep Dive'
+      }
     },
     event_editing: {
       title: 'Editing & Adding Events (Full Control)',
@@ -417,7 +422,7 @@ export const USER_GUIDE_DATA = {
       detailHeading: '1. בחירת רמת הפירוט המתאימה',
       levels: {
         overview: {
-          name: 'סקירה כללית (Overview)',
+          name: 'מבט-על (Overview)',
           count: '~10–15 אירועים',
           bestFor: 'תקופות היסטוריות ארוכות, סקירת ציוויליזציות שלמות או סיכום תמציתי ממוקד.',
           example: '"מצרים העתיקה: סקירה תמציתית מהממלכה הקדומה ועד קלאופטרה"'
@@ -429,7 +434,7 @@ export const USER_GUIDE_DATA = {
           example: '"המרוץ לחלל (1955–1975) בין נאס״א לברית המועצות"'
         },
         deep_dive: {
-          name: 'צלילת עומק (Deep Dive)',
+          name: 'מעמיק (Deep Dive)',
           count: '~35–50 אירועים',
           bestFor: 'מלחמות ספציפיות, ביוגרפיות מפורטות, משברים קצרים ואינטנסיביים או התפתחויות מדעיות שלב-אחר-שלב.',
           example: '"מלחמת העולם השנייה באירופה, מערכות מפתח חודש אחר חודש"'
@@ -467,7 +472,12 @@ export const USER_GUIDE_DATA = {
       tryNow: 'נסו עכשיו',
       copyPrompt: 'העתקת פרומפט',
       copied: 'הועתק!',
-      whyItWorksLabel: 'למה זה עובד:'
+      whyItWorksLabel: 'למה זה עובד:',
+      detailLevels: {
+        overview: 'מבט-על',
+        standard: 'סטנדרטי',
+        deep_dive: 'מעמיק'
+      }
     },
     event_editing: {
       title: 'עריכה והוספת אירועים (שליטה מלאה)',
