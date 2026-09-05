@@ -453,6 +453,8 @@ export const translations = {
       badgeFreeTier: 'Free Tier Active',
       modalTitle: 'Daily Quota & Modes',
       modalSubtitle: 'How AI prompt routing and daily speeds work',
+      currentStatus: 'Current Status',
+      howItWorks: 'How it works',
       premiumTitle: '15 Daily Premium Prompts',
       premiumDesc: 'Every user gets 15 high-speed Gemini prompts daily on ChroniX. These use top-tier processing power with lightning response times.',
       freeTitle: 'Unlimited Free Tier Fallback',
@@ -462,9 +464,11 @@ export const translations = {
       openSettings: 'Open Key Settings',
       statusUsed: 'Used today: {used} of {limit}',
       statusUnlimited: 'Unlimited admin access active',
+      statusCustom: 'Personal Gemini key active',
       tierPaid: 'Premium Tier (Fast)',
       tierFree: 'Free Tier (Standard)',
-      tierAdmin: 'Admin Mode (Unlimited)'
+      tierAdmin: 'Admin Mode (Unlimited)',
+      tierCustom: 'Custom Key (Unlimited)'
     },
     mobile: {
       timeline: 'Timeline',
@@ -943,6 +947,8 @@ export const translations = {
       badgeFreeTier: 'מצב חינמי פעיל',
       modalTitle: 'מכסת פרומפטים יומית',
       modalSubtitle: 'הסבר על ניתוב המפתחות ומצבי הפעולה של ה-AI',
+      currentStatus: 'סטטוס נוכחי',
+      howItWorks: 'כיצד המערכת פועלת',
       premiumTitle: '15 פרומפטים פרימיום ביום',
       premiumDesc: 'כל משתמש מקבל 15 פרומפטים מהירים (Premium) בכל יממה על חשבון המערכת, עם זמני תגובה מואצים ועיבוד עדיף.',
       freeTitle: 'מעבר אוטומטי למצב חינמי',
@@ -952,9 +958,11 @@ export const translations = {
       openSettings: 'פתיחת הגדרות מפתח',
       statusUsed: 'נוצלו היום: {used} מתוך {limit}',
       statusUnlimited: 'גישת מנהל מלאה ובלתי מוגבלת',
+      statusCustom: 'מפתח Gemini אישי פעיל במערכת',
       tierPaid: 'מצב פרימיום (מהיר)',
       tierFree: 'מצב חינמי (סטנדרטי)',
-      tierAdmin: 'מצב מנהל (בלתי מוגבל)'
+      tierAdmin: 'מצב מנהל (בלתי מוגבל)',
+      tierCustom: 'מפתח אישי (בלתי מוגבל)'
     },
     mobile: {
       timeline: 'ציר זמן',

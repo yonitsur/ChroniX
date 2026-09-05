@@ -25,8 +25,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-sky-500" />
+            <div className="p-2 rounded-xl bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-300/60 dark:border-amber-700/60 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
@@ -51,9 +51,11 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
 
         {/* Scrollable Body */}
         <div className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-          <div className="p-3.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
-            <p>
+          <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-500/15 dark:via-amber-500/5 border border-amber-300/80 dark:border-amber-700/80 ring-1 ring-amber-400/20 text-amber-950 dark:text-amber-100 text-xs sm:text-sm font-medium flex items-start gap-3 shadow-2xs">
+            <div className="p-1.5 rounded-lg bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-300/60 dark:border-amber-700/60 shrink-0 mt-0.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            </div>
+            <p className="leading-relaxed">
               {t('aiDisclaimer.bannerWarning')}
             </p>
           </div>

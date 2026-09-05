@@ -44,12 +44,12 @@ export default function QuotaBadge({ quota, onClick, compact = false }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1 p-1.5 px-2 rounded-xl text-xs border shadow-2xs transition-all active:scale-95 cursor-pointer backdrop-blur-md shrink-0 ${badgeColor}`}
+      className={`h-8 shrink-0 flex items-center justify-center gap-1.5 px-2.5 rounded-lg text-xs border shadow-2xs transition-all active:scale-95 cursor-pointer backdrop-blur-md group ${badgeColor}`}
       title={tooltip}
       aria-label={badgeLabel}
     >
       {badgeIcon}
-      <HelpCircle className="w-3 h-3 opacity-60 hover:opacity-100 shrink-0" />
+      <HelpCircle className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity shrink-0" />
     </button>
   );
 }

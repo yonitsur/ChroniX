@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Zap, Sparkles, Key, Shield } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { getApiKey } from '../api';
 
 export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
   const { t, isRtl } = useLanguage();
@@ -21,6 +22,69 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
   const used = quota?.used_today ?? 0;
   const limit = quota?.daily_paid_limit ?? 15;
   const remaining = quota?.remaining_paid ?? 0;
+  const hasCustomKey = Boolean(getApiKey());
+
+  let statusBorder = 'border-slate-200 dark:border-slate-800';
+  let statusBg = 'bg-slate-50/70 dark:bg-slate-800/40';
+  let iconBoxClass = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+  let statusIcon = <Zap className="w-4 h-4 text-sky-500" />;
+  let tierTitle = t('quota.tierPaid');
+  let statusSubtext = t('quota.statusUsed', { used, limit });
+  let badgePill = null;
+
+  if (hasCustomKey) {
+    statusBorder = 'border-purple-300 dark:border-purple-700/80 ring-1 ring-purple-400/20';
+    statusBg = 'bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent dark:from-purple-500/15 dark:via-purple-500/5';
+    iconBoxClass = 'bg-purple-500/15 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-300/80 dark:border-purple-700';
+    statusIcon = <Key className="w-4 h-4 text-purple-600 dark:text-purple-300" />;
+    tierTitle = t('quota.tierCustom');
+    statusSubtext = t('quota.statusCustom');
+    badgePill = (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-300/60 dark:border-purple-700/60">
+        <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+        {t('quota.currentStatus')}
+      </span>
+    );
+  } else if (isAdmin) {
+    statusBorder = 'border-amber-300 dark:border-amber-700/80 ring-1 ring-amber-400/20';
+    statusBg = 'bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-500/15 dark:via-amber-500/5';
+    iconBoxClass = 'bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-300/80 dark:border-amber-700';
+    statusIcon = <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
+    tierTitle = t('quota.tierAdmin');
+    statusSubtext = t('quota.statusUnlimited');
+    badgePill = (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-300/60 dark:border-amber-700/60">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+        {t('quota.currentStatus')}
+      </span>
+    );
+  } else if (remaining > 0) {
+    statusBorder = 'border-sky-300 dark:border-sky-700/80 ring-1 ring-sky-400/20';
+    statusBg = 'bg-gradient-to-r from-sky-500/10 via-sky-500/5 to-transparent dark:from-sky-500/15 dark:via-sky-500/5';
+    iconBoxClass = 'bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-300 border-sky-300/80 dark:border-sky-700';
+    statusIcon = <Zap className="w-4 h-4 text-sky-600 dark:text-sky-400" />;
+    tierTitle = t('quota.tierPaid');
+    statusSubtext = t('quota.statusUsed', { used, limit });
+    badgePill = (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-300/60 dark:border-sky-700/60">
+        <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+        {t('quota.currentStatus')}
+      </span>
+    );
+  } else {
+    statusBorder = 'border-slate-300 dark:border-slate-700';
+    statusBg = 'bg-slate-100/70 dark:bg-slate-800/50';
+    iconBoxClass = 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600';
+    statusIcon = <Zap className="w-4 h-4 text-slate-500 dark:text-slate-400" />;
+    tierTitle = t('quota.tierFree');
+    statusSubtext = t('quota.statusUsed', { used, limit });
+    badgePill = (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">
+        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+        {t('quota.currentStatus')}
+      </span>
+    );
+  }
 
   return (
     <div
@@ -68,29 +132,26 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
 
         {/* Content */}
         <div className="p-6 space-y-4 overflow-y-auto text-xs text-slate-600 dark:text-slate-300">
-          {/* Status summary banner - clean slate styling */}
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
-                {isAdmin ? <Shield className="w-4 h-4 text-sky-500" /> : <Zap className="w-4 h-4 text-sky-500" />}
+          {/* Active Status Hero Card */}
+          <div className={`p-4 rounded-xl border ${statusBorder} ${statusBg} flex items-center justify-between gap-3 shadow-xs`}>
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`p-2.5 rounded-xl border shrink-0 ${iconBoxClass}`}>
+                {statusIcon}
               </div>
-              <div>
-                <div className="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm">
-                  {isAdmin
-                    ? t('quota.tierAdmin')
-                    : remaining > 0
-                    ? t('quota.tierPaid')
-                    : t('quota.tierFree')}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  <span className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                    {tierTitle}
+                  </span>
+                  {badgePill}
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  {isAdmin
-                    ? t('quota.statusUnlimited')
-                    : t('quota.statusUsed', { used, limit })}
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  {statusSubtext}
                 </div>
               </div>
             </div>
 
-            {!isAdmin && (
+            {!isAdmin && !hasCustomKey && (
               <div className={`shrink-0 ${isRtl ? 'text-left' : 'text-right'}`}>
                 <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {remaining}
@@ -103,50 +164,59 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
             )}
           </div>
 
-          {/* Explanation Cards - clean slate styling matching About & User Guide */}
-          <div className="space-y-3 pt-1">
-            {/* Card 1: 15 Fast Prompts */}
-            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
-                <Sparkles className="w-4 h-4 text-sky-500" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
-                  {t('quota.premiumTitle')}
-                </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {t('quota.premiumDesc')}
-                </p>
-              </div>
+          {/* Explanation Cards with Section Header */}
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                {t('quota.howItWorks')}
+              </span>
+              <div className="h-px flex-1 bg-slate-200/80 dark:bg-slate-800/80" />
             </div>
 
-            {/* Card 2: Free Tier Fallback */}
-            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
-                <Zap className="w-4 h-4 text-sky-500" />
+            <div className="space-y-2.5">
+              {/* Card 1: 15 Fast Prompts */}
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                  <Sparkles className="w-4 h-4 text-sky-500" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
+                    {t('quota.premiumTitle')}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {t('quota.premiumDesc')}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
-                  {t('quota.freeTitle')}
-                </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {t('quota.freeDesc')}
-                </p>
-              </div>
-            </div>
 
-            {/* Card 3: BYOK */}
-            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
-                <Key className="w-4 h-4 text-sky-500" />
+              {/* Card 2: Free Tier Fallback */}
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                  <Zap className="w-4 h-4 text-sky-500" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
+                    {t('quota.freeTitle')}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {t('quota.freeDesc')}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
-                  {t('quota.byokTitle')}
-                </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {t('quota.byokDesc')}
-                </p>
+
+              {/* Card 3: BYOK */}
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                  <Key className="w-4 h-4 text-sky-500" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-xs text-slate-900 dark:text-white mb-1">
+                    {t('quota.byokTitle')}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {t('quota.byokDesc')}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
