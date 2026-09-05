@@ -94,10 +94,21 @@ CRITICAL INSTRUCTIONS:
      * Specify `from_year`, and whenever known, `from_month` (1-12) and `from_day` (1-31).
      * For spans or tenures (e.g. a president's term, a war, an era), provide `to_year`, `to_month`, `to_day`.
 
-2. LANES:
-   - Provide 2 to 4 intuitive swimlanes to organize events horizontally (e.g. for WWII: 'Europe', 'Pacific', 'Diplomacy'; for Dinosaurs: 'Theropods', 'Sauropods', 'Ornithischians', 'Pre-dinosaur/Transitions'; for Tech: 'Hardware', 'Software & AI', 'Internet & Networks').
-   - Assign each event a matching `lane` id.
-   - For each lane, assign a distinct, thematic hex color from a refined museum palette (e.g. '#2b5278', '#b84a39', '#2e6b56', '#6e395e', '#b87326', '#24657a').
+2. LANES & SWIMLANES (DEFAULT: EXACTLY ONE LANE):
+   - CRITICAL DEFAULT RULE (EXACTLY ONE LANE):
+     By default, you MUST produce EXACTLY ONE single timeline lane (e.g. `id`: "main", `title`: matching the timeline topic or "Main Timeline").
+     Assign ALL generated events to this single lane (set every event's `lane` property to this lane's `id`).
+     DO NOT divide or split the timeline into multiple lanes by default.
+   - EXPLICIT MULTI-LANE EXCEPTION (ONLY WHEN REQUESTED):
+     You may ONLY divide the timeline into multiple swimlanes (2 to 4 lanes) IF the user's prompt or special focus EXPLICITLY and CLEARLY requests division into lanes, swimlanes, tracks, channels, or category rows (e.g. "divide into lanes by region", "split into swimlanes for politics and military", "create separate tracks for each country", "multi-lane timeline").
+     * Counter-examples that MUST REMAIN A SINGLE LANE:
+        Any general, standard, or broad topic—such as "World War II", "History of Rome", "Dinosaurs", "The Beatles", "Space Exploration", or "The Industrial Revolution".
+        Even if the topic naturally has multiple categories, factions, regions, or themes (e.g. Allies vs Axis, Carnivores vs Herbivores, Western vs Eastern fronts), you MUST NOT split them into multiple lanes unless the user explicitly requested lane/swimlane division.
+   - LANE PALETTE & IDENTIFIERS:
+     * Each lane must have a distinct, lowercase alphanumeric `id` (e.g. \"main\", \"europe\", \"pacific\").
+     * Each lane must have a descriptive, readable `title`.
+     * Assign a distinct, thematic hex color from a refined museum palette (e.g. '#2b5278', '#b84a39', '#2e6b56', '#6e395e', '#b87326', '#24657a').
+     * Every event MUST have its `lane` property set to a valid `id` from the `lanes` list.
 
 3. TIME BANDS:
    - Provide 2 to 5 broad overarching eras/periods to be painted as background bands (e.g. 'Triassic', 'Jurassic', 'Cretaceous' or 'Interwar', 'Early War', 'Late War', 'Post-War').
@@ -197,6 +208,8 @@ Guideline: {detail_instruction}
 {"Special focus: " + custom_focus if custom_focus else ""}
 {"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else ""}
 
+LANE INSTRUCTION: Maintain exactly ONE single timeline lane for all events unless the prompt or focus explicitly instructs to divide into multiple lanes/swimlanes.
+
 Return a structured JSON timeline following the schema.
 """
 
@@ -239,18 +252,33 @@ Return a structured JSON timeline following the schema.
             clean_slug = re.sub(r'[^a-zA-Z0-9\u0590-\u05FF]+', '-', prompt.lower()).strip('-')[:24]
             timeline_id = f"{str(uuid.uuid4())[:8]}-{clean_slug}" if clean_slug else str(uuid.uuid4())[:12]
 
-            # Convert lanes with distinct colors
-            unique_colors = {l.color for l in parsed_data.lanes if l.color and l.color.lower() not in ["#3b82f6", "#38bdf8", "#2563eb"]}
-            has_diverse = len(unique_colors) > 1
-            lanes = [
-                TimelineLane(
-                    id=l.id,
-                    title=l.title,
-                    color=(l.color if has_diverse and l.color else DEFAULT_LANE_PALETTE[idx % len(DEFAULT_LANE_PALETTE)]),
-                    order=idx+1
-                )
-                for idx, l in enumerate(parsed_data.lanes)
-            ]
+            # Convert lanes with distinct colors (fallback to single default lane if none returned)
+            if not parsed_data.lanes:
+                default_lane_id = "main"
+                default_lane_title = parsed_data.title or ("אירועים מרכזיים" if is_hebrew else "Main Timeline")
+                lanes = [
+                    TimelineLane(
+                        id=default_lane_id,
+                        title=default_lane_title,
+                        color=DEFAULT_LANE_PALETTE[0],
+                        order=1
+                    )
+                ]
+            else:
+                unique_colors = {l.color for l in parsed_data.lanes if l.color and l.color.lower() not in ["#3b82f6", "#38bdf8", "#2563eb"]}
+                has_diverse = len(unique_colors) > 1
+                lanes = [
+                    TimelineLane(
+                        id=l.id,
+                        title=l.title,
+                        color=(l.color if has_diverse and l.color else DEFAULT_LANE_PALETTE[idx % len(DEFAULT_LANE_PALETTE)]),
+                        order=idx+1
+                    )
+                    for idx, l in enumerate(parsed_data.lanes)
+                ]
+
+            valid_lane_ids = {l.id for l in lanes}
+            default_lane_id = lanes[0].id
 
             # Convert time bands
             time_bands = [
@@ -267,11 +295,12 @@ Return a structured JSON timeline following the schema.
             # Convert events to articles dict for enrichment
             articles_to_enrich = []
             for ev in parsed_data.events:
+                event_lane = ev.lane if (ev.lane and ev.lane in valid_lane_ids) else default_lane_id
                 art_dict = {
                     "id": ev.id or str(uuid.uuid4())[:8],
                     "title": ev.title,
                     "subtitle": ev.subtitle or "",
-                    "lane": ev.lane,
+                    "lane": event_lane,
                     "from": {
                         "year": ev.from_year,
                         "month": ev.from_month,
@@ -395,7 +424,7 @@ User Refinement Instruction:
 "{instruction}"
 
 Please generate a structured timeline that addresses the user's instruction.
-Keep existing lanes (or add new relevant ones if needed).
+Lanes: Maintain the existing lane structure unless the user instruction explicitly requests dividing into multiple lanes/swimlanes/time-lines.
 Ensure events contain accurate dates and Wikipedia article titles.
 {"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else ""}
 """
@@ -438,6 +467,7 @@ Ensure events contain accurate dates and Wikipedia article titles.
             # Merge or add new events
             existing_ids = {a.id for a in current_timeline.articles}
             new_articles_to_enrich = []
+            fallback_lane = current_timeline.lanes[0].id if current_timeline.lanes else "main"
 
             for ev in parsed_data.events:
                 ev_id = ev.id if ev.id and ev.id not in existing_ids else str(uuid.uuid4())[:8]
@@ -447,7 +477,7 @@ Ensure events contain accurate dates and Wikipedia article titles.
                     "id": ev_id,
                     "title": ev.title,
                     "subtitle": ev.subtitle or "",
-                    "lane": ev.lane,
+                    "lane": ev.lane or fallback_lane,
                     "from": {
                         "year": ev.from_year,
                         "month": ev.from_month,

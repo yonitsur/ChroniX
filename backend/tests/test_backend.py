@@ -286,6 +286,93 @@ def test_sample_timeline_has_geographic_data():
     assert articles_with_geo[0]["googleMapsUrl"] is not None
 
 
+def test_system_instruction_single_lane_default():
+    from services.gemini_service import get_system_instruction
+    inst_en = get_system_instruction(is_hebrew=False)
+    assert "EXACTLY ONE" in inst_en
+    assert "DO NOT divide or split the timeline into multiple lanes by default" in inst_en
+    assert "EXPLICIT MULTI-LANE EXCEPTION" in inst_en
+
+    inst_he = get_system_instruction(is_hebrew=True)
+    assert "מסלול יחיד בלבד" in inst_he
+    assert "חל איסור מוחלט לחלק את ציר הזמן למסלולים מרובים כברירת מחדל" in inst_he
+    assert "חריג יחיד - בקשה מפורשת" in inst_he
 
 
+@pytest.mark.asyncio
+async def test_gemini_generation_default_single_lane():
+    import os
+    if not os.getenv("GEMINI_API_KEY"):
+        pytest.skip("GEMINI_API_KEY not set")
+    from services.gemini_service import generate_timeline_with_gemini
+
+    # Prompt with no mention of lanes should produce exactly 1 lane
+    tl = await generate_timeline_with_gemini(
+        prompt="History of the Steam Engine",
+        detail_level="overview"
+    )
+    assert tl is not None
+    assert len(tl.lanes) == 1, f"Expected 1 lane by default, got {len(tl.lanes)}: {[l.title for l in tl.lanes]}"
+    assert len(tl.articles) > 0
+    lane_id = tl.lanes[0].id
+    for a in tl.articles:
+        assert a.lane == lane_id, f"Article {a.title} has lane {a.lane}, expected {lane_id}"
+
+
+@pytest.mark.asyncio
+async def test_gemini_generation_explicit_multi_lane():
+    import os
+    if not os.getenv("GEMINI_API_KEY"):
+        pytest.skip("GEMINI_API_KEY not set")
+    from services.gemini_service import generate_timeline_with_gemini
+
+    # Prompt with explicit request for division into lanes should produce multiple lanes
+    tl = await generate_timeline_with_gemini(
+        prompt="The Space Race, divided into separate swimlanes for USA and Soviet Union",
+        detail_level="overview"
+    )
+    assert tl is not None
+    assert len(tl.lanes) >= 2, f"Expected multiple lanes on explicit instruction, got {len(tl.lanes)}"
+    assert len(tl.articles) > 0
+    assigned_lanes = {a.lane for a in tl.articles if a.lane}
+    assert len(assigned_lanes) >= 2, f"Expected events in at least 2 lanes, got {assigned_lanes}"
+
+
+@pytest.mark.asyncio
+async def test_gemini_generation_hebrew_default_single_lane():
+    import os
+    if not os.getenv("GEMINI_API_KEY"):
+        pytest.skip("GEMINI_API_KEY not set")
+    from services.gemini_service import generate_timeline_with_gemini
+
+    # Hebrew prompt with no mention of lanes should produce exactly 1 lane
+    tl = await generate_timeline_with_gemini(
+        prompt="תולדות הדפוס בעולם",
+        detail_level="overview"
+    )
+    assert tl is not None
+    assert len(tl.lanes) == 1, f"Expected 1 lane by default in Hebrew, got {len(tl.lanes)}: {[l.title for l in tl.lanes]}"
+    assert len(tl.articles) > 0
+    lane_id = tl.lanes[0].id
+    for a in tl.articles:
+        assert a.lane == lane_id, f"Article {a.title} has lane {a.lane}, expected {lane_id}"
+
+
+@pytest.mark.asyncio
+async def test_gemini_generation_hebrew_explicit_multi_lane():
+    import os
+    if not os.getenv("GEMINI_API_KEY"):
+        pytest.skip("GEMINI_API_KEY not set")
+    from services.gemini_service import generate_timeline_with_gemini
+
+    # Hebrew prompt with explicit request for division into lanes
+    tl = await generate_timeline_with_gemini(
+        prompt="מלחמת העולם השנייה עם חלוקה למסלולים לפי זירות (אירופה, אסיה והאוקיינוס השקט)",
+        detail_level="overview"
+    )
+    assert tl is not None
+    assert len(tl.lanes) >= 2, f"Expected multiple lanes on explicit Hebrew instruction, got {len(tl.lanes)}"
+    assert len(tl.articles) > 0
+    assigned_lanes = {a.lane for a in tl.articles if a.lane}
+    assert len(assigned_lanes) >= 2, f"Expected events in at least 2 lanes, got {assigned_lanes}"
 
