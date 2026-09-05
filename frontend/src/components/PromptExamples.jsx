@@ -959,15 +959,16 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
-      {/* Edge gradient fade masks for that infinite cinema look */}
-      <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-16 bg-gradient-to-r from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-16 bg-gradient-to-l from-slate-100 dark:from-slate-950 to-transparent z-10 pointer-events-none" />
-
-      {/* Scrollable Reel Track */}
+      {/* Scrollable Reel Track with transparent alpha mask */}
       <div
         ref={scrollRef}
         className="overflow-x-auto overflow-y-hidden py-2.5 sm:py-3 px-8 sm:px-12 scrollbar-none"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          maskImage: 'linear-gradient(to right, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%)'
+        }}
       >
         <div className="flex gap-2.5 sm:gap-3 w-max group/track transition-all duration-300 opacity-100 scale-100">
           {triplicatedExamples.map((item, idx) => {
@@ -982,7 +983,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 dir={isHebrew ? 'rtl' : 'ltr'}
                 className={`group/card relative flex flex-col justify-between text-start p-3 sm:p-3.5 rounded-lg sm:rounded-xl border transition-all duration-200 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
                   isHebrew ? 'text-right' : 'text-left'
-                } w-56 sm:w-64 h-28 sm:h-32 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-0.5 hover:shadow-md shadow-2xs group-hover/track:opacity-85 hover:!opacity-100`}
+                } w-56 sm:w-64 h-28 sm:h-32 shrink-0 bg-white/95 dark:bg-slate-900/90 hover:bg-slate-50/90 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 hover:border-slate-400/80 dark:hover:border-slate-600/80 hover:-translate-y-0.5 hover:shadow-md shadow-2xs group-hover/track:opacity-85 hover:!opacity-100 backdrop-blur-md`}
               >
                 {/* Prompt Title at the Top */}
                 <p

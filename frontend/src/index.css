@@ -198,3 +198,23 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   border-radius: 0 0 10px 10px !important;
 }
 
+/* Main Home Screen dynamic background (Light: Antique Map, Dark: Milky Way) */
+.home-screen-bg {
+  position: relative;
+  background-color: #f6f3eb;
+  background-image: 
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.62) 0%, rgba(246, 243, 235, 0.88) 100%),
+    url('/historical-map-bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: background-image 0.4s ease-in-out, background-color 0.4s ease-in-out;
+}
+
+html.dark .home-screen-bg {
+  background-color: #060913;
+  background-image: 
+    radial-gradient(circle at 50% 35%, rgba(6, 9, 19, 0.25) 0%, rgba(6, 9, 19, 0.65) 100%),
+    url('/stars-bg.jpg');
+}
+

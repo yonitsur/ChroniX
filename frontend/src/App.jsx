@@ -902,16 +902,16 @@ export default function App() {
             )
           )
         ) : (
-          <div className="w-full h-full overflow-y-auto flex flex-col items-center text-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300">
+          <div className="w-full h-full overflow-y-auto flex flex-col items-center text-center justify-center p-4 sm:p-6 pb-20 select-none animate-in fade-in duration-300 home-screen-bg">
             {/* Hero Branding & Welcome */}
             <div className="mb-1 transition-transform duration-300 hover:scale-105">
-                <ChroniXLogo size="xl" className="w-auto drop-shadow-sm" />
+                <ChroniXLogo size="xl" className="w-auto drop-shadow-md" />
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight font-sans">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight font-sans drop-shadow-xs">
                   {t('home.title')}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-sans">
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 max-w-lg leading-relaxed font-sans font-medium drop-shadow-xs">
                   {t('home.subtitle')}
                 </p>
             </div>
