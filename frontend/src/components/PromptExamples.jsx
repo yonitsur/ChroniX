@@ -794,6 +794,18 @@ export const PROMPT_EXAMPLES = [
     prompt: 'The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants',
     detailLevel: 'overview',
     lang: 'en'
+  },
+  // 133. Hebrew - Multi-lane (Hebrew Alphabet Evolution)
+  {
+    prompt: 'התפתחות האלפבית והכתב העברי מהמקורות הקדומים ועד ימינו, בחלוקה לשני מסלולים מקבילים: גלגולי סגנונות הכתב (מפרוטו-כנעני ועברי קדום ועד הכתב המרובע והדפוס המודרני) מול השפות, העמים וההשפעות התרבותיות לאורך הדורות',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  // 134. English - Multi-lane (Hebrew Alphabet Evolution)
+  {
+    prompt: 'The Evolution of the Hebrew Alphabet from ancient origins to modern times, divided into parallel swimlanes for Script Styles & Typography (from Proto-Canaanite and Paleo-Hebrew to Square Script and modern print) vs. Languages, Peoples & Cultural Influences',
+    detailLevel: 'standard',
+    lang: 'en'
   }
 ];
 

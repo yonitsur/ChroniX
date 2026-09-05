@@ -337,6 +337,27 @@ export const SHOWCASE_PROMPTS_DATA = [
       en: 'A fascinating, accessible prompt: land mammals returning to the sea is easy to understand, and the AI lays out the sequence of transitional forms on the timeline.',
       he: 'פרומפט מרתק ונגיש: הרעיון של יונק יבשתי שהלך על ארבע וחזר לים קל להבנה, וה-AI חושף בציר הזמן את שלבי המעבר המפתיעים בדרך.'
     }
+  },
+  {
+    id: 'hebrew-alphabet-evolution',
+    categoryKey: 'israel_jewish',
+    detailLevel: 'standard',
+    title: {
+      en: 'Evolution of the Hebrew Alphabet & Script',
+      he: 'התפתחות האלפבית והכתב העברי'
+    },
+    category: {
+      en: 'Israel & Jewish History',
+      he: 'תולדות עם ישראל וציונות'
+    },
+    prompt: {
+      en: 'The Evolution of the Hebrew Alphabet from ancient origins to modern times, divided into parallel swimlanes for Script Styles & Typography (from Proto-Canaanite and Paleo-Hebrew to Square Script and modern print) vs. Languages, Peoples & Cultural Influences',
+      he: 'התפתחות האלפבית והכתב העברי מהמקורות הקדומים ועד ימינו, בחלוקה לשני מסלולים מקבילים: גלגולי סגנונות הכתב (מפרוטו-כנעני ועברי קדום ועד הכתב המרובע והדפוס המודרני) מול השפות, העמים וההשפעות התרבותיות לאורך הדורות'
+    },
+    whyItWorks: {
+      en: 'Demonstrates how to explore a fascinating linguistic and historical topic: parallel swimlanes let you view the visual evolution of letterforms and scripts alongside the peoples, languages, and historical events that shaped them.',
+      he: 'מדגים כיצד לחקור נושא בלשני-היסטורי מרתק: החלוקה לשני מסלולים מקבילים מאפשרת לראות זה לצד זה את השינויים הצורניים של האותיות והכתב מול העמים, השפות והמאורעות ההיסטוריים שהובילו לתמורות אלו.'
+    }
   }
 ];
 
