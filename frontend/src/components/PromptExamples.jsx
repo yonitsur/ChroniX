@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Dices } from 'lucide-react';
 
 export const PROMPT_EXAMPLES = [
   // 1. Hebrew - Overview
@@ -318,7 +318,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
   const scrollRef = useRef(null);
   const isHoveredRef = useRef(false);
   const isManualScrollingRef = useRef(false);
-  const [isShuffling, setIsShuffling] = useState(false);
+  const lastPickedPromptRef = useRef(null);
 
   // Initialize with a fresh smart-shuffled order every time the component mounts
   const [examples, setExamples] = useState(() => getSmartShuffledExamples());
@@ -330,13 +330,17 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
     ...examples
   ], [examples]);
 
-  const handleShuffle = useCallback(() => {
-    setIsShuffling(true);
-    setExamples(getSmartShuffledExamples());
-    setTimeout(() => {
-      setIsShuffling(false);
-    }, 450);
-  }, []);
+  const handleSelectRandomPrompt = useCallback(() => {
+    if (isGenerating || !onSelectPrompt) return;
+    // Pick a random prompt avoiding immediately repeating the last selection
+    const pool = PROMPT_EXAMPLES.filter((p) => p.prompt !== lastPickedPromptRef.current);
+    const candidateList = pool.length > 0 ? pool : PROMPT_EXAMPLES;
+    const randomItem = candidateList[Math.floor(Math.random() * candidateList.length)];
+    if (randomItem) {
+      lastPickedPromptRef.current = randomItem.prompt;
+      onSelectPrompt(randomItem.prompt, randomItem.detailLevel);
+    }
+  }, [isGenerating, onSelectPrompt]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -416,11 +420,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
         className="overflow-x-auto overflow-y-hidden py-4 px-10 sm:px-14 scrollbar-none"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div
-          className={`flex gap-3.5 w-max group/track transition-all duration-300 ${
-            isShuffling ? 'opacity-40 scale-[0.99]' : 'opacity-100 scale-100'
-          }`}
-        >
+        <div className="flex gap-3.5 w-max group/track transition-all duration-300 opacity-100 scale-100">
           {triplicatedExamples.map((item, idx) => {
             const isHebrew = item.lang === 'he';
 
@@ -494,21 +494,17 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
-      {/* Subtle manual shuffle button */}
+      {/* Random prompt selection button */}
       <div className="flex justify-center mt-3">
         <button
           type="button"
-          onClick={handleShuffle}
+          onClick={handleSelectRandomPrompt}
           disabled={isGenerating}
-          title="Shuffle prompts"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Select a random prompt"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
         >
-          <Shuffle
-            className={`w-3.5 h-3.5 transition-transform duration-500 ${
-              isShuffling ? 'rotate-180 text-sky-500' : ''
-            }`}
-          />
-          <span>Shuffle</span>
+          <Dices className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-45 transition-transform duration-300 shrink-0" />
+          <span>Surprise Me!</span>
         </button>
       </div>
     </div>

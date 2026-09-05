@@ -670,16 +670,6 @@ export default function App() {
                   Enter any historical epoch, scientific revolution, or biographical journey above — or select an exhibition below to begin:
                 </p>
               </div>
-              <div className="flex items-center gap-2 mt-1 flex-wrap justify-center">
-                <button
-                  type="button"
-                  onClick={() => setIsSavedModalOpen(true)}
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
-                >
-                  <FolderOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                  <span>Saved Timelines</span>
-                </button>
-              </div>
             </div>
 
             {/* Prompt Cards (Simple & Complex) */}
