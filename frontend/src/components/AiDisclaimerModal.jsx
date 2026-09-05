@@ -25,8 +25,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="w-5 h-5" />
+            <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-sky-500" />
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
@@ -51,8 +51,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
 
         {/* Scrollable Body */}
         <div className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-          <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-medium flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
             <p>
               {t('aiDisclaimer.bannerWarning')}
             </p>
@@ -60,8 +60,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
 
           <div className="space-y-3.5">
             <div className="flex items-start gap-3">
-              <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5">
-                <Sparkles className="w-4 h-4" />
+              <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                <Sparkles className="w-4 h-4 text-sky-500" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
@@ -74,8 +74,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5">
-                <Calendar className="w-4 h-4" />
+              <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                <Calendar className="w-4 h-4 text-sky-500" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
@@ -88,8 +88,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
-                <Globe className="w-4 h-4" />
+              <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                <Globe className="w-4 h-4 text-sky-500" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
@@ -102,8 +102,8 @@ export default function AiDisclaimerModal({ isOpen, onClose }) {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="p-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5">
-                <Edit3 className="w-4 h-4" />
+              <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
+                <Edit3 className="w-4 h-4 text-sky-500" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-white text-sm">

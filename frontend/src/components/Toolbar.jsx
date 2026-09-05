@@ -9,8 +9,6 @@ import {
   FolderOpen,
   Download,
   Key,
-  Layers,
-  Calendar,
   Sun,
   Moon,
   Loader2,
@@ -282,98 +280,43 @@ export default function Toolbar({
     >
       <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
         
-        {/* Left: Branding & Timeline Info (Strictly bounded, never overflows) */}
-        <div
-          className={`order-1 flex items-center gap-2 sm:gap-3 min-w-0 transition-all duration-200 shrink ${
-            isPromptExpanded
-              ? 'max-w-[14%] sm:max-w-[18%] lg:max-w-[18%]'
-              : 'max-w-[58%] sm:max-w-[62%] lg:max-w-[26%] xl:max-w-[30%]'
-          } overflow-hidden`}
-        >
-          <div className="flex items-center gap-2 min-w-0 w-full overflow-hidden">
-            <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0" />
-            
-            {timelineData?.title && timelineData.title !== 'ChroniX' ? (
-              <div
-                className={`flex flex-col min-w-0 flex-1 overflow-hidden pl-2 sm:pl-2.5 border-l border-slate-200 dark:border-slate-800 ${
-                  isPromptExpanded ? 'hidden md:flex' : 'flex'
-                }`}
-              >
-                <h1
-                  className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate min-w-0 w-full font-sans tracking-tight"
-                  title={timelineData.title}
-                >
-                  {timelineData.title}
-                </h1>
-                <div
-                  className={`items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 min-w-0 truncate ${
-                    isPromptExpanded ? 'hidden' : 'hidden xl:flex'
-                  }`}
-                >
-                  <span className="flex items-center gap-1 shrink-0 font-medium">
-                    <Calendar className="w-3 h-3 text-sky-500 dark:text-sky-400" />
-                    {t('toolbar.eventsCount', { count: timelineData?.articles?.length || 0 })}
-                  </span>
-                  {timelineData?.lanes?.length > 0 && (
-                    <>
-                      <span className="shrink-0 opacity-40">•</span>
-                      <span className="flex items-center gap-1 shrink-0 font-medium">
-                        <Layers className="w-3 h-3 text-slate-400 dark:text-slate-500" />
-                        {t('toolbar.lanesCount', { count: timelineData.lanes.length })}
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div
-                className={`hidden ${
-                  isPromptExpanded ? '2xl:flex' : 'xl:flex'
-                } flex-col pl-2.5 border-l border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 shrink-0`}
-              >
-                <span className="flex items-center gap-1 font-medium tracking-wide">
-                  <Calendar className="w-3 h-3 text-sky-500/80 dark:text-sky-400/80" />
-                  {t('toolbar.visualChronology')}
-                </span>
-              </div>
-            )}
-          </div>
+        {/* Left: Branding */}
+        <div className="order-1 flex items-center shrink-0">
+          <ChroniXLogo mode="minimal" size="md" className="h-8 sm:h-9 w-auto shrink-0" />
         </div>
 
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
-        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink ml-auto lg:ml-0 min-w-0">
+        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto min-w-0">
           {/* Zoom Controls Pill */}
-          <div className="flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs">
+          <div className="h-8 flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
             <button
               type="button"
               onClick={onZoomIn}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title={t('toolbar.zoomIn')}
               aria-label={t('toolbar.zoomIn')}
             >
-              <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               onClick={onZoomOut}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title={t('toolbar.zoomOut')}
               aria-label={t('toolbar.zoomOut')}
             >
-              <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <ZoomOut className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               onClick={onFitAll}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
               title={t('toolbar.fitAll')}
               aria-label={t('toolbar.fitAll')}
             >
-              <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
-
-
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
           {timelineData && (
@@ -385,7 +328,7 @@ export default function Toolbar({
                   onClearBoard?.();
                 }
               }}
-              className="flex items-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-rose-50/80 dark:hover:bg-rose-950/30 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-900/50 shadow-2xs transition-all active:scale-95 cursor-pointer group"
+              className="h-8 shrink-0 flex items-center justify-center gap-1.5 bg-white dark:bg-slate-900 hover:bg-rose-50/80 dark:hover:bg-rose-950/30 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-2 sm:px-2.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-900/50 shadow-2xs transition-all active:scale-95 cursor-pointer group"
               title={t('toolbar.clearBoard')}
               aria-label={t('toolbar.clearBoard')}
             >
@@ -398,20 +341,20 @@ export default function Toolbar({
             <QuotaBadge quota={quota} onClick={onOpenQuota} />
           )}
 
-          {/* Dedicated Language Switcher (EN / עב) */}
+          {/* Dedicated Language Switcher (EN / עב) - Perfectly locked size and non-wrapping */}
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer text-xs font-semibold"
+            className="h-8 shrink-0 whitespace-nowrap select-none flex items-center justify-center gap-1.5 px-2.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer text-xs font-semibold"
             title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
             aria-label={language === 'en' ? 'Switch to Hebrew' : 'Switch to English'}
           >
             <Languages className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-            <span className="tracking-wide">
+            <span className="whitespace-nowrap tracking-wide leading-none inline-flex items-center">
               {language === 'en' ? (
-                <span><strong className="text-sky-600 dark:text-sky-400">EN</strong> / עב</span>
+                <span><strong className="text-sky-600 dark:text-sky-400 font-bold">EN</strong> / עב</span>
               ) : (
-                <span><strong className="text-sky-600 dark:text-sky-400">עב</strong> / EN</span>
+                <span><strong className="text-sky-600 dark:text-sky-400 font-bold">עב</strong> / EN</span>
               )}
             </span>
           </button>
@@ -420,7 +363,7 @@ export default function Toolbar({
           <button
             type="button"
             onClick={onToggleTheme}
-            className="p-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
+            className="h-8 w-8 shrink-0 flex items-center justify-center bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
             title={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
             aria-label={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
           >
@@ -432,14 +375,14 @@ export default function Toolbar({
           </button>
 
           {/* More Actions Dropdown Menu */}
-          <div className="relative" ref={moreMenuRef}>
+          <div className="relative shrink-0" ref={moreMenuRef}>
             <button
               type="button"
               onClick={() => setIsMoreMenuOpen((prev) => !prev)}
-              className={`p-1.5 rounded-lg border shadow-2xs transition-all active:scale-95 cursor-pointer ${
+              className={`h-8 w-8 shrink-0 flex items-center justify-center rounded-lg border shadow-2xs transition-all active:scale-95 cursor-pointer ${
                 isMoreMenuOpen
                   ? 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white'
-                  : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-800'
+                  : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border-slate-200 dark:border-slate-800'
               }`}
               title={t('toolbar.moreActions')}
               aria-label={t('toolbar.moreActions')}
@@ -627,21 +570,21 @@ export default function Toolbar({
 
           {/* User Auth Profile / Login Button */}
           {user ? (
-            <div className="relative" ref={userMenuRef}>
+            <div className="relative shrink-0" ref={userMenuRef}>
               <button
                 type="button"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-1.5 p-1 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs transition-all cursor-pointer"
+                className="h-8 flex items-center gap-1.5 px-1 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 shadow-xs transition-all cursor-pointer"
                 title={user.email}
               >
                 {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                   <img
                     src={user.user_metadata.avatar_url || user.user_metadata.picture}
                     alt="Avatar"
-                    className="w-6 h-6 rounded-lg object-cover"
+                    className="w-6 h-6 rounded-md object-cover"
                   />
                 ) : (
-                  <div className="w-6 h-6 rounded-lg bg-sky-600 flex items-center justify-center text-white text-[11px] font-bold uppercase">
+                  <div className="w-6 h-6 rounded-md bg-sky-600 flex items-center justify-center text-white text-[11px] font-bold uppercase">
                     {(user.user_metadata?.full_name || user.email || 'U')[0]}
                   </div>
                 )}
@@ -739,16 +682,16 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onOpenAuth}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
+              className="h-8 shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
               title={t('toolbar.signIn')}
             >
-              <LogIn className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t('toolbar.signIn')}</span>
+              <LogIn className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline whitespace-nowrap">{t('toolbar.signIn')}</span>
             </button>
           )}
         </div>
 
-        {/* Center: Search / Prompt Form (Full-width row on mobile/tablet, centered on desktop) */}
+        {/* Center: Search / Prompt Form (Full-width row on mobile/tablet, right next to logo on desktop) */}
         <div
           ref={formContainerRef}
           style={
@@ -756,7 +699,7 @@ export default function Toolbar({
               ? { width: `${promptCustomWidth}px`, maxWidth: '100%' }
               : undefined
           }
-          className={`order-3 lg:order-2 w-full relative flex items-center group/prompt transition-[width,max-width] duration-150 min-w-0 mx-auto lg:mx-2 ${
+          className={`order-3 lg:order-2 w-full relative flex items-center group/prompt transition-[width,max-width] duration-150 min-w-0 mx-auto lg:mx-0 ${
             isPromptExpanded
               ? 'lg:flex-1 max-w-[820px]'
               : promptCustomWidth
