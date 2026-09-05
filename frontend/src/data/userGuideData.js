@@ -131,7 +131,7 @@ export const SHOWCASE_PROMPTS_DATA = [
   {
     id: 'industrial-revolution',
     categoryKey: 'science',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     title: {
       en: 'The Industrial Revolution & Inventions',
       he: 'המהפכה התעשייתית וההמצאות הגדולות'
@@ -369,20 +369,20 @@ export const USER_GUIDE_DATA = {
         overview: {
           name: 'Overview',
           count: '~10–15 events',
-          bestFor: 'Long historical epochs, complete civilizational overviews, or rapid high-level summaries.',
-          example: '"Ancient Egypt overview from the Old Kingdom to Cleopatra"'
+          bestFor: 'Long historical epochs, complete civilizational overviews, or focused single missions, expeditions, and operations.',
+          example: '"Ancient Egypt overview from the Old Kingdom to Cleopatra" or "Race to the South Pole: Amundsen vs. Scott"'
         },
         standard: {
           name: 'Standard (Recommended)',
           count: '~20–30 events',
-          bestFor: 'The default balanced experience. Provides a rich narrative arc with pivotal figures, battles, and turning points.',
+          bestFor: 'The default balanced experience for most topics. Rich narrative arc with pivotal figures, battles, dual-lane comparisons, and cultural turning points.',
           example: '"The Space Race (1955–1975) between NASA and USSR"'
         },
         deep_dive: {
           name: 'Deep Dive',
           count: '~35–50 events',
-          bestFor: 'Specific wars, intensive biographies, short intense crises, or granular scientific evolutions.',
-          example: '"World War II in Europe, month-by-month key campaigns"'
+          bestFor: 'Complex multi-lane timelines (3+ swimlanes), multi-theater world conflicts, or massive multi-decade historical sagas.',
+          example: '"World War II (1939–1945), divided into parallel time lanes for European Theater, Pacific Theater, and Diplomatic Summits"'
         }
       },
       swimlanesHeading: '2. Dividing into Swimlanes (Parallel Thematic Tracks)',
@@ -550,20 +550,20 @@ export const USER_GUIDE_DATA = {
         overview: {
           name: 'מבט-על (Overview)',
           count: '~10–15 אירועים',
-          bestFor: 'תקופות היסטוריות ארוכות, סקירת ציוויליזציות שלמות או סיכום תמציתי ממוקד.',
-          example: '"מצרים העתיקה: סקירה תמציתית מהממלכה הקדומה ועד קלאופטרה"'
+          bestFor: 'תקופות היסטוריות ארוכות, סקירת ציוויליזציות שלמות, או אירועים, מבצעים ומשלחות ממוקדות (כגון משלחות קוטב או מבצעי חילוץ).',
+          example: '"מצרים העתיקה: סקירה תמציתית מהממלכה הקדומה ועד קלאופטרה" או "המרוץ לקוטב הדרומי: אמונדסן מול סקוט"'
         },
         standard: {
           name: 'סטנדרטי (מומלץ כברירת מחדל)',
           count: '~20–30 אירועים',
-          bestFor: 'חוויה מאוזנת ועשירה. מספקת קשת עלילתית מלאה עם דמויות מפתח, קרבות ונקודות מפנה היסטוריות.',
+          bestFor: 'חוויה מאוזנת ועשירה כברירת מחדל למרבית הנושאים: ביוגרפיות, תולדות תחומים, מלחמות יחידות, והשוואות בין שני מסלולים.',
           example: '"המרוץ לחלל (1955–1975) בין נאס״א לברית המועצות"'
         },
         deep_dive: {
           name: 'מעמיק (Deep Dive)',
           count: '~35–50 אירועים',
-          bestFor: 'מלחמות ספציפיות, ביוגרפיות מפורטות, משברים קצרים ואינטנסיביים או התפתחויות מדעיות שלב-אחר-שלב.',
-          example: '"מלחמת העולם השנייה באירופה, מערכות מפתח חודש אחר חודש"'
+          bestFor: 'צירים רב-מסלוליים מורכבים (3 מסלולים ומעלה), מלחמות עולם מרובות חזיתות, או סאגות היסטוריות ומדעיות ענקיות.',
+          example: '"מלחמת העולם השנייה (1939–1945) בחלוקה לזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות"'
         }
       },
       swimlanesHeading: '2. חלוקה למסלולי זמן מקבילים (Swimlanes)',

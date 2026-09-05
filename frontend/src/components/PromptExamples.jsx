@@ -33,16 +33,16 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'overview',
     lang: 'he'
   },
-  // 6. English - Deep
+  // 6. English - Overview
   {
     prompt: 'Ancient Egypt: The story of the great pharaohs and pyramids to Cleopatra',
-    detailLevel: 'deep_dive',
+    detailLevel: 'overview',
     lang: 'en'
   },
-  // 7. Hebrew - Deep
+  // 7. Hebrew - Standard
   {
     prompt: 'יוון העתיקה: מעליית הדמוקרטיה באתונה ועד לכיבושי אלכסנדר מוקדון',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 8. English - Overview
@@ -75,16 +75,16 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'overview',
     lang: 'en'
   },
-  // 13. Hebrew - Standard
+  // 13. Hebrew - Overview
   {
     prompt: 'פרהיסטוריה בארץ ישראל: חיי האדם הקדמון במערות ועד להמצאת החקלאות',
-    detailLevel: 'standard',
+    detailLevel: 'overview',
     lang: 'he'
   },
-  // 14. English - Deep
+  // 14. English - Standard
   {
     prompt: "The Targaryen Dynasty: Complete chronology from Aegon's Conquest to Robert's Rebellion",
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
   // 15. Hebrew - Multi-lane (First Temple Kings)
@@ -111,10 +111,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 19. Hebrew - Deep
+  // 19. Hebrew - Standard
   {
     prompt: 'ההיסטוריה הגאולוגית של כדור הארץ: מעידן היווצרות הכוכב ועד לעידן הקרח',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 20. English - Overview
@@ -150,7 +150,7 @@ export const PROMPT_EXAMPLES = [
   // 25. Hebrew - Multi-lane (Yom Kippur War)
   {
     prompt: 'מהלך מלחמת יום הכיפורים (אוקטובר 1973): בחלוקה לשני מסלולים מקבילים עבור חזית הדרום (סיני) וחזית הצפון (רמת הגולן)',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 26. English - Overview
@@ -171,10 +171,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'overview',
     lang: 'en'
   },
-  // 29. English - Deep
+  // 29. English - Standard
   {
     prompt: 'History of Quantum Physics: Discoveries that changed our understanding of the subatomic world',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
   // 30. Hebrew - Multi-lane (Rome vs Han)
@@ -207,10 +207,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'he'
   },
-  // 35. English - Deep
+  // 35. English - Standard
   {
     prompt: 'The Manhattan Project and Cold War Nuclear Proliferation (1939–1962): From Trinity test to the Cuban Missile Crisis',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
   // 36. English - Multi-lane (American vs French Revolution)
@@ -297,10 +297,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'overview',
     lang: 'he'
   },
-  // 50. Hebrew - Concise Standard
+  // 50. Hebrew - Concise Overview
   {
     prompt: 'מבצע יונתן באנטבה (1976)',
-    detailLevel: 'standard',
+    detailLevel: 'overview',
     lang: 'he'
   },
   // 51. Hebrew - Concise Overview
@@ -342,7 +342,7 @@ export const PROMPT_EXAMPLES = [
   // 57. Hebrew - Multi-lane (Hasmoneans)
   {
     prompt: 'מרד החשמונאים וממלכת החשמונאים: בחלוקה לשני מסלולים מקבילים עבור מאבקים צבאיים ומדיניים מול תמורות דתיות ותרבותיות ביהודה',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 58. Hebrew - Multi-lane (Jerusalem)
@@ -366,7 +366,7 @@ export const PROMPT_EXAMPLES = [
   // 61. Hebrew - Multi-lane (Aliyah 1 & 2)
   {
     prompt: 'העלייה הראשונה והשנייה (1882–1914): ציר זמן בחלוקה לשני מסלולים להשוואת המושבות החקלאיות של הברון רוטשילד מול תנועת הפועלים והקמת הקיבוץ הראשון',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 62. Hebrew - Multi-lane (Apple vs Microsoft)
@@ -387,10 +387,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'he'
   },
-  // 65. Hebrew - Deep Dive (Alexander the Great)
+  // 65. Hebrew - Standard (Alexander the Great)
   {
     prompt: 'אלכסנדר מוקדון: מסעות הכיבוש והאימפריה מיוון ועד להודו',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 66. Hebrew - Deep Dive (Holocaust & WWII)
@@ -399,40 +399,40 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'he'
   },
-  // 67. Hebrew - Deep Dive (Ancient Philosophy)
+  // 67. Hebrew - Standard (Ancient Philosophy)
   {
     prompt: 'הפילוסופיה ביוון העתיקה: מסוקרטס ואפלטון ועד לאריסטו',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
-  // 68. Hebrew - Deep Dive (South Pole Race)
+  // 68. Hebrew - Overview (South Pole Race)
   {
     prompt: 'המרוץ לקוטב הדרומי: התחרות הדרמטית בין אמונדסן לסקוט באנטארקטיקה',
-    detailLevel: 'deep_dive',
+    detailLevel: 'overview',
     lang: 'he'
   },
-  // 69. Hebrew - Deep Dive (Israel-Egypt Peace)
+  // 69. Hebrew - Standard (Israel-Egypt Peace)
   {
     prompt: 'הסכם השלום בין ישראל למצרים: מביקור סאדאת בירושלים ועד להסכם ההיסטורי',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
-  // 70. Hebrew - Deep Dive (Spanish Jewry Golden Age)
+  // 70. Hebrew - Standard (Spanish Jewry Golden Age)
   {
     prompt: 'תור הזהב של יהדות ספרד: שירה, הגות ומדע עד לגירוש ספרד',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
-  // 71. Hebrew - Deep Dive (AI History)
+  // 71. Hebrew - Standard (AI History)
   {
     prompt: 'ההיסטוריה של הבינה המלאכותית: ממחשבי שנות ה-50 ועד ל-ChatGPT',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
-  // 72. Hebrew - Deep Dive (Modern Astronomy)
+  // 72. Hebrew - Standard (Modern Astronomy)
   {
     prompt: 'תולדות האסטרונומיה: מהטלסקופ של גלילאו ועד לטלסקופ החלל ג\'יימס ווב',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'he'
   },
   // 73. Hebrew - Standard (Hebrew Language)
@@ -513,10 +513,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'overview',
     lang: 'en'
   },
-  // 86. English - Concise Standard
+  // 86. English - Concise Overview
   {
     prompt: 'The Black Death (1346–1353)',
-    detailLevel: 'standard',
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 87. English - Concise Overview
@@ -615,52 +615,52 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 103. English - Deep Dive (Alexander the Great)
+  // 103. English - Standard (Alexander the Great)
   {
     prompt: 'The Life and Campaigns of Alexander the Great: The conquest of the ancient world from Greece and Egypt to India',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 104. English - Deep Dive (Roman Empire)
+  // 104. English - Standard (Roman Empire)
   {
     prompt: 'The Rise of the Roman Empire: From the fall of the Republic to Pax Romana',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 105. English - Deep Dive (Scientific Revolution)
+  // 105. English - Standard (Scientific Revolution)
   {
     prompt: 'The Scientific Revolution: Discoveries and thinkers that transformed our view of the universe',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 106. English - Deep Dive (History of Medicine)
+  // 106. English - Standard (History of Medicine)
   {
     prompt: 'History of Medicine: Landmark breakthroughs from ancient cures to vaccines and antibiotics',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 107. English - Deep Dive (The Crusades)
+  // 107. English - Standard (The Crusades)
   {
     prompt: 'The Crusades: The medieval clash of empires and the struggle for Jerusalem',
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 108. English - Deep Dive (AI History)
+  // 108. English - Standard (AI History)
   {
     prompt: "History of Artificial Intelligence: From Alan Turing's earliest tests to modern AI and ChatGPT",
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
-  // 109. English - Deep Dive (Race to South Pole)
+  // 109. English - Overview (Race to South Pole)
   {
     prompt: 'The Race to the South Pole: The dramatic journey of Amundsen and Scott across Antarctica',
-    detailLevel: 'deep_dive',
+    detailLevel: 'overview',
     lang: 'en'
   },
-  // 110. English - Deep Dive (Origins of WWI)
+  // 110. English - Standard (Origins of WWI)
   {
     prompt: "Origins of World War I: From the 1871 Franco-Prussian War and Bismarck's alliance systems, through the Balkan Wars, the assassination of Archduke Franz Ferdinand in Sarajevo, to the July Crisis and declarations of war",
-    detailLevel: 'deep_dive',
+    detailLevel: 'standard',
     lang: 'en'
   },
   // 111. English - Standard (Lord of the Rings)
@@ -687,10 +687,10 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'en'
   },
-  // 115. English - Standard (Mass Extinctions)
+  // 115. English - Overview (Mass Extinctions)
   {
     prompt: "Mass Extinctions in Earth's History: The catastrophic events that reshaped life on Earth",
-    detailLevel: 'standard',
+    detailLevel: 'overview',
     lang: 'en'
   },
   // 116. English - Standard (Modern Architecture)
