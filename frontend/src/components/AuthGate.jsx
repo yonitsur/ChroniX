@@ -79,41 +79,43 @@ export default function AuthGate() {
       }}
     >
 
-      {/* Top Navigation Bar */}
-      <header className="w-full border-b border-white/10 bg-slate-950/30 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      <div className="max-w-[1160px] w-full mx-auto px-4 sm:px-6 pt-8 pb-12 flex flex-col flex-1">
+        {/* Top Navigation Header - Exactly matching features.html */}
+        <header className="flex items-center justify-between pb-6 mb-9 border-b border-white/10 w-full">
+          <a href="/" className="inline-block transition-transform hover:-translate-y-0.5 hover:opacity-90" title="ChroniX Home">
             <ChroniXLogo size="md" variant="dark" />
-          </div>
+          </a>
 
-          <div className="flex items-center gap-3 sm:gap-6">
-            <nav className="hidden md:flex items-center gap-6 text-sm text-slate-400 font-medium">
-              <a href="/features.html" className="hover:text-white transition-colors">
-                {language === 'he' ? 'תכונות' : 'Features'}
-              </a>
-              <a href="/privacy.html" className="hover:text-white transition-colors">
-                {t('auth.privacyPolicyLink')}
-              </a>
-              <a href="/terms.html" className="hover:text-white transition-colors">
-                {t('auth.termsLink')}
-              </a>
-            </nav>
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a href="/" className="text-white hover:text-sky-400 transition-colors">
+              {language === 'he' ? 'בית' : 'Home'}
+            </a>
+            <a href="/features.html" className="text-slate-300 hover:text-white transition-colors">
+              {language === 'he' ? 'תכונות' : 'Features'}
+            </a>
+            <a href="/privacy.html" className="text-slate-300 hover:text-white transition-colors">
+              {t('auth.privacyPolicyLink')}
+            </a>
+            <a href="/terms.html" className="text-slate-300 hover:text-white transition-colors">
+              {t('auth.termsLink')}
+            </a>
+          </nav>
 
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={toggleLanguage}
               title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 shadow-md backdrop-blur-md transition-all text-xs font-semibold cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 shadow-sm backdrop-blur-md transition-all text-xs font-semibold cursor-pointer"
             >
               <Globe className="w-3.5 h-3.5 text-sky-400" />
               <span>{language === 'en' ? 'עברית' : 'English'}</span>
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Hero Section */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex flex-col justify-center">
+        {/* Hero Section */}
+        <main className="flex-1 w-full py-6 sm:py-10 flex flex-col justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
           {/* Left Column: Narrative Introduction & Public Info */}
@@ -370,10 +372,11 @@ export default function AuthGate() {
 
         </div>
       </main>
+      </div>
 
       {/* Feature Showcase Section */}
       <section id="features" className="w-full border-t border-white/10 py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-4 drop-shadow-md">
               {language === 'he' ? 'חוויית חקר היסטורית מהדור הבא' : 'Next-Generation Historical Exploration'}
@@ -451,13 +454,16 @@ export default function AuthGate() {
 
       {/* Footer */}
       <footer className="w-full border-t border-white/10 bg-slate-950/30 backdrop-blur-md py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <ChroniXLogo size="sm" variant="dark" />
             <span className="ml-2">&copy; 2026 ChroniX. {t('auth.copyright')}</span>
           </div>
 
           <div className="flex items-center gap-6">
+            <a href="/" className="hover:text-slate-200 transition-colors">
+              {language === 'he' ? 'דף הבית' : 'Home'}
+            </a>
             <a href="/features.html" className="hover:text-slate-200 transition-colors">
               {language === 'he' ? 'תכונות' : 'Features'}
             </a>
