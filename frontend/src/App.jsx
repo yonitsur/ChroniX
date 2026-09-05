@@ -12,6 +12,7 @@ import AiRefineModal from './components/AiRefineModal';
 import SavedTimelinesModal from './components/SavedTimelinesModal';
 import SettingsModal from './components/SettingsModal';
 import AiDisclaimerModal from './components/AiDisclaimerModal';
+import AboutModal from './components/AboutModal';
 import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
@@ -207,6 +208,7 @@ export default function App() {
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -495,6 +497,7 @@ export default function App() {
         onExportImage={handleExportImage}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
+        onOpenAbout={() => setIsAboutModalOpen(true)}
         isGenerating={isLoading}
         onStopGenerate={handleStopGenerate}
         theme={theme}
@@ -774,6 +777,11 @@ export default function App() {
       <AiDisclaimerModal
         isOpen={isDisclaimerModalOpen}
         onClose={() => setIsDisclaimerModalOpen(false)}
+      />
+
+      <AboutModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
       />
 
       <AuthModal

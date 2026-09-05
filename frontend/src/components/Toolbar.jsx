@@ -25,7 +25,8 @@ import {
   Image as ImageIcon,
   X,
   User as UserIcon,
-  Square
+  Square,
+  Info
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import { useAuth } from '../context/AuthContext';
@@ -67,6 +68,7 @@ export default function Toolbar({
   onExportImage,
   onOpenSettings,
   onOpenDisclaimer,
+  onOpenAbout,
   isGenerating,
   onStopGenerate,
   theme = 'light',
@@ -381,8 +383,20 @@ export default function Toolbar({
                 {/* System Settings & Info */}
                 <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                  System
+                  System & Info
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onOpenAbout?.();
+                  }}
+                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <Info className="w-4 h-4 text-sky-500 shrink-0" />
+                  <span className="font-medium">About ChroniX</span>
+                </button>
 
                 <button
                   type="button"
