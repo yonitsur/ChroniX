@@ -26,7 +26,8 @@ import {
   X,
   User as UserIcon,
   Square,
-  Info
+  Info,
+  BookOpen
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import { useAuth } from '../context/AuthContext';
@@ -69,6 +70,7 @@ export default function Toolbar({
   onOpenSettings,
   onOpenDisclaimer,
   onOpenAbout,
+  onOpenGuide,
   isGenerating,
   onStopGenerate,
   theme = 'light',
@@ -385,6 +387,19 @@ export default function Toolbar({
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                   System & Info
                 </div>
+
+                <button
+                  type="button"
+                  id="toolbar-menu-user-guide-btn"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onOpenGuide?.();
+                  }}
+                  className="w-full text-left px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
+                  <span className="font-medium">User Guide</span>
+                </button>
 
                 <button
                   type="button"

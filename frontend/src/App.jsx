@@ -13,6 +13,7 @@ import SavedTimelinesModal from './components/SavedTimelinesModal';
 import SettingsModal from './components/SettingsModal';
 import AiDisclaimerModal from './components/AiDisclaimerModal';
 import AboutModal from './components/AboutModal';
+import UserGuideModal from './components/UserGuideModal';
 import AiDisclaimerBar from './components/AiDisclaimerBar';
 import FloatingCardsButton from './components/FloatingCardsButton';
 import AuthModal from './components/AuthModal';
@@ -21,7 +22,7 @@ import { useAuth } from './context/AuthContext';
 import ChroniXLogo from './components/ChroniXLogo';
 import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
-import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square } from 'lucide-react';
+import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -209,6 +210,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDisclaimerModalOpen, setIsDisclaimerModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
   const [isCardsListOpen, setIsCardsListOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -285,6 +287,34 @@ export default function App() {
     setActiveDetailLevel(detailLevel);
     handleGenerate(promptText, detailLevel);
   };
+
+  // Check for URL query parameters on mount (e.g. ?prompt=...&detailLevel=... or ?guide=true)
+  const initialUrlCheckedRef = useRef(false);
+  useEffect(() => {
+    if (!user || initialUrlCheckedRef.current) return;
+    initialUrlCheckedRef.current = true;
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const promptParam = params.get('prompt');
+      const detailParam = params.get('detailLevel') || 'standard';
+      const guideParam = params.get('guide');
+
+      if (guideParam === 'true' || guideParam === '1') {
+        setIsUserGuideOpen(true);
+      }
+
+      if (promptParam) {
+        // Clean up URL query parameters without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setActivePrompt(promptParam);
+        setActiveDetailLevel(detailParam);
+        handleGenerate(promptParam, detailParam);
+      }
+    } catch (e) {
+      console.warn('Error reading URL parameters:', e);
+    }
+  }, [user]);
 
   // Handle refinement with AI
   const handleRefine = async (instruction) => {
@@ -498,6 +528,7 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
         onOpenAbout={() => setIsAboutModalOpen(true)}
+        onOpenGuide={() => setIsUserGuideOpen(true)}
         isGenerating={isLoading}
         onStopGenerate={handleStopGenerate}
         theme={theme}
@@ -673,6 +704,20 @@ export default function App() {
                 </p>
             </div>
 
+            {/* User Guide Interactive Banner on Home Screen */}
+            <div className="pt-2 pb-1">
+              <button
+                type="button"
+                id="home-open-user-guide-btn"
+                onClick={() => setIsUserGuideOpen(true)}
+                className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 text-xs font-semibold shadow-xs hover:shadow-md transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer backdrop-blur-md"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-sky-500 group-hover:rotate-6 transition-transform" />
+                <span>Need prompt tips & feature guides? Explore our User Guide</span>
+                <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all" />
+              </button>
+            </div>
+
             {/* Prompt Cards (Simple & Complex) */}
             <PromptExamples
               onSelectPrompt={handleSelectPrompt}
@@ -782,6 +827,15 @@ export default function App() {
       <AboutModal
         isOpen={isAboutModalOpen}
         onClose={() => setIsAboutModalOpen(false)}
+        onOpenGuide={() => {
+          setIsAboutModalOpen(false);
+          setIsUserGuideOpen(true);
+        }}
+      />
+
+      <UserGuideModal
+        isOpen={isUserGuideOpen}
+        onClose={() => setIsUserGuideOpen(false)}
       />
 
       <AuthModal
