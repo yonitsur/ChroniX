@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Mail,
   Lock,
@@ -20,6 +20,9 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import ChroniXLogo from './ChroniXLogo';
+import FeaturesView from './public/FeaturesView';
+import PrivacyView from './public/PrivacyView';
+import TermsView from './public/TermsView';
 
 export default function AuthGate() {
   const { loginWithGoogle, loginWithEmail, signUpWithEmail } = useAuth();
@@ -32,6 +35,42 @@ export default function AuthGate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Client-side view state for 0ms instant jump-free navigation
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path.includes('features') || hash.includes('features')) return 'features';
+      if (path.includes('privacy') || hash.includes('privacy')) return 'privacy';
+      if (path.includes('terms') || hash.includes('terms')) return 'terms';
+    }
+    return 'home';
+  });
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path.includes('features') || hash.includes('features')) setCurrentView('features');
+      else if (path.includes('privacy') || hash.includes('privacy')) setCurrentView('privacy');
+      else if (path.includes('terms') || hash.includes('terms')) setCurrentView('terms');
+      else setCurrentView('home');
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  const navigateTo = (view) => {
+    setCurrentView(view);
+    const targetUrl = view === 'home' ? '/' : `/${view}`;
+    window.history.pushState(null, '', targetUrl);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
 
   const handleGoogleLogin = async () => {
     try {
@@ -78,23 +117,14 @@ export default function AuthGate() {
         backgroundColor: '#060913'
       }}
     >
-
-      <div className="max-w-[1160px] w-full mx-auto px-6 pt-8 pb-12 flex flex-col flex-1">
-        {/* Top Navigation Header - Exactly matching features.html */}
-        <header
-          className="flex items-center justify-between border-b border-white/10 w-full"
-          style={{
-            height: '36px',
-            boxSizing: 'content-box',
-            paddingBottom: '24px',
-            marginBottom: '36px'
-          }}
-        >
-          <a
-            href="/"
-            className="transition-transform hover:-translate-y-0.5 hover:opacity-90"
+      <div className="public-page-wrapper">
+        {/* Top Navigation Header - Stationary across all views with identical height & positioning */}
+        <header className="public-top-header">
+          <button
+            type="button"
+            onClick={() => navigateTo('home')}
+            className="public-logo"
             title="ChroniX Home"
-            style={{ display: 'flex', alignItems: 'center', height: '36px' }}
           >
             <svg viewBox="0 0 96 28" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
               <defs>
@@ -114,58 +144,99 @@ export default function AuthGate() {
                 <tspan fill="#ffffff">Chroni</tspan><tspan fill="url(#chronix-min-auth-x-grad)" fontWeight="900">X</tspan>
               </text>
             </svg>
-          </a>
+          </button>
 
-          <nav
-            className="hidden md:flex items-center gap-6 text-sm font-medium"
-            style={{ height: '36px', display: 'flex', alignItems: 'center' }}
-          >
-            <a href="/" className="text-white hover:text-sky-400 transition-colors">
+          <nav className="public-nav-links">
+            <button
+              type="button"
+              onClick={() => navigateTo('home')}
+              className={currentView === 'home' ? 'active' : ''}
+            >
               {language === 'he' ? 'בית' : 'Home'}
-            </a>
-            <a href="/features.html" className="text-slate-300 hover:text-white transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => navigateTo('features')}
+              className={currentView === 'features' ? 'active' : ''}
+            >
               {language === 'he' ? 'תכונות' : 'Features'}
-            </a>
-            <a href="/privacy.html" className="text-slate-300 hover:text-white transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => navigateTo('privacy')}
+              className={currentView === 'privacy' ? 'active' : ''}
+            >
               {t('auth.privacyPolicyLink')}
-            </a>
-            <a href="/terms.html" className="text-slate-300 hover:text-white transition-colors">
+            </button>
+            <button
+              type="button"
+              onClick={() => navigateTo('terms')}
+              className={currentView === 'terms' ? 'active' : ''}
+            >
               {t('auth.termsLink')}
-            </a>
+            </button>
           </nav>
 
-          <div style={{ height: '36px', display: 'flex', alignItems: 'center' }}>
+          <div className="public-header-actions">
             <button
               type="button"
               onClick={toggleLanguage}
               title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
-              className="flex items-center gap-1.5 px-3.5 rounded-full bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 shadow-sm backdrop-blur-md transition-all text-xs font-semibold cursor-pointer"
-              style={{ height: '36px', boxSizing: 'border-box' }}
+              className="public-btn-lang"
             >
               <Globe className="w-3.5 h-3.5 text-sky-400" />
               <span>{language === 'en' ? 'עברית' : 'English'}</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (currentView !== 'home') {
+                  navigateTo('home');
+                }
+                const el = document.getElementById('auth-card');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="public-btn-enter"
+            >
+              <span>Enter ChroniX</span>
+              <span>&rarr;</span>
+            </button>
           </div>
         </header>
 
-        {/* Hero Section */}
-        <main className="flex-1 w-full py-6 sm:py-10 flex flex-col justify-center">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
-          {/* Left Column: Narrative Introduction & Public Info */}
-          <div className={`lg:col-span-7 flex flex-col ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-semibold w-fit mb-6 shadow-sm backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-              <span>{t('auth.landingHeroBadge')}</span>
-            </div>
+        {/* View Switcher: Instant 0ms transition with NO page reload or shift */}
+        {currentView === 'features' && (
+          <FeaturesView onEnter={() => navigateTo('home')} />
+        )}
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6 drop-shadow-md">
-              {t('auth.landingHeroTitle')}
-            </h1>
+        {currentView === 'privacy' && (
+          <PrivacyView />
+        )}
 
-            <p className="text-base sm:text-lg text-slate-200 leading-relaxed mb-8 max-w-2xl font-normal drop-shadow">
-              {t('auth.landingHeroSubtitle')}
-            </p>
+        {currentView === 'terms' && (
+          <TermsView />
+        )}
+
+        {currentView === 'home' && (
+          <>
+          <main className="w-full flex-1 flex flex-col">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              
+              {/* Left Column: Narrative Introduction & Public Info */}
+              <div className={`lg:col-span-7 flex flex-col ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
+                <div className="public-badge w-fit mb-5">
+                  <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                  <span>{t('auth.landingHeroBadge')}</span>
+                </div>
+
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6 drop-shadow-md">
+                  {t('auth.landingHeroTitle')}
+                </h1>
+
+                <p className="text-base sm:text-lg text-slate-200 leading-relaxed mb-8 max-w-2xl font-normal drop-shadow">
+                  {t('auth.landingHeroSubtitle')}
+                </p>
 
             {/* Value Props Bullet Grid - Clean & Unframed */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 mb-4">
@@ -230,6 +301,7 @@ export default function AuthGate() {
           {/* Right Column: Sign In & Registration Card */}
           <div className="lg:col-span-5 flex justify-center w-full">
             <div
+              id="auth-card"
               className="w-full max-w-md bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60"
               dir="ltr"
             >
@@ -406,10 +478,9 @@ export default function AuthGate() {
 
         </div>
       </main>
-      </div>
 
       {/* Feature Showcase Section */}
-      <section id="features" className="w-full border-t border-white/10 py-16 sm:py-24">
+      <section id="features-showcase" className="w-full border-t border-white/10 py-16 sm:py-24 mt-12">
         <div className="max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-4 drop-shadow-md">
@@ -473,46 +544,59 @@ export default function AuthGate() {
             {t('auth.privacyCommitmentDesc')}
           </p>
           <div className="flex items-center justify-center gap-6 text-xs text-sky-400 font-medium">
-            <a href="/privacy.html" className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors">
+            <button
+              type="button"
+              onClick={() => navigateTo('privacy')}
+              className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
               <FileText className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.privacyPolicyLink')}</span>
-            </a>
+            </button>
             <span className="text-slate-500">&bull;</span>
-            <a href="/terms.html" className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors">
+            <button
+              type="button"
+              onClick={() => navigateTo('terms')}
+              className="hover:text-sky-300 hover:underline inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
               <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
               <span>{t('auth.termsLink')}</span>
-            </a>
+            </button>
           </div>
         </div>
       </section>
+      </>
+      )}
 
-      {/* Footer */}
-      <footer className="w-full border-t border-white/10 bg-slate-950/30 backdrop-blur-md py-8">
-        <div className="max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <ChroniXLogo size="sm" variant="dark" />
-            <span className="ml-2">&copy; 2026 ChroniX. {t('auth.copyright')}</span>
-          </div>
+      {/* Unified Public Footer across all views */}
+      <footer className="public-footer">
+        <div className="flex items-center gap-2">
+          <ChroniXLogo size="sm" variant="dark" />
+          <span>&copy; 2026 ChroniX. {t('auth.copyright')}</span>
+        </div>
 
-          <div className="flex items-center gap-6">
-            <a href="/" className="hover:text-slate-200 transition-colors">
-              {language === 'he' ? 'דף הבית' : 'Home'}
-            </a>
-            <a href="/features.html" className="hover:text-slate-200 transition-colors">
-              {language === 'he' ? 'תכונות' : 'Features'}
-            </a>
-            <a href="/privacy.html" className="hover:text-slate-200 transition-colors">
-              {t('auth.privacyPolicyLink')}
-            </a>
-            <a href="/terms.html" className="hover:text-slate-200 transition-colors">
-              {t('auth.termsLink')}
-            </a>
-            <a href="mailto:support@chronix-ai.com" className="hover:text-slate-200 transition-colors">
-              {t('auth.supportContact')}
-            </a>
-          </div>
+        <div className="public-footer-links">
+          <button type="button" onClick={() => navigateTo('home')}>
+            {language === 'he' ? 'דף הבית' : 'Home'}
+          </button>
+          <span>&bull;</span>
+          <button type="button" onClick={() => navigateTo('features')}>
+            {language === 'he' ? 'תכונות' : 'Features'}
+          </button>
+          <span>&bull;</span>
+          <button type="button" onClick={() => navigateTo('privacy')}>
+            {t('auth.privacyPolicyLink')}
+          </button>
+          <span>&bull;</span>
+          <button type="button" onClick={() => navigateTo('terms')}>
+            {t('auth.termsLink')}
+          </button>
+          <span>&bull;</span>
+          <a href="mailto:support@chronix-ai.com">
+            {t('auth.supportContact')}
+          </a>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

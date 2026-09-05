@@ -1,3 +1,4 @@
+@import './styles/publicPages.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -66,7 +67,8 @@ html.lang-he select:not([dir="ltr"]) {
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  min-height: 100vh;
   background-color: #f8fafc;
   color: #0f172a;
   user-select: none;
