@@ -149,22 +149,45 @@ export default function Toolbar({
   });
 
   const formContainerRef = useRef(null);
+  const rightControlsRef = useRef(null);
   const isResizingRef = useRef(false);
+  const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
   const resizeDirRef = useRef('right');
+  const maxAvailableWidthRef = useRef(1200);
 
   const handleResizeStart = (e, direction) => {
     e.preventDefault();
     e.stopPropagation();
     isResizingRef.current = true;
+    setIsResizing(true);
     resizeDirRef.current = direction;
     startXRef.current = e.touches ? e.touches[0].clientX : e.clientX;
+
+    // If currently toggled as expanded, reset expanded state so custom width controls size smoothly
+    if (isPromptExpanded) {
+      setIsPromptExpanded(false);
+      try {
+        localStorage.setItem('vt_prompt_expanded', 'false');
+      } catch (err) {}
+    }
 
     if (formContainerRef.current) {
       startWidthRef.current = formContainerRef.current.getBoundingClientRect().width;
     } else {
       startWidthRef.current = promptCustomWidth || 450;
+    }
+
+    // Calculate maximum available width dynamically until it reaches the next element (zoom controls on the right)
+    if (rightControlsRef.current && formContainerRef.current) {
+      const rightControlsRect = rightControlsRef.current.getBoundingClientRect();
+      const formRect = formContainerRef.current.getBoundingClientRect();
+      // Distance between prompt left edge and the right controls left edge, minus gap (12px)
+      const available = rightControlsRect.left - formRect.left - 12;
+      maxAvailableWidthRef.current = Math.max(360, Math.floor(available));
+    } else {
+      maxAvailableWidthRef.current = Math.max(360, window.innerWidth - 200);
     }
 
     const onMouseMove = (moveEvent) => {
@@ -175,8 +198,7 @@ export default function Toolbar({
       // Dragging left handle to the left (-deltaX) expands width.
       const change = resizeDirRef.current === 'right' ? deltaX : -deltaX;
 
-      // Limit max width to 820px (80% of what was previously max-w-5xl / 1024px)
-      const maxWidth = Math.min(820, Math.max(360, window.innerWidth - 200));
+      const maxWidth = maxAvailableWidthRef.current;
       const newWidth = Math.min(maxWidth, Math.max(260, Math.round(startWidthRef.current + change)));
 
       setPromptCustomWidth(newWidth);
@@ -185,6 +207,7 @@ export default function Toolbar({
     const onMouseUp = () => {
       if (isResizingRef.current) {
         isResizingRef.current = false;
+        setIsResizing(false);
         setPromptCustomWidth((finalWidth) => {
           if (finalWidth) {
             try {
@@ -286,7 +309,10 @@ export default function Toolbar({
         </div>
 
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
-        <div className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto min-w-0">
+        <div
+          ref={rightControlsRef}
+          className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 ml-auto min-w-0"
+        >
           {/* Zoom Controls Pill */}
           <div className="h-8 flex items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
             <button
@@ -699,11 +725,13 @@ export default function Toolbar({
               ? { width: `${promptCustomWidth}px`, maxWidth: '100%' }
               : undefined
           }
-          className={`order-3 lg:order-2 w-full relative flex items-center group/prompt transition-[width,max-width] duration-150 min-w-0 mx-auto lg:mx-0 ${
+          className={`order-3 lg:order-2 w-full relative flex items-center group/prompt ${
+            isResizing ? 'transition-none' : 'transition-[width,max-width] duration-150'
+          } min-w-0 mx-auto lg:mx-0 ${
             isPromptExpanded
-              ? 'lg:flex-1 max-w-[820px]'
+              ? 'lg:flex-1'
               : promptCustomWidth
-              ? 'lg:flex-none'
+              ? 'lg:flex-initial'
               : 'lg:flex-1 min-w-[280px] sm:min-w-[340px] max-w-2xl'
           }`}
         >
