@@ -406,7 +406,7 @@ const TimelineView = forwardRef(({
         },
         lane: {
           visible: true,
-          gap: 16,
+          gap: 2,
           axisGap: 2,
           defaultStyle: {
             header: {
