@@ -62,14 +62,17 @@ export default function App() {
   const [filterStarredOnly, setFilterStarredOnly] = useState(false);
 
   // Mobile layout detection and state
+  // Feature flag: mobile mode is disabled for now — the desktop layout is served on all screen sizes.
+  const ENABLE_MOBILE_MODE = false;
   const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window === 'undefined') return false;
+    if (!ENABLE_MOBILE_MODE || typeof window === 'undefined') return false;
     return window.innerWidth < 768;
   });
   const [mobileTab, setMobileTab] = useState('timeline'); // 'timeline' | 'map' | 'cards'
   const [isMobileCanvasView, setIsMobileCanvasView] = useState(false);
 
   useEffect(() => {
+    if (!ENABLE_MOBILE_MODE) return;
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
