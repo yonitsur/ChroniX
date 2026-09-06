@@ -360,6 +360,16 @@ export const translations = {
       layoutHorizontal: 'Horizontal layout',
       layoutVertical: 'Vertical layout'
     },
+    explore: {
+      start: 'Start Exploring',
+      startTooltip: 'Walk through the timeline event by event',
+      exploring: 'Exploring',
+      next: 'Next event',
+      prev: 'Previous event',
+      exit: 'Exit exploration',
+      finish: 'Finish',
+      keyboardHint: 'Navigate with ← → · Exit with Esc'
+    },
     about: {
       version: 'v1.0',
       tagline: 'AI-Powered Interactive Visual Chronology',
@@ -951,6 +961,16 @@ export const translations = {
       minimize: 'מזעור',
       layoutHorizontal: 'פריסה אופקית',
       layoutVertical: 'פריסה אנכית'
+    },
+    explore: {
+      start: 'התחל סיור',
+      startTooltip: 'סיור מודרך בציר הזמן, אירוע אחר אירוע',
+      exploring: 'מצב סיור',
+      next: 'האירוע הבא',
+      prev: 'האירוע הקודם',
+      exit: 'יציאה מהסיור',
+      finish: 'סיום',
+      keyboardHint: 'ניווט עם ← → · יציאה עם Esc'
     },
     about: {
       version: 'גרסה 1.0',

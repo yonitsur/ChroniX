@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { Timeline, Article } from 'histropediajs';
-import { GripVertical, Rows3, Columns3, Minus, Palette, Layers, Check } from 'lucide-react';
+import { GripVertical, Rows3, Columns3, Minus, Palette, Layers, Check, Play, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -195,6 +195,24 @@ function resolveArticleLaneColor(laneIdentifier, lanes = []) {
 }
 
 const clampVal = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+// Approximate decimal-year conversions (kept consistent with dateToDecimalYear's (m-1)*30+(d-1))/365 mapping)
+const dateToDecimal = (d) => {
+  if (!d || d.year === undefined || d.year === null) return null;
+  const y = Number(d.year);
+  if (isNaN(y)) return null;
+  const m = (Number(d.month) || 1) - 1;
+  const day = (Number(d.day) || 1) - 1;
+  return y + (m * 30 + day) / 365;
+};
+const decimalToDmy = (v) => {
+  let year = Math.floor(v);
+  const doy = Math.round((v - year) * 365);
+  if (year === 0) year = 1; // histropedia calendars have no year 0
+  const month = clampVal(Math.floor(doy / 30) + 1, 1, 12);
+  const day = clampVal((doy % 30) + 1, 1, 28);
+  return { year, month, day };
+};
 
 /**
  * Floating, interactive filter legend for the timeline. Doubles as a color key
@@ -391,7 +409,14 @@ const TimelineView = forwardRef(({
   selectedArticleId,
   starredArticleIds,
   onToggleStar,
-  theme = 'light'
+  theme = 'light',
+  // Exploration mode (desktop): entry button + floating HUD are rendered only when these are provided
+  isExploring = false,
+  exploreProgress = null,
+  onStartExplore,
+  onExploreNext,
+  onExplorePrev,
+  onExitExplore
 }, ref) => {
   const { t, isRtl } = useLanguage();
   const containerRef = useRef(null);
@@ -515,19 +540,59 @@ const TimelineView = forwardRef(({
         tl.fitArticles({ padding: 60 });
       }
     },
-    focusArticle: (articleId) => {
+    focusArticle: (articleId, opts = {}) => {
       const tl = timelineInstanceRef.current;
       if (tl && articleId) {
         tl._selectedArticleId = articleId;
         const art = tl.getArticleById(articleId);
         if (art) {
-          try {
-            tl.fitArticleRange(art, { padding: 120 });
-          } catch (e) {
-            console.warn('fitArticleRange fallback:', e);
-            const date = art.from || art.data?.from || art.period?.from;
-            if (date) {
-              tl.setCentreDate(date);
+          let fitted = false;
+          if (opts.animate) {
+            // Exploration mode: glide to the event at a stable zoom level (a fixed date window
+            // derived from the timeline's total span) so stepping feels like a smooth camera pan
+            // instead of a jarring re-zoom on every point event.
+            const dataArts = timelineData?.articles || [];
+            const vals = [];
+            dataArts.forEach((a) => {
+              const f = dateToDecimal(a.from);
+              if (f !== null) vals.push(f);
+              const t2 = dateToDecimal(a.to);
+              if (t2 !== null) vals.push(t2);
+            });
+            const dataArt = dataArts.find((a) => a.id === articleId);
+            const from = dateToDecimal(dataArt?.from);
+            if (vals.length > 0 && from !== null) {
+              const span = Math.max(...vals) - Math.min(...vals);
+              const to = dateToDecimal(dataArt?.to);
+              const periodSpan = to !== null && to > from ? to - from : 0;
+              let window = Math.max(span * 0.16, periodSpan * 1.5);
+              if (!(window > 0)) window = 0.5;
+              const center = periodSpan > 0 ? (from + to) / 2 : from;
+              // The event drawer overlays the right ~420px of the canvas while exploring,
+              // so bias the fit leftwards to centre the event in the visible region.
+              const canvasW = containerRef.current?.clientWidth || 0;
+              const drawerPad = canvasW > 760 ? { left: 24, right: 444 } : 24;
+              try {
+                tl.fitDateRange(
+                  decimalToDmy(center - window / 2),
+                  decimalToDmy(center + window / 2),
+                  { padding: drawerPad, animation: { active: true, duration: 620, easing: 'swing' } }
+                );
+                fitted = true;
+              } catch (e) {
+                console.warn('fitDateRange fallback:', e);
+              }
+            }
+          }
+          if (!fitted) {
+            try {
+              tl.fitArticleRange(art, { padding: 120 });
+            } catch (e) {
+              console.warn('fitArticleRange fallback:', e);
+              const date = art.from || art.data?.from || art.period?.from;
+              if (date) {
+                tl.setCentreDate(date);
+              }
             }
           }
           try {
@@ -539,6 +604,12 @@ const TimelineView = forwardRef(({
           tl.redraw();
         }
       }
+    },
+    // Ids of articles currently passing the lane/theme + starred filters, for exploration ordering.
+    getVisibleArticleIds: () => {
+      const tl = timelineInstanceRef.current;
+      if (!tl?.articles) return null;
+      return tl.articles.filter((a) => !a.isHiddenByFilter).map((a) => a.id);
     },
     setArticleStarred: (articleId, isStarred) => {
       const tl = timelineInstanceRef.current;
@@ -1024,6 +1095,13 @@ const TimelineView = forwardRef(({
         };
       });
 
+  const exploreCurrentTitle = isExploring && selectedArticleId
+    ? (timelineData?.articles?.find((a) => a.id === selectedArticleId)?.title || '')
+    : '';
+
+  // Keep the floating explore controls centred in the area left visible by the event drawer (~420px)
+  const exploreOverlayLeft = selectedArticleId ? 'max(200px, calc((100% - 420px) / 2))' : '50%';
+
   return (
     <div
       dir="ltr"
@@ -1045,6 +1123,85 @@ const TimelineView = forwardRef(({
           t={t}
           isRtl={isRtl}
         />
+      )}
+
+      {/* Exploration mode — entry point (“Start Exploring” pill) */}
+      {typeof onStartExplore === 'function' && !isExploring && (timelineData?.articles?.length || 0) > 0 && (
+        <div
+          className="absolute bottom-5 -translate-x-1/2 z-20 transition-[left] duration-300 animate-in fade-in slide-in-from-bottom-3"
+          style={{ left: exploreOverlayLeft }}
+        >
+          <button
+            type="button"
+            onClick={onStartExplore}
+            title={t('explore.startTooltip')}
+            className="group flex items-center gap-2.5 pl-2 pr-4 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-700/90 hover:border-sky-300 dark:hover:border-sky-700 shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-[1.03] active:scale-95 cursor-pointer select-none"
+          >
+            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 shadow-md group-hover:shadow-sky-500/40 transition-shadow">
+              <Play className="w-3.5 h-3.5 text-white fill-white translate-x-px" />
+            </span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors">
+              {t('explore.start')}
+            </span>
+          </button>
+        </div>
+      )}
+
+      {/* Exploration mode — floating navigation HUD (kept LTR: canvas time always flows left → right) */}
+      {isExploring && (
+        <div
+          dir="ltr"
+          className="absolute bottom-5 -translate-x-1/2 z-20 flex items-center gap-1 pl-1.5 pr-1.5 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 shadow-2xl backdrop-blur-md select-none transition-[left] duration-300 animate-in fade-in slide-in-from-bottom-3"
+          style={{ left: exploreOverlayLeft }}
+          title={t('explore.keyboardHint')}
+        >
+          <button
+            type="button"
+            onClick={onExitExplore}
+            title={`${t('explore.exit')} (Esc)`}
+            aria-label={t('explore.exit')}
+            className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
+          <button
+            type="button"
+            onClick={onExplorePrev}
+            disabled={!exploreProgress || exploreProgress.current <= 1}
+            title={`${t('explore.prev')} (←)`}
+            aria-label={t('explore.prev')}
+            className="p-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent disabled:hover:text-slate-600 dark:disabled:hover:text-slate-300"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2 px-2 min-w-0">
+            <span className="text-[11px] font-bold tabular-nums text-sky-600 dark:text-sky-400 whitespace-nowrap">
+              {exploreProgress ? `${exploreProgress.current} / ${exploreProgress.total}` : ''}
+            </span>
+            {exploreCurrentTitle && (
+              <>
+                <span className="h-3.5 w-px bg-slate-200 dark:bg-slate-700 shrink-0" />
+                <span
+                  key={selectedArticleId}
+                  className="text-xs font-medium text-slate-700 dark:text-slate-200 truncate max-w-[220px] animate-in fade-in duration-300"
+                >
+                  {exploreCurrentTitle}
+                </span>
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onExploreNext}
+            disabled={!exploreProgress || exploreProgress.current >= exploreProgress.total}
+            title={`${t('explore.next')} (→)`}
+            aria-label={t('explore.next')}
+            className="p-1.5 rounded-full bg-sky-500 hover:bg-sky-600 text-white shadow-md shadow-sky-500/30 transition-all cursor-pointer active:scale-90 disabled:opacity-30 disabled:cursor-default disabled:hover:bg-sky-500 disabled:active:scale-100"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       )}
     </div>
   );

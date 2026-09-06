@@ -37,6 +37,15 @@ import {
   fetchUserQuota
 } from './api';
 
+// Approximate decimal-year value for chronological ordering (mirrors dateToDecimalYear mapping)
+const articleDateValue = (a) => {
+  const f = a?.from || {};
+  const y = Number(f.year) || 0;
+  const m = (Number(f.month) || 1) - 1;
+  const d = (Number(f.day) || 1) - 1;
+  return y + (m * 30 + d) / 365;
+};
+
 export default function App() {
   const { user, loading: authLoading } = useAuth();
   const { language, isRtl, t } = useLanguage();
@@ -638,6 +647,99 @@ export default function App() {
     }
   }, [isMobile, isCardsListOpen]);
 
+  // ---- Exploration mode: guided event-by-event walkthrough of the desktop timeline ----
+  const [isExploring, setIsExploring] = useState(false);
+  const [exploreProgress, setExploreProgress] = useState(null); // { current, total }
+
+  // Chronologically ordered articles currently visible on the canvas (respects lane/theme/starred filters)
+  const getExploreOrder = useCallback(() => {
+    const articles = currentTimeline?.articles || [];
+    const visibleIds = timelineRef.current?.getVisibleArticleIds?.();
+    const visibleSet = Array.isArray(visibleIds) ? new Set(visibleIds) : null;
+    return articles
+      .filter((a) => !visibleSet || visibleSet.has(a.id))
+      .slice()
+      .sort((a, b) => articleDateValue(a) - articleDateValue(b));
+  }, [currentTimeline]);
+
+  const focusExploredArticle = useCallback((article) => {
+    setSelectedArticle(article);
+    timelineRef.current?.focusArticle(article.id, { animate: true });
+  }, []);
+
+  const handleStartExplore = useCallback(() => {
+    const order = getExploreOrder();
+    if (order.length === 0) return;
+    setIsCardsListOpen(false);
+    setIsExploring(true);
+    setExploreProgress({ current: 1, total: order.length });
+    focusExploredArticle(order[0]);
+  }, [getExploreOrder, focusExploredArticle]);
+
+  const handleExitExplore = useCallback(() => {
+    setIsExploring(false);
+    setExploreProgress(null);
+  }, []);
+
+  const handleExploreStep = useCallback((delta) => {
+    const order = getExploreOrder();
+    if (order.length === 0) return;
+    const curIdx = selectedArticle ? order.findIndex((a) => a.id === selectedArticle.id) : -1;
+    let nextIdx;
+    if (curIdx >= 0) {
+      nextIdx = Math.min(order.length - 1, Math.max(0, curIdx + delta));
+    } else if (selectedArticle) {
+      // Current event no longer visible (filter changed) — re-anchor to the nearest later event
+      const cur = articleDateValue(selectedArticle);
+      const laterIdx = order.findIndex((a) => articleDateValue(a) >= cur);
+      nextIdx = laterIdx >= 0 ? laterIdx : order.length - 1;
+    } else {
+      nextIdx = 0;
+    }
+    setExploreProgress({ current: nextIdx + 1, total: order.length });
+    focusExploredArticle(order[nextIdx]);
+  }, [getExploreOrder, selectedArticle, focusExploredArticle]);
+
+  // Keep progress in sync when the selection changes by other means (card click, map pin),
+  // and auto-exit exploration when the drawer closes or the timeline is replaced/cleared.
+  useEffect(() => {
+    if (!isExploring) return;
+    if (!selectedArticle) {
+      setIsExploring(false);
+      setExploreProgress(null);
+      return;
+    }
+    const order = getExploreOrder();
+    const idx = order.findIndex((a) => a.id === selectedArticle.id);
+    if (idx >= 0) {
+      setExploreProgress((p) =>
+        p && p.current === idx + 1 && p.total === order.length
+          ? p
+          : { current: idx + 1, total: order.length }
+      );
+    }
+  }, [isExploring, selectedArticle, getExploreOrder]);
+
+  // Keyboard navigation while exploring: ← → move between events, Esc exits
+  useEffect(() => {
+    if (!isExploring) return;
+    const onKeyDown = (e) => {
+      const el = e.target;
+      if (el && (['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName) || el.isContentEditable)) return;
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleExploreStep(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handleExploreStep(-1);
+      } else if (e.key === 'Escape') {
+        handleExitExplore();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isExploring, handleExploreStep, handleExitExplore]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
@@ -904,6 +1006,12 @@ export default function App() {
                     starredArticleIds={starredArticleIds}
                     onToggleStar={handleToggleStar}
                     theme={theme}
+                    isExploring={isExploring}
+                    exploreProgress={exploreProgress}
+                    onStartExplore={handleStartExplore}
+                    onExploreNext={() => handleExploreStep(1)}
+                    onExplorePrev={() => handleExploreStep(-1)}
+                    onExitExplore={handleExitExplore}
                   />
                 </div>
               </div>
@@ -918,6 +1026,12 @@ export default function App() {
                   starredArticleIds={starredArticleIds}
                   onToggleStar={handleToggleStar}
                   theme={theme}
+                  isExploring={isExploring}
+                  exploreProgress={exploreProgress}
+                  onStartExplore={handleStartExplore}
+                  onExploreNext={() => handleExploreStep(1)}
+                  onExplorePrev={() => handleExploreStep(-1)}
+                  onExitExplore={handleExitExplore}
                 />
 
                 {/* Floating Map Widget (Icon | PiP | Full) */}
@@ -1004,6 +1118,10 @@ export default function App() {
               }}
               onDelete={handleDeleteEvent}
               onOpenDisclaimer={() => setIsDisclaimerModalOpen(true)}
+              isExploring={isExploring}
+              exploreProgress={exploreProgress}
+              onExploreNext={() => handleExploreStep(1)}
+              onExplorePrev={() => handleExploreStep(-1)}
             />
           </ErrorBoundary>
         )}

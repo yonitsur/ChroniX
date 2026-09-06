@@ -1,4 +1,4 @@
-import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info, Star } from 'lucide-react';
+import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info, Star, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
 import { getLaneColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -63,7 +63,11 @@ export default function EventDrawer({
   onClose,
   onEdit,
   onDelete,
-  onOpenDisclaimer
+  onOpenDisclaimer,
+  isExploring = false,
+  exploreProgress = null,
+  onExploreNext,
+  onExplorePrev
 }) {
   const { language, isRtl, t, formatTimeSpan: localizedTimeSpan } = useLanguage();
 
@@ -116,8 +120,48 @@ export default function EventDrawer({
         </div>
       </div>
 
+      {/* Exploration navigation strip (kept LTR so Prev/Next match the canvas time direction) */}
+      {isExploring && (
+        <div
+          dir="ltr"
+          className="flex items-center justify-between gap-2 px-4 py-2 border-b border-sky-100 dark:border-sky-900/50 bg-sky-50/80 dark:bg-sky-950/30 select-none animate-in fade-in slide-in-from-top-1 duration-200"
+        >
+          <button
+            type="button"
+            onClick={onExplorePrev}
+            disabled={!exploreProgress || exploreProgress.current <= 1}
+            title={`${t('explore.prev')} (←)`}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>{t('explore.prev')}</span>
+          </button>
+
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-sky-600 dark:text-sky-400">
+            <Compass className="w-3.5 h-3.5" />
+            <span className="tabular-nums whitespace-nowrap">
+              {exploreProgress ? `${exploreProgress.current} / ${exploreProgress.total}` : ''}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={onExploreNext}
+            disabled={!exploreProgress || exploreProgress.current >= exploreProgress.total}
+            title={`${t('explore.next')} (→)`}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-sky-500 hover:bg-sky-600 shadow-xs shadow-sky-500/30 transition-all cursor-pointer active:scale-95 disabled:opacity-30 disabled:cursor-default disabled:hover:bg-sky-500 disabled:active:scale-100"
+          >
+            <span>{t('explore.next')}</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Content scroll area */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-slate-700 dark:text-slate-200">
+      <div
+        key={article.id}
+        className="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-slate-700 dark:text-slate-200 animate-in fade-in slide-in-from-bottom-2 duration-300"
+      >
         {/* Banner image */}
         {article.imageUrl ? (
           <div className="w-full h-52 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 relative group shadow-sm">
