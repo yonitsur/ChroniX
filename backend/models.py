@@ -108,6 +108,8 @@ class EventSuggestionOutput(BaseModel):
     location_name: Optional[str] = Field(default=None, description="City, region, landmark, or country where the event took place, or null")
     lat: Optional[float] = Field(default=None, description="Latitude coordinate, or null")
     lng: Optional[float] = Field(default=None, description="Longitude coordinate, or null")
+    ai_event_add_count: Optional[int] = Field(default=None, description="Current event addition count for the timeline")
+    remaining_timeline_adds: Optional[int] = Field(default=None, description="Remaining paid event additions for this timeline")
 
 
 # Gemini Raw Structured Response Models

@@ -1047,6 +1047,8 @@ export default function App() {
         timelineTopic={currentTimeline?.title || ''}
         timeScale={currentTimeline?.timeScale || 'calendar'}
         timelineId={currentTimeline?.id}
+        currentTimeline={currentTimeline}
+        quota={quota}
       />
 
       <AiRefineModal

@@ -296,6 +296,10 @@ async def suggest_single_event(
             language=payload.language,
             api_key=api_key
         )
+        if payload.timeline_id:
+            usage = get_timeline_ai_usage(payload.timeline_id)
+            suggestion.ai_event_add_count = usage.get("event_add_count", 0)
+        suggestion.remaining_timeline_adds = remaining_adds
         return suggestion
     except Exception as e:
         logger.error(f"Error suggesting event: {e}")

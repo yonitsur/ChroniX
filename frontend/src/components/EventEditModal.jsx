@@ -11,7 +11,9 @@ import {
   Layers,
   ChevronDown,
   AlertCircle,
-  MapPin
+  MapPin,
+  Clock,
+  ShieldCheck
 } from 'lucide-react';
 import { enrichItem, suggestEventData, searchWikiCandidates } from '../api';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,7 +26,9 @@ export default function EventEditModal({
   lanes = [],
   timelineTopic = '',
   timeScale = 'calendar',
-  timelineId = null
+  timelineId = null,
+  currentTimeline = null,
+  quota = null
 }) {
   const { t, isRtl } = useLanguage();
   const [title, setTitle] = useState('');
@@ -52,9 +56,11 @@ export default function EventEditModal({
   const [showCandidatePicker, setShowCandidatePicker] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [localEventAddCount, setLocalEventAddCount] = useState(0);
 
   useEffect(() => {
     if (isOpen) {
+      setLocalEventAddCount(currentTimeline?.aiEventAddCount || 0);
       setTitle(initialEvent?.title || '');
       setSubtitle(initialEvent?.subtitle || '');
       setLane(initialEvent?.lane || '');
@@ -77,9 +83,17 @@ export default function EventEditModal({
       setStatusMessage(null);
       setErrorMessage(null);
     }
-  }, [isOpen, initialEvent, timeScale]);
+  }, [isOpen, initialEvent, timeScale, currentTimeline]);
 
   if (!isOpen) return null;
+
+  const isAdmin = quota?.is_admin === true;
+  const eventAddLimit = quota?.timeline_paid_event_add_limit && quota.timeline_paid_event_add_limit > 0
+    ? quota.timeline_paid_event_add_limit
+    : 10;
+  const eventAddUsed = localEventAddCount;
+  const eventAddRemaining = Math.max(0, eventAddLimit - eventAddUsed);
+  const isEventAddFreeTier = !isAdmin && (eventAddRemaining === 0 || (quota && quota.remaining_paid === 0));
 
   // 1. Full AI Auto-Fill (Title, dates, lane, Wikipedia info)
   const handleAiAutoFill = async () => {
@@ -142,6 +156,15 @@ export default function EventEditModal({
         if (data.locationName) setLocationName(data.locationName);
         if (data.lat !== undefined && data.lat !== null) setLat(String(data.lat));
         if (data.lng !== undefined && data.lng !== null) setLng(String(data.lng));
+
+        if (typeof data.ai_event_add_count === 'number') {
+          setLocalEventAddCount(data.ai_event_add_count);
+          if (currentTimeline) currentTimeline.aiEventAddCount = data.ai_event_add_count;
+        } else {
+          setLocalEventAddCount((prev) => prev + 1);
+          if (currentTimeline) currentTimeline.aiEventAddCount = (currentTimeline.aiEventAddCount || 0) + 1;
+        }
+
         setStatusMessage(t('eventEditModal.autoFilledSuccess'));
         setTimeout(() => setStatusMessage(null), 5000);
       }
@@ -181,6 +204,15 @@ export default function EventEditModal({
           setToDay('');
         }
         setIsToPresent(Boolean(data.isToPresent));
+
+        if (typeof data.ai_event_add_count === 'number') {
+          setLocalEventAddCount(data.ai_event_add_count);
+          if (currentTimeline) currentTimeline.aiEventAddCount = data.ai_event_add_count;
+        } else {
+          setLocalEventAddCount((prev) => prev + 1);
+          if (currentTimeline) currentTimeline.aiEventAddCount = (currentTimeline.aiEventAddCount || 0) + 1;
+        }
+
         setStatusMessage(t('eventEditModal.datesUpdatedSuccess'));
         setTimeout(() => setStatusMessage(null), 4000);
       }
@@ -362,13 +394,41 @@ export default function EventEditModal({
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4 text-sm text-slate-700 dark:text-slate-300">
           {/* Title with AI Auto-fill & Wikipedia Search */}
           <div className="relative">
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                 {t('eventEditModal.titleLabel')}
               </label>
-              <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                {t('eventEditModal.titleHint')}
-              </span>
+
+              <div className="flex items-center gap-2">
+                {/* Timeline AI Event Add Quota Indicator */}
+                {timelineId && (
+                  isAdmin ? (
+                    <span className="text-[10px] text-purple-600 dark:text-purple-400 font-medium bg-purple-50 dark:bg-purple-950/50 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/50 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3 shrink-0" />
+                      <span>{t('eventEditModal.adminUnlimited')}</span>
+                    </span>
+                  ) : isEventAddFreeTier ? (
+                    <span
+                      className="text-[10px] text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/50 flex items-center gap-1"
+                      title={t('eventEditModal.freeTierNotice', { limit: eventAddLimit })}
+                    >
+                      <Clock className="w-3 h-3 shrink-0" />
+                      <span>{t('eventEditModal.freeTierNotice', { limit: eventAddLimit })}</span>
+                    </span>
+                  ) : (
+                    <span
+                      className="text-[10px] text-sky-600 dark:text-sky-400 font-medium bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md border border-sky-200/60 dark:border-sky-800/50 flex items-center gap-1"
+                      title={t('eventEditModal.remainingTooltip', { remaining: eventAddRemaining, limit: eventAddLimit })}
+                    >
+                      <Sparkles className="w-3 h-3 text-sky-500 shrink-0" />
+                      <span>{t('eventEditModal.remainingPremium', { remaining: eventAddRemaining, limit: eventAddLimit })}</span>
+                    </span>
+                  )
+                )}
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 hidden sm:inline">
+                  {t('eventEditModal.titleHint')}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
