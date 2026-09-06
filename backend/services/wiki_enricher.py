@@ -240,6 +240,38 @@ async def _search_wikipedia_titles(
     return []
 
 
+async def _get_langlink(
+    title: str,
+    from_lang: str,
+    to_lang: str,
+    client: httpx.AsyncClient
+) -> Optional[str]:
+    """
+    Fetch the canonical page title in another language edition using Wikipedia's
+    native interlanguage links (langlinks / Wikidata).
+    Enables precise cross-language article resolution (e.g. 'French Directory' -> 'حكومة المديرين الفرنسية 1795–1799').
+    """
+    if not title or not from_lang or not to_lang or from_lang == to_lang:
+        return None
+    try:
+        clean = title.strip().replace(" ", "_")
+        url = (
+            f"https://{from_lang}.wikipedia.org/w/api.php?action=query&titles="
+            f"{urllib.parse.quote(clean)}&prop=langlinks&lllang={to_lang}&format=json"
+        )
+        resp = await client.get(url, headers=HEADERS, timeout=4.0)
+        if resp.status_code == 200:
+            pages = resp.json().get("query", {}).get("pages", {})
+            for pid, page in pages.items():
+                if pid != "-1":
+                    links = page.get("langlinks", [])
+                    if links and "*" in links[0]:
+                        return links[0]["*"]
+    except Exception:
+        pass
+    return None
+
+
 async def fetch_wikipedia_summary(
     title: str,
     client: httpx.AsyncClient,
@@ -254,9 +286,10 @@ async def fetch_wikipedia_summary(
     """
     Fetch summary, thumbnail image, and page URL from Wikipedia REST API.
     Universal multilingual architecture with graceful English fallback:
-    1. Direct REST lookup and search fallback on the target language Wikipedia edition (e.g. fr, es, de, he).
-    2. If found in target language but lacks thumbnail image or coordinates, supplement them from English Wikipedia.
-    3. If not found in target language, fall back to English Wikipedia (using fallback_title or title).
+    1. Direct REST lookup and search fallback on the target language Wikipedia edition (e.g. fr, es, de, he, ar).
+    2. Interlanguage bridge: Uses MediaWiki langlinks on English fallback to resolve exact canonical local title.
+    3. Media supplementation: If found locally but lacks thumbnail or coords, supplements from English Wikipedia.
+    4. Fallback: If not found in target language at all, falls back to English Wikipedia.
     """
     if not title:
         return {}
@@ -288,7 +321,25 @@ async def fetch_wikipedia_summary(
                 if primary_res:
                     break
 
-        # 3. If primary language found: supplement missing thumbnail / coordinates from fallback language (en)
+        # 3. Interlanguage Links Bridge (MediaWiki langlinks):
+        # If primary language direct & search lookups failed, check if the fallback language (e.g. English)
+        # has a verified interlanguage link pointing to the exact canonical title in the target language!
+        if not primary_res and lang != fallback_lang:
+            potential_sources = [fallback_title, title]
+            for src in potential_sources:
+                if not src:
+                    continue
+                for src_cand in generate_title_variations(src, lang=fallback_lang):
+                    linked_title = await _get_langlink(src_cand, from_lang=fallback_lang, to_lang=lang, client=client)
+                    if linked_title:
+                        res = await _get_summary_direct(linked_title, client, lang=lang, resolve_disambig=True, context_text=context_text)
+                        if res:
+                            primary_res = res
+                            break
+                if primary_res:
+                    break
+
+        # 4. If primary language found: supplement missing thumbnail / coordinates from fallback language (en)
         if primary_res:
             if lang != fallback_lang and (not primary_res.get("imageUrl") or primary_res.get("lat") is None):
                 supplement_target = (fallback_title or primary_res.get("wikiTitle") or title).strip()
@@ -305,18 +356,18 @@ async def fetch_wikipedia_summary(
                             break
             return primary_res
 
-        # 4. Fallback to English Wikipedia if not found in primary language
+        # 5. Fallback to English Wikipedia only if the article does not exist in the primary language at all
         if lang != fallback_lang:
             fb_target = (fallback_title or title).strip()
             if fb_target:
                 fb_candidates = generate_title_variations(fb_target, lang=fallback_lang)
-                # 4a. Fallback direct REST
+                # 5a. Fallback direct REST
                 for fb_cand in fb_candidates:
                     res = await _get_summary_direct(fb_cand, client, lang=fallback_lang, resolve_disambig=True, context_text=context_text)
                     if res:
                         return res
 
-                # 4b. Fallback search
+                # 5b. Fallback search
                 for fb_cand in fb_candidates:
                     search_hits = await _search_wikipedia_titles(fb_cand, client, lang=fallback_lang, limit=5)
                     for hit in search_hits:

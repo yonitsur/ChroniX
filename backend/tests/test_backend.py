@@ -647,11 +647,11 @@ async def test_multilingual_wikipedia_enrichment_with_english_fallback():
             sem,
             lang="fr",
             fallback_lang="en",
-            fallback_title="Battle of Midway"
+            fallback_title="Owyhee County Courthouse"
         )
         assert res is not None
         assert "en.wikipedia.org" in res.get("wikiUrl", "")
-        assert "Midway" in res.get("wikiTitle", "")
+        assert "Owyhee" in res.get("wikiTitle", "")
         assert res.get("imageUrl") is not None
 
 
@@ -681,6 +681,44 @@ async def test_multilingual_batch_enrichment_spanish_and_fallback():
     # Second event should gracefully fall back to English Wikipedia
     assert "en.wikipedia.org" in enriched[1].get("wikiUrl", "")
     assert enriched[1].get("imageUrl") is not None
+
+
+@pytest.mark.asyncio
+async def test_multilingual_langlinks_interlanguage_resolution():
+    """
+    Verify that an entity whose English title is known (e.g. 'French Directory')
+    correctly discovers the exact, differently-phrased local language article
+    via Wikipedia's interlanguage links (langlinks / Wikidata), rather than falling back to English.
+    """
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        sem = asyncio.Semaphore(1)
+        # 1. Test Arabic resolution: English 'French Directory' -> Arabic 'حكومة المديرين الفرنسية 1795–1799'
+        res_ar = await fetch_wikipedia_summary(
+            "French Directory",
+            client,
+            sem,
+            lang="ar",
+            fallback_lang="en",
+            fallback_title="French Directory"
+        )
+        assert res_ar is not None
+        assert "ar.wikipedia.org" in res_ar.get("wikiUrl", "")
+        assert res_ar.get("lang") == "ar"
+        assert res_ar.get("imageUrl") is not None
+
+        # 2. Test Japanese resolution: English 'French Directory' -> Japanese '総裁政府'
+        res_ja = await fetch_wikipedia_summary(
+            "French Directory",
+            client,
+            sem,
+            lang="ja",
+            fallback_lang="en",
+            fallback_title="French Directory"
+        )
+        assert res_ja is not None
+        assert "ja.wikipedia.org" in res_ja.get("wikiUrl", "")
+        assert res_ja.get("lang") == "ja"
+
 
 
 
