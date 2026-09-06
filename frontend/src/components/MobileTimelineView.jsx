@@ -17,8 +17,24 @@ import {
   GripVertical,
   RotateCcw
 } from 'lucide-react';
-import { getLaneColor, isColorLight } from '../data/laneColors';
+import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
+
+function hexToRgba(hex, alpha = 0.6) {
+  if (!hex) return `rgba(59, 130, 246, ${alpha})`;
+  if (hex.startsWith('rgba') || hex.startsWith('hsla')) return hex;
+  let clean = hex.replace('#', '');
+  if (clean.length === 3) {
+    clean = clean.split('').map((c) => c + c).join('');
+  }
+  if (clean.length === 6) {
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return hex;
+}
 
 /**
  * Converts any ChroniX date object to a float decimal year
@@ -225,19 +241,75 @@ export default function MobileTimelineView({
     return articles.filter((a) => starredArticleIds?.has(a.id)).length;
   }, [articles, starredArticleIds]);
 
-  // Map lanes for fast lookup
+  // Map lanes for fast lookup with multi-key indexing (id, title, lowercase)
   const laneMap = useMemo(() => {
     const map = new Map();
     lanes.forEach((lane, idx) => {
       const color = getLaneColor(lane, idx, lanes);
-      map.set(lane.id, {
+      const entry = {
+        id: lane.id,
         title: lane.title,
         color,
         isLight: isColorLight(color)
-      });
+      };
+      if (lane.id !== undefined && lane.id !== null) {
+        map.set(lane.id, entry);
+        map.set(String(lane.id).toLowerCase(), entry);
+      }
+      if (lane.title) {
+        map.set(lane.title, entry);
+        map.set(lane.title.toLowerCase().trim(), entry);
+      }
     });
     return map;
   }, [lanes]);
+
+  // Helper to reliably resolve lane info for an article
+  const getArticleLaneInfo = (laneIdentifier) => {
+    if (!laneIdentifier && lanes.length > 0) {
+      const first = lanes[0];
+      return laneMap.get(first.id) || {
+        id: first.id,
+        title: first.title || t('mobile.timeline'),
+        color: getLaneColor(first, 0, lanes),
+        isLight: false
+      };
+    }
+    if (laneIdentifier) {
+      if (laneMap.has(laneIdentifier)) return laneMap.get(laneIdentifier);
+      const str = String(laneIdentifier).toLowerCase().trim();
+      if (laneMap.has(str)) return laneMap.get(str);
+      const foundIdx = lanes.findIndex(
+        (l) =>
+          String(l.id).toLowerCase() === str ||
+          String(l.title || '').toLowerCase() === str
+      );
+      if (foundIdx >= 0) {
+        const found = lanes[foundIdx];
+        const color = getLaneColor(found, foundIdx, lanes);
+        return {
+          id: found.id,
+          title: found.title,
+          color,
+          isLight: isColorLight(color)
+        };
+      }
+    }
+    // Deterministic fallback by hashing the lane string into museum colors
+    const fallbackStr = String(laneIdentifier || 'default');
+    let hash = 0;
+    for (let i = 0; i < fallbackStr.length; i++) {
+      hash = (hash << 5) - hash + fallbackStr.charCodeAt(i);
+      hash |= 0;
+    }
+    const color = DEFAULT_LANE_COLORS[Math.abs(hash) % DEFAULT_LANE_COLORS.length];
+    return {
+      id: fallbackStr,
+      title: laneIdentifier || t('mobile.timeline'),
+      color,
+      isLight: isColorLight(color)
+    };
+  };
 
   // Lane articles counts
   const laneCounts = useMemo(() => {
@@ -433,7 +505,7 @@ export default function MobileTimelineView({
         rulerTrack: track % 3,
         startY,
         endY,
-        height: Math.max(art.isRange ? 6 : 4, endY - startY)
+        height: Math.max(art.isRange ? 12 : 8, endY - startY)
       };
     });
 
@@ -606,7 +678,7 @@ export default function MobileTimelineView({
 
             {/* Individual Lane chips */}
             {lanes.map((lane) => {
-              const laneInfo = laneMap.get(lane.id);
+              const laneInfo = getArticleLaneInfo(lane.id);
               const isSelected = selectedLaneId === lane.id;
               const count = laneCounts[lane.id] || 0;
 
@@ -720,15 +792,17 @@ export default function MobileTimelineView({
 
                 {/* ─── Period Lines Directly ON the Ruler (פסי טווח על גבי הסרגל) ─── */}
                 <div
-                  className="absolute inset-y-0 w-5 pointer-events-auto"
+                  className="absolute inset-y-0 w-8 pointer-events-auto"
                   style={{ [isRtl ? 'left' : 'right']: '2px' }}
                 >
                   {rulerPeriodArticles.map((art) => {
-                    const laneInfo = laneMap.get(art.lane);
+                    const laneInfo = getArticleLaneInfo(art.lane);
                     const isSelected = selectedArticleId === art.id;
                     const isHovered = hoveredArticleId === art.id;
                     const isHigh = isSelected || isHovered;
-                    const trackOffset = art.rulerTrack * 6; // 0px, 6px, 12px
+                    const trackOffset = art.rulerTrack * 8; // 0px, 8px, 16px
+                    const color = laneInfo.color;
+                    const normalColor = hexToRgba(color, 0.55);
 
                     return (
                       <div
@@ -743,25 +817,25 @@ export default function MobileTimelineView({
                           top: `${art.startY}px`,
                           height: `${art.height}px`,
                           [isRtl ? 'left' : 'right']: `${trackOffset}px`,
-                          backgroundColor: laneInfo?.color || '#0284c7'
+                          backgroundColor: isHigh ? color : normalColor
                         }}
-                        className={`absolute w-1 rounded-full transition-all cursor-pointer ${
+                        className={`absolute rounded-full transition-all cursor-pointer shadow-xs ${
                           isHigh
-                            ? 'w-2 ring-2 ring-white dark:ring-slate-900 z-30 shadow-md scale-y-[1.02]'
-                            : 'opacity-70 hover:opacity-100 hover:w-1.5 z-10'
+                            ? 'w-3 ring-2 ring-slate-900/60 dark:ring-white/80 z-30 shadow-md scale-y-[1.03] opacity-100'
+                            : 'w-2 hover:w-2.5 z-10 ring-1 ring-black/10 dark:ring-white/15'
                         }`}
                         title={`${art.title} (${formatTimeSpan(art.from, art.to, art.isToPresent)})`}
                       >
                         {/* Top End Bracket Cap on Ruler */}
                         <div
-                          className="absolute -top-0.5 w-2.5 h-0.5 -translate-x-0.5 rounded-full shadow-xs"
-                          style={{ backgroundColor: laneInfo?.color || '#0284c7' }}
+                          className="absolute -top-1 left-1/2 -translate-x-1/2 w-3.5 h-1 rounded-full shadow-xs"
+                          style={{ backgroundColor: isHigh ? color : normalColor }}
                         />
                         {/* Bottom End Bracket Cap on Ruler (if range) */}
                         {art.isRange && (
                           <div
-                            className="absolute -bottom-0.5 w-2.5 h-0.5 -translate-x-0.5 rounded-full shadow-xs"
-                            style={{ backgroundColor: laneInfo?.color || '#0284c7' }}
+                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3.5 h-1 rounded-full shadow-xs"
+                            style={{ backgroundColor: isHigh ? color : normalColor }}
                           />
                         )}
                       </div>
@@ -817,6 +891,7 @@ export default function MobileTimelineView({
                     {/* Non-Overlapping Draggable Cards with Dynamic SVG Stems */}
                     <div className="relative w-full h-full p-2 z-20">
                       {laneArticles.map((art) => {
+                        const artLaneInfo = getArticleLaneInfo(art.lane);
                         const isSelected = selectedArticleId === art.id;
                         const isHovered = hoveredArticleId === art.id;
                         const isHigh = isSelected || isHovered;
@@ -857,8 +932,8 @@ export default function MobileTimelineView({
                               <circle
                                 cx={startX}
                                 cy={startY}
-                                r={isHigh ? 4.5 : 3}
-                                fill={laneInfo?.color || '#0284c7'}
+                                r={isHigh ? 5 : 3.5}
+                                fill={isHigh ? artLaneInfo.color : hexToRgba(artLaneInfo.color, 0.65)}
                                 className="transition-all"
                               />
                               {/* Range end anchor dot if range */}
@@ -869,15 +944,15 @@ export default function MobileTimelineView({
                                     y1={startY}
                                     x2={startX}
                                     y2={(art.rawEndY - art.placedY) - offset.y}
-                                    stroke={laneInfo?.color || '#0284c7'}
-                                    strokeWidth={isHigh ? 3 : 2}
-                                    strokeOpacity={isHigh ? 0.9 : 0.6}
+                                    stroke={isHigh ? artLaneInfo.color : hexToRgba(artLaneInfo.color, 0.6)}
+                                    strokeWidth={isHigh ? 4.5 : 3.5}
+                                    strokeOpacity={isHigh ? 1 : 0.85}
                                   />
                                   <circle
                                     cx={startX}
                                     cy={(art.rawEndY - art.placedY) - offset.y}
-                                    r={isHigh ? 4 : 2.5}
-                                    fill={laneInfo?.color || '#0284c7'}
+                                    r={isHigh ? 4.5 : 3}
+                                    fill={isHigh ? artLaneInfo.color : hexToRgba(artLaneInfo.color, 0.65)}
                                   />
                                 </>
                               )}
@@ -885,26 +960,36 @@ export default function MobileTimelineView({
                               <path
                                 d={pathD}
                                 fill="none"
-                                stroke={laneInfo?.color || '#0284c7'}
-                                strokeWidth={isHigh ? 2.5 : 1.5}
-                                strokeOpacity={isHigh ? 1 : 0.45}
+                                stroke={isHigh ? artLaneInfo.color : hexToRgba(artLaneInfo.color, 0.6)}
+                                strokeWidth={isHigh ? 3 : 2}
+                                strokeOpacity={isHigh ? 1 : 0.75}
                                 strokeDasharray={Math.abs(deltaY) > 8 && !isHigh ? '3 3' : undefined}
                               />
                               {/* Connection pin on card edge */}
                               <circle
                                 cx={targetX}
                                 cy={targetY}
-                                r={isHigh ? 3.5 : 2}
-                                fill={laneInfo?.color || '#0284c7'}
+                                r={isHigh ? 4 : 2.5}
+                                fill={isHigh ? artLaneInfo.color : hexToRgba(artLaneInfo.color, 0.65)}
                               />
                             </svg>
 
                             {/* ─── Main Event Card ─── */}
                             <div
                               onClick={() => onSelectArticle?.(art)}
-                              className={`w-full h-full rounded-xl border relative cursor-pointer overflow-hidden group/card select-none flex flex-col justify-between ${
+                              style={{
+                                borderColor: isSelected
+                                  ? artLaneInfo.color
+                                  : isHovered
+                                  ? hexToRgba(artLaneInfo.color, 0.6)
+                                  : undefined,
+                                boxShadow: isSelected
+                                  ? `0 0 0 2px ${artLaneInfo.color}, 0 12px 28px -4px rgba(0, 0, 0, 0.25)`
+                                  : undefined
+                              }}
+                              className={`w-full h-full rounded-xl border relative cursor-pointer overflow-hidden group/card select-none flex flex-col justify-between transition-all ${
                                 isSelected
-                                  ? 'bg-sky-50 dark:bg-sky-950/85 border-sky-400 dark:border-sky-500 shadow-xl ring-2 ring-sky-500/30'
+                                  ? 'bg-white dark:bg-slate-900 z-30 shadow-xl'
                                   : isHovered
                                   ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 shadow-md'
                                   : 'bg-white/95 dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-2xs hover:shadow-xs'
@@ -914,7 +999,7 @@ export default function MobileTimelineView({
                               <div
                                 className="absolute inset-y-0 w-1.5 transition-colors z-10"
                                 style={{
-                                  backgroundColor: laneInfo?.color || '#0284c7',
+                                  backgroundColor: artLaneInfo.color,
                                   [isRtl ? 'right' : 'left']: 0
                                 }}
                               />
@@ -991,8 +1076,8 @@ export default function MobileTimelineView({
                                       <span
                                         className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded"
                                         style={{
-                                          backgroundColor: `${laneInfo?.color}20`,
-                                          color: laneInfo?.color || '#0284c7'
+                                          backgroundColor: `${artLaneInfo.color}20`,
+                                          color: artLaneInfo.color
                                         }}
                                       >
                                         {Math.round(art.duration) > 0
@@ -1030,16 +1115,24 @@ export default function MobileTimelineView({
           {feedArticles.map((art) => {
             const isSelected = selectedArticleId === art.id;
             const isStarred = Boolean(starredArticleIds?.has(art.id));
-            const laneInfo = laneMap.get(art.lane);
+            const laneInfo = getArticleLaneInfo(art.lane);
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
 
             return (
               <article
                 key={art.id}
                 onClick={() => onSelectArticle?.(art)}
+                style={{
+                  borderColor: isSelected
+                    ? laneInfo.color
+                    : undefined,
+                  boxShadow: isSelected
+                    ? `0 0 0 2px ${laneInfo.color}, 0 10px 22px -4px rgba(0, 0, 0, 0.2)`
+                    : undefined
+                }}
                 className={`p-3.5 rounded-2xl border transition-all cursor-pointer shadow-xs active:scale-[0.99] ${
                   isSelected
-                    ? 'bg-sky-50/90 dark:bg-sky-950/40 border-sky-400 dark:border-sky-500 ring-2 ring-sky-500/20 shadow-md'
+                    ? 'bg-white dark:bg-slate-900 shadow-md ring-0'
                     : 'bg-white dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90'
                 }`}
               >

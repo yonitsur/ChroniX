@@ -1,6 +1,46 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Timeline } from 'histropediajs';
-import { getLaneColor, isColorLight } from '../data/laneColors';
+import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
+
+function resolveArticleLaneColor(laneIdentifier, lanes = []) {
+  if (!laneIdentifier && lanes.length > 0) {
+    return getLaneColor(lanes[0], 0, lanes);
+  }
+  if (laneIdentifier && lanes.length > 0) {
+    const str = String(laneIdentifier).toLowerCase().trim();
+    const foundIdx = lanes.findIndex(
+      (l) =>
+        String(l.id).toLowerCase() === str ||
+        String(l.title || '').toLowerCase() === str
+    );
+    if (foundIdx >= 0) {
+      return getLaneColor(lanes[foundIdx], foundIdx, lanes);
+    }
+  }
+  const fallbackStr = String(laneIdentifier || 'default');
+  let hash = 0;
+  for (let i = 0; i < fallbackStr.length; i++) {
+    hash = (hash << 5) - hash + fallbackStr.charCodeAt(i);
+    hash |= 0;
+  }
+  return DEFAULT_LANE_COLORS[Math.abs(hash) % DEFAULT_LANE_COLORS.length];
+}
+
+function hexToRgba(hex, alpha = 0.6) {
+  if (!hex) return `rgba(59, 130, 246, ${alpha})`;
+  if (hex.startsWith('rgba') || hex.startsWith('hsla')) return hex;
+  let clean = hex.replace('#', '');
+  if (clean.length === 3) {
+    clean = clean.split('').map((c) => c + c).join('');
+  }
+  if (clean.length === 6) {
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return hex;
+}
 
 const TimelineView = forwardRef(({
   timelineData,
@@ -224,16 +264,14 @@ const TimelineView = forwardRef(({
             rowSpacing: 40,
           },
           periodLine: {
-            thickness: 6,
+            thickness: 8,
             spacing: 4,
           },
           defaultStyle: articleStyle,
           defaultHoverStyle: {
-            color: isDark ? '#334155' : '#e2e8f0',
             backgroundColor: isDark ? '#1e293b' : '#ffffff',
             border: {
-              color: isDark ? '#38bdf8' : '#0284c7',
-              width: 1.5,
+              width: 2,
             },
             shadow: {
               x: 0,
@@ -243,22 +281,9 @@ const TimelineView = forwardRef(({
             }
           },
           defaultActiveStyle: {
-            color: isDark ? '#1e3a8a' : '#bfdbfe',
             backgroundColor: isDark ? '#172554' : '#eff6ff',
             border: {
-              color: '#38bdf8',
-              width: 2,
-            },
-            header: {
-              text: {
-                color: isDark ? '#ffffff' : '#0f172a',
-              }
-            },
-            subheader: {
-              color: isDark ? '#1e40af' : '#dbeafe',
-              text: {
-                color: isDark ? '#93c5fd' : '#1e40af',
-              }
+              width: 2.5,
             }
           }
         }
@@ -338,28 +363,91 @@ const TimelineView = forwardRef(({
 
       // 3. Load articles
       if (timelineData.articles && timelineData.articles.length > 0) {
-        const formattedArticles = timelineData.articles.map((art) => ({
-          ...art,
-          id: art.id,
-          title: art.title,
-          subtitle: art.subtitle || '',
-          lane: art.lane,
-          from: art.from,
-          to: art.to || undefined,
-          isToPresent: art.isToPresent || false,
-          imageUrl: art.imageUrl || undefined,
-          rank: art.rank || 5,
-          starred: starredArticleIdsRef.current?.has(art.id) || !!art.starred,
-          style: articleStyle,
-          // Attach custom rich data into article object for drawer
-          wikiUrl: art.wikiUrl,
-          extract: art.extract,
-          wikiTitle: art.wikiTitle,
-          locationName: art.locationName,
-          lat: art.lat,
-          lng: art.lng,
-          googleMapsUrl: art.googleMapsUrl,
-        }));
+        const formattedArticles = timelineData.articles.map((art) => {
+          const laneColor = resolveArticleLaneColor(art.lane, timelineData.lanes);
+          const isLight = isColorLight(laneColor);
+          const headerTextColor = isLight ? '#0f172a' : '#ffffff';
+          const normalLineColor = hexToRgba(laneColor, isDark ? 0.65 : 0.6);
+
+          return {
+            ...art,
+            id: art.id,
+            title: art.title,
+            subtitle: art.subtitle || '',
+            lane: art.lane,
+            from: art.from,
+            to: art.to || undefined,
+            isToPresent: art.isToPresent || false,
+            imageUrl: art.imageUrl || undefined,
+            rank: art.rank || 5,
+            starred: starredArticleIdsRef.current?.has(art.id) || !!art.starred,
+            style: {
+              ...articleStyle,
+              color: normalLineColor,
+              header: {
+                ...articleStyle.header,
+                text: {
+                  ...articleStyle.header.text,
+                  color: headerTextColor,
+                }
+              },
+              connectorLine: {
+                ...articleStyle.connectorLine,
+                color: normalLineColor,
+              }
+            },
+            hoverStyle: {
+              ...articleStyle,
+              color: laneColor,
+              backgroundColor: isDark ? '#1e293b' : '#ffffff',
+              border: {
+                color: laneColor,
+                width: 2,
+              },
+              header: {
+                ...articleStyle.header,
+                text: {
+                  ...articleStyle.header.text,
+                  color: headerTextColor,
+                }
+              },
+              connectorLine: {
+                ...articleStyle.connectorLine,
+                color: laneColor,
+                thickness: 2,
+              }
+            },
+            activeStyle: {
+              ...articleStyle,
+              color: laneColor,
+              backgroundColor: isDark ? '#172554' : '#eff6ff',
+              border: {
+                color: laneColor,
+                width: 2.5,
+              },
+              header: {
+                ...articleStyle.header,
+                text: {
+                  ...articleStyle.header.text,
+                  color: headerTextColor,
+                }
+              },
+              connectorLine: {
+                ...articleStyle.connectorLine,
+                color: laneColor,
+                thickness: 2.5,
+              }
+            },
+            // Attach custom rich data into article object for drawer
+            wikiUrl: art.wikiUrl,
+            extract: art.extract,
+            wikiTitle: art.wikiTitle,
+            locationName: art.locationName,
+            lat: art.lat,
+            lng: art.lng,
+            googleMapsUrl: art.googleMapsUrl,
+          };
+        });
 
         timeline.load(formattedArticles);
 
