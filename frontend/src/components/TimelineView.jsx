@@ -17,6 +17,9 @@ if (typeof window !== 'undefined' && Article) {
     const lineAlpha = isHigh ? baseAlpha : baseAlpha * 0.45;
 
     const style = this._getCurrentStyle();
+    // The period/connector lines carry the timeline (lane) color, kept independent from the
+    // card header background so the title itself can render on the plain card background.
+    const lineColor = style.connectorLine?.color || style.color;
     const geometry = this._getPeriodLineRenderGeometry(axisY);
     const y = geometry.y;
 
@@ -31,12 +34,12 @@ if (typeof window !== 'undefined' && Article) {
         const periodLength = toX - fromX, maxFadeLength = 15;
         const fadeStartColorStop = Math.max(1 - maxFadeLength / periodLength, 0.7);
         const grad = ctx.createLinearGradient(fromX, y, toX, y);
-        grad.addColorStop(0, style.color);
-        grad.addColorStop(fadeStartColorStop, style.color);
+        grad.addColorStop(0, lineColor);
+        grad.addColorStop(fadeStartColorStop, lineColor);
         grad.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.strokeStyle = grad;
       } else {
-        ctx.strokeStyle = style.color;
+        ctx.strokeStyle = lineColor;
       }
       ctx.stroke();
     }
@@ -60,17 +63,17 @@ if (typeof window !== 'undefined' && Article) {
 
     // Connector line: semi-transparent in the normal state.
     ctx.globalAlpha = lineAlpha;
-    ctx.strokeStyle = style.color;
+    ctx.strokeStyle = lineColor;
     ctx.lineWidth = style.connectorLine.thickness;
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    // Arrow triangle: always fully opaque so the connector line never shows through it.
+    // Arrow triangle: matches the connector line — semi-transparent in the normal state.
     const radians = Math.atan((y2 - y1) / (x2 - x1)) + (x2 >= x1 ? -90 : 90) * Math.PI / 180;
-    ctx.globalAlpha = baseAlpha;
-    ctx.fillStyle = style.color;
+    ctx.globalAlpha = lineAlpha;
+    ctx.fillStyle = lineColor;
     ctx.save();
     ctx.beginPath();
     ctx.translate(x2, y2);
@@ -570,8 +573,6 @@ const TimelineView = forwardRef(({
       if (timelineData.articles && timelineData.articles.length > 0) {
         const formattedArticles = timelineData.articles.map((art) => {
           const laneColor = resolveArticleLaneColor(art.lane, timelineData.lanes);
-          const isLight = isColorLight(laneColor);
-          const headerTextColor = isLight ? '#0f172a' : '#ffffff';
 
           return {
             ...art,
@@ -587,17 +588,11 @@ const TimelineView = forwardRef(({
             starred: starredArticleIdsRef.current?.has(art.id) || !!art.starred,
             style: {
               ...articleStyle,
-              color: laneColor,
+              // Plain card background behind the title; the lane color lives on the frame and lines.
+              color: isDark ? '#0f172a' : '#ffffff',
               border: {
-                color: '#000000',
+                color: laneColor,
                 width: 1.5,
-              },
-              header: {
-                ...articleStyle.header,
-                text: {
-                  ...articleStyle.header.text,
-                  color: headerTextColor,
-                }
               },
               connectorLine: {
                 ...articleStyle.connectorLine,
@@ -606,18 +601,11 @@ const TimelineView = forwardRef(({
             },
             hoverStyle: {
               ...articleStyle,
-              color: laneColor,
+              color: isDark ? '#1e293b' : '#ffffff',
               backgroundColor: isDark ? '#1e293b' : '#ffffff',
               border: {
-                color: '#ffffff',
+                color: laneColor,
                 width: 2,
-              },
-              header: {
-                ...articleStyle.header,
-                text: {
-                  ...articleStyle.header.text,
-                  color: headerTextColor,
-                }
               },
               connectorLine: {
                 ...articleStyle.connectorLine,
@@ -627,18 +615,11 @@ const TimelineView = forwardRef(({
             },
             activeStyle: {
               ...articleStyle,
-              color: laneColor,
+              color: isDark ? '#172554' : '#eff6ff',
               backgroundColor: isDark ? '#172554' : '#eff6ff',
               border: {
-                color: '#ffffff',
+                color: laneColor,
                 width: 2.5,
-              },
-              header: {
-                ...articleStyle.header,
-                text: {
-                  ...articleStyle.header.text,
-                  color: headerTextColor,
-                }
               },
               connectorLine: {
                 ...articleStyle.connectorLine,
