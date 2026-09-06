@@ -3,10 +3,10 @@ import { X, Sparkles, Loader2, ArrowRight, AlertTriangle, Clock, ShieldCheck } f
 import { useLanguage } from '../context/LanguageContext';
 
 const DEFAULT_SUGGESTIONS = [
-  "Divide the events into two timelines (e.g. by region or theme)",
+  "Divide into two timelines (by region or theme)",
   "Split into political, cultural, and military tracks",
-  "Add 5 more key milestone events with Wikipedia links",
-  "Filter to highlight only major turning points and decisive battles"
+  "Add 5 more key milestone events",
+  "Highlight only major turning points"
 ];
 
 export default function AiRefineModal({

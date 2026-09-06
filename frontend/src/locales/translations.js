@@ -102,10 +102,10 @@ export const translations = {
       ]
     },
     home: {
-      title: 'Discover and explore interactive chronologies',
-      subtitle: 'Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below',
-      exploreGuide: 'Explore our User Guide',
-      multilingualTip: 'Write prompts in any language — timeline & Wikipedia links will match',
+      title: 'Interactive Visual Chronologies',
+      subtitle: 'Type any topic, era, or comparison to generate a visual timeline, or explore an example below',
+      exploreGuide: 'User Guide',
+      multilingualTip: 'Works in any language — timeline & Wikipedia links will match',
       surpriseMe: 'Surprise Me'
     },
     app: {
@@ -226,13 +226,13 @@ export const translations = {
       title: 'Refine & Restructure with AI',
       subtitle: 'Current Timeline: {title}',
       label: 'What would you like to add, change, or restructure?',
-      placeholder: "e.g. 'Divide the events into two timelines: Europe and America', 'Split into political and cultural tracks', 'Add 5 more key milestone events'...",
+      placeholder: "e.g. 'Divide into two timelines: Europe and America', 'Split into political and cultural tracks'...",
       suggestionsTitle: 'Quick Suggestions:',
       suggestions: [
-        'Divide the events into two timelines (e.g. by region or theme)',
+        'Divide into two timelines (by region or theme)',
         'Split into political, cultural, and military tracks',
-        'Add 5 more key milestone events with Wikipedia links',
-        'Filter to highlight only major turning points and decisive battles'
+        'Add 5 more key milestone events',
+        'Highlight only major turning points'
       ],
       refining: 'Refining Timeline...',
       applyBtn: 'Apply Refinements',
@@ -273,33 +273,33 @@ export const translations = {
     aiDisclaimer: {
       title: 'AI Generation Disclaimer',
       subtitle: 'Important notice regarding historical data & accuracy',
-      modalTitle: 'AI Historical Disclaimer',
-      modalSubtitle: 'Important notice regarding AI-generated historical data & accuracy',
-      bannerWarning: 'Timeline data and historical events are synthesized using AI language models (Google Gemini). While highly capable, this content may contain inaccuracies, approximate dates, or synthetic facts.',
-      warningBox: 'The timeline data and historical events displayed are generated using AI models (Google Gemini). This content may contain inaccuracies, incorrect dates, or hallucinated events.',
-      hallucinationTitle: 'AI Hallucinations',
-      hallucinationDesc: 'Language models can generate plausible-sounding but fictitious events, confuse historical figures with similar names, or construct facts that have no factual basis.',
-      hallucinationsTitle: 'AI Hallucinations & Fictional Events',
-      hallucinationsText: 'Language models can generate plausible-sounding but fictitious events, confuse historical figures with similar names, or invent details that lack factual backing.',
+      modalTitle: 'AI Historical Accuracy Notice',
+      modalSubtitle: 'Important context about AI-generated chronologies',
+      bannerWarning: 'Timeline events are synthesized by Google Gemini AI and enriched with Wikimedia Commons. Content may occasionally contain approximate dates or minor inaccuracies.',
+      warningBox: 'The displayed timeline data is generated with Google Gemini AI and Wikimedia Commons. Dates and events may contain occasional approximations.',
+      hallucinationTitle: 'AI Approximations & Hallucinations',
+      hallucinationDesc: 'Language models may occasionally generate fictional events or confuse historical figures with similar names.',
+      hallucinationsTitle: 'AI Approximations & Fictional Events',
+      hallucinationsText: 'AI models can sometimes generate plausible-sounding fictional details or confuse historical figures with similar names.',
       dateTitle: 'Date & Chronological Precision',
-      dateDesc: 'Historical dates (especially BCE eras, pre-modern history, or events spanning several years) may be approximated, rounded, or placed in incorrect sequence.',
+      dateDesc: 'Dates for ancient or pre-modern eras may be approximated or rounded.',
       datesPrecisionTitle: 'Chronological & Date Approximations',
-      datesPrecisionText: 'Dates for ancient eras (BCE, classical antiquity, or long-lasting wars) are often approximated or rounded. Relative ordering may occasionally differ from historical consensus.',
-      wikiTitle: 'Automated Wikipedia & Image Linking',
-      wikiDesc: 'Articles and thumbnail images are queried automatically from Wikimedia Commons. Occasionally, automated matching may pick an entity with a similar name rather than the intended historical subject.',
+      datesPrecisionText: 'Dates for ancient BCE history, antiquity, or extended conflicts are often approximations or rounded estimates.',
+      wikiTitle: 'Automated Wikipedia Linking',
+      wikiDesc: 'Articles and thumbnails are retrieved via Wikimedia APIs and may occasionally match a similarly named subject.',
       wikiLinkingTitle: 'Automated Wikipedia Matching',
-      wikiLinkingText: 'Articles and thumbnails are queried automatically via Wikimedia APIs. Occasionally, an entity with a similar name may be linked instead of the intended subject.',
+      wikiLinkingText: 'Articles and images are matched automatically via Wikimedia APIs and may occasionally link to a related entity.',
       userVerificationTitle: 'User Verification & Correction',
-      userVerificationDesc: 'ChroniX provides built-in tools to edit any event, correct dates, update descriptions, and replace images. Always cross-check dates and facts with reliable primary sources.',
-      fullControlTitle: 'Full User Editing & Fact Verification',
-      fullControlText: 'ChroniX provides comprehensive tools to edit any event, correct dates, replace images, and add events. We encourage users to verify critical historical dates against reliable primary sources.',
-      footerNote: 'ChroniX is built for exploration, education, and visualization.',
+      userVerificationDesc: 'ChroniX provides built-in tools to edit any event, change dates, and replace images. We recommend verifying critical dates against trusted sources.',
+      fullControlTitle: 'Full User Editing & Verification',
+      fullControlText: 'You have full control to edit any event, update dates, replace images, and add custom milestones in ChroniX.',
+      footerNote: 'ChroniX is built for exploration, education, and research.',
       gotIt: 'I Understand',
       showDisclaimer: 'Show AI Accuracy Disclaimer',
-      badgeTitle: 'AI Accuracy Disclaimer',
-      barPrefix: 'AI Historical Notice:',
-      barText: 'Timeline articles are synthetically generated and may occasionally contain inaccuracies or anachronisms. Please verify critical facts.',
-      barMessage: 'AI Historical Disclaimer: Timeline articles are synthetically generated and may occasionally contain inaccuracies or anachronisms. Please verify critical facts.',
+      badgeTitle: 'AI Disclaimer',
+      barPrefix: 'AI Notice:',
+      barText: 'Timeline events are AI-synthesized and may contain approximations. You can edit any milestone.',
+      barMessage: 'AI Notice: Timeline events are AI-synthesized and may contain approximations. You can edit any milestone.',
       learnMore: 'Learn More',
       minimize: 'Minimize disclaimer',
       badgeLabel: 'AI Disclaimer',
@@ -318,7 +318,7 @@ export const translations = {
       sortAlphabetical: 'Alphabetical (A-Z)',
       noResults: 'No events match your search or filter criteria.',
       noArticlesYet: 'No events available yet in this timeline.',
-      noStarredResults: 'No starred events yet. Click the star on any card to add it to your favorites.',
+      noStarredResults: 'No starred events yet. Star any card to bookmark it.',
       filterStarred: 'Starred',
       filterAll: 'All',
       star: 'Add to favorites',
@@ -369,28 +369,28 @@ export const translations = {
         guide: 'Quick Guide'
       },
       heroTitle: 'Bringing History to Life in Rich Chronological Detail',
-      heroDesc: 'ChroniX reimagines how we study, teach, and explore history. Combining the intelligence of Google Gemini with rich Wikimedia Commons data, ChroniX generates interactive, multi-lane chronologies in seconds.',
+      heroDesc: 'ChroniX combines Google Gemini AI with Wikimedia Commons data to generate interactive, multi-lane visual chronologies in seconds.',
       featuresHeading: 'Core Platform Features',
       features: [
         {
           title: 'Intelligent Chronology Engine',
-          desc: 'Transforms natural language topics into structured chronological timelines with automated periodization and milestone identification.'
+          desc: 'Transforms any topic into a structured timeline with automated periodization and milestones.'
         },
         {
           title: 'Multi-Swimlane Organization',
-          desc: 'Decomposes complex historical eras into parallel themes, theaters, factions, or scientific domains for side-by-side comparison.'
+          desc: 'Divides complex eras into parallel themes, theaters, or factions for side-by-side comparison.'
         },
         {
           title: 'Geographic Map Integration',
-          desc: 'Explores events spatially with coordinated maps, interactive pins, and direct links to Google Maps coordinates.'
+          desc: 'Explores events spatially with live synchronized maps, interactive pins, and coordinates.'
         },
         {
           title: 'Full Customization & Export',
-          desc: 'Edit any event, refine with AI prompts, add custom milestones, and export timelines as JSON data or high-resolution PNG snapshots.'
+          desc: 'Edit any event, refine with AI, and export timelines as PNG images or JSON data.'
         }
       ],
       creditsHeading: 'Attributions & Technology Credits',
-      creditsIntro: 'ChroniX stands on the shoulders of incredible open projects, engines, and public resources. We express our deep appreciation to the following creators and communities:',
+      creditsIntro: 'ChroniX stands on the shoulders of incredible open projects, engines, and public resources:',
       creditsHistropediaTitle: 'Histropedia JS Engine',
       creditsHistropediaSub: 'Interactive Timeline Canvas Engine',
       creditsHistropediaDesc: 'Interactive canvas timeline rendering powered by the open-source Histropedia JS library.',
@@ -398,29 +398,29 @@ export const translations = {
       creditsHistropediaLicenseLink: 'Licence details',
       creditsGeminiTitle: 'Google Gemini',
       creditsGeminiSub: 'AI Reasoning & Chronological Structuring',
-      creditsGeminiDesc: 'Historical knowledge structuring, periodization, and event synthesis powered by Google Gemini API.',
+      creditsGeminiDesc: 'Historical structuring, periodization, and milestone synthesis powered by Google Gemini API.',
       creditsWikiTitle: 'Wikimedia Commons & Wikipedia',
       creditsWikiSub: 'Encyclopedic Media & Summaries',
-      creditsWikiDesc: 'Photographs, paintings, maps, and article extracts provided through the Wikimedia Foundation APIs.',
+      creditsWikiDesc: 'Photographs, paintings, maps, and article extracts provided through Wikimedia Foundation APIs.',
       creditsLeafletTitle: 'Leaflet & OpenStreetMap',
       creditsLeafletSub: 'Modern Web Technologies & Libraries',
       creditsLeafletLicense: 'MIT License',
       creditsLeafletDesc: 'Geographic coordinate mapping and tile rendering powered by Leaflet and OpenStreetMap contributors.',
-      guideCalloutTitle: 'Looking for comprehensive guides & prompt tutorials?',
-      guideCalloutDesc: 'Explore our complete User Guide with prompt writing tips, interactive examples with "Try Now", and map features.',
+      guideCalloutTitle: 'Looking for prompt tips and tutorials?',
+      guideCalloutDesc: 'Explore our User Guide with prompt writing tips, interactive showcase examples, and map features.',
       guideHeading: 'Quick Navigation & Shortcuts',
       guides: [
         {
-          title: 'Zooming & Panning',
-          desc: 'Use mouse wheel or toolbar buttons to zoom into days or out into centuries. Click and drag canvas to pan across time.'
+          title: 'Zoom & Pan',
+          desc: 'Scroll to zoom into days or out to centuries. Drag canvas background to pan across time.'
         },
         {
-          title: 'Examining Events',
-          desc: 'Click any card on the timeline or map pin to open the Event Details drawer with full Wikipedia extracts and image previews.'
+          title: 'Inspect Events',
+          desc: 'Click any card or map pin to open event details, Wikipedia extracts, and photos.'
         },
         {
-          title: 'Editing & Refining',
-          desc: 'Click "Edit Event" to adjust dates or Wikimedia links, or click "Refine" to issue natural language expansion commands to Gemini.'
+          title: 'Edit & Refine',
+          desc: 'Click "Edit Event" to adjust dates, or click "Refine" to expand the timeline with AI.'
         }
       ],
       contactTitle: 'Questions or Feedback?',
@@ -428,12 +428,12 @@ export const translations = {
       copyEmail: 'Copy email',
       copied: 'Copied!',
       githubTitle: 'Open Source on GitHub',
-      githubDesc: 'Explore the complete ChroniX source code, report issues, or contribute to development.',
+      githubDesc: 'Explore the complete ChroniX source code, report issues, or contribute.',
       githubLink: 'View on GitHub',
       githubRepo: 'GitHub Repository',
       creditsChroniXTitle: 'ChroniX Source Code',
       creditsChroniXSub: 'Official Open Source Project Repository',
-      creditsChroniXDesc: 'The complete ChroniX frontend, backend server, and interactive timeline components are publicly hosted on GitHub.',
+      creditsChroniXDesc: 'The complete ChroniX frontend and backend are publicly hosted on GitHub.',
       footerTagline: 'Made with curiosity for history, science & discovery.'
     },
     userGuide: {
@@ -694,10 +694,10 @@ export const translations = {
       ]
     },
     home: {
-      title: 'גלו וחקרו צירי זמן היסטוריים אינטראקטיביים',
-      subtitle: 'הזינו כל תקופה היסטורית, מהפכה מדעית או מסע ביוגרפי למעלה, או לחצו על אחת מהדוגמאות המוכנות להלן',
-      exploreGuide: 'גלו את המדריך למשתמש',
-      multilingualTip: 'ניתן לכתוב בכל שפה — ציר הזמן והקישורים לוויקיפדיה יותאמו לשפת הפרומפט',
+      title: 'כרונולוגיה ויזואלית אינטראקטיבית',
+      subtitle: 'הקלידו כל נושא, תקופה או השוואה ליצירת ציר זמן ויזואלי, או בחרו דוגמה להלן',
+      exploreGuide: 'מדריך למשתמש',
+      multilingualTip: 'תומך בכל שפה — ציר הזמן והקישורים לוויקיפדיה יותאמו לפרומפט',
       surpriseMe: 'הפתע אותי'
     },
     app: {
@@ -818,13 +818,13 @@ export const translations = {
       title: 'ליטוש וארגון מחדש ב-AI',
       subtitle: 'ציר הזמן הנוכחי: {title}',
       label: 'מה תרצו להוסיף, לשנות או לארגן מחדש בציר הזמן?',
-      placeholder: "לדוגמה: 'חלק את האירועים לשני צירי זמן: אירופה ואמריקה', 'פצל למסלולים פוליטיים ותרבותיים', 'הוסף 5 אירועי מפתח נוספים'...",
+      placeholder: "לדוגמה: 'חלק לשני צירי זמן: אירופה ואמריקה', 'פצל למסלולים פוליטיים ותרבותיים'...",
       suggestionsTitle: 'הצעות מהירות:',
       suggestions: [
-        'חלק את האירועים לשני צירי זמן (לפי אזור גיאוגרפי או נושא)',
+        'חלק לשני צירי זמן (לפי אזור או נושא)',
         'פצל למסלולים פוליטיים, תרבותיים וצבאיים',
-        'הוסף 5 אירועי מפתח נוספים עם קישורים לוויקיפדיה',
-        'סנן כדי להדגיש רק נקודות מפנה עיקריות ואירועים מכריעים'
+        'הוסף 5 אירועי מפתח נוספים',
+        'הדגש רק נקודות מפנה עיקריות'
       ],
       refining: 'מלטש ומארגן את ציר הזמן...',
       applyBtn: 'החל ליטוש',
@@ -866,32 +866,32 @@ export const translations = {
       title: 'הבהרת דיוק ומהימנות AI',
       subtitle: 'הודעה חשובה בנוגע לדיוק נתונים היסטוריים',
       modalTitle: 'הבהרת דיוק ומהימנות בינה מלאכותית',
-      modalSubtitle: 'מידע חשוב בנוגע לדיוק נתונים היסטוריים הנוצרים על ידי AI',
-      bannerWarning: 'אירועי ציר הזמן והמידע ההיסטורי נוצרים באמצעות מודלי שפה של בינה מלאכותית (Google Gemini). על אף יכולותיהם הגבוהות, התוכן עלול להכיל אי-דיוקים, תאריכים משוערים או עובדות סינתטיות.',
-      warningBox: 'נתוני ציר הזמן והאירועים ההיסטוריים המוצגים מופקים באמצעות מודלי בינה מלאכותית (Google Gemini). תוכן זה עשוי להכיל אי-דיוקים, תאריכים משוערים או שגויים, והזיות מודל.',
-      hallucinationTitle: 'הזיות בינה מלאכותית (Hallucinations)',
-      hallucinationDesc: 'מודלי שפה עלולים לייצר אירועים בדיוניים בעלי צליל משכנע, לבלבל בין דמויות היסטוריות בעלות שמות דומים, או לייחס עובדות שאינן מגובות היסטורית.',
+      modalSubtitle: 'מידע חשוב על צירי זמן המופקים באמצעות AI',
+      bannerWarning: 'אירועי ציר הזמן נוצרים באמצעות Google Gemini ומועשרים מוויקימדיה קומונס. התוכן עלול להכיל תאריכים משוערים או אי-דיוקים קלים.',
+      warningBox: 'נתוני ציר הזמן מופקים באמצעות מודלי בינה מלאכותית (Google Gemini) ועשויים לכלול קירובים או תאריכים משוערים.',
+      hallucinationTitle: 'הזיות מודל ואירועים בדיוניים',
+      hallucinationDesc: 'מודלי שפה עלולים לייצר פרטים בדיוניים או לבלבל בין אישים בעלי שמות דומים.',
       hallucinationsTitle: 'הזיות מודל ואירועים בדיוניים',
-      hallucinationsText: 'מודלי שפה עלולים לייצר אירועים בעלי צליל משכנע אך בדויים, לבלבל בין אישים בעלי שמות דומים, או לייחס פרטים שאינם נתמכים במקורות היסטוריים.',
+      hallucinationsText: 'מודלי שפה עלולים לייצר פרטים בעלי צליל משכנע אך בדויים, או לבלבל בין דמויות בעלות שמות דומים.',
       dateTitle: 'דיוק תאריכים ורצף כרונולוגי',
-      dateDesc: 'תאריכים היסטוריים (במיוחד בתקופות לפנה״ס, העת העתיקה או אירועים שנמשכו שנים רבות) עלולים להיות מקורבים, מעוגלים או מוצבים ברצף שאינו מדויק.',
+      dateDesc: 'תאריכים בעת העתיקה לפנה״ס או אירועים ממושכים עשויים להיות משוערים או מעוגלים.',
       datesPrecisionTitle: 'קירובי תאריכים ורצף כרונולוגי',
-      datesPrecisionText: 'תאריכים בתקופות עתיקות (לפנה״ס, העת העתיקה או אירועים שנמשכו שנים רבות) הם לרוב מקורבים או מעוגלים, והסדר היחסי ביניהם עשוי לעיתים לחרוג מהקונצנזוס ההיסטורי.',
-      wikiTitle: 'קישור אוטומטי לוויקיפדיה ותמונות',
-      wikiDesc: 'ערכי ויקיפדיה ותמונות ממוזערות מאותרים באופן אוטומטי מוויקימדיה קומונס. לעיתים, ההתאמה האוטומטית עשויה לבחור ערך בעל שם דומה ולא את הנושא המדויק.',
+      datesPrecisionText: 'תאריכים בתקופות קדומות (לפנה״ס, העת העתיקה או מלחמות ממושכות) הם לרוב מקורבים או מעוגלים.',
+      wikiTitle: 'קישור אוטומטי לוויקיפדיה',
+      wikiDesc: 'ערכים ותמונות מאותרים אוטומטית מוויקימדיה, ולעיתים נדירות תיתכן התאמה של ערך בעל שם דומה.',
       wikiLinkingTitle: 'קישור אוטומטי לוויקיפדיה ותמונות',
-      wikiLinkingText: 'ערכים ותמונות ממוזערות מאותרים ומקושרים באופן אוטומטי באמצעות ממשקי ויקימדיה. לעיתים תיתכן התאמה של ערך בעל שם זהה אך שונה מהנושא המבוקש.',
+      wikiLinkingText: 'ערכים ותמונות מאותרים ומקושרים אוטומטית, ולעיתים נדירות תיתכן התאמה של ישות בעלת שם דומה.',
       userVerificationTitle: 'אימות ועריכה על ידי המשתמש',
-      userVerificationDesc: 'ChroniX מספקת כלים מלאים לעריכת כל אירוע, תיקון תאריכים, החלפת תמונות והוספת אירועים. מומלץ תמיד להצליב עובדות ותאריכים מהותיים מול מקורות מוסמכים.',
-      fullControlTitle: 'שליטה מלאה, עריכה ואימות נתונים',
-      fullControlText: 'ChroniX מעמידה לרשותכם כלים מלאים לעריכת כל אירוע, תיקון תאריכים, החלפת תמונות והוספת אירועים. אנו ממליצים תמיד להצליב תאריכים ועובדות מהותיים מול מקורות מוסמכים.',
-      footerNote: 'ChroniX מיועדת ללמידה, מחקר ויזואלי והעשרת ידע.',
+      userVerificationDesc: 'ChroniX מעמידה לרשותכם כלים מלאים לעריכת כל אירוע, תיקון תאריכים והחלפת תמונות.',
+      fullControlTitle: 'שליטה מלאה ועריכת נתונים',
+      fullControlText: 'באפשרותכם לערוך כל אירוע, לדייק תאריכים, להחליף תמונות ולהוסיף אירועים אישיים בכל עת.',
+      footerNote: 'ChroniX מיועדת ללמידה, מחקר והעשרת ידע.',
       gotIt: 'הבנתי, תודה',
       showDisclaimer: 'הצג הבהרת דיוק AI',
-      badgeTitle: 'הבהרת דיוק AI',
-      barPrefix: 'הבהרה היסטורית:',
-      barText: 'אירועי ציר הזמן נוצרים באמצעות בינה מלאכותית ועלולים להכיל אי-דיוקים או שגיאות תארוך. מומלץ לאמת עובדות מהותיות.',
-      barMessage: 'הבהרה היסטורית: אירועי ציר הזמן נוצרים באמצעות בינה מלאכותית ועלולים להכיל אי-דיוקים או שגיאות תארוך. מומלץ לאמת עובדות מהותיות.',
+      badgeTitle: 'הבהרת AI',
+      barPrefix: 'הבהרת AI:',
+      barText: 'אירועי ציר הזמן נוצרים ב-AI ועלולים להכיל קירובים. ניתן לערוך כל אירוע.',
+      barMessage: 'הבהרת AI: אירועי ציר הזמן נוצרים ב-AI ועלולים להכיל קירובים. ניתן לערוך כל אירוע.',
       learnMore: 'למידע נוסף',
       minimize: 'מזער שורת הבהרה',
       badgeLabel: 'הבהרת AI',
@@ -910,7 +910,7 @@ export const translations = {
       sortAlphabetical: 'אלפביתי (א-ת)',
       noResults: 'לא נמצאו אירועים התואמים לחיפוש או הסינון.',
       noArticlesYet: 'עדיין אין אירועים זמינים בציר זמן זה.',
-      noStarredResults: 'אין עדיין אירועים מסומנים בכוכב. לחצו על הכוכב בכל כרטיסייה כדי להוסיף למועדפים.',
+      noStarredResults: 'אין עדיין מועדפים. לחצו על הכוכב בכל כרטיסייה לסימון.',
       filterStarred: 'מועדפים',
       filterAll: 'הכל',
       star: 'הוסף למועדפים',
@@ -961,28 +961,28 @@ export const translations = {
         guide: 'מדריך מקוצר'
       },
       heroTitle: 'להפיח חיים בהיסטוריה בדיוק כרונולוגי עשיר',
-      heroDesc: 'ChroniX מגדירה מחדש את הדרך שבה אנו לומדים, מלמדים וחוקרים את ההיסטוריה. בשילוב הבינה המלאכותית של Google Gemini עם מאגרי ויקימדיה קומונס, ChroniX יוצרת צירי זמן רב-מסלוליים תוך שניות.',
+      heroDesc: 'ChroniX משלבת את הבינה המלאכותית של Google Gemini עם מאגרי ויקימדיה קומונס ליצירת צירי זמן רב-מסלוליים תוך שניות.',
       featuresHeading: 'יכולות המערכת המרכזיות',
       features: [
         {
           title: 'מנוע כרונולוגי אינטליגנטי',
-          desc: 'הופך נושאים בשפה חופשית לצירי זמן מובנים עם תקופות מוגדרות וזיהוי אוטומטי של אבני דרך היסטוריות.'
+          desc: 'הופך כל נושא לציר זמן מובנה עם תקופות מוגדרות וזיהוי אוטומטי של אבני דרך.'
         },
         {
-          title: 'ארגון במסלולי זמן מקבילים (Swimlanes)',
-          desc: 'מפרק תקופות מורכבות למסלולים מקבילים (זירות מלחמה, תחומי מדע, עמים ואימפריות) להשוואה ברורה זו לצד זו.'
+          title: 'ארגון במסלולים מקבילים (Swimlanes)',
+          desc: 'מפרק תקופות מורכבות למסלולים מקבילים (זירות מלחמה, מדע, תרבות) להשוואה ברורה.'
         },
         {
           title: 'שילוב מפה גיאוגרפית אינטראקטיבית',
-          desc: 'חקירת האירועים במרחב עם סנכרון מלא לציר הזמן, נעצים גיאוגרפיים וקישורים ישירים ל-Google Maps.'
+          desc: 'חקירת האירועים במרחב עם סנכרון חי לציר הזמן, נעצים וקישורים ל-Google Maps.'
         },
         {
           title: 'עריכה מלאה וייצוא מתקדם',
-          desc: 'עריכת כל אירוע, ליטוש בהנחיות AI טבעיות, הוספת אירועים אישיים וייצוא כקובץ נתונים JSON או תמונת PNG ברזולוציה גבוהה.'
+          desc: 'עריכת כל אירוע, ליטוש בהנחיות AI וייצוא כקובץ JSON או תמונת PNG חדה.'
         }
       ],
       creditsHeading: 'תודות, קרדיטים וטכנולוגיות',
-      creditsIntro: 'ChroniX נבנתה על בסיס פרויקטים פתוחים, מנועים מתקדמים ומאגרי ידע ציבוריים יוצאי דופן. אנו מביעים את מלוא הערכתנו ליוצרים ולקהילות הבאות:',
+      creditsIntro: 'ChroniX נבנתה על בסיס פרויקטים פתוחים, מנועים מתקדמים ומאגרי ידע ציבוריים:',
       creditsHistropediaTitle: 'מנוע Histropedia JS',
       creditsHistropediaSub: 'מנוע קנבס אינטראקטיבי לצירי זמן',
       creditsHistropediaDesc: 'רינדור הקנבס האינטראקטיבי של ציר הזמן מופעל באמצעות ספריית הקוד הפתוח Histropedia JS.',
@@ -998,21 +998,21 @@ export const translations = {
       creditsLeafletSub: 'טכנולוגיות וספריות ווב מודרניות',
       creditsLeafletLicense: 'רישיון MIT',
       creditsLeafletDesc: 'מיפוי הקואורדינטות הגיאוגרפיות ורינדור שכבות המפה מופעלים באמצעות Leaflet ותורמי OpenStreetMap.',
-      guideCalloutTitle: 'מחפשים מדריך מקיף וטיפים לניסוח פרומפטים?',
-      guideCalloutDesc: 'גלו את המדריך המלא למשתמש הכולל טיפים לכתיבת פרומפטים מנצחים, דוגמאות אינטראקטיביות עם "נסו עכשיו" וכלי מיפוי.',
+      guideCalloutTitle: 'מחפשים טיפים לניסוח פרומפטים?',
+      guideCalloutDesc: 'גלו את המדריך המלא למשתמש הכולל טיפים לכתיבת פרומפטים מנצחים, דוגמאות אינטראקטיביות וכלי מיפוי.',
       guideHeading: 'ניווט מקוצר וקיצורי דרך',
       guides: [
         {
           title: 'זום וגלילה בזמן',
-          desc: 'השתמשו בגלגלת העכבר או בכפתורי הזום בסרגל להתקרבות עד רמת הימים או התרחקות למאות שנים. לחצו וגררו את הקנבס לתנועה לאורך ציר הזמן.'
+          desc: 'גללו בעכבר להתקרבות לימים או התרחקות למאות שנים. גררו את הקנבס לתנועה בזמן.'
         },
         {
-          title: 'בחינת אירועים בהרחבה',
-          desc: 'לחצו על כל כרטיסייה בציר הזמן או נעץ במפה כדי לפתוח את חלונית פרטי האירוע, הכוללת תקצירי ויקיפדיה ותמונות מוגדלות.'
+          title: 'בחינת אירועים',
+          desc: 'לחצו על כל כרטיסייה או נעץ במפה לפתיחת חלונית הפרטים עם תקצירי ויקיפדיה ותמונות.'
         },
         {
-          title: 'עריכה וליטוש מתקדם',
-          desc: 'לחצו על "עריכת אירוע" לשינוי תאריכים ותמונות, או לחצו על "ליטוש" כדי לבקש מ-Gemini להרחיב או להוסיף אירועים בהנחיה חופשית.'
+          title: 'עריכה וליטוש',
+          desc: 'לחצו על "עריכת אירוע" לשינוי תאריכים, או על "ליטוש" להרחבת ציר הזמן עם Gemini.'
         }
       ],
       contactTitle: 'שאלות או משוב?',
@@ -1025,7 +1025,7 @@ export const translations = {
       githubRepo: 'מאגר GitHub',
       creditsChroniXTitle: 'קוד המקור של ChroniX',
       creditsChroniXSub: 'המאגר הרשמי של הפרויקט ב-GitHub',
-      creditsChroniXDesc: 'קוד המקור של ממשק המשתמש, שרת ה-Backend ורכיבי ציר הזמן האינטראקטיביים זמינים באופן חופשי ב-GitHub.',
+      creditsChroniXDesc: 'קוד המקור של ממשק המשתמש, שרת ה-Backend ורכיבי ציר הזמן זמינים ב-GitHub.',
       footerTagline: 'נוצר מתוך סקרנות והתלהבות להיסטוריה, מדע וגילוי.'
     },
     userGuide: {

@@ -188,195 +188,10 @@ When studying a specific angle or comparing parallel narratives, specify bookend
 
 ## 3. Curated Prompt Showcase
 
-Here is a curated catalog of 18 ready-to-use prompts across 6 domains. You can copy any prompt directly into the ChroniX search bar:
+Here is a curated catalog of 8 ready-to-use prompts across diverse domains. You can copy any prompt directly into the ChroniX search bar:
 
-### Science & Space
-
-#### 1. The Space Race (1955–1975)
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The Space Race (1955–1975), divided into separate swimlanes for the Soviet Space Program and NASA
-  ```
-- **Hebrew Prompt**:
-  ```text
-  המרוץ לחלל (1955–1975), בחלוקה לשני מסלולי זמן מקבילים: תוכנית החלל הסובייטית מול נאס״א
-  ```
-- **Why It Works**: Demonstrates parallel swimlanes comparing two geopolitical adversaries across simultaneous technological milestones (Sputnik, Vostok, Apollo).
-
-#### 2. The Industrial Revolution & Inventions
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The Industrial Revolution: The major inventions and breakthroughs that shaped our modern world
-  ```
-- **Hebrew Prompt**:
-  ```text
-  המהפכה התעשייתית: ההמצאות הגדולות והטכנולוגיות ששינו את חיי האדם
-  ```
-- **Why It Works**: A direct, thematic prompt that maps steam power, railways, textile mechanization, and electricity chronologically.
-
-#### 3. History of Aviation
-- **Detail Level**: Overview
-- **English Prompt**:
-  ```text
-  History of Aviation: From the Wright brothers' first flight to jet aircraft and space exploration
-  ```
-- **Hebrew Prompt**:
-  ```text
-  תולדות התעופה: מהטיסה הראשונה של האחים רייט ועד למטוסי הסילון והחלל
-  ```
-- **Why It Works**: A fast-paced chronological journey across the 20th century in clear, accessible language.
-
-#### 4. Evolution of the Universe
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The Evolution of the Universe from the Big Bang to today, divided into parallel swimlanes for Early Universe Expansion, Stars & Galaxies Formation, and the Solar System & Earth
-  ```
-- **Hebrew Prompt**:
-  ```text
-  התפתחות היקום מהמפץ הגדול ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: שלבי התפשטות היקום, היווצרות כוכבים וגלקסיות, והיווצרות מערכת השמש וכדור הארץ
-  ```
-- **Why It Works**: Handles astronomical cosmic timescales (billions of years ago) while categorizing cosmic epochs into parallel tracks.
-
----
-
-### Modern History
-
-#### 5. World War II Multi-Theater Chronology
-- **Detail Level**: Deep Dive
-- **English Prompt**:
-  ```text
-  World War II (1939–1945), divided into parallel time lanes for the European Theater, Pacific Theater, and Diplomatic Summits
-  ```
-- **Hebrew Prompt**:
-  ```text
-  מלחמת העולם השנייה (1939–1945), בחלוקה למסלולים מקבילים: הזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות
-  ```
-- **Why It Works**: Maximizes Deep Dive granularity across 3 distinct geographic and political theaters simultaneously.
-
-#### 6. The Israeli-Palestinian Conflict
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The history of the Israeli-Palestinian conflict: Major events, wars, and peace agreements from its beginnings to the present day
-  ```
-- **Hebrew Prompt**:
-  ```text
-  ההיסטוריה של הסכסוך הישראלי-פלסטיני: סקירה של האירועים, המלחמות והסכמי השלום המרכזיים מראשיתו ועד ימינו
-  ```
-- **Why It Works**: A balanced, step-by-step chronological roadmap covering wars, summits, and peace accords.
-
----
-
-### Israel & Jewish History
-
-#### 7. History of Zionism & the State of Israel
-- **Detail Level**: Deep Dive
-- **English Prompt**:
-  ```text
-  The History of Zionism and the founding of Israel: from the First Zionist Congress in Basel and the Balfour Declaration, through the Aliyah waves, underground organizations, UN Partition Plan, to the Declaration of Independence
-  ```
-- **Hebrew Prompt**:
-  ```text
-  תולדות הציונות והקמת מדינת ישראל: מהקונגרס הציוני בבזל והצהרת בלפור, דרך גלי העלייה ומחתרות היישוב, ועד להחלטת כ"ט בנובמבר והכרזת העצמאות
-  ```
-- **Why It Works**: Explicit bookends (Basel 1897 to Independence 1948) ensure focused coverage of pivotal pre-state milestones.
-
-#### 8. Kings of Judah and Kings of Israel (First Temple)
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  First Temple Era: A timeline divided into two parallel time lanes for the Kings of Judah versus the Kings of Israel, from the division of the monarchy to the destruction of the First Temple
-  ```
-- **Hebrew Prompt**:
-  ```text
-  תקופת בית ראשון: ציר זמן בחלוקה לשני מסלולי זמן מקבילים עבור מלכי יהודה מול מלכי ישראל, מפלג הממלכה ועד חורבן בית ראשון
-  ```
-- **Why It Works**: Splits the divided monarchy era into parallel tracks for direct chronological comparison of contemporary monarchs.
-
-#### 9. Evolution of the Hebrew Alphabet & Script
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The Evolution of the Hebrew Alphabet from ancient origins to modern times, divided into parallel swimlanes for Script Styles & Typography (from Proto-Canaanite and Paleo-Hebrew to Square Script and modern print) vs. Languages, Peoples & Cultural Influences
-  ```
-- **Hebrew Prompt**:
-  ```text
-  התפתחות האלפבית והכתב העברי מהמקורות הקדומים ועד ימינו, בחלוקה לשני מסלולים מקבילים: גלגולי סגנונות הכתב (מפרוטו-כנעני ועברי קדום ועד הכתב המרובע והדפוס המודרני) מול השפות, העמים וההשפעות התרבותיות לאורך הדורות
-  ```
-- **Why It Works**: Juxtaposes epigraphic letterforms against historical and cultural influences across three millennia.
-
----
-
-### Ancient Civilizations
-
-#### 10. Ancient Egypt: Dynastic Overview
-- **Detail Level**: Overview
-- **English Prompt**:
-  ```text
-  Ancient Egypt: The story of the great pharaohs and monuments from the pyramids to Cleopatra
-  ```
-- **Hebrew Prompt**:
-  ```text
-  מצרים העתיקה: ציר זמן של הפרעונים והמונומנטים הגדולים מהפירמידות ועד לקלאופטרה
-  ```
-- **Why It Works**: Covers 3,000 years of dynastic history seamlessly without requiring knowledge of dynasty numbers or archaeological jargon.
-
-#### 11. Seven Wonders of the Ancient World
-- **Detail Level**: Overview
-- **English Prompt**:
-  ```text
-  The Seven Wonders of the Ancient World: When the famous monuments were built and what happened to them
-  ```
-- **Hebrew Prompt**:
-  ```text
-  שבעת פלאי תבל של העולם העתיק: מתי נבנו המבנים המפורסמים ומה עלה בגורלם
-  ```
-- **Why It Works**: Displays construction dates, lifespans, and destruction events of the classical wonders on an easy-to-read scale.
-
----
-
-### Prehistory & Nature
-
-#### 12. Dinosaurs: Evolution and Extinction
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  Dinosaurs: Timeline of major eras and famous species, divided into swimlanes for Carnivores vs Herbivores
-  ```
-- **Hebrew Prompt**:
-  ```text
-  עולם הדינוזאורים: סקירה של התקופות והמינים המפורסמים, בחלוקה למסלולים: דינוזאורים טורפים מול דינוזאורים צמחוניים
-  ```
-- **Why It Works**: Leverages intuitive dietary swimlanes (Carnivores vs. Herbivores) across the Triassic, Jurassic, and Cretaceous periods.
-
-#### 13. Human Evolution Milestones
-- **Detail Level**: Overview
-- **English Prompt**:
-  ```text
-  Human Evolution: The journey of humanity from early hominid ancestors to modern humans
-  ```
-- **Hebrew Prompt**:
-  ```text
-  האבולוציה של האדם: המסע של האנושות מהקופים הקדומים ועד לאדם המודרני
-  ```
-- **Why It Works**: Spans millions of years of hominid evolutionary breakthroughs (tool use, bipedalism, fire, language) in an accessible overview.
-
-#### 14. Evolution of Life on Earth
-- **Detail Level**: Deep Dive
-- **English Prompt**:
-  ```text
-  The Evolution of Life on Earth from the beginning to the present day, divided into parallel swimlanes for Animals, Plants, and Microorganisms
-  ```
-- **Hebrew Prompt**:
-  ```text
-  התפתחות החיים על פני כדור הארץ מראשיתם ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: בעלי חיים, צמחים, ומיקרואורגניזמים (יצורים חד-תאיים)
-  ```
-- **Why It Works**: Maps biological history from single-celled organisms through the Cambrian explosion up to modern ecosystems across three distinct biological kingdoms.
-
-#### 15. Evolution of the Horse
+### 1. Evolution of the Horse
+- **Category**: Prehistory & Nature
 - **Detail Level**: Overview
 - **English Prompt**:
   ```text
@@ -386,13 +201,88 @@ Here is a curated catalog of 18 ready-to-use prompts across 6 domains. You can c
   ```text
   האבולוציה של הסוס
   ```
-- **Why It Works**: Traces a specific, fascinating evolutionary transition (from small multi-toed forest dwellers to the modern horse) with transitional fossil milestones.
+- **Why It Works**: Traces the classic evolutionary journey from multi-toed forest dwellers to modern horses using clear transitional milestones.
 
----
+### 2. The Space Race (1955–1975)
+- **Category**: Science & Space
+- **Detail Level**: Standard
+- **English Prompt**:
+  ```text
+  The Space Race (1955–1975): Soviet Space Program vs. NASA
+  ```
+- **Hebrew Prompt**:
+  ```text
+  המרוץ לחלל (1955–1975): תוכנית החלל הסובייטית מול נאס״א
+  ```
+- **Why It Works**: Compares two historical rivals side-by-side using intuitive parallel swimlanes.
 
-### Culture & Lore
+### 3. World War II Multi-Theater Chronology
+- **Category**: Modern History
+- **Detail Level**: Deep Dive
+- **English Prompt**:
+  ```text
+  World War II (1939–1945), divided into parallel time lanes for European Theater, Pacific Theater, and Diplomatic Summits
+  ```
+- **Hebrew Prompt**:
+  ```text
+  מלחמת העולם השנייה (1939–1945), בחלוקה למסלולים מקבילים: הזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות
+  ```
+- **Why It Works**: Organizes a global conflict into distinct geographic theaters at high narrative depth.
 
-#### 16. Harry Potter Saga (Seven School Years)
+### 4. Ancient Egypt: Dynastic Overview
+- **Category**: Ancient Civilizations
+- **Detail Level**: Overview
+- **English Prompt**:
+  ```text
+  Ancient Egypt: The story of the great pharaohs and monuments from the pyramids to Cleopatra
+  ```
+- **Hebrew Prompt**:
+  ```text
+  מצרים העתיקה: סיפורם של הפרעונים והמונומנטים הגדולים מהפירמידות ועד לקלאופטרה
+  ```
+- **Why It Works**: A simple natural prompt lets the AI map millennia of dynastic history effortlessly.
+
+### 5. Dinosaurs: Evolution and Extinction
+- **Category**: Prehistory & Nature
+- **Detail Level**: Standard
+- **English Prompt**:
+  ```text
+  Dinosaurs: Timeline of major eras and species, divided into swimlanes for Carnivores vs. Herbivores
+  ```
+- **Hebrew Prompt**:
+  ```text
+  עולם הדינוזאורים: סקירה של התקופות והמינים המפורסמים, בחלוקה למסלולים: דינוזאורים טורפים מול דינוזאורים צמחוניים
+  ```
+- **Why It Works**: Uses intuitive thematic grouping (Carnivores vs. Herbivores) instead of technical taxonomy.
+
+### 6. The Industrial Revolution & Inventions
+- **Category**: Science & Space
+- **Detail Level**: Standard
+- **English Prompt**:
+  ```text
+  The Industrial Revolution: Breakthrough inventions and technologies that shaped the modern world
+  ```
+- **Hebrew Prompt**:
+  ```text
+  המהפכה התעשייתית: המצאות מפתח וטכנולוגיות ששינו את העולם המודרני
+  ```
+- **Why It Works**: Lets the AI identify pivotal breakthroughs—steam, railways, electricity, and factories—chronologically.
+
+### 7. History of Zionism & the State of Israel
+- **Category**: Israel & Jewish History
+- **Detail Level**: Deep Dive
+- **English Prompt**:
+  ```text
+  History of Zionism & the Founding of Israel: from the First Zionist Congress in Basel to the Declaration of Independence
+  ```
+- **Hebrew Prompt**:
+  ```text
+  תולדות הציונות והקמת מדינת ישראל: מקונגרס בזל הראשון ועד להכרזת העצמאות
+  ```
+- **Why It Works**: Clear historical bookends (Basel to Independence) guide the AI to focus on decisive milestones.
+
+### 8. Harry Potter Saga (Seven School Years)
+- **Category**: Culture & Lore
 - **Detail Level**: Overview
 - **English Prompt**:
   ```text
@@ -402,31 +292,7 @@ Here is a curated catalog of 18 ready-to-use prompts across 6 domains. You can c
   ```text
   עלילת הארי פוטר לאורך שבע שנות הלימוד בהוגוורטס
   ```
-- **Why It Works**: Demonstrates ChroniX's ability to structure fictional narratives and literary sagas just as accurately as real history.
-
-#### 17. Game of Thrones: The Great Houses
-- **Detail Level**: Standard
-- **English Prompt**:
-  ```text
-  The storyline of Game of Thrones, divided into three parallel swimlanes for House Stark, House Lannister, and House Targaryen
-  ```
-- **Hebrew Prompt**:
-  ```text
-  עלילת משחקי הכס, בחלוקה לשלושה מסלולים מקבילים עבור בית סטארק, בית לאניסטר ובית טרגאריין
-  ```
-- **Why It Works**: Organizes an intricate epic fantasy narrative by faction, letting you follow each family's arc chronologically without confusion.
-
-#### 18. History of Rock Music
-- **Detail Level**: Deep Dive
-- **English Prompt**:
-  ```text
-  History of rock music from the 1950s to the present day, divided into parallel swimlanes for Classic Rock, Punk & Heavy Metal, and Alternative & Grunge
-  ```
-- **Hebrew Prompt**:
-  ```text
-  תולדות מוזיקת הרוק משנות ה-50 ועד ימינו, בחלוקה לשלושה מסלולים מקבילים: רוק קלאסי, פאנק ומטאל, ורוק אלטרנטיבי וגראנג'
-  ```
-- **Why It Works**: Breaks down 70 years of musical innovation into stylistic movements across parallel tracks.
+- **Why It Works**: Shows how ChroniX visualizes fictional sagas and book storylines just as smoothly as real history.
 
 ---
 

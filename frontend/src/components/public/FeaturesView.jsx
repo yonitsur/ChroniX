@@ -25,7 +25,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">Multi-Lane &amp; Thematic Chronology</h3>
           <p className="public-feature-desc">
-            Navigate fluidly across millennia, centuries, and days. Compare parallel swimlanes side-by-side, or explore automatic color-coded thematic division (Politics, Science, Culture) within a single timeline with an interactive, draggable legend.
+            Navigate fluidly from millennia down to single days. Compare parallel swimlanes side-by-side or explore automatic color-coded themes with a draggable filter legend.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">AI-Powered Multilingual Synthesis</h3>
           <p className="public-feature-desc">
-            Generate comprehensive historical narratives on demand in any language. Powered by Google Gemini AI, ChroniX produces events and summaries in your prompt's language, dynamically connecting to localized Wikipedia editions worldwide.
+            Generate timelines in any language on demand. Powered by Google Gemini and enriched with verified Wikimedia Commons imagery and encyclopedic summaries.
           </p>
         </div>
 
@@ -47,7 +47,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">Geospatial Synchronized Maps</h3>
           <p className="public-feature-desc">
-            Explore where history unfolded. Every historical milestone with geographic coordinates is rendered on an interactive global map synchronized dynamically with the chronological viewport.
+            Explore where history happened. Mapped milestones synchronize live between the interactive world map and the timeline canvas.
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">Cross-Cultural Comparisons</h3>
           <p className="public-feature-desc">
-            See what was happening in East Asia while the Roman Republic expanded, or compare scientific breakthroughs during the Islamic Golden Age with medieval Europe in parallel lanes.
+            Contrast civilizations side-by-side—see concurrent revolutions, scientific breakthroughs, or opposing factions in parallel tracks.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">Private Workspace &amp; Cloud Sync</h3>
           <p className="public-feature-desc">
-            Save custom timelines, star pivotal turning points, annotate event records, and securely sync your historical research across desktop and mobile devices.
+            Save custom timelines, star key milestones, and securely access your historical research across all your devices.
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export default function FeaturesView({ onEnter }) {
           </div>
           <h3 className="public-feature-title">High-Res Visual Snapshot Export</h3>
           <p className="public-feature-desc">
-            Export full visual representations of your custom chronologies as high-resolution images or structured JSON datasets for academic research, presentations, or publication.
+            Export your timelines as crisp PNG snapshots or structured JSON datasets for presentations, study, and research.
           </p>
         </div>
       </main>

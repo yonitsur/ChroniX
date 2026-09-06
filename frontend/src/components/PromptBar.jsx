@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Search, SlidersHorizontal, Loader2, ArrowRight } from 'lucide-react';
 
 const SUGGESTIONS = [
-  "Presidents of the United States",
-  "Empires",
-  "Dinosaurs & Mesozoic Eras",
-  "World War II Key Events",
-  "Human Evolution & Early Hominids",
-  "History of Artificial Intelligence",
-  "Space Race & Moon Missions",
-  "Rise & Fall of the Roman Empire",
+  "Evolution of the horse",
+  "The Space Race (NASA vs. USSR)",
+  "World War II (European & Pacific Theaters)",
   "Ancient Egypt & Pharaohs",
-  "History of Aviation & Flight",
-  "Renaissance Masters & Art Movements",
-  "Evolution of Video Game Consoles",
+  "Dinosaurs: Carnivores vs. Herbivores",
+  "History of Artificial Intelligence",
+  "Rise & Fall of the Roman Empire",
+  "History of Aviation & Spaceflight",
   "Timeline of the Universe (Big Bang to Now)"
 ];
 
