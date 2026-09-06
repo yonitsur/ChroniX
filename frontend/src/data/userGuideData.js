@@ -449,12 +449,15 @@ export const USER_GUIDE_DATA = {
           desc: '..in a parallel division for the Kings of Judea and the Kings of Israel'
         }
       ],
-      framingHeading: '3. Prompt Framing: Concise vs. Detailed',
+      themesHeading: '3. Thematic Division in Single Timelines (No Split Needed)',
+      themesTitle: 'Automatic Color-Coded Themes & Floating Draggable Legend',
+      themesDesc: 'Even when you do not split your timeline into parallel swimlanes, ChroniX automatically groups events into broad themes (Politics, Military, Science, Culture, Economy) and colors their cards with curated archival tones. On desktop, an interactive floating legend appears in the top-left corner—you can drag it anywhere, switch between vertical and horizontal layouts, or minimize it to a discrete pill. Map markers, mobile feeds, and the Cards List drawer all synchronize to these theme colors.',
+      framingHeading: '4. Prompt Framing: Concise vs. Detailed',
       conciseTitle: 'Concise & Natural Prompts: Exploring Topics with Ease',
       conciseDesc: 'Prompts can be simple, natural, and direct. There is no need for specialized dates or technical jargon. Prompts like "The Industrial Revolution", "Evolution of the Horse", or "The French Revolution" let the AI discover and organize the pivotal milestones and verified imagery automatically.',
       detailedTitle: 'Detailed & Structured Prompts: Custom Focus & Specific Angles',
       detailedDesc: 'When you want to study a targeted angle, you can guide the AI explicitly: specify bookend dates ("from 1789 to 1799"), define distinct geographical theaters ("WWII divided into European and Pacific Theaters"), or group opposing factions into parallel swimlanes.',
-      multilingualHeading: '4. Multilingual Prompts vs. UI Language',
+      multilingualHeading: '5. Multilingual Prompts vs. UI Language',
       multilingualTitle: 'Prompt Language Dictates Timeline Language & Wikipedia Links',
       multilingualDesc: 'While the ChroniX user interface (menus, dialogs, buttons) currently supports English and Hebrew, the timeline generation engine is fully multilingual and works in virtually any language. You can enter prompts in Spanish, French, German, Italian, Arabic, Russian, Japanese, or any other language, completely independent of the language currently selected in the UI. The milestones generated on the canvas (event titles, dates, descriptions, and swimlanes) will be written in the exact language of your prompt, and Wikipedia summaries and article links will automatically point to that language\'s specific Wikipedia edition (e.g. es.wikipedia.org, fr.wikipedia.org, de.wikipedia.org, he.wikipedia.org, or en.wikipedia.org). If an entry or thumbnail image is missing in that language edition, ChroniX automatically falls back to English Wikipedia (en.wikipedia.org) to ensure every event has rich encyclopedic information and historical imagery.'
     },
@@ -653,12 +656,15 @@ export const USER_GUIDE_DATA = {
           desc: '"...בחלוקה למסלולים נפרדים עבור מלכי יהודה מול מלכי ישראל"'
         }
       ],
-      framingHeading: '3. מבנה הפרומפט: קצר ופשוט מול מפורט ומובנה',
+      themesHeading: '3. חלוקה נושאית בציר זמן בודד (ללא פיצול למסלולים)',
+      themesTitle: 'צביעה נושאית אוטומטית ומקרא צף הניתן לגרירה',
+      themesDesc: 'גם כאשר אינכם מפצלים את ציר הזמן למסלולים מקבילים (Swimlanes), מודל ה-AI מחלק אוטומטית את האירועים לתחומי תוכן מרכזיים (פוליטיקה, צבא ומלחמה, מדע וטכנולוגיה, תרבות, כלכלה) וצובע את כרטיסי האירועים בצבעי מוזיאון מובחנים. בדסקטופ מופיע מקרא צף בפינה השמאלית-עליונה – ניתן לגרור אותו לכל מקום בקנבס, להחליף בין תצוגה אנכית לאופקית, או למזער אותו לסמלון קומפקטי. נעצי המפה, הממשק במובייל ורשימת האירועים מסונכרנים כולם לצבעי הנושאים הללו.',
+      framingHeading: '4. מבנה הפרומפט: קצר ופשוט מול מפורט ומובנה',
       conciseTitle: 'פרומפט קצר ופשוט: חקר נושאים בבהירות ובטבעיות',
       conciseDesc: 'פרומפטים יכולים להיות פשוטים, קצרים וטבעיים. אין צורך להכיר שמות היסטוריים או מונחים מדעיים מראש. פרומפטים כמו "המהפכה התעשייתית", "האבולוציה של הסוס" או "המהפכה הצרפתית" מאפשרים ל-AI לגלות באופן אוטומטי את כל ציוני הדרך והאישים המרכזיים.',
       detailedTitle: 'פרומפט מפורט ומובנה: מיקוד והכוונה מדויקת',
       detailedDesc: 'כאשר רוצים להתמקד בהיבט מסוים, ניתן להנחות את ה-AI במפורש: להגדיר תאריכי התחלה וסיום מדויקים ("המהפכה הצרפתית מ-1789 עד 1799"), לחלק לזירות גיאוגרפיות ("מלחמת העולם השנייה בחלוקה לזירה האירופית וזירת האוקיינוס השקט") או להשוות פלגים ומסלולים מקבילים.',
-      multilingualHeading: '4. שפת הפרומפט מול שפת הממשק',
+      multilingualHeading: '5. שפת הפרומפט מול שפת הממשק',
       multilingualTitle: 'שפת הפרומפט קובעת את שפת ציר הזמן והקישורים לוויקיפדיה',
       multilingualDesc: 'למרות שממשק המשתמש (התפריטים, הכפתורים והחלוניות) מוצג בעברית או באנגלית, מנוע הבינה המלאכותית של ChroniX תומך ביצירת צירי זמן בכל שפה שתרצו! תוכלו להקליד פרומפטים בצרפתית, ספרדית, גרמנית, ערבית, רוסית, יפנית או בכל שפה אחרת, ללא קשר לשפת הממשק הנבחרת. כל האירועים שייווצרו על הקנבס (כותרות, תאריכים, תקצירים ומסלולים) ייכתבו בדיוק בשפה שבה נוסח הפרומפט, והקישורים לוויקיפדיה יקשרו אוטומטית למהדורת ויקיפדיה המתאימה באותה שפה. במידה וערך או תמונת שער חסרים במהדורת ויקיפדיה המקומית, המערכת תבצע השלמה אוטומטית מוויקיפדיה באנגלית (en.wikipedia.org) העשירה ביותר בערכים ובתמונות היסטוריות, כך שאף אירוע לא יישאר ללא תוכן עשיר.'
     },

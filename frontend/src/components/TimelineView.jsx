@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { Timeline, Article } from 'histropediajs';
+import { GripVertical, Rows3, Columns3, Minus, Palette } from 'lucide-react';
 import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 
 // Reimplement Article.prototype.drawPeriodLinesAndConnectors so the period line and connector line
@@ -190,6 +191,135 @@ function resolveArticleLaneColor(laneIdentifier, lanes = []) {
     hash |= 0;
   }
   return DEFAULT_LANE_COLORS[Math.abs(hash) % DEFAULT_LANE_COLORS.length];
+}
+
+const clampVal = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+/**
+ * Floating theme legend for single (non-split) timelines. Draggable within the
+ * timeline area, toggles vertical/horizontal layout, and minimizes to a pill.
+ */
+function ThemeLegend({ items }) {
+  const [pos, setPos] = useState({ x: 12, y: 12 });
+  const [orientation, setOrientation] = useState('vertical');
+  const [minimized, setMinimized] = useState(false);
+  const elRef = useRef(null);
+  const dragRef = useRef(null);
+
+  const beginDrag = (e) => {
+    const el = elRef.current;
+    const parent = el?.parentElement;
+    dragRef.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      origin: { ...pos },
+      parentRect: parent?.getBoundingClientRect(),
+      elRect: el?.getBoundingClientRect(),
+      moved: false,
+    };
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* noop */ }
+  };
+
+  const moveDrag = (e) => {
+    const d = dragRef.current;
+    if (!d || d.pointerId !== e.pointerId) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) d.moved = true;
+    let nx = d.origin.x + dx;
+    let ny = d.origin.y + dy;
+    if (d.parentRect && d.elRect) {
+      nx = clampVal(nx, 0, Math.max(0, d.parentRect.width - d.elRect.width));
+      ny = clampVal(ny, 0, Math.max(0, d.parentRect.height - d.elRect.height));
+    }
+    setPos({ x: nx, y: ny });
+  };
+
+  const endDrag = (e, onTap) => {
+    const d = dragRef.current;
+    dragRef.current = null;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    if (d && !d.moved && onTap) onTap();
+  };
+
+  const dragHandlers = (onTap) => ({
+    onPointerDown: beginDrag,
+    onPointerMove: moveDrag,
+    onPointerUp: (e) => endDrag(e, onTap),
+  });
+
+  if (minimized) {
+    return (
+      <div ref={elRef} className="absolute z-10" style={{ left: pos.x, top: pos.y, touchAction: 'none' }}>
+        <button
+          type="button"
+          {...dragHandlers(() => setMinimized(false))}
+          title="Theme legend"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 shadow-lg cursor-grab active:cursor-grabbing text-slate-700 dark:text-slate-200"
+        >
+          <Palette className="w-3.5 h-3.5 text-sky-500" />
+          <span className="text-xs font-semibold">{items.length}</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={elRef}
+      className="absolute z-10 max-w-[70%] rounded-xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 shadow-lg overflow-hidden"
+      style={{ left: pos.x, top: pos.y, touchAction: 'none' }}
+    >
+      {/* Header / drag bar */}
+      <div className="flex items-center gap-1 pl-1 pr-1 py-1 border-b border-slate-200/70 dark:border-slate-700/60">
+        <span
+          {...dragHandlers()}
+          title="Drag legend"
+          className="flex items-center text-slate-400 dark:text-slate-500 cursor-grab active:cursor-grabbing px-0.5"
+        >
+          <GripVertical className="w-4 h-4" />
+        </span>
+        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mr-auto select-none">
+          <Palette className="w-3.5 h-3.5 inline text-sky-500" />
+        </span>
+        <button
+          type="button"
+          onClick={() => setOrientation((o) => (o === 'vertical' ? 'horizontal' : 'vertical'))}
+          title={orientation === 'vertical' ? 'Horizontal layout' : 'Vertical layout'}
+          className="p-1 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition-colors"
+        >
+          {orientation === 'vertical'
+            ? <Columns3 className="w-3.5 h-3.5" />
+            : <Rows3 className="w-3.5 h-3.5" />}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMinimized(true)}
+          title="Minimize"
+          className="p-1 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition-colors"
+        >
+          <Minus className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Legend items */}
+      <div
+        className={`px-2.5 py-2 ${
+          orientation === 'vertical'
+            ? 'flex flex-col gap-1.5'
+            : 'flex flex-row flex-wrap items-center gap-x-3 gap-y-1.5 max-w-[46vw]'
+        }`}
+      >
+        {items.map(({ name, color }) => (
+          <span key={name} className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200">
+            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+            <span className="truncate max-w-[160px]">{name}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 const TimelineView = forwardRef(({
@@ -760,18 +890,7 @@ const TimelineView = forwardRef(({
         className="w-full h-full absolute inset-0"
         style={{ touchAction: 'none' }}
       />
-      {themeLegend.length >= 2 && (
-        <div
-          className="absolute bottom-3 left-3 z-10 max-w-[60%] flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2 rounded-xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 shadow-lg pointer-events-none"
-        >
-          {themeLegend.map(({ name, color }) => (
-            <span key={name} className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-              <span className="truncate max-w-[160px]">{name}</span>
-            </span>
-          ))}
-        </div>
-      )}
+      {themeLegend.length >= 2 && <ThemeLegend items={themeLegend} />}
     </div>
   );
 });

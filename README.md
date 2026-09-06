@@ -67,6 +67,7 @@
 - **HistropediaJS Multi-Scale Canvas Engine**:
   - Fluid zooming from billions of years ago (`Ma` prehistoric scales) down to single days and hours.
   - **Parallel Swimlanes**: Organize events into comparative thematic tracks (e.g., NASA vs. Soviet Program, Allied vs. Axis, Carnivores vs. Herbivores).
+  - **Single-Timeline Thematic Division**: In unified (single-lane) mode, events are automatically classified into color-coded themes (Politics, Science, Military, Culture) with an interactive, draggable and expandable desktop legend. Synchronized across map pins, mobile feeds, and the Cards List drawer.
   - **Time Bands**: Broad historical epochs painted across the canvas with start and end dates.
   - **Fit All Articles**: Instant re-centering of the full timeline span with one click.
 - **Automated Wikimedia Commons & Wikipedia Enrichment**:

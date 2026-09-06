@@ -19,6 +19,7 @@
 3. [Prompt Mastery & Timeline Architecture](#2-prompt-mastery--timeline-architecture)
    - [Detail Levels (Overview, Standard, Deep Dive)](#detail-levels)
    - [Parallel Swimlanes (Horizontal Thematic Tracks)](#parallel-swimlanes-horizontal-thematic-tracks)
+   - [Thematic Color-Coding in Single Timelines](#thematic-color-coding-in-single-timelines)
    - [Prompt Framing: Concise vs. Structured](#prompt-framing-concise-vs-structured)
    - [Multilingual Support: Prompt Language vs. UI Language](#multilingual-support-prompt-language-vs-ui-language)
 4. [Curated Prompt Showcase](#3-curated-prompt-showcase)
@@ -136,6 +137,22 @@ One of ChroniX's most powerful capabilities is **parallel swimlanes**. You can i
 4. **Parallel Dynasties / Entities**:
    - `"...in a parallel division for the Kings of Judah and the Kings of Israel"`
    - `"...House Stark vs. House Lannister vs. House Targaryen"`
+
+---
+
+### Thematic Color-Coding in Single Timelines
+
+Even when a timeline is **not split into parallel swimlanes** (a single unified timeline), ChroniX automatically divides events into thematic categories (e.g. *Politics*, *Military*, *Science & Technology*, *Culture*, *Economy*):
+
+- **Automatic Theme Color-Coding**: Events on the canvas receive distinct museum-palette colors corresponding to their theme, providing instant visual categorization without requiring horizontal swimlane splits.
+- **Interactive Floating Desktop Legend**:
+  - **Draggable**: Click and drag the grip icon or legend header to position the legend anywhere across the canvas.
+  - **Horizontal / Vertical Toggle**: Switch between a compact vertical stack and a wrapping horizontal layout.
+  - **Minimize & Expand**: Click the minimize button (`—`) to collapse the legend into a discrete palette pill showing the number of themes; tap it anytime to re-expand.
+- **Full Platform Synchronization**:
+  - **Map Pins**: Geographic map pins match each event's theme color in single-timeline mode.
+  - **Cards List Drawer**: Event badges display the theme name and color dot, and the filter dropdown switches to filtering by theme.
+  - **Mobile Experience**: Both the interactive ruler timeline and the chronological card feed color-code events by theme, with tappable theme filter pills in the top header.
 
 ---
 
@@ -530,8 +547,8 @@ The map and the timeline canvas communicate seamlessly:
 - **Timeline -> Map**: Clicking any event card on the timeline automatically flies the map camera (`flyTo`) directly to that event's coordinates and opens a popup containing the event's thumbnail and title.
 - **Map -> Timeline**: Clicking any map pin highlights the event, centers the timeline canvas smoothly onto that event's card, and opens the Event Details drawer.
 
-### Swimlane Color-Coded Markers
-Every map pin marker is automatically color-coded to match its respective timeline swimlane color (e.g., blue for NASA, red for Soviet Space Program), providing immediate visual correlation between temporal lanes and geographical positions.
+### Swimlane & Theme Color-Coded Markers
+Every map pin marker is automatically color-coded to match its respective timeline swimlane color (e.g., blue for NASA, red for Soviet Space Program) or its event theme in single-timeline mode, providing immediate visual correlation between temporal domains and geographical positions.
 
 ---
 

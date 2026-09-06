@@ -23,9 +23,9 @@ export default function FeaturesView({ onEnter }) {
           <div className="public-feature-icon">
             <Clock className="w-5 h-5 text-sky-400" />
           </div>
-          <h3 className="public-feature-title">Cartesian Multi-Lane Chronology</h3>
+          <h3 className="public-feature-title">Multi-Lane &amp; Thematic Chronology</h3>
           <p className="public-feature-desc">
-            Navigate fluidly across millennia, centuries, and days. The horizontal X-axis maps chronological progression, while the vertical Y-axis separates distinct thematic and cultural lanes.
+            Navigate fluidly across millennia, centuries, and days. Compare parallel swimlanes side-by-side, or explore automatic color-coded thematic division (Politics, Science, Culture) within a single timeline with an interactive, draggable legend.
           </p>
         </div>
 

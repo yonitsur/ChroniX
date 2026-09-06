@@ -12,7 +12,7 @@ import {
   MapPin,
   Star
 } from 'lucide-react';
-import { getLaneColor } from '../data/laneColors';
+import { getLaneColor, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function CardsListDrawer({
@@ -30,11 +30,16 @@ export default function CardsListDrawer({
   const { t, isRtl, formatTimeSpan } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLaneId, setSelectedLaneId] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('chronological_asc'); // 'chronological_asc' | 'chronological_desc' | 'alphabetical'
 
   const starredCount = useMemo(() => {
     return articles.filter((a) => starredArticleIds?.has(a.id)).length;
   }, [articles, starredArticleIds]);
+
+  // In a single (non-split) timeline, group/color by theme (`category`) instead of lane.
+  const categories = useMemo(() => getDistinctCategories(articles), [articles]);
+  const themedMode = lanes.length <= 1 && categories.length >= 2;
 
   // Map lanes for fast lookup
   const laneMap = useMemo(() => {
@@ -47,6 +52,14 @@ export default function CardsListDrawer({
     });
     return map;
   }, [lanes]);
+
+  // Resolves the badge (color + label) an event shows: theme in single timelines, else lane.
+  const getEventBadge = (art) => {
+    if (themedMode && art.category) {
+      return { title: art.category, color: getCategoryColor(art.category, categories) };
+    }
+    return laneMap.get(art.lane) || null;
+  };
 
   // Filter and sort articles
   const filteredArticles = useMemo(() => {
@@ -62,6 +75,11 @@ export default function CardsListDrawer({
           if (art.lane !== selectedLaneId) return false;
         }
 
+        // Filter by theme (single-timeline mode)
+        if (themedMode && selectedCategory !== 'all') {
+          if ((art.category || '') !== selectedCategory) return false;
+        }
+
         // Filter by search query
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
@@ -70,9 +88,10 @@ export default function CardsListDrawer({
           const extractMatch = art.extract?.toLowerCase().includes(q);
           const laneName = (laneMap.get(art.lane)?.title || '').toLowerCase();
           const laneMatch = laneName.includes(q);
+          const categoryMatch = (art.category || '').toLowerCase().includes(q);
           const yearMatch = art.from?.year?.toString().includes(q);
 
-          return titleMatch || subtitleMatch || extractMatch || laneMatch || yearMatch;
+          return titleMatch || subtitleMatch || extractMatch || laneMatch || categoryMatch || yearMatch;
         }
 
         return true;
@@ -100,7 +119,7 @@ export default function CardsListDrawer({
         if (aMonth !== bMonth) return aMonth - bMonth;
         return aDay - bDay;
       });
-  }, [articles, searchQuery, selectedLaneId, sortBy, laneMap]);
+  }, [articles, searchQuery, selectedLaneId, selectedCategory, themedMode, categories, sortBy, laneMap]);
 
   if (!isOpen) return null;
 
@@ -204,23 +223,41 @@ export default function CardsListDrawer({
               </select>
             </div>
 
-            {/* Lane Filter dropdown if lanes exist */}
-            {lanes.length > 0 && (
+            {/* Lane / Theme Filter dropdown */}
+            {themedMode ? (
               <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                 <Filter className="w-3 h-3 text-slate-400" />
                 <select
-                  value={selectedLaneId}
-                  onChange={(e) => setSelectedLaneId(e.target.value)}
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                   className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500 max-w-[110px] truncate"
                 >
-                  <option value="all">{t('cardsList.allLanes')}</option>
-                  {lanes.map((lane) => (
-                    <option key={lane.id} value={lane.id}>
-                      {lane.title}
+                  <option value="all">{t('cardsList.allThemes')}</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
                     </option>
                   ))}
                 </select>
               </div>
+            ) : (
+              lanes.length > 0 && (
+                <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                  <Filter className="w-3 h-3 text-slate-400" />
+                  <select
+                    value={selectedLaneId}
+                    onChange={(e) => setSelectedLaneId(e.target.value)}
+                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg px-2 py-1 text-[11px] font-medium outline-none focus:border-sky-500 max-w-[110px] truncate"
+                  >
+                    <option value="all">{t('cardsList.allLanes')}</option>
+                    {lanes.map((lane) => (
+                      <option key={lane.id} value={lane.id}>
+                        {lane.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )
             )}
           </div>
         </div>
@@ -246,12 +283,13 @@ export default function CardsListDrawer({
               <>
                 <Search className="w-8 h-8 opacity-40" />
                 <p className="text-xs">{t('cardsList.noResults')}</p>
-                {(searchQuery || selectedLaneId !== 'all') && (
+                {(searchQuery || selectedLaneId !== 'all' || selectedCategory !== 'all') && (
                   <button
                     type="button"
                     onClick={() => {
                       setSearchQuery('');
                       setSelectedLaneId('all');
+                      setSelectedCategory('all');
                     }}
                     className="text-xs text-sky-600 dark:text-sky-400 underline font-medium cursor-pointer"
                   >
@@ -266,7 +304,7 @@ export default function CardsListDrawer({
             const isSelected = selectedArticleId === art.id;
             const isStarred = Boolean(starredArticleIds?.has(art.id));
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
-            const laneInfo = laneMap.get(art.lane);
+            const laneInfo = getEventBadge(art);
             const isItemHebrew = hasHebrew((art.title || '') + ' ' + (art.subtitle || ''));
 
             return (

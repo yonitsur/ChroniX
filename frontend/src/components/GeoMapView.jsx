@@ -13,7 +13,7 @@ import {
   Calendar,
   Eye
 } from 'lucide-react';
-import { getLaneColor } from '../data/laneColors';
+import { getLaneColor, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function GeoMapView({
@@ -69,6 +69,18 @@ export default function GeoMapView({
     });
     return map;
   }, [lanes]);
+
+  // In a single (non-split) timeline, color pins by their theme (`category`).
+  const categories = useMemo(() => getDistinctCategories(articles), [articles]);
+  const themedMode = lanes.length <= 1 && categories.length >= 2;
+
+  // Resolves the color a pin should use: theme in single timelines, else lane.
+  const getPinColor = (art) => {
+    if (themedMode && art.category) {
+      return getCategoryColor(art.category, categories);
+    }
+    return laneColorMap[art.lane] || (isDark ? '#38bdf8' : '#0284c7');
+  };
 
   // 1. Initialize Map
   useEffect(() => {
@@ -166,7 +178,7 @@ export default function GeoMapView({
       routeCoordinates.push([lat, lng]);
 
       const isSelected = selectedArticleId === art.id;
-      const laneColor = laneColorMap[art.lane] || (isDark ? '#38bdf8' : '#0284c7');
+      const laneColor = getPinColor(art);
       const yearStr = art.from ? formatDatePart(art.from) : '';
       const gMapsUrl =
         art.googleMapsUrl ||
@@ -287,7 +299,7 @@ export default function GeoMapView({
         // ignore
       }
     }
-  }, [geoArticles, laneColorMap, isDark]);
+  }, [geoArticles, laneColorMap, themedMode, categories, isDark]);
 
   // 4. Focus on selected article
   useEffect(() => {

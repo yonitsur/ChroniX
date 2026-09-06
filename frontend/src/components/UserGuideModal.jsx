@@ -25,7 +25,8 @@ import {
   Columns2,
   Minimize2,
   Play,
-  Star
+  Star,
+  Palette
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { USER_GUIDE_DATA, SHOWCASE_PROMPTS_DATA } from '../data/userGuideData';
@@ -484,7 +485,25 @@ export default function UserGuideModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              {/* 3. Concise vs Detailed Prompts */}
+              {/* 3. Thematic Division in Single Timelines */}
+              {guide.prompt_mastery.themesHeading && (
+                <div>
+                  <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+                    {guide.prompt_mastery.themesHeading}
+                  </h4>
+                  <div className="p-4 sm:p-5 rounded-xl border border-sky-200/80 dark:border-sky-800/60 bg-sky-50/60 dark:bg-sky-950/25 space-y-2.5">
+                    <div className="flex items-center gap-2 font-semibold text-xs sm:text-sm text-sky-900 dark:text-sky-200">
+                      <Palette className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span>{guide.prompt_mastery.themesTitle}</span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {guide.prompt_mastery.themesDesc}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Concise vs Detailed Prompts */}
               <div>
                 <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.prompt_mastery.framingHeading}
