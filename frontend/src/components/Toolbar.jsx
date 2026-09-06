@@ -30,7 +30,9 @@ import {
   Languages,
   Zap,
   Star,
-  LayoutList
+  LayoutList,
+  Globe,
+  Columns2
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import QuotaBadge from './QuotaBadge';
@@ -92,7 +94,9 @@ export default function Toolbar({
   onToggleFilterStarredOnly,
   starredCount = 0,
   isCardsListOpen = false,
-  onToggleCardsList
+  onToggleCardsList,
+  mapMode = 'pip',
+  onMapModeChange
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -108,6 +112,9 @@ export default function Toolbar({
   const [isDetailDropdownOpen, setIsDetailDropdownOpen] = useState(false);
   const detailDropdownRef = useRef(null);
 
+  const [isMapMenuOpen, setIsMapMenuOpen] = useState(false);
+  const mapMenuRef = useRef(null);
+
   // Close menus on outside click
   useEffect(() => {
     function handleClickOutside(event) {
@@ -119,6 +126,9 @@ export default function Toolbar({
       }
       if (detailDropdownRef.current && !detailDropdownRef.current.contains(event.target)) {
         setIsDetailDropdownOpen(false);
+      }
+      if (mapMenuRef.current && !mapMenuRef.current.contains(event.target)) {
+        setIsMapMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -184,7 +194,7 @@ export default function Toolbar({
     // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
     if (containerWidth < 1024) {
       const freeSpaceInRow1 = containerWidth - logoWidth - baseControlsWidth - 32;
-      if (freeSpaceInRow1 >= 115) {
+      if (freeSpaceInRow1 >= 140) {
         setTopBarRoom('compact');
       } else {
         setTopBarRoom('none');
@@ -197,7 +207,7 @@ export default function Toolbar({
     const formWidth = promptCustomWidth || (isPromptExpanded ? 400 : defaultFormWidth);
     const freeSpace = containerWidth - logoWidth - formWidth - baseControlsWidth - 48;
 
-    if (freeSpace >= 115) {
+    if (freeSpace >= 140) {
       setTopBarRoom('compact');
     } else {
       setTopBarRoom('none');
@@ -222,7 +232,7 @@ export default function Toolbar({
       if (resizeObserver) resizeObserver.disconnect();
       window.removeEventListener('resize', updateRoomAvailability);
     };
-  }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly, isCardsListOpen]);
+  }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly, isCardsListOpen, isMapMenuOpen, mapMode]);
 
   const isResizingRef = useRef(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -375,11 +385,18 @@ export default function Toolbar({
     }
   };
 
+  const mapOptionsList = [
+    { id: 'pip', label: t('toolbar.mapPip') || t('floatingMap.pipTooltip'), icon: Globe },
+    { id: 'split', label: t('toolbar.mapSplit') || t('floatingMap.splitTooltip'), icon: Columns2 },
+    { id: 'full', label: t('toolbar.mapFull') || t('floatingMap.fullTooltip'), icon: Maximize2 },
+    { id: 'icon', label: t('toolbar.mapIcon') || t('floatingMap.closeTooltip'), icon: Minimize2 },
+  ];
+
   return (
     <header
       dir="ltr"
       className={`relative w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 select-none transition-colors ${
-        isMoreMenuOpen || isUserMenuOpen || isDetailDropdownOpen ? 'z-[45]' : 'z-40'
+        isMoreMenuOpen || isUserMenuOpen || isDetailDropdownOpen || isMapMenuOpen ? 'z-[45]' : 'z-40'
       }`}
     >
       <div
@@ -472,6 +489,69 @@ export default function Toolbar({
                 </span>
               )}
             </button>
+          )}
+
+          {/* Map Options Dropdown Button (when timeline exists and room permits) */}
+          {timelineData && topBarRoom !== 'none' && (
+            <div className="relative shrink-0" ref={mapMenuRef}>
+              <button
+                type="button"
+                id="toolbar-map-btn"
+                data-action="map"
+                onClick={() => setIsMapMenuOpen((prev) => !prev)}
+                className={`h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs group ${
+                  isMapMenuOpen || mapMode !== 'icon'
+                    ? 'bg-teal-500/10 dark:bg-teal-400/15 border-teal-400/80 dark:border-teal-500/80 text-teal-700 dark:text-teal-300 ring-2 ring-teal-400/20 shadow-xs'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:border-teal-300 dark:hover:border-teal-700/60 hover:bg-teal-50/70 dark:hover:bg-teal-950/40'
+                }`}
+                title={t('toolbar.mapOptions')}
+                aria-label={t('toolbar.mapOptions')}
+                aria-haspopup="true"
+                aria-expanded={isMapMenuOpen}
+              >
+                <Globe className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
+              </button>
+
+              {isMapMenuOpen && (
+                <div
+                  className={`absolute mt-2 w-52 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
+                    language === 'he' ? 'right-auto left-0 text-right' : 'right-0 text-left'
+                  }`}
+                  dir={language === 'he' ? 'rtl' : 'ltr'}
+                >
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                    {t('toolbar.mapSection')}
+                  </div>
+                  {mapOptionsList.map((opt) => {
+                    const IconComponent = opt.icon;
+                    const isActive = mapMode === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setIsMapMenuOpen(false);
+                          onMapModeChange?.(opt.id);
+                        }}
+                        className={`w-full text-start px-3 py-2 flex items-center justify-between transition-colors cursor-pointer ${
+                          isActive
+                            ? 'bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 font-semibold'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`} />
+                          <span>{opt.label}</span>
+                        </div>
+                        {isActive && (
+                          <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
 
           {/* Subtle separator between timeline action buttons and canvas zoom controls */}
@@ -678,6 +758,40 @@ export default function Toolbar({
                   <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
                   <span className="font-medium">{t('toolbar.savedTimelines')}</span>
                 </button>
+
+                {/* Map View Options */}
+                <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
+                <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                  {t('toolbar.mapSection')}
+                </div>
+                {mapOptionsList.map((opt) => {
+                  const IconComponent = opt.icon;
+                  const isActive = mapMode === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      disabled={!timelineData}
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onMapModeChange?.(opt.id);
+                      }}
+                      className={`w-full text-start px-3 py-2 flex items-center justify-between transition-colors cursor-pointer ${
+                        isActive
+                          ? 'bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 font-semibold'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`} />
+                        <span>{opt.label}</span>
+                      </div>
+                      {isActive && (
+                        <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
 
                 {/* Export Options */}
                 <div className="my-1 border-t border-slate-100 dark:border-slate-800" />

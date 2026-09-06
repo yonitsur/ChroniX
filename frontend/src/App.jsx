@@ -139,12 +139,20 @@ export default function App() {
     }
   });
 
-  const handleMapDisplayModeChange = (mode) => {
+  const handleMapDisplayModeChange = useCallback((mode) => {
+    if (isMobile) {
+      if (mode === 'icon') {
+        setMobileTab('timeline');
+      } else {
+        setMobileTab('map');
+      }
+      return;
+    }
     setMapDisplayMode(mode);
     try {
       localStorage.setItem('chronix_map_mode', mode);
     } catch (e) {}
-  };
+  }, [isMobile]);
 
   // Resizable Split Pane State (percentage for top map pane, 15% to 85%)
   const [splitRatio, setSplitRatio] = useState(() => {
@@ -684,6 +692,8 @@ export default function App() {
         starredCount={starredArticleIds.size}
         isCardsListOpen={isCardsListOpen}
         onToggleCardsList={handleToggleCardsList}
+        mapMode={mapDisplayMode}
+        onMapModeChange={handleMapDisplayModeChange}
       />
 
       {/* Error banner */}
