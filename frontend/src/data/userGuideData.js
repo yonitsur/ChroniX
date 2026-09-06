@@ -176,7 +176,7 @@ export const USER_GUIDE_DATA = {
   en: {
     getting_started: {
       welcomeTitle: 'Welcome to ChroniX',
-      welcomeDesc: 'ChroniX transforms any topic into an interactive visual timeline powered by Google Gemini, HistropediaJS, and verified Wikimedia imagery.',
+      welcomeDesc: 'ChroniX transforms any topic into an interactive visual timeline powered by Google Gemini, HistropediaJS, and verified Wikimedia imagery. Built for interactive inquiry, it empowers you to ask exploratory questions, test historical perspectives, and uncover connections across time.',
       exploreBtn: 'Explore Examples',
       navHeading: '1. Navigating the Canvas',
       zoomTitle: 'Fluid Multi-Scale Zoom',
@@ -286,7 +286,7 @@ export const USER_GUIDE_DATA = {
     },
     ai_refine: {
       title: 'Refine with AI',
-      subtitle: 'Click Refine on the top toolbar to expand, tweak, or split your existing timeline without starting from scratch.',
+      subtitle: 'Engage in interactive inquiry: click Refine on the top toolbar to expand, tweak, or split your existing timeline without starting from scratch.',
       splitTipTitle: 'Restructuring & Splitting Tracks',
       splitTipDesc: 'Ask Gemini to reorganize existing events into parallel swimlanes by region, faction, or theme.',
       examplesHeading: 'Popular Refinement Prompts:',
@@ -302,6 +302,10 @@ export const USER_GUIDE_DATA = {
         {
           label: 'Separate opposing sides:',
           prompt: '"Restructure the events into two parallel tracks: United States vs. Soviet Union"'
+        },
+        {
+          label: 'Add, remove, or edit themes:',
+          prompt: '"Add a \'Diplomacy\' theme, remove the \'Culture\' theme, and rename \'Science\' to \'Science & Technology\'"'
         },
         {
           label: 'Expand a sub-period:',
@@ -371,7 +375,7 @@ export const USER_GUIDE_DATA = {
   he: {
     getting_started: {
       welcomeTitle: 'ברוכים הבאים ל-ChroniX',
-      welcomeDesc: 'ChroniX הופכת כל נושא היסטורי, מדעי או ספרותי לציר זמן ויזואלי ואינטראקטיבי המופעל על ידי Google Gemini, מנוע HistropediaJS ותמונות מאומתות מוויקימדיה.',
+      welcomeDesc: 'ChroniX הופכת כל נושא היסטורי, מדעי או ספרותי לציר זמן ויזואלי ואינטראקטיבי המופעל על ידי Google Gemini, מנוע HistropediaJS ותמונות מאומתות מוויקימדיה. המערכת מיועדת לחקירה אינטראקטיבית, ומאפשרת לשאול שאלות, להעמיק בתקופות שונות ולגלות הקשרים חדשים.',
       exploreBtn: 'גלו דוגמאות מובילות',
       navHeading: '1. ניווט בקנבס ציר הזמן',
       zoomTitle: 'זום רציף ורב-ממדי',
@@ -481,7 +485,7 @@ export const USER_GUIDE_DATA = {
     },
     ai_refine: {
       title: 'ליטוש וארגון מחדש ב-AI',
-      subtitle: 'לחצו על "ליטוש" בסרגל העליון כדי להרחיב, לעדכן או לפצל את ציר הזמן הקיים בלי להתחיל מאפס.',
+      subtitle: 'חקירה אינטראקטיבית מתמשכת: לחצו על "ליטוש" בסרגל העליון כדי להרחיב, לעדכן או לפצל את ציר הזמן הקיים בלי להתחיל מאפס.',
       splitTipTitle: 'פיצול וארגון למסלולים מקבילים',
       splitTipDesc: 'בקשו מ-Gemini לארגן מחדש את האירועים במסלולים מקבילים לפי זירה גיאוגרפית, צדדים יריבים או תחומי תוכן.',
       examplesHeading: 'הנחיות ליטוש נפוצות ומומלצות:',
@@ -497,6 +501,10 @@ export const USER_GUIDE_DATA = {
         {
           label: 'הפרדת צדדים יריבים:',
           prompt: '"ארגן מחדש את האירועים לשני מסלולים מקבילים: ארצות הברית מול ברית המועצות"'
+        },
+        {
+          label: 'הוספה, הסרה או עריכת נושאים (Themes):',
+          prompt: '"הוסף נושא חדש של \'דיפלומטיה\', הסר את נושא \'תרבות\', ושנה את \'מדע\' ל-\'מדע וטכנולוגיה\'"'
         },
         {
           label: 'הרחבת תת-תקופה:',

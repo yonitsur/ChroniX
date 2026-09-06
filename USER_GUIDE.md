@@ -37,6 +37,7 @@
 6. [AI Refine System (Iterative Expansion & Splitting)](#5-ai-refine-system-iterative-expansion--splitting)
    - [Splitting into Multiple Parallel Paths & Theaters](#splitting-into-multiple-parallel-paths--theaters)
    - [Expanding Sub-Eras & Adding Historical Context](#expanding-sub-eras--adding-historical-context)
+   - [Adding, Removing & Editing Themes](#adding-removing--editing-themes)
    - [Refinement Prompt Cheat-Sheet](#refinement-prompt-cheat-sheet)
 7. [Synchronized Geographic World Map (Leaflet)](#6-synchronized-geographic-world-map-leaflet)
    - [The 4 Map Display Modes](#the-4-map-display-modes)
@@ -54,7 +55,7 @@
 
 **ChroniX** transforms natural language topics into interactive visual chronologies. By combining **Google Gemini (`gemini-2.5-flash`)**, **HistropediaJS**, **Leaflet**, and verified media from the **Wikipedia REST API** and **Wikimedia Commons**, ChroniX allows you to explore any story across **both Time and Space**.
 
-Whether you are exploring deep geological eras, multi-theater global conflicts, technological revolutions, or literary sagas, ChroniX provides an encyclopedic, multi-scale canvas with synchronized geographic mapping.
+Whether you are exploring deep geological eras, multi-theater global conflicts, technological revolutions, or literary sagas, ChroniX provides an encyclopedic, multi-scale canvas with synchronized geographic mapping. ChroniX is built for interactive inquiry, empowering curious minds and researchers to ask exploratory questions, test historical perspectives, and uncover deep cause-and-effect connections across time.
 
 ---
 
@@ -346,7 +347,7 @@ Inside the event modal, scroll to **Location & Coordinates**:
 
 ## 5. AI Refine System (Iterative Expansion & Splitting)
 
-Instead of regenerating a timeline from scratch when you want to change its focus, click the **Refine** button on the top toolbar to converse with Gemini and update the active timeline interactively.
+Instead of regenerating a timeline from scratch when you want to change its focus, click the **Refine** button on the top toolbar to converse with Gemini and update the active timeline interactively. ChroniX turns timeline exploration into a continuous process of interactive inquiry, allowing you to ask follow-up questions, drill into nuances, and steer the chronology as your research evolves.
 
 ### Splitting into Multiple Parallel Paths & Theaters
 You can instruct Gemini to restructure an existing single-track timeline into parallel swimlanes:
@@ -363,6 +364,13 @@ You can ask the AI to zoom into a specific sub-period:
 - *"Include the major peace treaties and diplomatic summits that followed."*
 - *"Add cultural and philosophical milestones during this golden age."*
 
+### Adding, Removing & Editing Themes
+You can ask Gemini to adjust, add, or reorganize the thematic categories across your timeline:
+- **Add a Theme**: *"Add a new 'Espionage & Intelligence' theme and tag relevant covert operations."*
+- **Remove a Theme**: *"Remove the 'Culture' theme and merge its events into 'Politics & Society'."*
+- **Edit or Rename a Theme**: *"Rename the 'Science' theme to 'Science & Technology' and update related milestones."*
+- **Combined Thematic Adjustment**: *"Add a 'Diplomacy' theme, remove 'Culture', and rename 'Science' to 'Science & Technology'."*
+
 ### Refinement Prompt Cheat-Sheet
 
 | Refinement Goal | Example Refinement Instruction |
@@ -370,6 +378,7 @@ You can ask the AI to zoom into a specific sub-period:
 | **Parallel Thematic Paths** | `"Split the timeline into three parallel paths: Political & Military, Science & Technology, and Culture & Society"` |
 | **Geographic Separation** | `"Divide the events into two separate timelines: European Theater and Pacific Theater"` |
 | **Opposing Factions** | `"Restructure the events into two parallel tracks: United States and Soviet Union"` |
+| **Add, Remove or Edit Themes** | `"Add a new theme for 'Diplomacy', rename 'Science' to 'Science & Technology', and remove the 'Culture' theme"` |
 | **Domestic vs. Foreign** | `"Split the timeline into two parallel paths: Domestic Policy & Reforms and Foreign Relations & Treaties"` |
 | **Expand Sub-Era** | `"Add 5 more key battles that took place in the Pacific theater between 1942 and 1943"` |
 | **Cultural Context** | `"Include cultural, philosophical, and social developments that occurred during this reign"` |
