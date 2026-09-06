@@ -520,7 +520,9 @@ export const translations = {
       allLanes: 'All Lanes',
       sortAsc: 'Oldest first',
       sortDesc: 'Newest first',
-      tapToViewMap: 'View on map'
+      tapToViewMap: 'View on map',
+      resetPositions: 'Reset Card Positions',
+      dragToMove: 'Drag to move'
     },
     auth: {
       signInTitle: 'Sign In to ChroniX',
@@ -1088,7 +1090,9 @@ export const translations = {
       allLanes: 'כל המסלולים',
       sortAsc: 'מהמוקדם למאוחר',
       sortDesc: 'מהמאוחר למוקדם',
-      tapToViewMap: 'הצג במפה'
+      tapToViewMap: 'הצג במפה',
+      resetPositions: 'איפוס מיקומי כרטיסים',
+      dragToMove: 'גרור להזזה'
     },
     auth: {
       signInTitle: 'כניסה ל-ChroniX',

@@ -13,7 +13,9 @@ import {
   Image as ImageIcon,
   Sparkles,
   ArrowUpDown,
-  Star
+  Star,
+  GripVertical,
+  RotateCcw
 } from 'lucide-react';
 import { getLaneColor, isColorLight } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
@@ -83,6 +85,61 @@ export default function MobileTimelineView({
   const rulerContainerRef = useRef(null);
   const scaleMultiplierRef = useRef(scaleMultiplier);
   scaleMultiplierRef.current = scaleMultiplier;
+
+  // Dragged card custom offsets: { [articleId]: { x: number, y: number } }
+  const [cardOffsets, setCardOffsets] = useState({});
+  const dragRef = useRef({
+    id: null,
+    startX: 0,
+    startY: 0,
+    initialX: 0,
+    initialY: 0,
+    isDragging: false,
+  });
+
+  const handleDragHandlePointerDown = (e, artId) => {
+    e.stopPropagation();
+    const current = cardOffsets[artId] || { x: 0, y: 0 };
+    dragRef.current = {
+      id: artId,
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: current.x,
+      initialY: current.y,
+      isDragging: false,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleDragHandlePointerMove = (e, artId) => {
+    if (dragRef.current.id !== artId) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    if (!dragRef.current.isDragging && Math.hypot(dx, dy) > 4) {
+      dragRef.current.isDragging = true;
+    }
+    if (dragRef.current.isDragging) {
+      setCardOffsets((prev) => ({
+        ...prev,
+        [artId]: {
+          x: Math.round(dragRef.current.initialX + dx),
+          y: Math.round(dragRef.current.initialY + dy),
+        }
+      }));
+    }
+  };
+
+  const handleDragHandlePointerUp = (e, artId) => {
+    if (dragRef.current.id === artId) {
+      dragRef.current.id = null;
+      dragRef.current.isDragging = false;
+    }
+  };
+
+  const hasMovedCards = Object.keys(cardOffsets).length > 0;
+  const handleResetPositions = () => {
+    setCardOffsets({});
+  };
 
   // Native multi-touch pinch-to-zoom handler for the vertical timeline
   useEffect(() => {
@@ -289,15 +346,15 @@ export default function MobileTimelineView({
     return result;
   }, [minYear, maxYear, totalSpan, scaleMultiplier, pixelsPerYear]);
 
-  // 3. Resolve overlapping sub-columns within each lane and assign ruler period tracks
-  const { layoutArticles, rulerPeriodArticles } = useMemo(() => {
+  // 3. Resolve overlapping cards within each lane using relaxation stacking + ruler period tracks
+  const { layoutArticles, rulerPeriodArticles, maxLayoutY } = useMemo(() => {
     const visible = processedArticles.filter((art) => {
       if (filterStarredOnly && !starredArticleIds?.has(art.id)) return false;
       if (selectedLaneId !== 'all' && art.lane !== selectedLaneId) return false;
       return true;
     });
 
-    // 3a. Sub-columns for cards within each lane
+    // 3a. Group by lane
     const byLane = new Map();
     visible.forEach((art) => {
       const lId = art.lane || 'default';
@@ -306,42 +363,46 @@ export default function MobileTimelineView({
     });
 
     const cardList = [];
+    let overallMaxY = 0;
 
     byLane.forEach((laneArticles) => {
+      // Sort chronologically by start year
       laneArticles.sort((a, b) => {
-        if (Math.abs(a.startYear - b.startYear) > 0.001) {
+        if (Math.abs(a.startYear - b.startYear) > 0.0001) {
           return a.startYear - b.startYear;
         }
         return b.duration - a.duration;
       });
 
-      const activeEnds = [];
+      let lastCardBottom = 0;
+      const CARD_GAP = 16;
 
       laneArticles.forEach((art) => {
-        let placedCol = -1;
-        for (let c = 0; c < activeEnds.length; c++) {
-          if (activeEnds[c] <= art.startYear + 0.01) {
-            placedCol = c;
-            activeEnds[c] = art.endYear;
-            break;
-          }
-        }
+        const hasImage = Boolean(art.imageUrl);
+        const isLongTitle = (art.title || '').length > 32;
+        // Natural card height
+        const cardHeight = hasImage ? 138 : (isLongTitle ? 92 : 78);
 
-        if (placedCol === -1) {
-          placedCol = activeEnds.length;
-          activeEnds.push(art.endYear);
-        }
+        const anchorY = getYearY(art.startYear);
+        const rawEndY = art.isRange ? getYearY(art.endYear) : anchorY;
 
-        const startY = getYearY(art.startYear);
-        const rawEndY = art.isRange ? getYearY(art.endYear) : startY;
-        const heightY = Math.max(art.isRange ? 60 : 42, rawEndY - startY);
+        // Collision-free vertical relaxation:
+        // Card is placed at its natural chronological date (anchorY),
+        // BUT if that overlaps the previous card, it is relaxed down so cards NEVER overlap!
+        const placedY = Math.max(anchorY, lastCardBottom);
+        lastCardBottom = placedY + cardHeight + CARD_GAP;
+
+        if (placedY + cardHeight > overallMaxY) {
+          overallMaxY = placedY + cardHeight;
+        }
 
         cardList.push({
           ...art,
-          subCol: placedCol,
-          startY,
-          endY: rawEndY,
-          heightY
+          anchorY,
+          rawEndY,
+          placedY,
+          cardHeight,
+          hasImage
         });
       });
     });
@@ -378,12 +439,17 @@ export default function MobileTimelineView({
 
     return {
       layoutArticles: cardList,
-      rulerPeriodArticles: rulerDecorated
+      rulerPeriodArticles: rulerDecorated,
+      maxLayoutY: overallMaxY
     };
-  }, [processedArticles, selectedLaneId, minYear, pixelsPerYear]);
+  }, [processedArticles, selectedLaneId, minYear, pixelsPerYear, starredArticleIds, filterStarredOnly]);
 
-  // Height of ruler canvas
-  const canvasHeight = Math.max(600, totalSpan * pixelsPerYear + 180);
+  // Height of ruler canvas - ensures full scroll reach with no clipping
+  const canvasHeight = Math.max(
+    600,
+    totalSpan * pixelsPerYear + 240,
+    maxLayoutY + 180
+  );
 
   // Lanes to display
   const displayLanes = useMemo(() => {
@@ -472,6 +538,17 @@ export default function MobileTimelineView({
               >
                 <Maximize2 className="w-3.5 h-3.5" />
               </button>
+              {hasMovedCards && (
+                <button
+                  type="button"
+                  onClick={handleResetPositions}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25 transition-colors cursor-pointer border border-amber-500/25 shadow-2xs"
+                  title={t('mobile.resetPositions')}
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span className="text-[11px]">{t('mobile.resetPositions')}</span>
+                </button>
+              )}
             </div>
           ) : (
             <button
@@ -710,7 +787,7 @@ export default function MobileTimelineView({
               </div>
 
               {/* Swimlane Track Columns */}
-              {displayLanes.map((lane, laneIdx) => {
+              {displayLanes.map((lane) => {
                 const laneInfo = laneMap.get(lane.id);
                 const laneArticles = layoutArticles.filter(
                   (a) => a.lane === lane.id || (!a.lane && lane.id === 'default')
@@ -719,10 +796,10 @@ export default function MobileTimelineView({
                 return (
                   <div
                     key={lane.id}
-                    className="flex-1 min-w-[240px] sm:min-w-[280px] relative border-e border-slate-200/60 dark:border-slate-800/60"
+                    className="flex-1 min-w-[280px] sm:min-w-[340px] relative border-e border-slate-200/60 dark:border-slate-800/60"
                   >
                     {/* Sticky Lane Column Header */}
-                    <div className="sticky top-0 z-10 h-8 px-3 flex items-center justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+                    <div className="sticky top-0 z-30 h-8 px-3 flex items-center justify-between bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
                       <div className="flex items-center gap-1.5 truncate">
                         <span
                           className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -737,95 +814,160 @@ export default function MobileTimelineView({
                       </span>
                     </div>
 
-                    {/* Events Placed Proportionally in this Lane with Range Connector Lines */}
-                    <div className="relative w-full h-full p-2">
+                    {/* Non-Overlapping Draggable Cards with Dynamic SVG Stems */}
+                    <div className="relative w-full h-full p-2 z-20">
                       {laneArticles.map((art) => {
                         const isSelected = selectedArticleId === art.id;
                         const isHovered = hoveredArticleId === art.id;
                         const isHigh = isSelected || isHovered;
                         const isStarred = Boolean(starredArticleIds?.has(art.id));
                         const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
-                        const top = art.startY;
-                        const height = art.heightY;
+                        const offset = cardOffsets[art.id] || { x: 0, y: 0 };
+                        const isDragged = offset.x !== 0 || offset.y !== 0;
+
+                        // Calculate relative anchor position for dynamic SVG stem
+                        const deltaY = art.anchorY - art.placedY;
+                        const startX = (isRtl ? 18 : -18) - offset.x;
+                        const startY = deltaY - offset.y;
+                        const targetX = 0;
+                        const targetY = Math.min(art.cardHeight / 2, 28);
+
+                        // Midpoint control points for smooth cubic Bézier curve
+                        const midX = startX * 0.5;
+                        const pathD = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${targetY}, ${targetX} ${targetY}`;
 
                         return (
                           <div
                             key={art.id}
                             style={{
-                              top: `${top}px`,
-                              height: `${height}px`,
-                              width: art.subCol > 0 ? '88%' : '94%',
-                              marginInlineStart: art.subCol > 0 ? '10%' : '3%'
+                              top: `${art.placedY}px`,
+                              height: `${art.cardHeight}px`,
+                              [isRtl ? 'right' : 'left']: '22px',
+                              [isRtl ? 'left' : 'right']: '8px',
+                              transform: isDragged ? `translate3d(${offset.x}px, ${offset.y}px, 0)` : undefined,
+                              transition: dragRef.current.id === art.id ? 'none' : 'transform 0.15s ease-out',
                             }}
-                            className="absolute"
+                            className={`absolute ${isHigh ? 'z-30' : 'z-20'}`}
+                            onMouseEnter={() => setHoveredArticleId(art.id)}
+                            onMouseLeave={() => setHoveredArticleId(null)}
                           >
-                            {/* ─── Top Connector Line: from Ruler start tick to Card Top ─── */}
-                            <div
-                              className={`absolute top-0 h-px transition-all pointer-events-none ${
-                                isHigh
-                                  ? 'h-0.5 opacity-100 shadow-sm z-20'
-                                  : 'opacity-35'
-                              }`}
-                              style={{
-                                backgroundColor: laneInfo?.color || '#0284c7',
-                                [isRtl ? 'right' : 'left']: '-2000px', // stretches across toward the ruler
-                                [isRtl ? 'left' : 'right']: '100%'
-                              }}
-                            />
-
-                            {/* ─── Bottom Connector Line: from Ruler end tick to Card Bottom (if range) ─── */}
-                            {art.isRange && (
-                              <div
-                                className={`absolute bottom-0 h-px transition-all pointer-events-none ${
-                                  isHigh
-                                    ? 'h-0.5 opacity-100 shadow-sm z-20'
-                                    : 'opacity-35'
-                                }`}
-                                style={{
-                                  backgroundColor: laneInfo?.color || '#0284c7',
-                                  [isRtl ? 'right' : 'left']: '-2000px', // stretches across toward the ruler
-                                  [isRtl ? 'left' : 'right']: '100%'
-                                }}
+                            {/* ─── Dynamic SVG Bézier Connector Stem ─── */}
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible -z-10">
+                              {/* Axis Anchor Pin Dot at the exact date */}
+                              <circle
+                                cx={startX}
+                                cy={startY}
+                                r={isHigh ? 4.5 : 3}
+                                fill={laneInfo?.color || '#0284c7'}
+                                className="transition-all"
                               />
-                            )}
+                              {/* Range end anchor dot if range */}
+                              {art.isRange && (
+                                <>
+                                  <line
+                                    x1={startX}
+                                    y1={startY}
+                                    x2={startX}
+                                    y2={(art.rawEndY - art.placedY) - offset.y}
+                                    stroke={laneInfo?.color || '#0284c7'}
+                                    strokeWidth={isHigh ? 3 : 2}
+                                    strokeOpacity={isHigh ? 0.9 : 0.6}
+                                  />
+                                  <circle
+                                    cx={startX}
+                                    cy={(art.rawEndY - art.placedY) - offset.y}
+                                    r={isHigh ? 4 : 2.5}
+                                    fill={laneInfo?.color || '#0284c7'}
+                                  />
+                                </>
+                              )}
+                              {/* Curved Bézier stem linking ruler tick to card */}
+                              <path
+                                d={pathD}
+                                fill="none"
+                                stroke={laneInfo?.color || '#0284c7'}
+                                strokeWidth={isHigh ? 2.5 : 1.5}
+                                strokeOpacity={isHigh ? 1 : 0.45}
+                                strokeDasharray={Math.abs(deltaY) > 8 && !isHigh ? '3 3' : undefined}
+                              />
+                              {/* Connection pin on card edge */}
+                              <circle
+                                cx={targetX}
+                                cy={targetY}
+                                r={isHigh ? 3.5 : 2}
+                                fill={laneInfo?.color || '#0284c7'}
+                              />
+                            </svg>
 
                             {/* ─── Main Event Card ─── */}
                             <div
                               onClick={() => onSelectArticle?.(art)}
-                              className={`w-full h-full rounded-xl border relative transition-all cursor-pointer overflow-hidden group/card select-none ${
+                              className={`w-full h-full rounded-xl border relative cursor-pointer overflow-hidden group/card select-none flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-sky-50 dark:bg-sky-950/80 border-sky-400 dark:border-sky-500 shadow-md ring-2 ring-sky-500/20'
-                                  : 'bg-white dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-850 border-slate-200/90 dark:border-slate-800/90 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700'
+                                  ? 'bg-sky-50 dark:bg-sky-950/85 border-sky-400 dark:border-sky-500 shadow-xl ring-2 ring-sky-500/30'
+                                  : isHovered
+                                  ? 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 shadow-md'
+                                  : 'bg-white/95 dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-2xs hover:shadow-xs'
                               }`}
                             >
                               {/* Left/Right Duration Stem Accent on the Card */}
                               <div
-                                className="absolute inset-y-0 w-1.5 transition-colors"
+                                className="absolute inset-y-0 w-1.5 transition-colors z-10"
                                 style={{
                                   backgroundColor: laneInfo?.color || '#0284c7',
                                   [isRtl ? 'right' : 'left']: 0
                                 }}
                               />
 
-                              {/* Card Content */}
-                              <div
-                                className={`p-2.5 sm:p-3 flex flex-col justify-between h-full space-y-1.5 ${
-                                  isRtl ? 'pr-4' : 'pl-4'
-                                }`}
-                              >
-                                {/* 1. Title + Star Button at the TOP */}
-                                <div className="min-w-0">
-                                  <div className="flex items-start justify-between gap-1.5">
-                                    <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-tight line-clamp-2 flex-1">
-                                      {art.title}
-                                    </h4>
+                              {/* Event Image Banner (if available) */}
+                              {art.hasImage && art.imageUrl && (
+                                <div className="w-full h-14 shrink-0 overflow-hidden relative bg-slate-200 dark:bg-slate-800">
+                                  <img
+                                    src={art.imageUrl}
+                                    alt={art.title}
+                                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
+                                    loading="lazy"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                    }}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                                  <div className="absolute bottom-1 inset-x-2 flex items-center justify-between pointer-events-none">
+                                    <span className="text-[9px] font-bold text-white drop-shadow-xs px-1.5 py-0.2 rounded-full bg-black/40 backdrop-blur-xs">
+                                      {timeSpan}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Card Body Content */}
+                              <div className={`p-2 sm:p-2.5 flex-1 flex flex-col justify-between min-h-0 ${isRtl ? 'pr-3.5' : 'pl-3.5'}`}>
+                                {/* Row 1: Title + Drag Grip Handle + Star Bookmark */}
+                                <div className="flex items-start justify-between gap-1.5 min-w-0">
+                                  <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-tight line-clamp-2 flex-1">
+                                    {art.title}
+                                  </h4>
+                                  <div className="flex items-center gap-0.5 shrink-0">
+                                    {/* Draggable Grip Handle */}
+                                    <div
+                                      onPointerDown={(e) => handleDragHandlePointerDown(e, art.id)}
+                                      onPointerMove={(e) => handleDragHandlePointerMove(e, art.id)}
+                                      onPointerUp={(e) => handleDragHandlePointerUp(e, art.id)}
+                                      onPointerCancel={(e) => handleDragHandlePointerUp(e, art.id)}
+                                      className="p-1 text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 cursor-grab active:cursor-grabbing rounded transition-colors active:scale-110"
+                                      style={{ touchAction: 'none' }}
+                                      title={t('mobile.dragToMove')}
+                                    >
+                                      <GripVertical className="w-3.5 h-3.5" />
+                                    </div>
+                                    {/* Star Button */}
                                     <button
                                       type="button"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         onToggleStar?.(art.id);
                                       }}
-                                      className={`p-1 rounded-md transition-colors cursor-pointer shrink-0 ${
+                                      className={`p-1 rounded transition-colors cursor-pointer ${
                                         isStarred
                                           ? 'text-amber-500 bg-amber-500/10'
                                           : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
@@ -835,8 +977,10 @@ export default function MobileTimelineView({
                                       <Star className={`w-3.5 h-3.5 ${isStarred ? 'fill-amber-400 text-amber-400' : ''}`} />
                                     </button>
                                   </div>
+                                </div>
 
-                                  {/* Date badge + Range span badge underneath title */}
+                                {/* Row 2: Date badge + Range badge (when no image banner) */}
+                                {!art.hasImage && (
                                   <div className="flex items-center justify-between gap-1 mt-1">
                                     <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold">
                                       <Calendar className="w-2.5 h-2.5 text-sky-500" />
@@ -857,27 +1001,12 @@ export default function MobileTimelineView({
                                       </span>
                                     )}
                                   </div>
-                                </div>
-
-                                {/* 2. Event Image Banner (if available and height allows) */}
-                                {art.imageUrl && height >= 120 && (
-                                  <div className="w-full h-16 sm:h-20 rounded-lg overflow-hidden relative bg-slate-100 dark:bg-slate-950 shrink-0">
-                                    <img
-                                      src={art.imageUrl}
-                                      alt={art.title}
-                                      loading="lazy"
-                                      className="w-full h-full object-cover object-center group-hover/card:scale-105 transition-transform duration-300"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                      }}
-                                    />
-                                  </div>
                                 )}
 
-                                {/* 3. Subtitle / Extract */}
-                                {height >= 90 && (art.subtitle || art.extract) && (
-                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-snug">
-                                    {art.subtitle || art.extract}
+                                {/* Subtitle / Snippet if available */}
+                                {art.subtitle && (
+                                  <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                                    {art.subtitle}
                                   </p>
                                 )}
                               </div>
