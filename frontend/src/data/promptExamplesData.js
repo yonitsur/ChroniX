@@ -99,6 +99,16 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'standard',
     lang: 'en'
   },
+  {
+    prompt: 'The Renaissance, highlighting the themes of Art, Science, and Political Power',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
+  {
+    prompt: 'The French Revolution (1789–1799), focusing on its Political, Military, and Social themes',
+    detailLevel: 'standard',
+    lang: 'en'
+  },
 
   // --- Hebrew Prompts ---
   {
@@ -194,6 +204,16 @@ export const PROMPT_EXAMPLES = [
   },
   {
     prompt: 'התפתחות האלפבית והכתב העברי מראשיתו ועד ימינו',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  {
+    prompt: 'תקופת הרנסנס, בדגש על הנושאים: אמנות, מדע וכוח פוליטי',
+    detailLevel: 'standard',
+    lang: 'he'
+  },
+  {
+    prompt: 'המהפכה הצרפתית (1789–1799), בדגש על ההיבטים הפוליטיים, הצבאיים והחברתיים',
     detailLevel: 'standard',
     lang: 'he'
   }

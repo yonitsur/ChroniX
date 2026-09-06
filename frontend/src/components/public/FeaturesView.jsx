@@ -1,5 +1,8 @@
 import React from 'react';
-import { Sparkles, Clock, Globe, ArrowRight, Layers, ShieldCheck, Camera } from 'lucide-react';
+import { Sparkles, Clock, Globe, ArrowRight, Layers, ShieldCheck, Camera, Smartphone } from 'lucide-react';
+
+// Toggle to re-enable the mobile compatibility feature once mobile support ships.
+const SHOW_MOBILE_FEATURE = false;
 
 export default function FeaturesView({ onEnter }) {
   return (
@@ -83,6 +86,19 @@ export default function FeaturesView({ onEnter }) {
             Export your timelines as crisp PNG snapshots or structured JSON datasets for presentations, study, and research.
           </p>
         </div>
+
+        {/* 7. Mobile Compatibility (disabled until mobile support ships) */}
+        {SHOW_MOBILE_FEATURE && (
+          <div className="public-feature-card">
+            <div className="public-feature-icon">
+              <Smartphone className="w-5 h-5 text-sky-400" />
+            </div>
+            <h3 className="public-feature-title">Mobile-Optimized Experience</h3>
+            <p className="public-feature-desc">
+              Explore timelines on the go with a touch-first vertical view—pinch to zoom, swipe through eras, and filter events by theme on any phone.
+            </p>
+          </div>
+        )}
       </main>
 
       {/* Call to Action Box */}

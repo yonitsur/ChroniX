@@ -343,7 +343,8 @@ export const USER_GUIDE_DATA = {
       syncPoints: [
         'Timeline to Map: Clicking an event card flies the map camera directly to its geographic pin.',
         'Map to Timeline: Clicking a map marker highlights the event and centers the timeline canvas.',
-        'Color Coding: Map pins match each event’s swimlane color for instant visual clarity.'
+        'Color Coding: Map pins match each event’s swimlane color for instant visual clarity.',
+        'Guided Exploration Mode: Launch a step-by-step tour that glides through events one at a time, automatically pairing the map and timeline in split-screen for an interactive chronological-geographic journey through both time and place.'
       ]
     },
     export_saving: {
@@ -542,7 +543,8 @@ export const USER_GUIDE_DATA = {
       syncPoints: [
         'מציר הזמן למפה: לחיצה על אירוע בציר הזמן מטיסה את מצלמת המפה ישירות לנעץ שלו.',
         'מהמפה לציר הזמן: לחיצה על נעץ במפה מדגישה את האירוע וממרכזת את קנבס ציר הזמן.',
-        'התאמת צבעים: צבעי הנעצים תואמים לצבעי המסלולים לזיהוי ויזואלי מיידי.'
+        'התאמת צבעים: צבעי הנעצים תואמים לצבעי המסלולים לזיהוי ויזואלי מיידי.',
+        'מצב חקירה מודרך: הפעילו סיור צעד-אחר-צעד בין האירועים, המסנכרן אוטומטית את המפה וציר הזמן במסך מפוצל למסע כרונולוגי-גיאוגרפי אינטראקטיבי בזמן ובמרחב.'
       ]
     },
     export_saving: {
