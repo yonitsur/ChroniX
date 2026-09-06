@@ -11,7 +11,8 @@ import {
   Sparkles,
   Info,
   Calendar,
-  Eye
+  Eye,
+  Check
 } from 'lucide-react';
 import { getLaneColor, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
@@ -31,6 +32,8 @@ export default function GeoMapView({
   const tileLayerRef = useRef(null);
 
   const [showGlobalEvents, setShowGlobalEvents] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
 
   const isDark = theme === 'dark';
 
@@ -81,6 +84,63 @@ export default function GeoMapView({
     }
     return laneColorMap[art.lane] || (isDark ? '#38bdf8' : '#0284c7');
   };
+
+  // Build filter options: event themes in a single timeline, lanes in a split one.
+  const filterOptions = useMemo(() => {
+    if (themedMode) {
+      return categories.map((cat) => ({
+        id: cat,
+        label: cat,
+        color: getCategoryColor(cat, categories)
+      }));
+    }
+    return lanes
+      .filter((l) => l && l.id !== undefined && l.id !== null)
+      .map((l, idx) => ({
+        id: l.id,
+        label: l.name || `Lane ${idx + 1}`,
+        color: laneColorMap[l.id] || (isDark ? '#38bdf8' : '#0284c7')
+      }));
+  }, [themedMode, categories, lanes, laneColorMap, isDark]);
+
+  const canFilter = filterOptions.length >= 2;
+
+  // Count of events per filter option (across mapped and unmapped events).
+  const filterCounts = useMemo(() => {
+    const counts = {};
+    for (const art of articles) {
+      const key = themedMode ? (art.category || '') : art.lane;
+      if (key === undefined || key === null || key === '') continue;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+  }, [articles, themedMode]);
+
+  const matchesFilter = (art) =>
+    selectedFilter === 'all'
+      ? true
+      : themedMode
+      ? (art.category || '') === selectedFilter
+      : art.lane === selectedFilter;
+
+  const filteredGeoArticles = useMemo(
+    () => geoArticles.filter(matchesFilter),
+    [geoArticles, selectedFilter, themedMode]
+  );
+
+  const filteredNonGeoArticles = useMemo(
+    () => nonGeoArticles.filter(matchesFilter),
+    [nonGeoArticles, selectedFilter, themedMode]
+  );
+
+  const activeFilter = filterOptions.find((o) => o.id === selectedFilter);
+
+  // Reset the filter if the active option disappears (e.g. new timeline loaded).
+  useEffect(() => {
+    if (selectedFilter !== 'all' && !filterOptions.some((o) => o.id === selectedFilter)) {
+      setSelectedFilter('all');
+    }
+  }, [filterOptions, selectedFilter]);
 
   // 1. Initialize Map
   useEffect(() => {
@@ -157,10 +217,10 @@ export default function GeoMapView({
     Object.values(markersRef.current).forEach((marker) => marker.remove());
     markersRef.current = {};
 
-    if (geoArticles.length === 0) return;
+    if (filteredGeoArticles.length === 0) return;
 
     // Sort chronologically for polyline
-    const sortedGeoArticles = [...geoArticles].sort((a, b) => {
+    const sortedGeoArticles = [...filteredGeoArticles].sort((a, b) => {
       const ya = a.from?.year ?? 0;
       const yb = b.from?.year ?? 0;
       if (ya !== yb) return ya - yb;
@@ -299,7 +359,7 @@ export default function GeoMapView({
         // ignore
       }
     }
-  }, [geoArticles, laneColorMap, themedMode, categories, isDark]);
+  }, [filteredGeoArticles, laneColorMap, themedMode, categories, isDark, selectedArticleId]);
 
   // 4. Focus on selected article
   useEffect(() => {
@@ -324,8 +384,8 @@ export default function GeoMapView({
   // Fit all markers
   const handleFitAll = () => {
     const map = mapInstanceRef.current;
-    if (!map || geoArticles.length === 0) return;
-    const coords = geoArticles.map((a) => [Number(a.lat), Number(a.lng)]);
+    if (!map || filteredGeoArticles.length === 0) return;
+    const coords = filteredGeoArticles.map((a) => [Number(a.lat), Number(a.lng)]);
     try {
       const bounds = L.latLngBounds(coords);
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 10, animate: true });
@@ -338,7 +398,7 @@ export default function GeoMapView({
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Control Overlay: Top Right */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2 items-end">
         <button
           type="button"
           onClick={handleFitAll}
@@ -348,17 +408,106 @@ export default function GeoMapView({
           <Maximize2 className="w-3.5 h-3.5 text-sky-500" />
           <span>{t('toolbar.fitAll')}</span>
         </button>
+
+        {canFilter && (
+          <div className="relative" dir={isRtl ? 'rtl' : 'ltr'}>
+            <button
+              type="button"
+              onClick={() => setShowFilterPanel((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shadow-md backdrop-blur-md border transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+                selectedFilter !== 'all'
+                  ? 'bg-sky-500/95 text-white border-sky-400/80'
+                  : 'bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-slate-700/80'
+              }`}
+              title={t('floatingMap.filterTooltip')}
+            >
+              <Layers className={`w-3.5 h-3.5 ${selectedFilter !== 'all' ? 'text-white' : 'text-sky-500'}`} />
+              <span className="truncate max-w-[120px]">
+                {selectedFilter === 'all' ? t('floatingMap.filter') : activeFilter?.label}
+              </span>
+              {selectedFilter !== 'all' && activeFilter && (
+                <span
+                  className="w-2 h-2 rounded-full ring-1 ring-white/70 shrink-0"
+                  style={{ backgroundColor: activeFilter.color }}
+                />
+              )}
+            </button>
+
+            {showFilterPanel && (
+              <div className="absolute top-full right-0 mt-2 w-60 max-h-80 overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-2 animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center justify-between px-1.5 pb-2 mb-1 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    {themedMode ? t('floatingMap.filterByTheme') : t('floatingMap.filterByLane')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterPanel(false)}
+                    className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFilter('all');
+                    setShowFilterPanel(false);
+                  }}
+                  className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                    selectedFilter === 'all'
+                      ? 'bg-sky-500/10 text-sky-700 dark:text-sky-300'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-gradient-to-br from-sky-400 to-indigo-500" />
+                  <span className="flex-1 text-start truncate">{t('floatingMap.allEvents')}</span>
+                  <span className="text-[10px] font-bold text-slate-400">{articles.length}</span>
+                  {selectedFilter === 'all' && <Check className="w-3.5 h-3.5 text-sky-500 shrink-0" />}
+                </button>
+
+                {filterOptions.map((opt) => {
+                  const isSel = selectedFilter === opt.id;
+                  const count = filterCounts[opt.id] || 0;
+                  return (
+                    <button
+                      key={String(opt.id)}
+                      type="button"
+                      onClick={() => {
+                        setSelectedFilter(isSel ? 'all' : opt.id);
+                        setShowFilterPanel(false);
+                      }}
+                      className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                        isSel
+                          ? 'bg-slate-100 dark:bg-slate-800'
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                      }`}
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: opt.color }}
+                      />
+                      <span className="flex-1 text-start truncate">{opt.label}</span>
+                      <span className="text-[10px] font-bold text-slate-400">{count}</span>
+                      {isSel && <Check className="w-3.5 h-3.5 shrink-0" style={{ color: opt.color }} />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Floating Stats Pill: Top Left */}
       <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-md text-slate-700 dark:text-slate-200">
           <MapPin className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
-          <span className="font-semibold">{geoArticles.length}</span>
+          <span className="font-semibold">{filteredGeoArticles.length}</span>
           <span className="text-slate-400 dark:text-slate-500">{t('floatingMap.locations')}</span>
         </div>
 
-        {nonGeoArticles.length > 0 && (
+        {filteredNonGeoArticles.length > 0 && (
           <button
             type="button"
             onClick={() => setShowGlobalEvents((prev) => !prev)}
@@ -366,20 +515,20 @@ export default function GeoMapView({
             title={t('floatingMap.globalEventsTooltip')}
           >
             <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-            <span>{t('floatingMap.globalEventsBtn', { count: nonGeoArticles.length })}</span>
+            <span>{t('floatingMap.globalEventsBtn', { count: filteredNonGeoArticles.length })}</span>
           </button>
         )}
       </div>
 
       {/* Global Events Drawer/Popup */}
-      {showGlobalEvents && nonGeoArticles.length > 0 && (
+      {showGlobalEvents && filteredNonGeoArticles.length > 0 && (
         <div
           className="absolute top-16 left-4 z-30 w-72 max-h-80 overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-4 text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-top-2"
           dir={isRtl ? 'rtl' : 'ltr'}
         >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
-              {t('floatingMap.globalEvents', { count: nonGeoArticles.length })}
+              {t('floatingMap.globalEvents', { count: filteredNonGeoArticles.length })}
             </span>
             <button
               type="button"
@@ -390,7 +539,7 @@ export default function GeoMapView({
             </button>
           </div>
           <div className="space-y-2">
-            {nonGeoArticles.map((art) => (
+            {filteredNonGeoArticles.map((art) => (
               <button
                 key={art.id}
                 type="button"

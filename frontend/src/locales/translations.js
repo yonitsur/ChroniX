@@ -343,7 +343,12 @@ export const translations = {
       showDetails: 'Open in Timeline',
       globalEvents: 'Global / Unmapped Events ({count})',
       globalEventsBtn: '+{count} Global',
-      globalEventsTooltip: 'Click to view events without a specific location'
+      globalEventsTooltip: 'Click to view events without a specific location',
+      filter: 'Filter',
+      filterTooltip: 'Filter events by theme or lane',
+      filterByTheme: 'Filter by Theme',
+      filterByLane: 'Filter by Lane',
+      allEvents: 'All Events'
     },
     about: {
       version: 'v1.0',
@@ -920,7 +925,12 @@ export const translations = {
       showDetails: 'פתח בציר הזמן',
       globalEvents: 'אירועים ללא מיקום ספציפי ({count})',
       globalEventsBtn: '+{count} גלובליים',
-      globalEventsTooltip: 'לחצו להצגת אירועים שאינם מקושרים למיקום גיאוגרפי ספציפי'
+      globalEventsTooltip: 'לחצו להצגת אירועים שאינם מקושרים למיקום גיאוגרפי ספציפי',
+      filter: 'סינון',
+      filterTooltip: 'סנן אירועים לפי נושא או ערוץ',
+      filterByTheme: 'סינון לפי נושא',
+      filterByLane: 'סינון לפי ערוץ',
+      allEvents: 'כל האירועים'
     },
     about: {
       version: 'גרסה 1.0',
