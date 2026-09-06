@@ -615,6 +615,21 @@ export default function App() {
     setMobileTab('map');
   }, []);
 
+  // Toggle Cards List Drawer (or tabs of elements in timeline) from top bar or shortcuts
+  const handleToggleCardsList = useCallback(() => {
+    if (isMobile) {
+      setMobileTab((prev) => (prev === 'cards' ? 'timeline' : 'cards'));
+      return;
+    }
+    if (isCardsListOpen) {
+      setIsCardsListOpen(false);
+      setSelectedArticle(null);
+    } else {
+      setSelectedArticle(null);
+      setIsCardsListOpen(true);
+    }
+  }, [isMobile, isCardsListOpen]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white gap-3 select-none">
@@ -667,6 +682,8 @@ export default function App() {
         filterStarredOnly={filterStarredOnly}
         onToggleFilterStarredOnly={handleToggleFilterStarredOnly}
         starredCount={starredArticleIds.size}
+        isCardsListOpen={isCardsListOpen}
+        onToggleCardsList={handleToggleCardsList}
       />
 
       {/* Error banner */}
@@ -689,7 +706,10 @@ export default function App() {
         {currentTimeline?.articles?.length > 0 && !isCardsListOpen && !isMobile && (
           <FloatingCardsButton
             count={currentTimeline.articles.length}
-            onClick={() => setIsCardsListOpen(true)}
+            onClick={() => {
+              setSelectedArticle(null);
+              setIsCardsListOpen(true);
+            }}
             side="right"
           />
         )}

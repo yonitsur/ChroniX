@@ -29,7 +29,8 @@ import {
   BookOpen,
   Languages,
   Zap,
-  Star
+  Star,
+  LayoutList
 } from 'lucide-react';
 import ChroniXLogo from './ChroniXLogo';
 import QuotaBadge from './QuotaBadge';
@@ -89,7 +90,9 @@ export default function Toolbar({
   onOpenQuota,
   filterStarredOnly = false,
   onToggleFilterStarredOnly,
-  starredCount = 0
+  starredCount = 0,
+  isCardsListOpen = false,
+  onToggleCardsList
 }) {
   const isDark = theme === 'dark';
   const { user, logout } = useAuth();
@@ -181,9 +184,7 @@ export default function Toolbar({
     // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
     if (containerWidth < 1024) {
       const freeSpaceInRow1 = containerWidth - logoWidth - baseControlsWidth - 32;
-      if (freeSpaceInRow1 >= 180) {
-        setTopBarRoom('full');
-      } else if (freeSpaceInRow1 >= 76) {
+      if (freeSpaceInRow1 >= 115) {
         setTopBarRoom('compact');
       } else {
         setTopBarRoom('none');
@@ -196,9 +197,7 @@ export default function Toolbar({
     const formWidth = promptCustomWidth || (isPromptExpanded ? 400 : defaultFormWidth);
     const freeSpace = containerWidth - logoWidth - formWidth - baseControlsWidth - 48;
 
-    if (freeSpace >= 180) {
-      setTopBarRoom('full');
-    } else if (freeSpace >= 76) {
+    if (freeSpace >= 115) {
       setTopBarRoom('compact');
     } else {
       setTopBarRoom('none');
@@ -223,7 +222,7 @@ export default function Toolbar({
       if (resizeObserver) resizeObserver.disconnect();
       window.removeEventListener('resize', updateRoomAvailability);
     };
-  }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly]);
+  }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly, isCardsListOpen]);
 
   const isResizingRef = useRef(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -419,16 +418,11 @@ export default function Toolbar({
               data-action="refine"
               disabled={isGenerating}
               onClick={onOpenRefine}
-              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-300 dark:hover:border-sky-700/60 hover:bg-sky-50/70 dark:hover:bg-sky-950/40 disabled:opacity-40 disabled:cursor-not-allowed group ${
-                topBarRoom === 'full' ? 'px-2.5' : 'w-8 px-0'
-              }`}
+              className="h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-300 dark:hover:border-sky-700/60 hover:bg-sky-50/70 dark:hover:bg-sky-950/40 disabled:opacity-40 disabled:cursor-not-allowed group"
               title={t('toolbar.refineTitle')}
               aria-label={t('toolbar.refine')}
             >
               <Sparkles className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
-              {topBarRoom === 'full' && (
-                <span className="font-semibold text-xs whitespace-nowrap">{t('toolbar.refine')}</span>
-              )}
             </button>
           )}
 
@@ -439,16 +433,42 @@ export default function Toolbar({
               id="toolbar-add-event-btn"
               data-action="add-event"
               onClick={onAddEvent}
-              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-700/60 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 disabled:opacity-40 disabled:cursor-not-allowed group ${
-                topBarRoom === 'full' ? 'px-2.5' : 'w-8 px-0'
-              }`}
+              className="h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-700/60 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 disabled:opacity-40 disabled:cursor-not-allowed group"
               title={t('toolbar.addEvent')}
               aria-label={t('toolbar.addEvent')}
             >
               <PlusCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-200 shrink-0" />
-              {topBarRoom === 'full' && (
-                <span className="font-semibold text-xs whitespace-nowrap">
-                  {t('toolbar.addEventBtn') || t('toolbar.addEvent')}
+            </button>
+          )}
+
+          {/* Cards List / Events Drawer Quick Access Button (when timeline exists and room permits) */}
+          {timelineData && topBarRoom !== 'none' && (
+            <button
+              type="button"
+              id="toolbar-cards-btn"
+              data-action="cards"
+              onClick={onToggleCardsList}
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 ${
+                (timelineData?.articles?.length ?? 0) > 0 ? 'px-2' : 'w-8 px-0'
+              } rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs group ${
+                isCardsListOpen
+                  ? 'bg-indigo-500/10 dark:bg-indigo-400/15 border-indigo-400/80 dark:border-indigo-500/80 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-400/20 shadow-xs'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-700/60 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/40'
+              }`}
+              title={isCardsListOpen ? (t('toolbar.cardsListCloseTitle') || t('common.close')) : (t('toolbar.cardsListTitle') || t('cardsList.title'))}
+              aria-label={t('toolbar.cardsList') || t('cardsList.title')}
+              aria-pressed={isCardsListOpen}
+            >
+              <LayoutList className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 group-hover:scale-105 transition-transform duration-200 shrink-0" />
+              {(timelineData?.articles?.length ?? 0) > 0 && (
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full transition-colors ${
+                    isCardsListOpen
+                      ? 'bg-indigo-200/80 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                  }`}
+                >
+                  {timelineData.articles.length}
                 </span>
               )}
             </button>
@@ -495,7 +515,9 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onToggleFilterStarredOnly}
-              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 px-2.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs ${
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 ${
+                starredCount > 0 ? 'px-2' : 'w-8 px-0'
+              } rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs ${
                 filterStarredOnly
                   ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold ring-2 ring-amber-400/40 shadow-xs'
                   : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-amber-300 dark:hover:border-amber-700/60'
@@ -505,7 +527,6 @@ export default function Toolbar({
               aria-pressed={filterStarredOnly}
             >
               <Star className={`w-3.5 h-3.5 ${filterStarredOnly ? 'fill-current text-slate-950' : 'text-amber-500 fill-amber-500/20'}`} />
-              <span className="hidden xl:inline">{t('cardsList.filterStarred')}</span>
               {starredCount > 0 && (
                 <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
                   filterStarredOnly ? 'bg-black/20 text-slate-950' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300'
@@ -626,6 +647,24 @@ export default function Toolbar({
                 >
                   <PlusCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                   <span className="font-medium">{t('toolbar.addEvent')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!timelineData}
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onToggleCardsList?.();
+                  }}
+                  className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                >
+                  <LayoutList className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span className="font-medium">{t('toolbar.cardsList') || t('cardsList.title')}</span>
+                  {timelineData?.articles?.length > 0 && (
+                    <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 ml-auto rtl:mr-auto rtl:ml-0">
+                      {timelineData.articles.length}
+                    </span>
+                  )}
                 </button>
 
                 <button
