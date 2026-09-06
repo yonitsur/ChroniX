@@ -255,3 +255,45 @@ export function getLaneColor(lane, index = 0, allLanes = []) {
 
   return resolvePreferredLaneColor(lane, index);
 }
+
+/**
+ * Returns the ordered list of distinct, non-empty event themes (`category`
+ * field) in first-appearance order. Used to color a single (non-split)
+ * timeline by theme, similar to how lanes color a split timeline.
+ */
+export function getDistinctCategories(articles = []) {
+  const seen = new Set();
+  const out = [];
+  for (const a of articles) {
+    const c = (a?.category ?? '').toString().trim();
+    if (!c) continue;
+    const key = c.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(c);
+    }
+  }
+  return out;
+}
+
+/**
+ * Resolves a stable museum-palette color for a single theme/category.
+ * When `allCategories` is provided its order determines the palette slot so
+ * every distinct theme gets a distinct color; otherwise a hash fallback keeps
+ * the color deterministic.
+ */
+export function getCategoryColor(category, allCategories = []) {
+  const key = String(category ?? '').trim().toLowerCase();
+  if (!key) return DEFAULT_LANE_COLORS[0];
+
+  const list = Array.isArray(allCategories) ? allCategories : [];
+  const idx = list.findIndex((c) => String(c ?? '').trim().toLowerCase() === key);
+  if (idx >= 0) return DEFAULT_LANE_COLORS[idx % DEFAULT_LANE_COLORS.length];
+
+  let hash = 0;
+  for (let i = 0; i < key.length; i += 1) {
+    hash = (hash << 5) - hash + key.charCodeAt(i);
+    hash |= 0;
+  }
+  return DEFAULT_LANE_COLORS[Math.abs(hash) % DEFAULT_LANE_COLORS.length];
+}

@@ -141,6 +141,11 @@ CRITICAL INSTRUCTIONS:
      * Each lane must have a descriptive, readable `title`.
      * Assign a distinct, thematic hex color from a refined museum palette (e.g. '#2b5278', '#b84a39', '#2e6b56', '#6e395e', '#b87326', '#24657a').
      * Every event MUST have its `lane` property set to a valid `id` from the `lanes` list.
+   - EVENT THEMES (ALWAYS, INDEPENDENT OF LANES):
+     * Regardless of the number of lanes, assign EVERY event a concise thematic `category` (1-3 words) classifying it into a broad theme within the timeline's topic (e.g. "Politics", "Military", "Science & Technology", "Culture & Society", "Economy", "Religion").
+     * Reuse a SMALL, CONSISTENT set of 2 to 6 themes across the whole timeline — do NOT invent a unique category per event, and keep the exact wording identical whenever a theme recurs.
+     * Write category names in the same language as the rest of the timeline.
+     * `category` is used to color-code events by theme WITHIN a single timeline; it is separate from `lane` and does NOT split the timeline into swimlanes.
 
 4. TIME BANDS:
    - Provide 2 to 5 broad overarching eras/periods to be painted as background bands (e.g. 'Triassic', 'Jurassic', 'Cretaceous' or 'Interwar', 'Early War', 'Late War', 'Post-War').
@@ -433,6 +438,7 @@ Return a structured JSON timeline following the schema.
                     "title": ev.title,
                     "subtitle": ev.subtitle or "",
                     "lane": event_lane,
+                    "category": (ev.category or "").strip(),
                     "from": from_dict,
                     "rank": ev.importance_rank,
                     "isToPresent": is_present,
@@ -499,6 +505,7 @@ Return a structured JSON timeline following the schema.
                         title=item.get("title", ""),
                         subtitle=item.get("subtitle", ""),
                         lane=item.get("lane"),
+                        category=item.get("category") or "",
                         from_=from_date,
                         to=to_date,
                         isToPresent=item.get("isToPresent", False),
@@ -758,6 +765,7 @@ Return a structured JSON timeline following the schema.
 
                     updated_art = matched_existing.model_copy(update={
                         "lane": assigned_lane,
+                        "category": (ev.category or "").strip() or matched_existing.category,
                         "title": ev.title or matched_existing.title,
                         "subtitle": ev.subtitle if ev.subtitle else matched_existing.subtitle,
                         "from_": from_date,
@@ -796,6 +804,7 @@ Return a structured JSON timeline following the schema.
                         "title": ev.title,
                         "subtitle": ev.subtitle or "",
                         "lane": assigned_lane,
+                        "category": (ev.category or "").strip(),
                         "from": from_dict,
                         "rank": ev.importance_rank or 5,
                         "isToPresent": is_present,
@@ -870,6 +879,7 @@ Return a structured JSON timeline following the schema.
                             title=item.get("title", ""),
                             subtitle=item.get("subtitle", ""),
                             lane=item.get("lane"),
+                            category=item.get("category") or "",
                             from_=from_date,
                             to=to_date,
                             isToPresent=item.get("isToPresent", False),

@@ -129,6 +129,7 @@ class GeminiEventItem(BaseModel):
     title: str = Field(description="Display title of the event or entity")
     subtitle: Optional[str] = Field(default="", description="Crisp one-line summary of historical significance")
     lane: Optional[str] = Field(default="", description="Target lane id from the lanes list")
+    category: Optional[str] = Field(default="", description="Concise 1-3 word theme classifying this event (e.g. 'Politics', 'Military', 'Science', 'Culture'). Reuse a small consistent set of themes across the timeline. Used to color-code events by theme within a single timeline, independent of lanes.")
     from_year: int = Field(description="Start calendar year. Negative for BCE (e.g. -509) or astronomical years ago if prehistoric (e.g. -66000000)")
     from_month: Optional[int] = Field(default=None, ge=1, le=12, description="Start month (1-12) if known")
     from_day: Optional[int] = Field(default=None, ge=1, le=31, description="Start day (1-31) if known")

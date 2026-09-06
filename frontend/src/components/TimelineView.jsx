@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Timeline, Article } from 'histropediajs';
-import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
+import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 
 // Reimplement Article.prototype.drawPeriodLinesAndConnectors so the period line and connector line
 // are semi-transparent in the normal state (100% solid when hovered/selected/active), while the arrow
@@ -571,8 +571,18 @@ const TimelineView = forwardRef(({
 
       // 3. Load articles
       if (timelineData.articles && timelineData.articles.length > 0) {
+        // In a single (non-split) timeline, color events by their theme (`category`)
+        // so users still see a thematic division — mirroring how lanes color a split timeline.
+        const isSingleTimeline = !timelineData.lanes || timelineData.lanes.length <= 1;
+        const themeCategories = isSingleTimeline
+          ? getDistinctCategories(timelineData.articles)
+          : [];
+        const colorByTheme = isSingleTimeline && themeCategories.length >= 2;
+
         const formattedArticles = timelineData.articles.map((art) => {
-          const laneColor = resolveArticleLaneColor(art.lane, timelineData.lanes);
+          const laneColor = colorByTheme && art.category
+            ? getCategoryColor(art.category, themeCategories)
+            : resolveArticleLaneColor(art.lane, timelineData.lanes);
 
           return {
             ...art,
@@ -728,6 +738,16 @@ const TimelineView = forwardRef(({
     };
   }, [timelineData, theme]);
 
+  // Theme legend for single (non-split) timelines: maps each event theme to its color.
+  const isSingleTimeline = !timelineData?.lanes || timelineData.lanes.length <= 1;
+  const legendCategories = isSingleTimeline
+    ? getDistinctCategories(timelineData?.articles || [])
+    : [];
+  const themeLegend = legendCategories.map((name) => ({
+    name,
+    color: getCategoryColor(name, legendCategories),
+  }));
+
   return (
     <div
       dir="ltr"
@@ -740,6 +760,18 @@ const TimelineView = forwardRef(({
         className="w-full h-full absolute inset-0"
         style={{ touchAction: 'none' }}
       />
+      {themeLegend.length >= 2 && (
+        <div
+          className="absolute bottom-3 left-3 z-10 max-w-[60%] flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2 rounded-xl bg-white/90 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 shadow-lg pointer-events-none"
+        >
+          {themeLegend.map(({ name, color }) => (
+            <span key={name} className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200">
+              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+              <span className="truncate max-w-[160px]">{name}</span>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 });

@@ -6,7 +6,7 @@ import {
   ArrowUpDown,
   Star,
 } from 'lucide-react';
-import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
+import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 import VerticalTimeline, { dateToDecimalYear } from './VerticalTimeline';
 
@@ -34,11 +34,17 @@ export default function MobileTimelineView({
 }) {
   const { t, isRtl, formatTimeSpan } = useLanguage();
   const [selectedLaneId, setSelectedLaneId] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [viewMode, setViewMode] = useState('ruler'); // 'ruler' | 'feed'
   const [feedSortOrder, setFeedSortOrder] = useState('asc');
 
   const articles = timelineData?.articles || [];
   const lanes = timelineData?.lanes || [];
+
+  // In a single (non-split) timeline, color events by their theme (`category`),
+  // mirroring how lanes color a split timeline.
+  const categories = useMemo(() => getDistinctCategories(articles), [articles]);
+  const themedMode = lanes.length <= 1 && categories.length >= 2;
 
   const starredCount = useMemo(
     () => articles.filter((a) => starredArticleIds?.has(a.id)).length,
@@ -128,6 +134,26 @@ export default function MobileTimelineView({
     return counts;
   }, [articles]);
 
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    articles.forEach((a) => {
+      const c = (a.category || '').toString().trim();
+      if (c) counts[c] = (counts[c] || 0) + 1;
+    });
+    return counts;
+  }, [articles]);
+
+  // Resolves the color/contrast an event should render with: by theme in single
+  // timelines, otherwise by its lane.
+  const getEventThemeInfo = (art) => {
+    const base = getArticleLaneInfo(art.lane);
+    if (themedMode && art.category) {
+      const color = getCategoryColor(art.category, categories);
+      return { ...base, color, isLight: isColorLight(color) };
+    }
+    return base;
+  };
+
   // ─── Numeric date processing ───
   const processedArticles = useMemo(() => {
     return articles.map((art) => {
@@ -160,6 +186,7 @@ export default function MobileTimelineView({
     const filtered = processedArticles.filter((art) => {
       if (filterStarredOnly && !starredArticleIds?.has(art.id)) return false;
       if (selectedLaneId !== 'all' && art.lane !== selectedLaneId) return false;
+      if (themedMode && selectedCategory !== 'all' && (art.category || '') !== selectedCategory) return false;
       return true;
     });
 
@@ -175,7 +202,7 @@ export default function MobileTimelineView({
     const laneIdxById = new Map(dispLanes.map((l, i) => [l.id, i]));
 
     const decorated = filtered.map((art) => {
-      const laneInfo = getArticleLaneInfo(art.lane);
+      const laneInfo = getEventThemeInfo(art);
       let laneIndex = laneIdxById.has(laneInfo.id) ? laneIdxById.get(laneInfo.id) : 0;
       return { ...art, laneInfo, laneIndex };
     });
@@ -219,24 +246,25 @@ export default function MobileTimelineView({
 
     return { engineArticles: decorated, engineLanes: engLanes, minYear: min, maxYear: max };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processedArticles, selectedLaneId, filterStarredOnly, starredArticleIds, lanes, laneMap, t]);
+  }, [processedArticles, selectedLaneId, selectedCategory, themedMode, categories, filterStarredOnly, starredArticleIds, lanes, laneMap, t]);
 
   // Re-fit the engine view whenever the dataset or filters change
   const timelineKeyRef = useRef(0);
   const timelineKey = useMemo(() => ++timelineKeyRef.current, [timelineData]);
-  const fitKey = `${timelineKey}:${selectedLaneId}:${filterStarredOnly ? 1 : 0}`;
+  const fitKey = `${timelineKey}:${selectedLaneId}:${selectedCategory}:${filterStarredOnly ? 1 : 0}`;
 
   // ─── Feed view articles ───
   const feedArticles = useMemo(() => {
     return [...processedArticles]
       .filter((art) => {
         if (filterStarredOnly && !starredArticleIds?.has(art.id)) return false;
+        if (themedMode && selectedCategory !== 'all' && (art.category || '') !== selectedCategory) return false;
         return selectedLaneId === 'all' || art.lane === selectedLaneId;
       })
       .sort((a, b) =>
         feedSortOrder === 'desc' ? b.startYear - a.startYear : a.startYear - b.startYear
       );
-  }, [processedArticles, selectedLaneId, feedSortOrder, filterStarredOnly, starredArticleIds]);
+  }, [processedArticles, selectedLaneId, selectedCategory, themedMode, feedSortOrder, filterStarredOnly, starredArticleIds]);
 
   return (
     <div
@@ -317,20 +345,64 @@ export default function MobileTimelineView({
 
           <button
             type="button"
-            onClick={() => setSelectedLaneId('all')}
+            onClick={() => {
+              setSelectedLaneId('all');
+              setSelectedCategory('all');
+            }}
             className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer active:scale-95 ${
-              selectedLaneId === 'all'
+              selectedLaneId === 'all' && selectedCategory === 'all'
                 ? 'bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950 shadow-xs'
                 : 'bg-slate-100 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
-            <span>{t('mobile.allLanes')}</span>
+            <span>{themedMode ? t('mobile.allThemes') : t('mobile.allLanes')}</span>
             <span className="text-[10px] opacity-75 font-bold bg-black/15 dark:bg-white/20 px-1.5 py-0.2 rounded-full">
               {articles.length}
             </span>
           </button>
 
-          {lanes.map((lane) => {
+          {themedMode
+            ? categories.map((cat) => {
+                const color = getCategoryColor(cat, categories);
+                const isLight = isColorLight(color);
+                const isSelected = selectedCategory === cat;
+                const count = categoryCounts[cat] || 0;
+
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(isSelected ? 'all' : cat)}
+                    className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer active:scale-95 ${
+                      isSelected
+                        ? 'shadow-xs ring-2 ring-sky-500/30 font-semibold'
+                        : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                    }`}
+                    style={{
+                      backgroundColor: isSelected ? color : undefined,
+                      color: isSelected ? (isLight ? '#0f172a' : '#ffffff') : undefined,
+                      borderColor: isSelected ? 'transparent' : `${color}66`,
+                    }}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{
+                        backgroundColor: isSelected ? (isLight ? '#0f172a' : '#ffffff') : color,
+                      }}
+                    />
+                    <span className="truncate max-w-[130px]">{cat}</span>
+                    <span
+                      className="text-[10px] font-bold px-1.5 py-0.2 rounded-full"
+                      style={{
+                        backgroundColor: isSelected ? 'rgba(0,0,0,0.18)' : 'rgba(100,116,139,0.15)',
+                      }}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })
+            : lanes.map((lane) => {
             const laneInfo = getArticleLaneInfo(lane.id);
             const isSelected = selectedLaneId === lane.id;
             const count = laneCounts[lane.id] || 0;
@@ -404,7 +476,7 @@ export default function MobileTimelineView({
           {feedArticles.map((art) => {
             const isSelected = selectedArticleId === art.id;
             const isStarred = Boolean(starredArticleIds?.has(art.id));
-            const laneInfo = getArticleLaneInfo(art.lane);
+            const laneInfo = getEventThemeInfo(art);
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
 
             return (
