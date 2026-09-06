@@ -19,7 +19,7 @@
    - [Detail Levels (Overview, Standard, Deep Dive)](#detail-levels)
    - [Parallel Swimlanes (Horizontal Thematic Tracks)](#parallel-swimlanes-horizontal-thematic-tracks)
    - [Prompt Framing: Concise vs. Structured](#prompt-framing-concise-vs-structured)
-   - [Bilingual & Multilingual Prompts](#bilingual--multilingual-prompts)
+   - [Multilingual Support: Prompt Language vs. UI Language](#multilingual-support-prompt-language-vs-ui-language)
 4. [Curated Prompt Showcase](#3-curated-prompt-showcase)
    - [Science & Space](#science--space)
    - [Modern History](#modern-history)
@@ -145,10 +145,16 @@ When studying a specific angle or comparing parallel narratives, specify bookend
 
 ---
 
-### Bilingual & Multilingual Prompts
-ChroniX provides first-class support for English and Hebrew:
-- Enter prompts in either language; ChroniX automatically handles language detection, prompts Gemini accordingly, and queries the respective localized Wikipedia API (`en.wikipedia.org` or `he.wikipedia.org`).
-- The entire application UI and timeline canvas adjusts to RTL (Right-to-Left) when Hebrew is selected.
+### Multilingual Support: Prompt Language vs. UI Language
+
+> [!IMPORTANT]
+> **Prompt Language Dictates Timeline Language**:
+> While the ChroniX user interface (menus, dialogs, buttons) currently supports English and Hebrew, **the timeline generation engine is fully multilingual and works in virtually any language**.
+>
+> - **Write in Any Language**: You can enter prompts in Spanish, French, German, Italian, Arabic, Russian, Japanese, or any other language, completely independent of the language currently selected in the UI.
+> - **Events Match Your Prompt**: The milestones generated on the canvas (event titles, dates, descriptions, and swimlanes) will be written in the exact language of your prompt.
+> - **Localized Wikipedia Links & Media**: Wikipedia summaries and article links will automatically point to that language's specific Wikipedia edition (e.g. `es.wikipedia.org`, `fr.wikipedia.org`, `de.wikipedia.org`, `he.wikipedia.org`, or `en.wikipedia.org`).
+> - **RTL Support**: When generating or viewing in Hebrew or other right-to-left scripts, the timeline interface cleanly formats text and layout direction accordingly.
 
 ---
 

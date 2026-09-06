@@ -105,6 +105,7 @@ export const translations = {
       title: 'Discover and explore interactive chronologies',
       subtitle: 'Enter any historical epoch, scientific revolution, or biographical journey above, or explore the sample prompts below',
       exploreGuide: 'Explore our User Guide',
+      multilingualTip: 'Write prompts in any language — timeline & Wikipedia links will match',
       surpriseMe: 'Surprise Me'
     },
     app: {
@@ -665,6 +666,7 @@ export const translations = {
       title: 'גלו וחקרו צירי זמן היסטוריים אינטראקטיביים',
       subtitle: 'הזינו כל תקופה היסטורית, מהפכה מדעית או מסע ביוגרפי למעלה, או לחצו על אחת מהדוגמאות המוכנות להלן',
       exploreGuide: 'גלו את המדריך למשתמש',
+      multilingualTip: 'ניתן לכתוב בכל שפה — ציר הזמן והקישורים לוויקיפדיה יותאמו לשפת הפרומפט',
       surpriseMe: 'הפתע אותי'
     },
     app: {

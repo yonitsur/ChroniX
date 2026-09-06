@@ -405,7 +405,7 @@ export const USER_GUIDE_DATA = {
     },
     prompt_mastery: {
       title: 'How to Write a Powerful Prompt',
-      subtitle: 'ChroniX understands natural language in both English and Hebrew. Here is how to achieve the best chronological structure, lane divisions, and event depth.',
+      subtitle: 'ChroniX generates timelines in any language you write your prompt in. Here is how to achieve the best chronological structure, lane divisions, and event depth.',
       detailHeading: '1. Choosing the Right Detail Level',
       levels: {
         overview: {
@@ -451,7 +451,10 @@ export const USER_GUIDE_DATA = {
       conciseTitle: 'Concise & Natural Prompts: Exploring Topics with Ease',
       conciseDesc: 'Prompts can be simple, natural, and direct. There is no need for specialized dates or technical jargon. Prompts like "The Industrial Revolution", "Evolution of the Whale", or "The French Revolution" let the AI discover and organize the pivotal milestones and verified imagery automatically.',
       detailedTitle: 'Detailed & Structured Prompts: Custom Focus & Specific Angles',
-      detailedDesc: 'When you want to study a targeted angle, you can guide the AI explicitly: specify bookend dates ("from 1789 to 1799"), define distinct geographical theaters ("WWII divided into European and Pacific Theaters"), or group opposing factions into parallel swimlanes.'
+      detailedDesc: 'When you want to study a targeted angle, you can guide the AI explicitly: specify bookend dates ("from 1789 to 1799"), define distinct geographical theaters ("WWII divided into European and Pacific Theaters"), or group opposing factions into parallel swimlanes.',
+      multilingualHeading: '4. Multilingual Prompts vs. UI Language',
+      multilingualTitle: 'Prompt Language Dictates Timeline Language & Wikipedia Links',
+      multilingualDesc: 'While the ChroniX user interface (menus, dialogs, buttons) currently supports English and Hebrew, the timeline generation engine is fully multilingual and works in virtually any language. You can enter prompts in Spanish, French, German, Italian, Arabic, Russian, Japanese, or any other language, completely independent of the language currently selected in the UI. The milestones generated on the canvas (event titles, dates, descriptions, and swimlanes) will be written in the exact language of your prompt, and Wikipedia summaries and article links will automatically point to that language\'s specific Wikipedia edition (e.g. es.wikipedia.org, fr.wikipedia.org, de.wikipedia.org, he.wikipedia.org, or en.wikipedia.org).'
     },
     prompt_showcase: {
       title: 'Interactive Prompt Showcase',
@@ -604,7 +607,7 @@ export const USER_GUIDE_DATA = {
     },
     prompt_mastery: {
       title: 'כיצד לנסח פרומפט מנצח',
-      subtitle: 'ChroniX מבינה שפה טבעית בעברית ובאנגלית. להלן הכללים והטיפים להשגת המבנה הכרונולוגי המדויק ביותר, חלוקה אידיאלית למסלולים ורמת פירוט נכונה.',
+      subtitle: 'ChroniX יוצרת צירי זמן בכל שפה שבה תכתבו את הפרומפט. להלן הכללים והטיפים להשגת המבנה הכרונולוגי המדויק ביותר, חלוקה אידיאלית למסלולים ורמת פירוט נכונה.',
       detailHeading: '1. בחירת רמת הפירוט המתאימה',
       levels: {
         overview: {
@@ -650,7 +653,10 @@ export const USER_GUIDE_DATA = {
       conciseTitle: 'פרומפט קצר ופשוט: חקר נושאים בבהירות ובטבעיות',
       conciseDesc: 'פרומפטים יכולים להיות פשוטים, קצרים וטבעיים. אין צורך להכיר שמות היסטוריים או מונחים מדעיים מראש. פרומפטים כמו "המהפכה התעשייתית", "האבולוציה של הלווייתן" או "המהפכה הצרפתית" מאפשרים ל-AI לגלות באופן אוטומטי את כל ציוני הדרך והאישים המרכזיים.',
       detailedTitle: 'פרומפט מפורט ומובנה: מיקוד והכוונה מדויקת',
-      detailedDesc: 'כאשר רוצים להתמקד בהיבט מסוים, ניתן להנחות את ה-AI במפורש: להגדיר תאריכי התחלה וסיום מדויקים ("המהפכה הצרפתית מ-1789 עד 1799"), לחלק לזירות גיאוגרפיות ("מלחמת העולם השנייה בחלוקה לזירה האירופית וזירת האוקיינוס השקט") או להשוות פלגים ומסלולים מקבילים.'
+      detailedDesc: 'כאשר רוצים להתמקד בהיבט מסוים, ניתן להנחות את ה-AI במפורש: להגדיר תאריכי התחלה וסיום מדויקים ("המהפכה הצרפתית מ-1789 עד 1799"), לחלק לזירות גיאוגרפיות ("מלחמת העולם השנייה בחלוקה לזירה האירופית וזירת האוקיינוס השקט") או להשוות פלגים ומסלולים מקבילים.',
+      multilingualHeading: '4. שפת הפרומפט מול שפת הממשק',
+      multilingualTitle: 'שפת הפרומפט קובעת את שפת ציר הזמן והקישורים לוויקיפדיה',
+      multilingualDesc: 'למרות שממשק המשתמש (התפריטים, הכפתורים והחלוניות) מוצג בעברית או באנגלית, מנוע הבינה המלאכותית של ChroniX תומך ביצירת צירי זמן בכל שפה שתרצו! תוכלו להקליד פרומפטים בצרפתית, ספרדית, גרמנית, ערבית, רוסית, יפנית או בכל שפה אחרת, ללא קשר לשפת הממשק הנבחרת. כל האירועים שייווצרו על הקנבס (כותרות, תאריכים, תקצירים ומסלולים) ייכתבו בדיוק בשפה שבה נוסח הפרומפט, והקישורים לוויקיפדיה יקשרו אוטומטית למהדורת ויקיפדיה המתאימה באותה שפה.'
     },
     prompt_showcase: {
       title: 'מאגר פרומפטים אינטראקטיבי',

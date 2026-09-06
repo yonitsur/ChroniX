@@ -498,6 +498,24 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   </div>
                 </div>
               </div>
+
+              {/* 4. Multilingual Support: Prompt Language vs UI Language */}
+              {guide.prompt_mastery.multilingualHeading && (
+                <div>
+                  <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                    {guide.prompt_mastery.multilingualHeading}
+                  </h4>
+                  <div className="p-4 sm:p-5 rounded-xl border border-sky-200/80 dark:border-sky-800/60 bg-sky-50/60 dark:bg-sky-950/25 space-y-2.5">
+                    <div className="flex items-center gap-2 font-semibold text-xs sm:text-sm text-sky-900 dark:text-sky-200" dir="auto">
+                      <Globe className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span>{guide.prompt_mastery.multilingualTitle}</span>
+                    </div>
+                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed" dir="auto">
+                      {guide.prompt_mastery.multilingualDesc}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

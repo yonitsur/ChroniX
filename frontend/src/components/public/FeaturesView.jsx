@@ -34,9 +34,9 @@ export default function FeaturesView({ onEnter }) {
           <div className="public-feature-icon">
             <Sparkles className="w-5 h-5 text-sky-400" />
           </div>
-          <h3 className="public-feature-title">AI-Powered Deep Synthesis</h3>
+          <h3 className="public-feature-title">AI-Powered Multilingual Synthesis</h3>
           <p className="public-feature-desc">
-            Generate comprehensive historical narratives and timeline structures on demand. Powered by Google Gemini AI, ChroniX contextually identifies pivotal figures, geopolitical shifts, and cross-era parallels.
+            Generate comprehensive historical narratives on demand in any language. Powered by Google Gemini AI, ChroniX produces events and summaries in your prompt's language, dynamically connecting to localized Wikipedia editions worldwide.
           </p>
         </div>
 

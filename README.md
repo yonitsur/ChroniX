@@ -56,7 +56,8 @@
 
 - **AI-Powered Chronology Synthesis**:
   - Enter any topic in natural language (e.g. *"The Space Race"*, *"Industrial Revolution"*, *"World War II"*, *"Evolution of the Whale"*).
-  - Native bilingual support for **English** and **Hebrew** with automatic Right-to-Left (RTL) canvas handling.
+  - **Global Multilingual Support**: Prompts can be written in **any language** (French, Spanish, German, Arabic, Russian, Japanese, etc.) regardless of the interface language. Generated events, descriptions, and Wikipedia links automatically correspond to the prompt's language and its respective Wikipedia edition.
+  - **Localized Interface**: Full UI localization in English and Hebrew with native Right-to-Left (RTL) canvas formatting.
   - Three tailored detail levels: **Overview** (10–15 events), **Standard** (20–30 events), and **Deep Dive** (35–50 events).
 - **Synchronized Geographic World Map (Leaflet)**:
   - Explores history across **Time and Space** simultaneously.

@@ -26,7 +26,7 @@ import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
 import MobileTimelineView from './components/MobileTimelineView';
 import MobileNavBar from './components/MobileNavBar';
-import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight } from 'lucide-react';
+import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight, Globe } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -946,8 +946,8 @@ export default function App() {
                 </p>
             </div>
 
-            {/* User Guide Interactive Banner on Home Screen */}
-            <div className="pt-2 pb-1">
+            {/* User Guide & Multilingual Tip Banners on Home Screen */}
+            <div className="pt-2 pb-1 flex flex-wrap items-center justify-center gap-2 max-w-xl">
               <button
                 type="button"
                 id="home-open-user-guide-btn"
@@ -958,6 +958,12 @@ export default function App() {
                 <span>{t('home.exploreGuide')}</span>
                 <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all" />
               </button>
+              {t('home.multilingualTip') && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 backdrop-blur-md shadow-2xs">
+                  <Globe className="w-3 h-3 text-sky-500 shrink-0" />
+                  <span>{t('home.multilingualTip')}</span>
+                </div>
+              )}
             </div>
 
             {/* Prompt Cards (Simple & Complex) */}
