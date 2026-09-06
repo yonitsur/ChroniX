@@ -1391,7 +1391,7 @@ export default function Toolbar({
                     e.stopPropagation();
                     onStopGenerate?.();
                   }}
-                  className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-medium px-2 sm:px-2.5 py-1.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+                  className="w-7 h-7 flex items-center justify-center bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg shadow-xs transition-all active:scale-95 shrink-0 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
                   title={t('toolbar.stopGenerateBtn')}
                   aria-label={t('toolbar.stopGenerateBtn')}
                 >
@@ -1401,7 +1401,7 @@ export default function Toolbar({
                 <button
                   type="submit"
                   disabled={!prompt.trim()}
-                  className="flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold p-1.5 sm:px-2.5 rounded-lg shadow-xs transition-all active:scale-95 text-xs shrink-0 cursor-pointer"
+                  className="w-7 h-7 flex items-center justify-center bg-sky-600 hover:bg-sky-500 active:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg shadow-xs transition-all active:scale-95 shrink-0 cursor-pointer"
                   title={t('toolbar.generateBtn')}
                   aria-label={t('toolbar.generateBtn')}
                 >
