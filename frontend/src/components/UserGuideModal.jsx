@@ -86,6 +86,18 @@ export default function UserGuideModal({ isOpen, onClose }) {
     }
   };
 
+  // Handle "Copy Refine Prompt"
+  const handleCopyRefinePrompt = (promptText, idx) => {
+    try {
+      const cleanPrompt = promptText.replace(/^["']|["']$/g, '');
+      navigator.clipboard.writeText(cleanPrompt);
+      setCopiedPromptId(`refine-${idx}`);
+      setTimeout(() => setCopiedPromptId(null), 2500);
+    } catch (err) {
+      console.warn('Failed to copy refine prompt:', err);
+    }
+  };
+
   // Curated category filter items
   const categoryFilters = useMemo(() => {
     const map = new Map();
@@ -684,6 +696,19 @@ export default function UserGuideModal({ isOpen, onClose }) {
                 </p>
               </div>
 
+              {/* Splitting / Restructuring tip banner */}
+              {guide.ai_refine.splitTipTitle && (
+                <div className="p-4 rounded-xl border border-sky-200/80 dark:border-sky-800/50 bg-sky-50/50 dark:bg-sky-950/20 space-y-1.5">
+                  <h4 className="font-semibold text-xs text-sky-900 dark:text-sky-300 flex items-center gap-2" dir="auto">
+                    <Columns2 className="w-4 h-4 text-sky-500 shrink-0" />
+                    <span>{guide.ai_refine.splitTipTitle}</span>
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    {guide.ai_refine.splitTipDesc}
+                  </p>
+                </div>
+              )}
+
               {/* Refinement examples */}
               <div className="space-y-3">
                 <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider" dir="auto">
@@ -693,12 +718,27 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   {guide.ai_refine.prompts.map((item, idx) => (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5"
+                      className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2 flex flex-col justify-between"
                       dir="auto"
                     >
-                      <span className="font-semibold text-xs text-slate-900 dark:text-white">
-                        {item.label}
-                      </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                          {item.label}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyRefinePrompt(item.prompt, idx)}
+                          className="text-slate-400 hover:text-sky-500 p-1 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-700/50 transition-colors cursor-pointer shrink-0"
+                          title={copiedPromptId === `refine-${idx}` ? (language === 'he' ? 'הועתק!' : 'Copied!') : (language === 'he' ? 'העתקת פרומפט' : 'Copy prompt')}
+                          aria-label={copiedPromptId === `refine-${idx}` ? (language === 'he' ? 'הועתק!' : 'Copied!') : (language === 'he' ? 'העתקת פרומפט' : 'Copy prompt')}
+                        >
+                          {copiedPromptId === `refine-${idx}` ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
                       <p className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800">
                         {item.prompt}
                       </p>

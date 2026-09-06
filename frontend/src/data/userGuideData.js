@@ -488,9 +488,27 @@ export const USER_GUIDE_DATA = {
     },
     ai_refine: {
       title: 'Refine Your Timeline with AI',
-      subtitle: 'Click the Refine button on the top toolbar to converse with Gemini and iteratively expand or tweak your existing timeline without starting from scratch.',
+      subtitle: 'Click the Refine button on the top toolbar to converse with Gemini and iteratively expand, tweak, or split your existing timeline into multiple parallel paths and swimlanes without starting from scratch.',
+      splitTipTitle: 'Splitting into Multiple Paths & Timelines',
+      splitTipDesc: 'You can ask Gemini to restructure any existing timeline into parallel tracks or multiple timelines (e.g. by geographic theater, opposing factions, or thematic domains). The AI intelligently redistributes your existing events into dedicated swimlanes while preserving their details and generating new connecting milestones.',
       examplesHeading: 'Popular Refinement Prompts:',
       prompts: [
+        {
+          label: 'Split into parallel thematic paths:',
+          prompt: '"Split the timeline into three parallel paths: Political & Military events, Science & Technology, and Culture & Society"'
+        },
+        {
+          label: 'Divide by geographic regions / theaters:',
+          prompt: '"Divide the events into two separate timelines: European Theater and Pacific Theater"'
+        },
+        {
+          label: 'Separate opposing sides or factions:',
+          prompt: '"Restructure the events into two parallel tracks: United States and Soviet Union"'
+        },
+        {
+          label: 'Split into domestic and foreign paths:',
+          prompt: '"Split the timeline into two parallel paths: Domestic Policy & Reforms and Foreign Relations & Treaties"'
+        },
         {
           label: 'Expand a specific sub-era:',
           prompt: '"Add 5 more key battles that took place in the Pacific theater between 1942 and 1943"'
@@ -669,9 +687,27 @@ export const USER_GUIDE_DATA = {
     },
     ai_refine: {
       title: 'שכלול וליטוש ציר הזמן באמצעות AI',
-      subtitle: 'לחצו על כפתור "ליטוש" בסרגל הכלים העליון כדי לשוחח עם Gemini ולהרחיב, לעדכן או לחדד את ציר הזמן הקיים בלי להתחיל מאפס.',
+      subtitle: 'לחצו על כפתור "ליטוש" בסרגל הכלים העליון כדי לשוחח עם Gemini ולהרחיב, לעדכן או לפצל את ציר הזמן הקיים למספר מסלולים ונתיבים מקבילים בלי להתחיל מאפס.',
+      splitTipTitle: 'פיצול וארגון מחדש למספר מסלולים וצירי זמן מקבילים',
+      splitTipDesc: 'תוכלו לבקש מ-Gemini לארגן מחדש כל ציר זמן קיים ולפצל אותו למסלולים מקבילים (למשל לפי זירה גיאוגרפית, צדדים יריבים או תחומי תוכן). המודל משבץ באופן חכם את כל האירועים הקיימים במסלולים החדשים תוך שימור מלא של המידע והוספת ציוני דרך מתאימים.',
       examplesHeading: 'הנחיות ליטוש נפוצות ומומלצות:',
       prompts: [
+        {
+          label: 'פיצול למסלולים נושאיים מקבילים:',
+          prompt: '"פצל את ציר הזמן לשלושה מסלולים מקבילים: אירועים פוליטיים וצבאיים, מדע וטכנולוגיה, ותרבות וחברה"'
+        },
+        {
+          label: 'חלוקה לזירות גיאוגרפיות / צירי זמן נפרדים:',
+          prompt: '"חלק את האירועים לשני צירי זמן נפרדים: הזירה האירופית וזירת האוקיינוס השקט"'
+        },
+        {
+          label: 'הפרדת צדדים יריבים למסלולים מקבילים:',
+          prompt: '"ארגן מחדש את האירועים לשני מסלולים מקבילים: ארצות הברית מול ברית המועצות"'
+        },
+        {
+          label: 'פיצול למדיניות פנים ויחסי חוץ:',
+          prompt: '"פצל את ציר הזמן לשני נתיבים מקבילים: מדיניות פנים ורפורמות מול יחסי חוץ ואמנות בינלאומיות"'
+        },
         {
           label: 'הרחבת תת-תקופה ספציפית:',
           prompt: '"הוסף עוד 5 קרבות מרכזיים שהתרחשו בזירת האוקיינוס השקט בין השנים 1942 ל-1943"'
