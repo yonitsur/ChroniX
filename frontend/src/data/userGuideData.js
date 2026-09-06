@@ -400,6 +400,8 @@ export const USER_GUIDE_DATA = {
       eventDrawerDesc: 'Click any event card on the timeline canvas to open its comprehensive slide-over drawer. You can view high-res Wikimedia photography, verified dates, encyclopedic summaries, and direct Wikipedia article links. From here, you can also Edit or Delete the event.',
       cardsDrawerTitle: 'Cards List Drawer',
       cardsDrawerDesc: 'When a timeline is loaded, click the Cards button on the top toolbar or the floating button on the screen edge to open a searchable, chronological list of all events grouped by swimlanes. Selecting any card instantly flies the camera to that event on the canvas and opens its Event Details drawer.',
+      starTitle: 'Starring & Bookmarking Events',
+      starDesc: 'Mark the events that matter most to you with a star. On the canvas, hover over any event card and click the star icon that appears in its top-right corner (you can also star from the Event Details drawer header, or from any card in the Cards List drawer). Starred events are highlighted with a golden star and are prioritized so they stay visible even when zoomed far out. Use the star filter in the Cards List drawer to show only your starred events. Your stars are saved together with the timeline.',
       stopGenTitle: 'Stopping Generation:',
       stopGenDesc: 'If you want to cancel an in-flight prompt, press the Esc key or click Stop generate in the bottom status pill.'
     },
@@ -602,6 +604,8 @@ export const USER_GUIDE_DATA = {
       eventDrawerDesc: 'לחיצה על כל כרטיסייה בקנבס פותחת חלונית צד עשירה הכוללת תצלומי ויקימדיה איכותיים, תאריכים מדויקים, תקצירי ויקיפדיה מקיפים וקישור לערך המלא. מכאן תוכלו גם לערוך או למחוק את האירוע.',
       cardsDrawerTitle: 'מגירת רשימת הכרטיסיות',
       cardsDrawerDesc: 'כאשר ציר זמן נטען, לחצו על כפתור "כרטיסיות" בסרגל הכלים העליון או על הכפתור הצף בקצה המסך כדי לפתוח רשימה כרונולוגית מלאה של כל האירועים בחלוקה למסלולים ועם שורת חיפוש. בחירת כרטיסייה מטיסה מיד את התצוגה לאירוע בקנבס ופותחת את חלונית פרטי האירוע.',
+      starTitle: 'סימון אירועים בכוכב (מועדפים)',
+      starDesc: 'סמנו בכוכב את האירועים החשובים לכם ביותר. בקנבס, העבירו את העכבר מעל כרטיסיית אירוע ולחצו על סמל הכוכב שמופיע בפינה העליונה שלה (ניתן לסמן גם מכותרת חלונית פרטי האירוע, או מכל כרטיסייה במגירת רשימת הכרטיסיות). אירועים מסומנים מודגשים בכוכב זהוב ומקבלים עדיפות כך שהם נשארים גלויים גם בהתרחקות (זום אאוט). השתמשו במסנן הכוכב במגירת רשימת הכרטיסיות כדי להציג רק את האירועים שסימנתם. הסימונים נשמרים יחד עם ציר הזמן.',
       stopGenTitle: 'עצירת תהליך היצירה:',
       stopGenDesc: 'אם ברצונכם לעצור יצירת ציר זמן בעיצומה, לחצו על מקש Esc במקלדת או על כפתור "עצור יצירה" בבועת הסטטוס התחתונה.'
     },

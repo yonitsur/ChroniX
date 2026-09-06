@@ -13,6 +13,7 @@
    - [Canvas Navigation (Zoom & Pan)](#canvas-navigation-zoom--pan)
    - [Toolbar Quick Actions & "Fit All"](#toolbar-quick-actions--fit-all)
    - [Event Details Drawer](#event-details-drawer)
+   - [Starring & Bookmarking Events](#starring--bookmarking-events)
    - [Cards List Explorer Drawer](#cards-list-explorer-drawer)
    - [Canceling Generation](#canceling-generation)
 3. [Prompt Mastery & Timeline Architecture](#2-prompt-mastery--timeline-architecture)
@@ -76,6 +77,15 @@ Clicking any event card on the canvas opens a comprehensive slide-over drawer on
 - **Encyclopedic Summary**: Read the verified Wikipedia article extract.
 - **Direct Article Link**: Click to open the full Wikipedia article in a new tab.
 - **Edit & Delete**: Quick buttons to modify or remove the event directly from your timeline.
+
+### Starring & Bookmarking Events
+Mark the events that matter most to you with a star so they are easy to find and always stay visible:
+- **Star on Hover (Canvas)**: Hover over any event card on the timeline and click the ⭐ **star icon** that appears in its top-right corner. Click it again to unstar.
+- **Star from the Event Details Drawer**: Open an event and use the star button in the drawer header to toggle it.
+- **Star from the Cards List Drawer**: Each row in the Cards List Explorer has its own star button for quick bookmarking.
+- **Priority Visibility**: Starred events are boosted in rank, so they remain on-screen even when you zoom far out across large time spans.
+- **Filter to Starred Only**: In the Cards List Explorer, toggle the **star filter** to display only your starred events (a counter shows how many are starred).
+- **Persistent**: Your stars are saved together with the timeline, so they are restored the next time you open it.
 
 ### Cards List Explorer Drawer
 When a timeline contains dozens of events across multiple swimlanes, finding a specific milestone is effortless:

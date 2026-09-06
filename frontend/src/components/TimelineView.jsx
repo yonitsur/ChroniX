@@ -92,7 +92,15 @@ if (typeof window !== 'undefined' && Article) {
   }
   const originalGetCurrentStyle = Article.prototype._originalChroniXGetCurrentStyle;
   Article.prototype._getCurrentStyle = function() {
+    // While we temporarily force isActive to reveal the star on hover, keep the card
+    // rendered with its hover style rather than the "selected"/active style.
+    let restoreActive = false;
+    if (this._chronixFakeActive && this.isActive) {
+      this.isActive = false;
+      restoreActive = true;
+    }
     const style = originalGetCurrentStyle.call(this);
+    if (restoreActive) this.isActive = true;
     if (!style) return style;
 
     const layoutName = typeof this._getCurrentCardLayoutName === 'function'
@@ -116,6 +124,30 @@ if (typeof window !== 'undefined' && Article) {
     }
 
     return style;
+  };
+
+  // Reveal the (unstarred) star icon whenever an article is hovered, so users can star
+  // an event directly on hover without selecting it first. The library only draws the
+  // star when an article is active or already starred, so we briefly force isActive
+  // during the card draw (kept visually as hover style via _getCurrentStyle above).
+  if (!Article.prototype._originalChroniXDraw) {
+    Article.prototype._originalChroniXDraw = Article.prototype.draw;
+  }
+  Article.prototype.draw = function(ctx) {
+    const starVisible = this.owner?.options?.article?.star?.visible !== false;
+    const showStarOnHover = starVisible && this.isMouseover && !this.isActive && !this.isStarred;
+    if (showStarOnHover) {
+      this._chronixFakeActive = true;
+      this.isActive = true;
+    }
+    try {
+      this._originalChroniXDraw.call(this, ctx);
+    } finally {
+      if (showStarOnHover) {
+        this.isActive = false;
+        this._chronixFakeActive = false;
+      }
+    }
   };
 
   Article.prototype._hasChroniXAlphaPatch = true;
@@ -375,7 +407,7 @@ const TimelineView = forwardRef(({
         lane: {
           visible: true,
           gap: 16,
-          axisGap: 4,
+          axisGap: 2,
           defaultStyle: {
             header: {
               backgroundColor: isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(241, 245, 249, 0.95)',

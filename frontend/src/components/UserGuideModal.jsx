@@ -24,7 +24,8 @@ import {
   CheckCircle2,
   Columns2,
   Minimize2,
-  Play
+  Play,
+  Star
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { USER_GUIDE_DATA, SHOWCASE_PROMPTS_DATA } from '../data/userGuideData';
@@ -346,6 +347,18 @@ export default function UserGuideModal({ isOpen, onClose }) {
                     </div>
                     <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.cardsDrawerDesc}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2 md:col-span-2">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
+                      <div className="p-1 rounded-md bg-slate-200/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">
+                        <Star className="w-3.5 h-3.5 text-amber-500" />
+                      </div>
+                      <span>{guide.getting_started.starTitle}</span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {guide.getting_started.starDesc}
                     </p>
                   </div>
                 </div>
