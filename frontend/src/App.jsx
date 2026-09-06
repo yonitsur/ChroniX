@@ -952,8 +952,13 @@ export default function App() {
                     isDraggingSplit ? '' : 'transition-[height] duration-150 ease-out'
                   }`}
                 >
-                  {/* Floating Quick Controls inside Split Map pane */}
-                  <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 p-1 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 backdrop-blur-md select-none">
+                  {/* Floating Quick Controls inside Split Map pane. Slide clear of the
+                      event drawer (which overlays the right edge) while it is open. */}
+                  <div
+                    className={`absolute top-3 z-[1000] flex items-center gap-1 bg-white/95 dark:bg-slate-900/95 p-1 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 backdrop-blur-md select-none transition-[right] duration-300 ease-in-out ${
+                      selectedArticle ? 'right-3 sm:right-[396px] md:right-[432px]' : 'right-3'
+                    }`}
+                  >
                     <button
                       type="button"
                       onClick={() => handleMapDisplayModeChange('pip')}
@@ -1131,6 +1136,7 @@ export default function App() {
             <EventDrawer
               article={selectedArticle}
               lanes={currentTimeline?.lanes || []}
+              articles={currentTimeline?.articles || []}
               isStarred={selectedArticle ? starredArticleIds.has(selectedArticle.id) : false}
               onToggleStar={handleToggleStar}
               onClose={() => setSelectedArticle(null)}

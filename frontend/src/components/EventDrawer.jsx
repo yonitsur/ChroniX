@@ -1,5 +1,5 @@
 import { X, ExternalLink, Edit, Trash2, Calendar, Layers, Image as ImageIcon, AlertTriangle, MapPin, Info, Star, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
-import { getLaneColor } from '../data/laneColors';
+import { getLaneColor, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
 const MONTH_NAMES = [
@@ -58,6 +58,7 @@ export function formatTimeSpan(from, to, isToPresent, lang = 'en') {
 export default function EventDrawer({
   article,
   lanes = [],
+  articles = [],
   isStarred = false,
   onToggleStar,
   onClose,
@@ -77,10 +78,19 @@ export default function EventDrawer({
   const laneObj = laneIndex >= 0 ? lanes[laneIndex] : null;
   const laneColor = laneObj ? getLaneColor(laneObj, laneIndex, lanes) : null;
   const timeSpan = localizedTimeSpan(article.from, article.to, article.isToPresent);
-  
+
+  // In a single (non-split) timeline events are grouped/colored by theme
+  // (`category`) instead of lane, mirroring the timeline and cards list.
+  const categories = getDistinctCategories(articles);
+  const themedMode = lanes.length <= 1 && categories.length >= 2;
+  const themeLabel = (article.category || '').toString().trim();
+  const showThemeBadge = themedMode && themeLabel;
+  const themeColor = showThemeBadge ? getCategoryColor(themeLabel, categories) : null;
+
   const hasHebrew = (str) => /[\u0590-\u05FF]/.test(str || '');
   const isTitleHebrew = hasHebrew((article.title || '') + ' ' + (article.subtitle || ''));
   const isLaneHebrew = hasHebrew(laneObj?.title || '');
+  const isThemeHebrew = hasHebrew(themeLabel);
 
   return (
     <div
@@ -205,7 +215,15 @@ export default function EventDrawer({
             </div>
           )}
 
-          {laneObj && (
+          {showThemeBadge ? (
+            <div className="flex items-center gap-1.5 bg-slate-100/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1 text-xs font-medium">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
+                style={{ backgroundColor: themeColor }}
+              />
+              <span dir={isThemeHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}>{themeLabel}</span>
+            </div>
+          ) : laneObj ? (
             <div className="flex items-center gap-1.5 bg-slate-100/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1 text-xs font-medium">
               <span
                 className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
@@ -213,7 +231,7 @@ export default function EventDrawer({
               />
               <span dir={isLaneHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}>{laneObj.title}</span>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Location & Google Maps Link */}
