@@ -171,14 +171,19 @@ export default function Toolbar({
   const toolbarContainerRef = useRef(null);
   const logoRef = useRef(null);
 
-  // Progressive room detection for top bar controls:
-  // actions: Refine, Add Event, Cards, Starred, Map, Divider
-  // zoom: Zoom In, Zoom Out, Fit All pill
-  // utilities: Clear Board, Quota, Language, Theme
-  const [topBarVisibility, setTopBarVisibility] = useState({
-    actions: true,
+  // Granular one-by-one room detection for top bar controls:
+  // refine -> add -> cards -> starred -> map -> zoom -> clear -> quota -> language -> theme
+  const [visibleIcons, setVisibleIcons] = useState({
+    refine: true,
+    add: true,
+    cards: true,
+    starred: true,
+    map: true,
     zoom: true,
-    utilities: true
+    clear: true,
+    quota: true,
+    language: true,
+    theme: true
   });
 
   const updateRoomAvailability = useCallback((overrideWidth) => {
@@ -187,49 +192,81 @@ export default function Toolbar({
 
     // Mobile viewport (< 768px): prompt is full-width in row 2; row 1 has logo & core controls
     if (containerWidth < 768) {
-      setTopBarVisibility({
-        actions: false,
+      setVisibleIcons({
+        refine: false,
+        add: false,
+        cards: false,
+        starred: false,
+        map: false,
         zoom: false,
-        utilities: containerWidth >= 420
+        clear: false,
+        quota: containerWidth >= 480 && Boolean(user && quota),
+        language: containerWidth >= 400,
+        theme: containerWidth >= 340
       });
       return;
     }
 
     const logoWidth = logoRef.current?.offsetWidth || 130;
+    // Permanent controls: More Menu (38px with gap) + User Profile / Sign In (52px or 86px with gap)
+    const permanentWidth = 38 + (user ? 52 : 86);
+    const hasArticles = (timelineData?.articles?.length ?? 0) > 0;
+    const hasStarred = starredCount > 0;
 
-    // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
+    // Ordered list of collapsible items from left to right (first to be removed as prompt expands)
+    const collapsibleItems = [
+      { id: 'refine', width: 38, isEligible: Boolean(timelineData) },
+      { id: 'add', width: 38, isEligible: Boolean(timelineData) },
+      { id: 'cards', width: hasArticles ? 60 : 38, isEligible: Boolean(timelineData) },
+      { id: 'starred', width: hasStarred ? 56 : 38, isEligible: Boolean(timelineData) },
+      { id: 'map', width: 38, isEligible: Boolean(timelineData) },
+      { id: 'zoom', width: 104, isEligible: Boolean(timelineData) },
+      { id: 'clear', width: 42, isEligible: Boolean(timelineData) },
+      { id: 'quota', width: 60, isEligible: Boolean(user && quota) },
+      { id: 'language', width: 90, isEligible: true },
+      { id: 'theme', width: 38, isEligible: true },
+    ];
+
+    const eligibleItems = collapsibleItems.filter((it) => it.isEligible);
+
+    let effectiveFormWidth = 0;
+    let baseOverhead = 0;
+
+    // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2, form in row 1 takes 0 space
     if (containerWidth < 1024) {
-      const freeSpaceInRow1 = containerWidth - logoWidth - 140;
-      setTopBarVisibility({
-        actions: freeSpaceInRow1 >= 430,
-        zoom: freeSpaceInRow1 >= 260,
-        utilities: true
-      });
-      return;
+      baseOverhead = 32 + logoWidth + 16 + permanentWidth + 8;
+      effectiveFormWidth = 0;
+    } else {
+      // Desktop single-row layout (containerWidth >= 1024px)
+      const activeWidth = typeof overrideWidth === 'number' ? overrideWidth : promptCustomWidth;
+      const defaultFormWidth = containerWidth >= 1280 ? 460 : 380;
+      effectiveFormWidth = activeWidth || (isPromptExpanded ? (containerWidth - logoWidth - permanentWidth - 64) : defaultFormWidth);
+      baseOverhead = 32 + logoWidth + 16 + 16 + permanentWidth + 10;
     }
 
-    // Desktop single-row layout (containerWidth >= 1024px)
-    const activeWidth = typeof overrideWidth === 'number' ? overrideWidth : promptCustomWidth;
-    const defaultFormWidth = containerWidth >= 1280 ? 460 : 380;
-    const formWidth = activeWidth || (isPromptExpanded ? (containerWidth - logoWidth - 120) : defaultFormWidth);
+    const availableSpace = containerWidth - baseOverhead - effectiveFormWidth;
 
-    // Free space between prompt and persistent right-side items (more menu + user profile + gaps/padding ~140px)
-    const spaceForIcons = containerWidth - logoWidth - formWidth - 140;
+    const newVisible = {
+      refine: false,
+      add: false,
+      cards: false,
+      starred: false,
+      map: false,
+      zoom: false,
+      clear: false,
+      quota: false,
+      language: false,
+      theme: false,
+    };
 
-    const neededActionsWidth = timelineData ? 220 : 0;
-    const neededZoomWidth = timelineData ? 95 : 0;
-    const neededUtilitiesWidth = (timelineData ? 36 : 0) + (user ? 75 : 0) + 110;
-
-    const showUtilities = spaceForIcons >= 60;
-    const showZoom = spaceForIcons >= (neededUtilitiesWidth + 60);
-    const showActions = spaceForIcons >= (neededUtilitiesWidth + neededZoomWidth + (neededActionsWidth > 0 ? 100 : 0));
-
-    setTopBarVisibility({
-      actions: showActions,
-      zoom: showZoom,
-      utilities: showUtilities
+    // Calculate cumulative widths from each eligible item to the end (rightmost)
+    eligibleItems.forEach((item, index) => {
+      const neededFromHere = eligibleItems.slice(index).reduce((sum, curr) => sum + curr.width, 0);
+      newVisible[item.id] = availableSpace >= neededFromHere;
     });
-  }, [isPromptExpanded, promptCustomWidth, timelineData, user]);
+
+    setVisibleIcons(newVisible);
+  }, [isPromptExpanded, promptCustomWidth, timelineData, user, starredCount, quota]);
 
   useEffect(() => {
     updateRoomAvailability();
@@ -280,21 +317,13 @@ export default function Toolbar({
       startWidthRef.current = promptCustomWidth || 450;
     }
 
-    // Calculate maximum available width dynamically until it reaches the More Actions button (the three dots)
-    if (moreMenuRef.current && formContainerRef.current) {
-      const moreMenuRect = moreMenuRef.current.getBoundingClientRect();
-      const formRect = formContainerRef.current.getBoundingClientRect();
-      // Distance between prompt left edge and the More Actions button left edge, minus gap (12px)
-      const available = moreMenuRect.left - formRect.left - 12;
-      maxAvailableWidthRef.current = Math.max(360, Math.floor(available));
-    } else if (toolbarContainerRef.current && formContainerRef.current) {
-      const containerRect = toolbarContainerRef.current.getBoundingClientRect();
-      const formRect = formContainerRef.current.getBoundingClientRect();
-      const available = containerRect.right - formRect.left - 100;
-      maxAvailableWidthRef.current = Math.max(360, Math.floor(available));
-    } else {
-      maxAvailableWidthRef.current = Math.max(360, window.innerWidth - 200);
-    }
+    // Calculate maximum available width dynamically until it reaches right before the More Actions button
+    const containerWidth = toolbarContainerRef.current?.clientWidth || window.innerWidth;
+    const logoWidth = logoRef.current?.offsetWidth || 130;
+    const permanentWidth = 38 + (user ? 52 : 86);
+    const paddingAndGaps = 32 + 16 + 16 + 10;
+    const maxAllowed = containerWidth - logoWidth - permanentWidth - paddingAndGaps;
+    maxAvailableWidthRef.current = Math.max(260, Math.floor(maxAllowed));
 
     const onMouseMove = (moveEvent) => {
       if (!isResizingRef.current) return;
@@ -448,10 +477,12 @@ export default function Toolbar({
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
         <div
           ref={rightControlsRef}
-          className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 min-w-0 ml-auto transition-all duration-200"
+          className={`order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 min-w-0 ml-auto ${
+            isResizing ? 'transition-none' : 'transition-all duration-200'
+          }`}
         >
           {/* AI Refine Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarVisibility.actions && (
+          {timelineData && visibleIcons.refine && (
             <button
               type="button"
               id="toolbar-refine-btn"
@@ -467,7 +498,7 @@ export default function Toolbar({
           )}
 
           {/* Add Event Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarVisibility.actions && (
+          {timelineData && visibleIcons.add && (
             <button
               type="button"
               id="toolbar-add-event-btn"
@@ -482,7 +513,7 @@ export default function Toolbar({
           )}
 
           {/* Cards List / Events Drawer Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarVisibility.actions && (
+          {timelineData && visibleIcons.cards && (
             <button
               type="button"
               id="toolbar-cards-btn"
@@ -515,7 +546,7 @@ export default function Toolbar({
           )}
 
           {/* Starred Filter Quick Access Button (when timeline exists and room permits) - Right to Cards */}
-          {timelineData && topBarVisibility.actions && (
+          {timelineData && visibleIcons.starred && (
             <button
               type="button"
               id="toolbar-starred-btn"
@@ -544,7 +575,7 @@ export default function Toolbar({
           )}
 
           {/* Map Options Dropdown Button (when timeline exists and room permits) */}
-          {timelineData && topBarVisibility.actions && (
+          {timelineData && visibleIcons.map && (
             <div className="relative shrink-0" ref={mapMenuRef}>
               <button
                 type="button"
@@ -607,46 +638,41 @@ export default function Toolbar({
             </div>
           )}
 
-          {/* Subtle separator between timeline action buttons and canvas zoom controls */}
-          {timelineData && topBarVisibility.actions && topBarVisibility.zoom && (
-            <div data-divider="true" className="hidden md:block h-4 w-px bg-slate-200 dark:bg-slate-800 mx-0.5 shrink-0" />
-          )}
-
-          {/* Zoom Controls Pill (Desktop only - only when timeline exists) */}
-          {timelineData && topBarVisibility.zoom && (
-            <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
+          {/* Zoom Controls (Desktop only - only when timeline exists) - Unified Segmented Control */}
+          {timelineData && visibleIcons.zoom && (
+            <div className="hidden md:flex items-center h-8 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden shrink-0">
               <button
                 type="button"
                 onClick={onZoomIn}
-                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                className="h-full w-8 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border-r border-slate-200 dark:border-slate-800 active:bg-slate-200 dark:active:bg-slate-700 select-none"
                 title={t('toolbar.zoomIn')}
                 aria-label={t('toolbar.zoomIn')}
               >
-                <ZoomIn className="w-3.5 h-3.5" />
+                <ZoomIn className="w-3.5 h-3.5 shrink-0" />
               </button>
               <button
                 type="button"
                 onClick={onZoomOut}
-                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                className="h-full w-8 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border-r border-slate-200 dark:border-slate-800 active:bg-slate-200 dark:active:bg-slate-700 select-none"
                 title={t('toolbar.zoomOut')}
                 aria-label={t('toolbar.zoomOut')}
               >
-                <ZoomOut className="w-3.5 h-3.5" />
+                <ZoomOut className="w-3.5 h-3.5 shrink-0" />
               </button>
               <button
                 type="button"
                 onClick={onFitAll}
-                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                className="h-full w-8 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer active:bg-slate-200 dark:active:bg-slate-700 select-none"
                 title={t('toolbar.fitAll')}
                 aria-label={t('toolbar.fitAll')}
               >
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="w-3.5 h-3.5 shrink-0" />
               </button>
             </div>
           )}
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
-          {timelineData && topBarVisibility.utilities && (
+          {timelineData && visibleIcons.clear && (
             <button
               type="button"
               onClick={() => {
@@ -664,12 +690,12 @@ export default function Toolbar({
           )}
 
           {/* Quota Indicator Badge */}
-          {user && topBarVisibility.utilities && (
+          {user && visibleIcons.quota && (
             <QuotaBadge quota={quota} onClick={onOpenQuota} />
           )}
 
           {/* Dedicated Language Switcher (EN / עב) - Perfectly locked size and non-wrapping */}
-          {topBarVisibility.utilities && (
+          {visibleIcons.language && (
             <button
               type="button"
               onClick={toggleLanguage}
@@ -689,7 +715,7 @@ export default function Toolbar({
           )}
 
           {/* Light / Dark Mode Toggle Button */}
-          {topBarVisibility.utilities && (
+          {visibleIcons.theme && (
             <button
               type="button"
               onClick={onToggleTheme}
@@ -1216,7 +1242,7 @@ export default function Toolbar({
             isPromptExpanded
               ? 'lg:flex-1 max-w-none'
               : promptCustomWidth
-              ? 'lg:flex-initial'
+              ? 'lg:flex-initial shrink-0'
               : 'lg:w-[380px] xl:w-[460px] max-w-xl'
           }`}
         >
