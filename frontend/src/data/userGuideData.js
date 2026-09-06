@@ -411,19 +411,19 @@ export const USER_GUIDE_DATA = {
         overview: {
           name: 'Overview',
           count: '~10–15 events',
-          bestFor: 'Long historical epochs, complete civilizational overviews, or focused single missions, expeditions, and operations.',
-          example: '"Ancient Egypt overview from the Old Kingdom to Cleopatra" or "Race to the South Pole: Amundsen vs. Scott"'
+          bestFor: 'A clean, high-level bird’s-eye view focusing only on monumental turning points, or inherently focused/short-span topics (such as a single expedition, a multi-week crisis, or a targeted mission).',
+          example: '"Cuban Missile Crisis: 13 Days of Brinkmanship" or "Ancient Egypt: High-level overview from the Old Kingdom to Cleopatra"'
         },
         standard: {
           name: 'Standard (Recommended)',
           count: '~20–30 events',
-          bestFor: 'The default balanced experience for most topics. Rich narrative arc with pivotal figures, battles, dual-lane comparisons, and cultural turning points.',
-          example: '"The Space Race (1955–1975) between NASA and USSR"'
+          bestFor: 'The ideal choice for most topics: full historical eras, complete civilizational narratives, comprehensive biographies, and dual-lane comparisons. Delivers rich narrative depth and causality without sacrificing clarity.',
+          example: '"Ancient Rome: From Republic to Empire" or "The Space Race (1955–1975) between NASA and USSR"'
         },
         deep_dive: {
           name: 'Deep Dive',
           count: '~35–50 events',
-          bestFor: 'Complex multi-lane timelines (3+ swimlanes), multi-theater world conflicts, or massive multi-decade historical sagas.',
+          bestFor: 'Complex multi-lane timelines (3+ swimlanes) where every track requires substantial events, multi-theater world conflicts, or granular step-by-step historical research.',
           example: '"World War II (1939–1945), divided into parallel time lanes for European Theater, Pacific Theater, and Diplomatic Summits"'
         }
       },
@@ -613,19 +613,19 @@ export const USER_GUIDE_DATA = {
         overview: {
           name: 'סקירה (Overview)',
           count: '~10–15 אירועים',
-          bestFor: 'תקופות היסטוריות ארוכות, סקירת ציוויליזציות שלמות, או אירועים, מבצעים ומשלחות ממוקדות (כגון משלחות קוטב או מבצעי חילוץ).',
-          example: '"מצרים העתיקה: סקירה תמציתית מהממלכה הקדומה ועד קלאופטרה" או "המרוץ לקוטב הדרומי: אמונדסן מול סקוט"'
+          bestFor: 'מבט-על תמציתי ("רק ציוני הדרך הגדולים ביותר") להתרשמות מהירה ללא עומס פרטים, או לנושאים ממוקדים וקצרי-מועד (כגון משבר של מספר שבועות, משלחת יחידה או מבצע נקודתי).',
+          example: '"משבר הטילים בקובה: 13 ימי הכרעה" או "מבט-על: מצרים העתיקה מהממלכה הקדומה ועד קלאופטרה"'
         },
         standard: {
           name: 'סטנדרטי (מומלץ כברירת מחדל)',
           count: '~20–30 אירועים',
-          bestFor: 'חוויה מאוזנת ועשירה כברירת מחדל למרבית הנושאים: ביוגרפיות, תולדות תחומים, מלחמות יחידות, והשוואות בין שני מסלולים.',
-          example: '"המרוץ לחלל (1955–1975) בין נאס״א לברית המועצות"'
+          bestFor: 'הבחירה המומלצת למרבית הנושאים: תקופות היסטוריות שלמות, תרבויות ואימפריות, ביוגרפיות מקיפות, והשוואות בין 1–2 מסלולים. מעניקה עומק סיפורי עשיר וקשר סיבתי בלי לאבד את התמונה הכוללת.',
+          example: '"רומא העתיקה: מרפובליקה לאימפריה" או "המרוץ לחלל (1955–1975) בין נאס״א לברית המועצות"'
         },
         deep_dive: {
           name: 'מעמיק (Deep Dive)',
           count: '~35–50 אירועים',
-          bestFor: 'צירים רב-מסלוליים מורכבים (3 מסלולים ומעלה), מלחמות עולם מרובות חזיתות, או סאגות היסטוריות ומדעיות ענקיות.',
+          bestFor: 'צירים רב-מסלוליים מורכבים (3 מסלולים ומעלה) שבהם נדרש פירוט עשיר לכל מסלול, מלחמות עולם מרובות חזיתות, או מחקר היסטורי מקיף ברזולוציה גבוהה (צעד-אחר-צעד).',
           example: '"מלחמת העולם השנייה (1939–1945) בחלוקה לזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות"'
         }
       },
