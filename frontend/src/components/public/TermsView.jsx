@@ -17,7 +17,7 @@ export default function TermsView() {
       {/* Legal Content Container */}
       <article className="public-content-card">
         <p>
-          These Terms of Service govern your access to and use of <strong>ChroniX</strong> (<a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a>). 
+          These Terms of Service govern your access to and use of <strong>ChroniX</strong> (<a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a>).
           By accessing or using our platform, you agree to be bound by these terms.
         </p>
 
@@ -52,7 +52,7 @@ export default function TermsView() {
         </p>
         <p>
           <strong>Website:</strong> <a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a><br />
-          <strong>Email:</strong> support@chronix-ai.com
+          <strong>Email:</strong> chronix.ai.com@gmail.com
         </p>
       </article>
     </div>

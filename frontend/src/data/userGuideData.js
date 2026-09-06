@@ -398,7 +398,7 @@ export const USER_GUIDE_DATA = {
       inspectHeading: '2. Inspecting Events & The Side Drawers',
       eventDrawerTitle: 'Event Details Drawer (Right)',
       eventDrawerDesc: 'Click any event card on the timeline canvas to open its comprehensive slide-over drawer. You can view high-res Wikimedia photography, verified dates, encyclopedic summaries, and direct Wikipedia article links. From here, you can also Edit or Delete the event.',
-      cardsDrawerTitle: 'Cards List Drawer (Left)',
+      cardsDrawerTitle: 'Cards List Drawer',
       cardsDrawerDesc: 'When a timeline is loaded, a floating button appears on the screen edge. Click it to open a searchable, chronological list of all events grouped by swimlanes. Selecting any card instantly flies the camera to that event on the canvas.',
       stopGenTitle: 'Stopping Generation:',
       stopGenDesc: 'If you want to cancel an in-flight prompt, press the Esc key or click Stop generate in the bottom status pill.'
@@ -443,8 +443,8 @@ export const USER_GUIDE_DATA = {
           desc: '"...lanes for European Theater, Pacific Theater, and Diplomatic Summits"'
         },
         {
-          title: 'Parallel Division in Hebrew:',
-          desc: '"...בחלוקה למסלולים נפרדים עבור מלכי יהודה מול מלכי ישראל"'
+          title: 'Parallel Division:',
+          desc: '..in a parallel division for the Kings of Judea and the Kings of Israel'
         }
       ],
       framingHeading: '3. Prompt Framing: Concise vs. Detailed',
@@ -579,7 +579,7 @@ export const USER_GUIDE_DATA = {
       inspectHeading: '2. בחינת אירועים וחלוניות המידע',
       eventDrawerTitle: 'חלונית פרטי אירוע (מימין)',
       eventDrawerDesc: 'לחיצה על כל כרטיסייה בקנבס פותחת חלונית צד עשירה הכוללת תצלומי ויקימדיה איכותיים, תאריכים מדויקים, תקצירי ויקיפדיה מקיפים וקישור לערך המלא. מכאן תוכלו גם לערוך או למחוק את האירוע.',
-      cardsDrawerTitle: 'מגירת רשימת הכרטיסיות (משמאל)',
+      cardsDrawerTitle: 'מגירת רשימת הכרטיסיות',
       cardsDrawerDesc: 'כאשר ציר זמן נטען, מופיע כפתור צף בקצה המסך. לחיצה עליו פותחת רשימה כרונולוגית מלאה של כל האירועים בחלוקה למסלולים ועם שורת חיפוש. בחירת כרטיסייה מטיסה מיד את התצוגה לאירוע בקנבס.',
       stopGenTitle: 'עצירת תהליך היצירה:',
       stopGenDesc: 'אם ברצונכם לעצור יצירת ציר זמן בעיצומה, לחצו על מקש Esc במקלדת או על כפתור "עצור יצירה" בבועת הסטטוס התחתונה.'
@@ -624,7 +624,7 @@ export const USER_GUIDE_DATA = {
           desc: '"...מסלולים לזירה האירופית, זירת האוקיינוס השקט וועידות דיפלומטיות בינלאומיות"'
         },
         {
-          title: 'דוגמה היסטורית עברית:',
+          title: 'דוגמה היסטורית:',
           desc: '"...בחלוקה למסלולים נפרדים עבור מלכי יהודה מול מלכי ישראל"'
         }
       ],

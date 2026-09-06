@@ -17,7 +17,7 @@ export default function PrivacyView() {
       {/* Legal Content Container */}
       <article className="public-content-card">
         <p>
-          Welcome to <strong>ChroniX</strong> ("we", "our", or "us"), available at <a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a>. 
+          Welcome to <strong>ChroniX</strong> ("we", "our", or "us"), available at <a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a>.
           ChroniX is an interactive, multi-dimensional historical timeline platform that allows users to explore, compare, and visualize historical events and parallel chronologies.
         </p>
         <p>
@@ -82,7 +82,7 @@ export default function PrivacyView() {
         </p>
         <p>
           <strong>Website:</strong> <a href="https://chronix-ai.com" target="_blank" rel="noopener noreferrer">https://chronix-ai.com</a><br />
-          <strong>Email:</strong> support@chronix-ai.com
+          <strong>Email:</strong> chronix.ai.com@gmail.com
         </p>
       </article>
     </div>
