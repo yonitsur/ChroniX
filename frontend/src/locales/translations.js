@@ -227,12 +227,13 @@ export const translations = {
       title: 'Refine & Restructure with AI',
       subtitle: 'Current Timeline: {title}',
       label: 'What would you like to add, change, or restructure?',
-      placeholder: "e.g. 'Divide into two timelines: Europe and America', 'Split into political and cultural tracks'...",
+      placeholder: "e.g. 'Divide into two timelines', 'Add a Diplomacy theme and remove Culture', 'Split into tracks'...",
       suggestionsTitle: 'Quick Suggestions:',
       suggestions: [
         'Divide into two timelines (by region or theme)',
         'Split into political, cultural, and military tracks',
         'Add 5 more key milestone events',
+        "Add, remove, or edit themes (e.g. add 'Diplomacy', remove 'Culture')",
         'Highlight only major turning points'
       ],
       refining: 'Refining Timeline...',
@@ -832,12 +833,13 @@ export const translations = {
       title: 'ליטוש וארגון מחדש ב-AI',
       subtitle: 'ציר הזמן הנוכחי: {title}',
       label: 'מה תרצו להוסיף, לשנות או לארגן מחדש בציר הזמן?',
-      placeholder: "לדוגמה: 'חלק לשני צירי זמן: אירופה ואמריקה', 'פצל למסלולים פוליטיים ותרבותיים'...",
+      placeholder: "לדוגמה: 'חלק לשני צירי זמן', 'הוסף נושא דיפלומטיה והסר תרבות', 'פצל למסלולים'...",
       suggestionsTitle: 'הצעות מהירות:',
       suggestions: [
         'חלק לשני צירי זמן (לפי אזור או נושא)',
         'פצל למסלולים פוליטיים, תרבותיים וצבאיים',
         'הוסף 5 אירועי מפתח נוספים',
+        "הוסף, הסר או ערוך נושאים (למשל: הוסף 'דיפלומטיה', הסר 'תרבות')",
         'הדגש רק נקודות מפנה עיקריות'
       ],
       refining: 'מלטש ומארגן את ציר הזמן...',

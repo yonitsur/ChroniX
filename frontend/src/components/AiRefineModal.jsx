@@ -6,6 +6,7 @@ const DEFAULT_SUGGESTIONS = [
   "Divide into two timelines (by region or theme)",
   "Split into political, cultural, and military tracks",
   "Add 5 more key milestone events",
+  "Add, remove, or edit themes (e.g. add 'Diplomacy', remove 'Culture')",
   "Highlight only major turning points"
 ];
 
