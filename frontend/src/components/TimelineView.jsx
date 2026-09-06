@@ -353,7 +353,7 @@ const TimelineView = forwardRef(({
           },
           dateLabel: {
             minor: {
-              color: isDark ? '#94a3b8' : '#475569',
+              color: isDark ? '#cbd5e1' : '#475569',
               font: "500 11px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
             },
             major: {
@@ -375,13 +375,13 @@ const TimelineView = forwardRef(({
         lane: {
           visible: true,
           gap: 16,
-          axisGap: 30,
+          axisGap: 4,
           defaultStyle: {
             header: {
               backgroundColor: isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(241, 245, 249, 0.95)',
             },
             body: {
-              backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.65)',
+              backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(203, 213, 225, 0.6)',
               borderColor: isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.8)',
             },
             title: {
@@ -484,7 +484,7 @@ const TimelineView = forwardRef(({
                   backgroundColor: laneColor,
                 },
                 body: {
-                  backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.65)',
+                  backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(203, 213, 225, 0.6)',
                   borderColor: isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.8)',
                 },
                 title: {
@@ -574,7 +574,7 @@ const TimelineView = forwardRef(({
               color: laneColor,
               backgroundColor: isDark ? '#1e293b' : '#ffffff',
               border: {
-                color: laneColor,
+                color: '#ffffff',
                 width: 2,
               },
               header: {
@@ -595,7 +595,7 @@ const TimelineView = forwardRef(({
               color: laneColor,
               backgroundColor: isDark ? '#172554' : '#eff6ff',
               border: {
-                color: laneColor,
+                color: '#ffffff',
                 width: 2.5,
               },
               header: {
