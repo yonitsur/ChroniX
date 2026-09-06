@@ -338,13 +338,13 @@ export default function EventEditModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] ${
+        className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] ${
           isRtl ? 'text-right' : 'text-left'
         }`}
         dir={isRtl ? 'rtl' : 'ltr'}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-slate-800/20">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-sm">
               <Sparkles className="w-4 h-4" />

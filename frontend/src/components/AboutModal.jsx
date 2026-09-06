@@ -84,13 +84,13 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
       aria-labelledby="about-chronix-title"
     >
       <div
-        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
+        className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
         dir="ltr"
         style={{ direction: 'ltr' }}
       >
         
         {/* Header with Logo & Hero */}
-        <div className="px-6 pt-6 pb-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="px-6 pt-6 pb-4 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-slate-900/20">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5">
@@ -563,7 +563,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-2.5" dir="ltr" style={{ direction: 'ltr' }}>
+        <div className="px-6 py-3.5 border-t border-slate-200/70 dark:border-white/10 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-2.5" dir="ltr" style={{ direction: 'ltr' }}>
           <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
