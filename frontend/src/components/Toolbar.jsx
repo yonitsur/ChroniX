@@ -194,7 +194,7 @@ export default function Toolbar({
     // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
     if (containerWidth < 1024) {
       const freeSpaceInRow1 = containerWidth - logoWidth - baseControlsWidth - 32;
-      if (freeSpaceInRow1 >= 140) {
+      if (freeSpaceInRow1 >= 180) {
         setTopBarRoom('compact');
       } else {
         setTopBarRoom('none');
@@ -207,7 +207,7 @@ export default function Toolbar({
     const formWidth = promptCustomWidth || (isPromptExpanded ? 400 : defaultFormWidth);
     const freeSpace = containerWidth - logoWidth - formWidth - baseControlsWidth - 48;
 
-    if (freeSpace >= 140) {
+    if (freeSpace >= 180) {
       setTopBarRoom('compact');
     } else {
       setTopBarRoom('none');
@@ -491,6 +491,35 @@ export default function Toolbar({
             </button>
           )}
 
+          {/* Starred Filter Quick Access Button (when timeline exists and room permits) - Right to Cards */}
+          {timelineData && topBarRoom !== 'none' && (
+            <button
+              type="button"
+              id="toolbar-starred-btn"
+              data-action="starred"
+              onClick={onToggleFilterStarredOnly}
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 ${
+                starredCount > 0 ? 'px-2' : 'w-8 px-0'
+              } rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs ${
+                filterStarredOnly
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold ring-2 ring-amber-400/40 shadow-xs'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-amber-300 dark:hover:border-amber-700/60'
+              }`}
+              title={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
+              aria-label={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
+              aria-pressed={filterStarredOnly}
+            >
+              <Star className={`w-3.5 h-3.5 ${filterStarredOnly ? 'fill-current text-slate-950' : 'text-amber-500 fill-amber-500/20'}`} />
+              {starredCount > 0 && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                  filterStarredOnly ? 'bg-black/20 text-slate-950' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300'
+                }`}>
+                  {starredCount}
+                </span>
+              )}
+            </button>
+          )}
+
           {/* Map Options Dropdown Button (when timeline exists and room permits) */}
           {timelineData && topBarRoom !== 'none' && (
             <div className="relative shrink-0" ref={mapMenuRef}>
@@ -501,15 +530,15 @@ export default function Toolbar({
                 onClick={() => setIsMapMenuOpen((prev) => !prev)}
                 className={`h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs group ${
                   isMapMenuOpen || mapMode !== 'icon'
-                    ? 'bg-teal-500/10 dark:bg-teal-400/15 border-teal-400/80 dark:border-teal-500/80 text-teal-700 dark:text-teal-300 ring-2 ring-teal-400/20 shadow-xs'
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-teal-600 dark:hover:text-teal-400 hover:border-teal-300 dark:hover:border-teal-700/60 hover:bg-teal-50/70 dark:hover:bg-teal-950/40'
+                    ? 'bg-blue-500/10 dark:bg-blue-400/15 border-blue-400/80 dark:border-blue-500/80 text-blue-700 dark:text-blue-300 ring-2 ring-blue-400/20 shadow-xs'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-950/40'
                 }`}
                 title={t('toolbar.mapOptions')}
                 aria-label={t('toolbar.mapOptions')}
                 aria-haspopup="true"
                 aria-expanded={isMapMenuOpen}
               >
-                <Globe className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
+                <Globe className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
               </button>
 
               {isMapMenuOpen && (
@@ -529,22 +558,23 @@ export default function Toolbar({
                       <button
                         key={opt.id}
                         type="button"
+                        disabled={!timelineData}
                         onClick={() => {
                           setIsMapMenuOpen(false);
                           onMapModeChange?.(opt.id);
                         }}
                         className={`w-full text-start px-3 py-2 flex items-center justify-between transition-colors cursor-pointer ${
                           isActive
-                            ? 'bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 font-semibold'
+                            ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold'
                             : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
-                          <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`} />
+                          <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
                           <span>{opt.label}</span>
                         </div>
                         {isActive && (
-                          <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                         )}
                       </button>
                     );
@@ -589,33 +619,6 @@ export default function Toolbar({
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
-
-          {/* Starred Filter Quick Access Button (when timeline exists) */}
-          {timelineData && (
-            <button
-              type="button"
-              onClick={onToggleFilterStarredOnly}
-              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 ${
-                starredCount > 0 ? 'px-2' : 'w-8 px-0'
-              } rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs ${
-                filterStarredOnly
-                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold ring-2 ring-amber-400/40 shadow-xs'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:border-amber-300 dark:hover:border-amber-700/60'
-              }`}
-              title={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
-              aria-label={filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}
-              aria-pressed={filterStarredOnly}
-            >
-              <Star className={`w-3.5 h-3.5 ${filterStarredOnly ? 'fill-current text-slate-950' : 'text-amber-500 fill-amber-500/20'}`} />
-              {starredCount > 0 && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
-                  filterStarredOnly ? 'bg-black/20 text-slate-950' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300'
-                }`}>
-                  {starredCount}
-                </span>
-              )}
-            </button>
-          )}
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
           {timelineData && (
@@ -749,6 +752,30 @@ export default function Toolbar({
 
                 <button
                   type="button"
+                  disabled={!timelineData}
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    onToggleFilterStarredOnly?.();
+                  }}
+                  className={`w-full text-start px-3 py-2 flex items-center justify-between transition-colors cursor-pointer ${
+                    filterStarredOnly
+                      ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-semibold'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Star className={`w-4 h-4 shrink-0 ${filterStarredOnly ? 'fill-amber-400 text-amber-500' : 'text-amber-500'}`} />
+                    <span>{filterStarredOnly ? t('toolbar.filterStarredActive') : t('toolbar.filterStarred')}</span>
+                  </div>
+                  {starredCount > 0 && (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
+                      {starredCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => {
                     setIsMoreMenuOpen(false);
                     onOpenSaved();
@@ -778,16 +805,16 @@ export default function Toolbar({
                       }}
                       className={`w-full text-start px-3 py-2 flex items-center justify-between transition-colors cursor-pointer ${
                         isActive
-                          ? 'bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 font-semibold'
+                          ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold'
                           : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`} />
+                        <IconComponent className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
                         <span>{opt.label}</span>
                       </div>
                       {isActive && (
-                        <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                       )}
                     </button>
                   );
