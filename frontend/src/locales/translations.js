@@ -350,6 +350,16 @@ export const translations = {
       filterByLane: 'Filter by Lane',
       allEvents: 'All Events'
     },
+    legend: {
+      filterByTheme: 'Filter by theme',
+      filterByLane: 'Filter by lane',
+      allThemes: 'All themes',
+      allLanes: 'All lanes',
+      drag: 'Drag',
+      minimize: 'Minimize',
+      layoutHorizontal: 'Horizontal layout',
+      layoutVertical: 'Vertical layout'
+    },
     about: {
       version: 'v1.0',
       tagline: 'AI-Powered Interactive Visual Chronology',
@@ -931,6 +941,16 @@ export const translations = {
       filterByTheme: 'סינון לפי נושא',
       filterByLane: 'סינון לפי ערוץ',
       allEvents: 'כל האירועים'
+    },
+    legend: {
+      filterByTheme: 'סינון לפי נושא',
+      filterByLane: 'סינון לפי ערוץ',
+      allThemes: 'כל הנושאים',
+      allLanes: 'כל המסלולים',
+      drag: 'גרור',
+      minimize: 'מזעור',
+      layoutHorizontal: 'פריסה אופקית',
+      layoutVertical: 'פריסה אנכית'
     },
     about: {
       version: 'גרסה 1.0',
