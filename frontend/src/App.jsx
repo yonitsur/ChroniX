@@ -650,6 +650,8 @@ export default function App() {
   // ---- Exploration mode: guided event-by-event walkthrough of the desktop timeline ----
   const [isExploring, setIsExploring] = useState(false);
   const [exploreProgress, setExploreProgress] = useState(null); // { current, total }
+  // Map layout in effect before exploration forced the split view, restored on exit
+  const prevMapModeRef = useRef(null);
 
   // Chronologically ordered articles currently visible on the canvas (respects lane/theme/starred filters)
   const getExploreOrder = useCallback(() => {
@@ -671,14 +673,35 @@ export default function App() {
     const order = getExploreOrder();
     if (order.length === 0) return;
     setIsCardsListOpen(false);
+    // Default to the split timeline+map layout while exploring; remember the prior mode.
+    // State only (not persisted), so the user's saved map preference is untouched.
+    const switchingToSplit = !isMobile && mapDisplayMode !== 'split';
+    if (switchingToSplit) {
+      prevMapModeRef.current = mapDisplayMode;
+      setMapDisplayMode('split');
+    }
     setIsExploring(true);
     setExploreProgress({ current: 1, total: order.length });
-    focusExploredArticle(order[0]);
-  }, [getExploreOrder, focusExploredArticle]);
+    const first = order[0];
+    setSelectedArticle(first);
+    if (switchingToSplit) {
+      // The timeline canvas remounts when the layout switches to split; focus once it has settled
+      // (its init runs a fitArticles pass ~100ms after mount).
+      setTimeout(() => timelineRef.current?.focusArticle(first.id, { animate: true }), 400);
+    } else {
+      timelineRef.current?.focusArticle(first.id, { animate: true });
+    }
+  }, [getExploreOrder, isMobile, mapDisplayMode]);
 
   const handleExitExplore = useCallback(() => {
     setIsExploring(false);
     setExploreProgress(null);
+    const prevMode = prevMapModeRef.current;
+    prevMapModeRef.current = null;
+    if (prevMode) {
+      // Restore the pre-exploration map layout unless the user already switched away from split.
+      setMapDisplayMode((cur) => (cur === 'split' ? prevMode : cur));
+    }
   }, []);
 
   const handleExploreStep = useCallback((delta) => {
@@ -705,8 +728,7 @@ export default function App() {
   useEffect(() => {
     if (!isExploring) return;
     if (!selectedArticle) {
-      setIsExploring(false);
-      setExploreProgress(null);
+      handleExitExplore();
       return;
     }
     const order = getExploreOrder();
@@ -718,7 +740,7 @@ export default function App() {
           : { current: idx + 1, total: order.length }
       );
     }
-  }, [isExploring, selectedArticle, getExploreOrder]);
+  }, [isExploring, selectedArticle, getExploreOrder, handleExitExplore]);
 
   // Keyboard navigation while exploring: ← → move between events, Esc exits
   useEffect(() => {

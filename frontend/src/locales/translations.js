@@ -368,6 +368,8 @@ export const translations = {
       prev: 'Previous event',
       exit: 'Exit exploration',
       finish: 'Finish',
+      minimize: 'Minimize to icon',
+      expand: 'Expand',
       keyboardHint: 'Navigate with ← → · Exit with Esc'
     },
     about: {
@@ -970,6 +972,8 @@ export const translations = {
       prev: 'האירוע הקודם',
       exit: 'יציאה מהסיור',
       finish: 'סיום',
+      minimize: 'מזעור לאייקון',
+      expand: 'הרחבה',
       keyboardHint: 'ניווט עם ← → · יציאה עם Esc'
     },
     about: {

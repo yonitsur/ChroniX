@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { Timeline, Article } from 'histropediajs';
-import { GripVertical, Rows3, Columns3, Minus, Palette, Layers, Check, Play, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { GripVertical, Rows3, Columns3, Minus, Palette, Layers, Check, Play, ChevronLeft, ChevronRight, X, Maximize2 } from 'lucide-react';
 import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS, getDistinctCategories, getCategoryColor } from '../data/laneColors';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -399,6 +399,242 @@ function FilterLegend({ items, mode, selectedId, onSelect, t, isRtl }) {
         {renderAll()}
         {items.map((it) => renderItem(it))}
       </div>
+    </div>
+  );
+}
+
+const DOCK_STORAGE_KEY = 'chronix_explore_dock';
+
+/**
+ * Draggable dock for exploration mode. Shows the "Start Exploring" entry button
+ * (expandable pill or minimized play icon) and swaps to a fixed-size navigation HUD
+ * while exploring, so the Next/Prev controls never change position between events.
+ * Kept LTR: canvas time always flows left → right. Position + minimized state persist.
+ */
+function ExploreDock({ isExploring, exploreProgress, currentTitle, onStart, onNext, onPrev, onExit, t }) {
+  const [pos, setPos] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(DOCK_STORAGE_KEY) || 'null');
+      if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) return { x: saved.x, y: saved.y };
+    } catch { /* noop */ }
+    return null; // default: bottom-centre
+  });
+  const [minimized, setMinimized] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(DOCK_STORAGE_KEY) || '{}')?.min === true;
+    } catch { return false; }
+  });
+  const elRef = useRef(null);
+  const dragRef = useRef(null);
+
+  // While exploring, the event drawer overlays the right ~420px of the canvas (at a higher
+  // z-index), so keep the dock out of that zone to stay visible and clickable.
+  const reservedRight = isExploring ? 424 : 0;
+
+  const persist = (nextPos, nextMin) => {
+    try {
+      localStorage.setItem(DOCK_STORAGE_KEY, JSON.stringify({ x: nextPos?.x, y: nextPos?.y, min: nextMin }));
+    } catch { /* noop */ }
+  };
+
+  const toggleMinimized = (value) => {
+    setMinimized(value);
+    setPos((cur) => { persist(cur, value); return cur; });
+  };
+
+  const beginDrag = (e) => {
+    const el = elRef.current;
+    const parent = el?.parentElement;
+    if (!el || !parent) return;
+    const parentRect = parent.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    dragRef.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      origin: { x: elRect.left - parentRect.left, y: elRect.top - parentRect.top },
+      parentRect,
+      elRect,
+      moved: false,
+    };
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* noop */ }
+  };
+
+  const moveDrag = (e) => {
+    const d = dragRef.current;
+    if (!d || d.pointerId !== e.pointerId) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) d.moved = true;
+    if (!d.moved) return;
+    setPos({
+      x: clampVal(d.origin.x + dx, 0, Math.max(0, d.parentRect.width - reservedRight - d.elRect.width)),
+      y: clampVal(d.origin.y + dy, 0, Math.max(0, d.parentRect.height - d.elRect.height)),
+    });
+  };
+
+  const endDrag = (e, onTap) => {
+    const d = dragRef.current;
+    dragRef.current = null;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    if (d?.moved) {
+      setPos((cur) => { persist(cur, minimized); return cur; });
+    } else if (onTap) {
+      onTap();
+    }
+  };
+
+  const dragHandlers = (onTap) => ({
+    onPointerDown: beginDrag,
+    onPointerMove: moveDrag,
+    onPointerUp: (e) => endDrag(e, onTap),
+  });
+
+  // Keep the dock inside the timeline area when the container or content size changes
+  useEffect(() => {
+    const clampNow = () => {
+      setPos((cur) => {
+        const el = elRef.current;
+        const parent = el?.parentElement;
+        if (!cur || !el || !parent) return cur;
+        const pr = parent.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        const nx = clampVal(cur.x, 0, Math.max(0, pr.width - reservedRight - er.width));
+        const ny = clampVal(cur.y, 0, Math.max(0, pr.height - er.height));
+        return nx === cur.x && ny === cur.y ? cur : { x: nx, y: ny };
+      });
+    };
+    clampNow();
+    window.addEventListener('resize', clampNow);
+    return () => window.removeEventListener('resize', clampNow);
+  }, [isExploring, minimized, reservedRight]);
+
+  const atStart = !exploreProgress || exploreProgress.current <= 1;
+  const atEnd = !exploreProgress || exploreProgress.current >= exploreProgress.total;
+
+  return (
+    <div
+      ref={elRef}
+      dir="ltr"
+      className={`absolute z-20 select-none ${pos ? '' : isExploring ? 'bottom-5' : 'bottom-5 -translate-x-1/2'}`}
+      style={{
+        ...(pos
+          ? { left: pos.x, top: pos.y }
+          // Default anchor: centred in the drawer-free region while exploring (no translate, so it
+          // stays fully on-screen even on narrow canvases), else true centre.
+          : { left: isExploring ? 'max(12px, calc((100% - 420px) / 2 - 235px))' : '50%' }),
+        touchAction: 'none',
+      }}
+    >
+      {isExploring ? (
+        /* Navigation HUD — fixed-width centre block keeps the Next arrow in a constant spot */
+        <div
+          className="flex items-center gap-1 pl-1 pr-1.5 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 shadow-2xl backdrop-blur-md animate-in fade-in duration-200"
+          title={t('explore.keyboardHint')}
+        >
+          <span
+            {...dragHandlers()}
+            title={t('legend.drag')}
+            className="flex items-center px-0.5 text-slate-400 dark:text-slate-500 cursor-grab active:cursor-grabbing"
+          >
+            <GripVertical className="w-4 h-4" />
+          </span>
+          <button
+            type="button"
+            onClick={onExit}
+            title={`${t('explore.exit')} (Esc)`}
+            aria-label={t('explore.exit')}
+            className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
+          <button
+            type="button"
+            onClick={onPrev}
+            disabled={atStart}
+            title={`${t('explore.prev')} (←)`}
+            aria-label={t('explore.prev')}
+            className="p-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent disabled:hover:text-slate-600 dark:disabled:hover:text-slate-300"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2 px-1.5 w-56">
+            <span className="text-[11px] font-bold tabular-nums text-sky-600 dark:text-sky-400 whitespace-nowrap shrink-0">
+              {exploreProgress ? `${exploreProgress.current} / ${exploreProgress.total}` : ''}
+            </span>
+            <span className="h-3.5 w-px bg-slate-200 dark:bg-slate-700 shrink-0" />
+            <span className="flex-1 min-w-0 text-xs font-medium text-slate-700 dark:text-slate-200 truncate">
+              {currentTitle}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onNext}
+            disabled={atEnd}
+            title={`${t('explore.next')} (→)`}
+            aria-label={t('explore.next')}
+            className="p-1.5 rounded-full bg-sky-500 hover:bg-sky-600 text-white shadow-md shadow-sky-500/30 transition-all cursor-pointer active:scale-90 disabled:opacity-30 disabled:cursor-default disabled:hover:bg-sky-500 disabled:active:scale-100"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      ) : minimized ? (
+        /* Minimized entry point — bare play icon; tap starts, drag moves, corner badge expands */
+        <div className="relative animate-in fade-in zoom-in-90 duration-200">
+          <button
+            type="button"
+            {...dragHandlers(onStart)}
+            title={t('explore.start')}
+            aria-label={t('explore.start')}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 dark:bg-slate-600 dark:hover:bg-slate-500 text-white border border-slate-600/50 dark:border-slate-500/50 shadow-xl cursor-grab active:cursor-grabbing transition-colors"
+          >
+            <Play className="w-4 h-4 fill-white translate-x-px" />
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleMinimized(false)}
+            title={t('explore.expand')}
+            aria-label={t('explore.expand')}
+            className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 shadow-md cursor-pointer transition-colors"
+          >
+            <Maximize2 className="w-2 h-2" />
+          </button>
+        </div>
+      ) : (
+        /* Expanded entry point pill */
+        <div className="flex items-center gap-0.5 pl-1 pr-1 py-1 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-300">
+          <span
+            {...dragHandlers()}
+            title={t('legend.drag')}
+            className="flex items-center px-0.5 text-slate-400 dark:text-slate-500 cursor-grab active:cursor-grabbing"
+          >
+            <GripVertical className="w-4 h-4" />
+          </span>
+          <button
+            type="button"
+            onClick={onStart}
+            title={t('explore.startTooltip')}
+            className="group flex items-center gap-2 pl-0.5 pr-3 py-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
+          >
+            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-700 group-hover:bg-slate-600 dark:bg-slate-600 dark:group-hover:bg-slate-500 shadow-md transition-colors">
+              <Play className="w-3.5 h-3.5 text-white fill-white translate-x-px" />
+            </span>
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+              {t('explore.start')}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleMinimized(true)}
+            title={t('explore.minimize')}
+            aria-label={t('explore.minimize')}
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          >
+            <Minus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1099,9 +1335,6 @@ const TimelineView = forwardRef(({
     ? (timelineData?.articles?.find((a) => a.id === selectedArticleId)?.title || '')
     : '';
 
-  // Keep the floating explore controls centred in the area left visible by the event drawer (~420px)
-  const exploreOverlayLeft = selectedArticleId ? 'max(200px, calc((100% - 420px) / 2))' : '50%';
-
   return (
     <div
       dir="ltr"
@@ -1125,83 +1358,18 @@ const TimelineView = forwardRef(({
         />
       )}
 
-      {/* Exploration mode — entry point (“Start Exploring” pill) */}
-      {typeof onStartExplore === 'function' && !isExploring && (timelineData?.articles?.length || 0) > 0 && (
-        <div
-          className="absolute bottom-5 -translate-x-1/2 z-20 transition-[left] duration-300 animate-in fade-in slide-in-from-bottom-3"
-          style={{ left: exploreOverlayLeft }}
-        >
-          <button
-            type="button"
-            onClick={onStartExplore}
-            title={t('explore.startTooltip')}
-            className="group flex items-center gap-2.5 pl-2 pr-4 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-700/90 hover:border-sky-300 dark:hover:border-sky-700 shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-[1.03] active:scale-95 cursor-pointer select-none"
-          >
-            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 shadow-md group-hover:shadow-sky-500/40 transition-shadow">
-              <Play className="w-3.5 h-3.5 text-white fill-white translate-x-px" />
-            </span>
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors">
-              {t('explore.start')}
-            </span>
-          </button>
-        </div>
-      )}
-
-      {/* Exploration mode — floating navigation HUD (kept LTR: canvas time always flows left → right) */}
-      {isExploring && (
-        <div
-          dir="ltr"
-          className="absolute bottom-5 -translate-x-1/2 z-20 flex items-center gap-1 pl-1.5 pr-1.5 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 shadow-2xl backdrop-blur-md select-none transition-[left] duration-300 animate-in fade-in slide-in-from-bottom-3"
-          style={{ left: exploreOverlayLeft }}
-          title={t('explore.keyboardHint')}
-        >
-          <button
-            type="button"
-            onClick={onExitExplore}
-            title={`${t('explore.exit')} (Esc)`}
-            aria-label={t('explore.exit')}
-            className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
-          <button
-            type="button"
-            onClick={onExplorePrev}
-            disabled={!exploreProgress || exploreProgress.current <= 1}
-            title={`${t('explore.prev')} (←)`}
-            aria-label={t('explore.prev')}
-            className="p-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent disabled:hover:text-slate-600 dark:disabled:hover:text-slate-300"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <div className="flex items-center gap-2 px-2 min-w-0">
-            <span className="text-[11px] font-bold tabular-nums text-sky-600 dark:text-sky-400 whitespace-nowrap">
-              {exploreProgress ? `${exploreProgress.current} / ${exploreProgress.total}` : ''}
-            </span>
-            {exploreCurrentTitle && (
-              <>
-                <span className="h-3.5 w-px bg-slate-200 dark:bg-slate-700 shrink-0" />
-                <span
-                  key={selectedArticleId}
-                  className="text-xs font-medium text-slate-700 dark:text-slate-200 truncate max-w-[220px] animate-in fade-in duration-300"
-                >
-                  {exploreCurrentTitle}
-                </span>
-              </>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onExploreNext}
-            disabled={!exploreProgress || exploreProgress.current >= exploreProgress.total}
-            title={`${t('explore.next')} (→)`}
-            aria-label={t('explore.next')}
-            className="p-1.5 rounded-full bg-sky-500 hover:bg-sky-600 text-white shadow-md shadow-sky-500/30 transition-all cursor-pointer active:scale-90 disabled:opacity-30 disabled:cursor-default disabled:hover:bg-sky-500 disabled:active:scale-100"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+      {/* Exploration mode — draggable dock: entry button, or fixed-size navigation HUD while exploring */}
+      {typeof onStartExplore === 'function' && (timelineData?.articles?.length || 0) > 0 && (
+        <ExploreDock
+          isExploring={isExploring}
+          exploreProgress={exploreProgress}
+          currentTitle={exploreCurrentTitle}
+          onStart={onStartExplore}
+          onNext={onExploreNext}
+          onPrev={onExplorePrev}
+          onExit={onExitExplore}
+          t={t}
+        />
       )}
     </div>
   );
