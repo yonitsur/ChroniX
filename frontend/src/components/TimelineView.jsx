@@ -1,6 +1,66 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { Timeline } from 'histropediajs';
+import { Timeline, Article } from 'histropediajs';
 import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
+
+// Patch Article.prototype.drawPeriodLinesAndConnectors once so lines are semi-transparent in normal state,
+// and 100% solid dark when hovered, selected, or active — without making the card header transparent!
+if (typeof window !== 'undefined' && Article) {
+  if (!Article.prototype._originalChroniXDrawPeriodLinesAndConnectors) {
+    Article.prototype._originalChroniXDrawPeriodLinesAndConnectors = Article.prototype.drawPeriodLinesAndConnectors;
+  }
+  const originalDraw = Article.prototype._originalChroniXDrawPeriodLinesAndConnectors;
+  Article.prototype.drawPeriodLinesAndConnectors = function(ctx, axisY) {
+    const selectedId = this.owner?._selectedArticleId;
+    const isSelected = selectedId ? (this.id === selectedId) : false;
+    const isHigh = Boolean(this.isMouseover || this.isDragging || isSelected);
+    const prevOpacity = typeof this.opacity === 'number' ? this.opacity : 1;
+    if (!isHigh) {
+      this.opacity = prevOpacity * 0.45;
+    }
+    ctx.save();
+    try {
+      originalDraw.call(this, ctx, axisY);
+    } finally {
+      this.opacity = prevOpacity;
+      ctx.restore();
+    }
+  };
+
+  // Patch Article.prototype._getCurrentStyle so that in landscape layout (used in multi-lane / multi-timeline view),
+  // event titles always contrast against the card background (dark text on white cards in day mode!)
+  if (!Article.prototype._originalChroniXGetCurrentStyle) {
+    Article.prototype._originalChroniXGetCurrentStyle = Article.prototype._getCurrentStyle;
+  }
+  const originalGetCurrentStyle = Article.prototype._originalChroniXGetCurrentStyle;
+  Article.prototype._getCurrentStyle = function() {
+    const style = originalGetCurrentStyle.call(this);
+    if (!style) return style;
+
+    const layoutName = typeof this._getCurrentCardLayoutName === 'function'
+      ? this._getCurrentCardLayoutName()
+      : (this._resolvedCardLayoutName || 'portrait');
+
+    if (layoutName === 'landscape') {
+      const bg = style.backgroundColor || (this.owner?._isDarkTheme ? '#0f172a' : '#ffffff');
+      const isBgLight = isColorLight(bg);
+      const landscapeTextColor = isBgLight ? '#0f172a' : '#f8fafc';
+      return {
+        ...style,
+        header: {
+          ...style.header,
+          text: {
+            ...style.header?.text,
+            color: landscapeTextColor
+          }
+        }
+      };
+    }
+
+    return style;
+  };
+
+  Article.prototype._hasChroniXAlphaPatch = true;
+}
 
 function resolveArticleLaneColor(laneIdentifier, lanes = []) {
   if (!laneIdentifier && lanes.length > 0) {
@@ -26,22 +86,6 @@ function resolveArticleLaneColor(laneIdentifier, lanes = []) {
   return DEFAULT_LANE_COLORS[Math.abs(hash) % DEFAULT_LANE_COLORS.length];
 }
 
-function hexToRgba(hex, alpha = 0.6) {
-  if (!hex) return `rgba(59, 130, 246, ${alpha})`;
-  if (hex.startsWith('rgba') || hex.startsWith('hsla')) return hex;
-  let clean = hex.replace('#', '');
-  if (clean.length === 3) {
-    clean = clean.split('').map((c) => c + c).join('');
-  }
-  if (clean.length === 6) {
-    const r = parseInt(clean.substring(0, 2), 16);
-    const g = parseInt(clean.substring(2, 4), 16);
-    const b = parseInt(clean.substring(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
-  return hex;
-}
-
 const TimelineView = forwardRef(({
   timelineData,
   onSelectArticle,
@@ -57,6 +101,28 @@ const TimelineView = forwardRef(({
   useEffect(() => {
     starredArticleIdsRef.current = starredArticleIds;
   }, [starredArticleIds]);
+
+  // Synchronize external selection with Histropedia canvas instance
+  useEffect(() => {
+    const tl = timelineInstanceRef.current;
+    if (tl) {
+      tl._selectedArticleId = selectedArticleId || null;
+      if (selectedArticleId) {
+        try {
+          tl.select(selectedArticleId);
+        } catch (e) {
+          // ignore
+        }
+      } else {
+        if (tl.articles) {
+          tl.articles.forEach((a) => {
+            a.isActive = false;
+          });
+        }
+      }
+      tl.redraw();
+    }
+  }, [selectedArticleId]);
 
   useImperativeHandle(ref, () => ({
     zoomIn: () => {
@@ -82,6 +148,7 @@ const TimelineView = forwardRef(({
     focusArticle: (articleId) => {
       const tl = timelineInstanceRef.current;
       if (tl && articleId) {
+        tl._selectedArticleId = articleId;
         const art = tl.getArticleById(articleId);
         if (art) {
           try {
@@ -99,6 +166,7 @@ const TimelineView = forwardRef(({
           } catch (e) {
             // ignore
           }
+          tl.redraw();
         }
       }
     },
@@ -285,12 +353,43 @@ const TimelineView = forwardRef(({
             border: {
               width: 2.5,
             }
+          },
+          layoutStyles: {
+            landscape: {
+              style: {
+                header: {
+                  text: {
+                    color: isDark ? '#f8fafc' : '#0f172a',
+                  }
+                },
+                subheader: {
+                  text: {
+                    color: isDark ? '#94a3b8' : '#64748b',
+                  }
+                }
+              },
+              hoverStyle: {
+                header: {
+                  text: {
+                    color: isDark ? '#f8fafc' : '#0f172a',
+                  }
+                }
+              },
+              activeStyle: {
+                header: {
+                  text: {
+                    color: isDark ? '#f8fafc' : '#0f172a',
+                  }
+                }
+              }
+            }
           }
         }
       };
 
       const timeline = new Timeline(container, options);
       timelineInstanceRef.current = timeline;
+      timeline._isDarkTheme = isDark;
 
       // 1. Load lanes if any
       if (timelineData.lanes && timelineData.lanes.length > 0) {
@@ -367,7 +466,6 @@ const TimelineView = forwardRef(({
           const laneColor = resolveArticleLaneColor(art.lane, timelineData.lanes);
           const isLight = isColorLight(laneColor);
           const headerTextColor = isLight ? '#0f172a' : '#ffffff';
-          const normalLineColor = hexToRgba(laneColor, isDark ? 0.65 : 0.6);
 
           return {
             ...art,
@@ -383,7 +481,7 @@ const TimelineView = forwardRef(({
             starred: starredArticleIdsRef.current?.has(art.id) || !!art.starred,
             style: {
               ...articleStyle,
-              color: normalLineColor,
+              color: laneColor,
               header: {
                 ...articleStyle.header,
                 text: {
@@ -393,7 +491,7 @@ const TimelineView = forwardRef(({
               },
               connectorLine: {
                 ...articleStyle.connectorLine,
-                color: normalLineColor,
+                color: laneColor,
               }
             },
             hoverStyle: {
@@ -451,6 +549,21 @@ const TimelineView = forwardRef(({
 
         timeline.load(formattedArticles);
 
+        // Sync initial selection state so unselected articles start with semi-transparent lines
+        timeline._selectedArticleId = selectedArticleId || null;
+        if (selectedArticleId) {
+          try {
+            timeline.select(selectedArticleId);
+          } catch (e) {
+            // ignore
+          }
+        } else if (timeline.articles) {
+          timeline.articles.forEach((a) => {
+            a.isActive = false;
+          });
+          timeline.redraw();
+        }
+
         // Fit articles in view
         setTimeout(() => {
           try {
@@ -472,10 +585,29 @@ const TimelineView = forwardRef(({
           return;
         }
 
+        if (timelineInstanceRef.current) {
+          timelineInstanceRef.current._selectedArticleId = clickedId;
+          timelineInstanceRef.current.redraw();
+        }
+
         if (onSelectArticle) {
           const original = timelineData.articles?.find((a) => a.id === clickedId);
           onSelectArticle(original || article.data || article);
         }
+      });
+
+      // Event listener for timeline background clicks (deselection)
+      timeline.on('timeline-click', () => {
+        if (timelineInstanceRef.current) {
+          timelineInstanceRef.current._selectedArticleId = null;
+          if (timelineInstanceRef.current.articles) {
+            timelineInstanceRef.current.articles.forEach((a) => {
+              a.isActive = false;
+            });
+          }
+          timelineInstanceRef.current.redraw();
+        }
+        onSelectArticle?.(null);
       });
 
     } catch (err) {
