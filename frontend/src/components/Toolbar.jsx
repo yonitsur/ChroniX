@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   ZoomIn,
   ZoomOut,
@@ -155,6 +155,76 @@ export default function Toolbar({
 
   const formContainerRef = useRef(null);
   const rightControlsRef = useRef(null);
+  const toolbarContainerRef = useRef(null);
+  const logoRef = useRef(null);
+
+  // Dynamic room detection for top bar action buttons (Refine & Add Event)
+  const [topBarRoom, setTopBarRoom] = useState('full'); // 'full' | 'compact' | 'none'
+
+  const updateRoomAvailability = useCallback(() => {
+    if (!toolbarContainerRef.current) return;
+    const containerWidth = toolbarContainerRef.current.clientWidth;
+
+    // Mobile viewport (< 768px): not enough room in top bar (handled via mobile nav bar & more menu)
+    if (containerWidth < 768) {
+      setTopBarRoom('none');
+      return;
+    }
+
+    const logoWidth = logoRef.current?.offsetWidth || 130;
+    const rightItems = Array.from(rightControlsRef.current?.children || []);
+    // Sum width of non-action controls (Zoom, Starred, Clear, Quota, Lang, Theme, More, User)
+    const baseControlsWidth = rightItems
+      .filter((el) => !el.dataset.action && !el.dataset.divider)
+      .reduce((sum, el) => sum + el.offsetWidth + 6, 0);
+
+    // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
+    if (containerWidth < 1024) {
+      const freeSpaceInRow1 = containerWidth - logoWidth - baseControlsWidth - 32;
+      if (freeSpaceInRow1 >= 180) {
+        setTopBarRoom('full');
+      } else if (freeSpaceInRow1 >= 76) {
+        setTopBarRoom('compact');
+      } else {
+        setTopBarRoom('none');
+      }
+      return;
+    }
+
+    // Desktop single-row layout (containerWidth >= 1024px)
+    const defaultFormWidth = containerWidth >= 1280 ? 460 : 380;
+    const formWidth = promptCustomWidth || (isPromptExpanded ? 400 : defaultFormWidth);
+    const freeSpace = containerWidth - logoWidth - formWidth - baseControlsWidth - 48;
+
+    if (freeSpace >= 180) {
+      setTopBarRoom('full');
+    } else if (freeSpace >= 76) {
+      setTopBarRoom('compact');
+    } else {
+      setTopBarRoom('none');
+    }
+  }, [isPromptExpanded, promptCustomWidth]);
+
+  useEffect(() => {
+    updateRoomAvailability();
+    if (!toolbarContainerRef.current) return;
+
+    let resizeObserver;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        updateRoomAvailability();
+      });
+      resizeObserver.observe(toolbarContainerRef.current);
+    }
+
+    window.addEventListener('resize', updateRoomAvailability);
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener('resize', updateRoomAvailability);
+    };
+  }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly]);
+
   const isResizingRef = useRef(false);
   const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef(0);
@@ -313,10 +383,13 @@ export default function Toolbar({
         isMoreMenuOpen || isUserMenuOpen || isDetailDropdownOpen ? 'z-[45]' : 'z-40'
       }`}
     >
-      <div className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200">
+      <div
+        ref={toolbarContainerRef}
+        className="px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 lg:gap-4 text-slate-700 dark:text-slate-200"
+      >
         
         {/* Left: Branding & Home button */}
-        <div className="order-1 flex items-center shrink-0">
+        <div ref={logoRef} className="order-1 flex items-center shrink-0">
           <button
             type="button"
             onClick={() => {
@@ -338,6 +411,54 @@ export default function Toolbar({
             isPromptExpanded ? 'ml-auto lg:ml-0' : 'ml-auto'
           }`}
         >
+          {/* AI Refine Quick Access Button (when timeline exists and room permits) */}
+          {timelineData && topBarRoom !== 'none' && (
+            <button
+              type="button"
+              id="toolbar-refine-btn"
+              data-action="refine"
+              disabled={isGenerating}
+              onClick={onOpenRefine}
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-300 dark:hover:border-sky-700/60 hover:bg-sky-50/70 dark:hover:bg-sky-950/40 disabled:opacity-40 disabled:cursor-not-allowed group ${
+                topBarRoom === 'full' ? 'px-2.5' : 'w-8 px-0'
+              }`}
+              title={t('toolbar.refineTitle')}
+              aria-label={t('toolbar.refine')}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
+              {topBarRoom === 'full' && (
+                <span className="font-semibold text-xs whitespace-nowrap">{t('toolbar.refine')}</span>
+              )}
+            </button>
+          )}
+
+          {/* Add Event Quick Access Button (when timeline exists and room permits) */}
+          {timelineData && topBarRoom !== 'none' && (
+            <button
+              type="button"
+              id="toolbar-add-event-btn"
+              data-action="add-event"
+              onClick={onAddEvent}
+              className={`h-8 shrink-0 flex items-center justify-center gap-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-700/60 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 disabled:opacity-40 disabled:cursor-not-allowed group ${
+                topBarRoom === 'full' ? 'px-2.5' : 'w-8 px-0'
+              }`}
+              title={t('toolbar.addEvent')}
+              aria-label={t('toolbar.addEvent')}
+            >
+              <PlusCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+              {topBarRoom === 'full' && (
+                <span className="font-semibold text-xs whitespace-nowrap">
+                  {t('toolbar.addEventBtn') || t('toolbar.addEvent')}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Subtle separator between timeline action buttons and canvas zoom controls */}
+          {timelineData && topBarRoom !== 'none' && (
+            <div data-divider="true" className="hidden md:block h-4 w-px bg-slate-200 dark:bg-slate-800 mx-0.5 shrink-0" />
+          )}
+
           {/* Zoom Controls Pill (Desktop only) */}
           <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
             <button
