@@ -166,7 +166,7 @@ const TimelineView = forwardRef(({
         disableBranding: true,
         enableUserControl: true,
         enableCursor: true,
-        verticalOffset: 45,
+        verticalOffset: 65,
         style: {
           mainLine: {
             visible: true,
@@ -175,16 +175,20 @@ const TimelineView = forwardRef(({
           dateLabel: {
             minor: {
               color: isDark ? '#94a3b8' : '#475569',
+              font: "500 11px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
             },
             major: {
               color: isDark ? '#f8fafc' : '#0f172a',
+              font: "700 13px 'Plus Jakarta Sans', Heebo, system-ui, sans-serif",
             }
           },
           marker: {
             minor: {
+              height: 12,
               color: isDark ? '#38bdf8' : '#0284c7',
             },
             major: {
+              height: 24,
               color: isDark ? '#818cf8' : '#4338ca',
             }
           }
@@ -423,6 +427,7 @@ const TimelineView = forwardRef(({
         id="histropedia-container"
         dir="ltr"
         className="w-full h-full absolute inset-0"
+        style={{ touchAction: 'none' }}
       />
     </div>
   );

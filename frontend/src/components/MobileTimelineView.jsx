@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Calendar,
   Layers,
@@ -78,6 +78,88 @@ export default function MobileTimelineView({
   const [scaleMultiplier, setScaleMultiplier] = useState(1.0);
   const [feedSortOrder, setFeedSortOrder] = useState('asc'); // for feed view
   const [hoveredArticleId, setHoveredArticleId] = useState(null);
+  const [zoomBadge, setZoomBadge] = useState(null);
+
+  const rulerContainerRef = useRef(null);
+  const scaleMultiplierRef = useRef(scaleMultiplier);
+  scaleMultiplierRef.current = scaleMultiplier;
+
+  // Native multi-touch pinch-to-zoom handler for the vertical timeline
+  useEffect(() => {
+    const container = rulerContainerRef.current;
+    if (!container || viewMode !== 'ruler') return;
+
+    let initialDistance = 0;
+    let initialScale = 1.0;
+    let isPinching = false;
+    let initialCenterY = 0;
+    let initialScrollTop = 0;
+    let hideBadgeTimer = null;
+
+    const getTouchDistance = (e) => {
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    };
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        isPinching = true;
+        initialDistance = getTouchDistance(e);
+        initialScale = scaleMultiplierRef.current;
+        initialCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        initialScrollTop = container.scrollTop;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isPinching || e.touches.length < 2) return;
+      // Prevent the mobile browser from zooming the entire page/viewport
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      const currentDist = getTouchDistance(e);
+      if (initialDistance <= 0) return;
+
+      const ratio = currentDist / initialDistance;
+      const targetScale = Math.min(4.0, Math.max(0.3, initialScale * ratio));
+
+      setScaleMultiplier(targetScale);
+
+      // Keep timeline focal point anchored around user fingers
+      const scaleDiff = targetScale / initialScale;
+      const rect = container.getBoundingClientRect();
+      const relativeCenterY = initialCenterY - rect.top;
+      container.scrollTop = (initialScrollTop + relativeCenterY) * scaleDiff - relativeCenterY;
+
+      if (hideBadgeTimer) clearTimeout(hideBadgeTimer);
+      setZoomBadge(Math.round(targetScale * 100));
+    };
+
+    const handleTouchEnd = (e) => {
+      if (isPinching && e.touches.length < 2) {
+        isPinching = false;
+        if (hideBadgeTimer) clearTimeout(hideBadgeTimer);
+        hideBadgeTimer = setTimeout(() => {
+          setZoomBadge(null);
+        }, 900);
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
+    return () => {
+      if (hideBadgeTimer) clearTimeout(hideBadgeTimer);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [viewMode]);
 
   const articles = timelineData?.articles || [];
   const lanes = timelineData?.lanes || [];
@@ -501,9 +583,19 @@ export default function MobileTimelineView({
       {/* ─── Mode 1: Visual Proportional Time Ruler & Parallel Spans ─── */}
       {viewMode === 'ruler' ? (
         <div
+          ref={rulerContainerRef}
           className="flex-1 overflow-y-auto overflow-x-auto relative pb-28"
-          style={{ WebkitOverflowScrolling: 'touch' }}
+          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x pan-y' }}
         >
+          {/* Visual Pinch Zoom Floating Badge */}
+          {zoomBadge !== null && (
+            <div className="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-200 animate-in fade-in zoom-in-95">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 dark:bg-slate-100/95 text-white dark:text-slate-900 shadow-2xl backdrop-blur-md text-xs font-bold border border-slate-700/50 dark:border-slate-300/50">
+                <ZoomIn className="w-3.5 h-3.5 text-sky-400 dark:text-sky-600" />
+                <span>{zoomBadge}%</span>
+              </div>
+            </div>
+          )}
           <div
             className="relative min-w-full flex"
             style={{ height: `${canvasHeight}px` }}

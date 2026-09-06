@@ -746,15 +746,17 @@ export default function App() {
               {/* Tab 1: Timeline (Vertical Feed or Canvas if toggled) */}
               {mobileTab === 'timeline' && (
                 isMobileCanvasView ? (
-                  <TimelineView
-                    ref={timelineRef}
-                    timelineData={currentTimeline}
-                    onSelectArticle={handleSelectArticle}
-                    selectedArticleId={selectedArticle?.id}
-                    starredArticleIds={starredArticleIds}
-                    onToggleStar={handleToggleStar}
-                    theme={theme}
-                  />
+                  <div className="w-full h-full relative pb-16">
+                    <TimelineView
+                      ref={timelineRef}
+                      timelineData={currentTimeline}
+                      onSelectArticle={handleSelectArticle}
+                      selectedArticleId={selectedArticle?.id}
+                      starredArticleIds={starredArticleIds}
+                      onToggleStar={handleToggleStar}
+                      theme={theme}
+                    />
+                  </div>
                 ) : (
                   <MobileTimelineView
                     timelineData={currentTimeline}

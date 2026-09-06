@@ -64,6 +64,11 @@ html.lang-he select:not([dir="ltr"]) {
   text-align: left !important;
 }
 
+#histropedia-container canvas,
+.histropedia-canvas {
+  touch-action: none !important;
+}
+
 body {
   margin: 0;
   padding: 0;
