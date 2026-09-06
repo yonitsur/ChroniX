@@ -26,7 +26,7 @@ import PromptExamples from './components/PromptExamples';
 import FloatingMapWidget from './components/FloatingMapWidget';
 import MobileTimelineView from './components/MobileTimelineView';
 import MobileNavBar from './components/MobileNavBar';
-import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight, Globe } from 'lucide-react';
+import { FolderOpen, AlertTriangle, Loader2, MapPin, Maximize2, Minimize2, X, Columns2, Square, BookOpen, ArrowRight, Languages } from 'lucide-react';
 
 import {
   generateTimeline,
@@ -962,7 +962,7 @@ export default function App() {
               </button>
               {t('home.multilingualTip') && (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 backdrop-blur-md shadow-2xs">
-                  <Globe className="w-3 h-3 text-sky-500 shrink-0" />
+                  <Languages className="w-3.5 h-3.5 text-sky-500 shrink-0" />
                   <span>{t('home.multilingualTip')}</span>
                 </div>
               )}
