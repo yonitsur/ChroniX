@@ -432,6 +432,26 @@ const TimelineView = forwardRef(({
       art.setOption('hiddenByFilter', hidden);
     });
 
+    // In split timelines, collapse the body of filtered-out lanes down to their
+    // colored header stripe (fixed height) so the selected lane — left on auto
+    // height — expands to absorb the freed space.
+    if (mode === 'lane' && Array.isArray(tl.lanes)) {
+      tl.lanes.forEach((lane) => {
+        const isSelected =
+          !sel ||
+          sel.matchKeys.includes(lane.id) ||
+          sel.matchKeys.includes(lane.title) ||
+          String(sel.id) === String(lane.id);
+        if (isSelected) {
+          lane.setOption('layout.height', null);
+          lane.setOption('layout.heightWeight', 1);
+        } else {
+          const headerH = lane.layout?.header?.height ?? 28;
+          lane.setOption('layout.height', headerH);
+        }
+      });
+    }
+
     tl.redraw();
     try {
       tl.fitArticles({ padding: 70 });
