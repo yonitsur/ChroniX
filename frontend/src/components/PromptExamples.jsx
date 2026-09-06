@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Dices } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Dices, Split } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { PROMPT_EXAMPLES } from '../data/promptExamplesData';
 
@@ -179,7 +179,7 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                 </p>
 
                 {/* Card Bottom Metadata Bar - Always LTR for uniform left alignment */}
-                <div className="flex items-center justify-start w-full mt-auto pt-1.5" dir="ltr">
+                <div className="flex items-center gap-1.5 justify-start w-full mt-auto pt-1.5" dir="ltr">
                   <span
                     className={`text-[9.5px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded border ${
                       item.detailLevel === 'deep_dive'
@@ -195,6 +195,15 @@ export default function PromptExamples({ onSelectPrompt, isGenerating = false })
                       ? t('toolbar.detailOverview')
                       : t('toolbar.detailStandard')}
                   </span>
+
+                  {item.isParallel && (
+                    <span
+                      className="text-[9.5px] sm:text-[10px] font-medium px-1.5 py-0.5 rounded border bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/60 flex items-center gap-1"
+                    >
+                      <Split className="w-2.5 h-2.5 shrink-0 text-slate-500 dark:text-slate-400" />
+                      <span>{t('toolbar.parallelLanes')}</span>
+                    </span>
+                  )}
                 </div>
               </button>
             );

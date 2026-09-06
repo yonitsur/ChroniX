@@ -9,14 +9,16 @@ export const PROMPT_EXAMPLES = [
     lang: 'en'
   },
   {
-    prompt: 'The Space Race (1955–1975): Soviet Space Program vs. NASA',
+    prompt: 'The Space Race (1955–1975), divided into parallel timelines: Soviet Space Program vs. NASA',
     detailLevel: 'standard',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
-    prompt: 'World War II (1939–1945): European Theater vs. Pacific Theater',
+    prompt: 'World War II (1939–1945), divided into parallel timelines by theaters: European Theater, Pacific Theater, and Eastern Front',
     detailLevel: 'deep_dive',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
     prompt: 'Ancient Egypt: From the Pyramids to Cleopatra',
@@ -24,14 +26,16 @@ export const PROMPT_EXAMPLES = [
     lang: 'en'
   },
   {
-    prompt: 'Dinosaurs: Carnivores vs. Herbivores',
+    prompt: 'Dinosaurs, divided into parallel timelines: Carnivores vs. Herbivores',
     detailLevel: 'standard',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
-    prompt: 'The Industrial Revolution: Breakthrough Inventions & Social Impact',
+    prompt: 'The Industrial Revolution, divided into parallel timelines: Technological Inventions, Transport, and Labor Movements',
     detailLevel: 'standard',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
     prompt: 'Human Evolution: From Early Hominids to Modern Humans',
@@ -69,9 +73,10 @@ export const PROMPT_EXAMPLES = [
     lang: 'en'
   },
   {
-    prompt: 'The Cold War: Major Crises and Diplomatic Summits',
+    prompt: 'The Cold War (1947–1991), divided into parallel timelines: Geopolitical Crises vs. Nuclear Diplomacy & Space Race',
     detailLevel: 'standard',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
     prompt: 'Evolution of the Universe: From the Big Bang to the Solar System',
@@ -84,9 +89,10 @@ export const PROMPT_EXAMPLES = [
     lang: 'en'
   },
   {
-    prompt: 'First Temple Era: Kings of Judah vs. Kings of Israel',
+    prompt: 'First Temple Era, divided into parallel timelines: Kingdom of Judah vs. Kingdom of Israel',
     detailLevel: 'standard',
-    lang: 'en'
+    lang: 'en',
+    isParallel: true
   },
   {
     prompt: 'Evolution of the Hebrew Alphabet & Script Across the Ages',
@@ -101,14 +107,16 @@ export const PROMPT_EXAMPLES = [
     lang: 'he'
   },
   {
-    prompt: 'המרוץ לחלל (1955–1975): תוכנית החלל הסובייטית מול נאס״א',
+    prompt: 'המרוץ לחלל (1955–1975), בחלוקה לצירים מקבילים: תוכנית החלל הסובייטית מול נאס״א',
     detailLevel: 'standard',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
-    prompt: 'מלחמת העולם השנייה (1939–1945): הזירה האירופית מול זירת האוקיינוס השקט',
+    prompt: 'מלחמת העולם השנייה (1939–1945), בחלוקה לצירים מקבילים לפי זירות: הזירה האירופית, זירת האוקיינוס השקט והחזית המזרחית',
     detailLevel: 'deep_dive',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
     prompt: 'מצרים העתיקה: מבניית הפירמידות ועד לקלאופטרה',
@@ -116,14 +124,16 @@ export const PROMPT_EXAMPLES = [
     lang: 'he'
   },
   {
-    prompt: 'עולם הדינוזאורים: דינוזאורים טורפים מול דינוזאורים צמחוניים',
+    prompt: 'עולם הדינוזאורים, בחלוקה לצירים מקבילים: דינוזאורים טורפים מול דינוזאורים צמחוניים',
     detailLevel: 'standard',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
-    prompt: 'המהפכה התעשייתית: המצאות מפתח ותמורות חברתיות',
+    prompt: 'המהפכה התעשייתית, בחלוקה לצירים מקבילים: פריצות דרך טכנולוגיות, תחבורה ותמורות חברתיות',
     detailLevel: 'standard',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
     prompt: 'האבולוציה של האדם: מההומינידים המוקדמים ועד לאדם המודרני',
@@ -161,9 +171,10 @@ export const PROMPT_EXAMPLES = [
     lang: 'he'
   },
   {
-    prompt: 'המלחמה הקרה: משברים בינלאומיים ופסגות דיפלומטיות',
+    prompt: 'המלחמה הקרה (1947–1991), בחלוקה לצירים מקבילים: משברים גיאופוליטיים מול דיפלומטיה גרעינית והמרוץ לחלל',
     detailLevel: 'standard',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
     prompt: 'התפתחות היקום: מהמפץ הגדול ועד היווצרות מערכת השמש',
@@ -176,9 +187,10 @@ export const PROMPT_EXAMPLES = [
     lang: 'he'
   },
   {
-    prompt: 'תקופת בית ראשון: מלכי יהודה מול מלכי ישראל',
+    prompt: 'תקופת בית ראשון, בחלוקה לצירים מקבילים: ממלכת יהודה מול ממלכת ישראל',
     detailLevel: 'standard',
-    lang: 'he'
+    lang: 'he',
+    isParallel: true
   },
   {
     prompt: 'התפתחות האלפבית והכתב העברי מראשיתו ועד ימינו',
