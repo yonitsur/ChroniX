@@ -1,5 +1,5 @@
 from typing import List, Optional, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, AliasChoices
 
 PrecisionType = Literal[
     "day", "month", "year", "decade", "century", "millennium", "million-years", "billion-years"
@@ -38,6 +38,11 @@ class TimelineArticle(BaseModel):
     lat: Optional[float] = None
     lng: Optional[float] = None
     googleMapsUrl: Optional[str] = None
+    isFictional: Optional[bool] = Field(
+        default=False,
+        validation_alias=AliasChoices("isFictional", "is_fictional"),
+        serialization_alias="isFictional"
+    )
 
     model_config = {"populate_by_name": True}
 
@@ -66,6 +71,11 @@ class TimelineData(BaseModel):
     articles: List[TimelineArticle] = Field(default_factory=list)
     createdAt: Optional[str] = None
     updatedAt: Optional[str] = None
+    isFictional: Optional[bool] = Field(
+        default=False,
+        validation_alias=AliasChoices("isFictional", "is_fictional"),
+        serialization_alias="isFictional"
+    )
     aiRefineCount: Optional[int] = Field(default=0, alias="aiRefineCount")
     aiEventAddCount: Optional[int] = Field(default=0, alias="aiEventAddCount")
 
@@ -108,6 +118,7 @@ class EventSuggestionOutput(BaseModel):
     location_name: Optional[str] = Field(default=None, description="City, region, landmark, or country where the event took place, or null")
     lat: Optional[float] = Field(default=None, description="Latitude coordinate, or null")
     lng: Optional[float] = Field(default=None, description="Longitude coordinate, or null")
+    is_fictional: Optional[bool] = Field(default=False, description="Set to true if this event is from fiction, literature, mythology, or fantasy, or false for real Earth history.")
     ai_event_add_count: Optional[int] = Field(default=None, description="Current event addition count for the timeline")
     remaining_timeline_adds: Optional[int] = Field(default=None, description="Remaining paid event additions for this timeline")
 
@@ -139,6 +150,7 @@ class GeminiEventItem(BaseModel):
     location_name: Optional[str] = Field(default=None, description="City, region, archaeological site, or country where the event took place, or null")
     lat: Optional[float] = Field(default=None, description="Approximate latitude coordinate (-90.0 to 90.0), or null")
     lng: Optional[float] = Field(default=None, description="Approximate longitude coordinate (-180.0 to 180.0), or null")
+    is_fictional: Optional[bool] = Field(default=False, description="Set to true if this event is set in a fictional universe, literary saga, fantasy, mythology, or sci-fi world.")
 
 class GeminiLaneItem(BaseModel):
     id: str
@@ -157,6 +169,7 @@ class GeminiTimelineOutput(BaseModel):
     title: str
     description: str
     time_scale: Literal["calendar", "prehistoric"] = "calendar"
+    is_fictional: Optional[bool] = Field(default=False, description="Set to true if this timeline represents a fictional universe, literary saga, fantasy world, sci-fi, or mythology e.g. Game of Thrones, Lord of the Rings, Star Wars, Harry Potter. Set to false for real Earth history, prehistory, science, or real biographies.")
     detected_language: Optional[str] = Field(default="en", description="2-letter ISO 639-1 language code of the prompt/timeline, e.g. 'en', 'he', 'fr', 'es', 'de', 'ru', 'ar', 'it', 'ja', etc.")
     lanes: List[GeminiLaneItem] = Field(default_factory=list)
     time_bands: List[GeminiTimeBandItem] = Field(default_factory=list)

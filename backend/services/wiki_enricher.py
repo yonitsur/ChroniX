@@ -11,6 +11,65 @@ HEADERS = {
     "User-Agent": "ChroniXApp/1.0 (https://github.com/yonitsur/VisualTimeLine; yonitsur@gmail.com)"
 }
 
+FICTIONAL_KEYWORDS = {
+    # Game of Thrones / A Song of Ice and Fire
+    "game of thrones", "a song of ice and fire", "westeros", "essos", "targaryen", "winterfell",
+    "kings landing", "king's landing", "valyria", "narrow sea", "lannister", "baratheon", "stark",
+    "braavos", "dothraki", "iron throne", "night's watch", "white walker", "wildling",
+    "משחקי הכס", "שיר של אש ושל קרח", "וסטרוז", "אסוס", "וינטרפל", "מעלה מלך", "מעלה המלך",
+    "הים הצר", "טארגאריין", "סטארק", "לאניסטר", "בראבוס", "דות'ראקי", "כס הברזל", "משמר הלילה",
+    # Lord of the Rings / Tolkien / Middle-earth
+    "lord of the rings", "the hobbit", "silmarillion", "middle-earth", "middle earth", "tolkien",
+    "mordor", "gondor", "rohan", "rivendell", "the shire", "sauron", "frodo", "bilbo", "aragorn",
+    "isengard", "valinor", "beleriand", "mithrandir", "one ring", "mount doom",
+    "שר הטבעות", "ההוביט", "סילמריליון", "הארץ התיכונה", "טולקין", "מורדור", "גונדור", "רוהאן",
+    "ריבנדל", "הפלך", "סאורון", "פרודו", "ארגורן", "איזנגרד", "טבעת אחת", "הר הגורל",
+    # Harry Potter / Wizarding World
+    "harry potter", "hogwarts", "wizarding world", "voldemort", "dumbledore", "diagon alley",
+    "hogsmeade", "azkaban", "quidditch", "gryffindor", "slytherin", "hufflepuff", "ravenclaw",
+    "הארי פוטר", "הוגוורטס", "וולדמורט", "דמבלדור", "סמטת דיאגון", "אזקבאן", "קווידיץ'",
+    "גריפינדור", "סלית'רין", "הפלפאף", "רייבנקלו",
+    # Star Wars
+    "star wars", "jedi", "sith", "skywalker", "tatooine", "coruscant", "death star", "lightsaber",
+    "mandalorian", "endor", "hoth", "naboo",
+    "מלחמת הכוכבים", "ג'דיי", "סית'", "סקייווקר", "טטואין", "קורוסנט", "כוכב המוות", "מנדלוריאן",
+    # Dune
+    "dune", "arrakis", "atreides", "harkonnen", "fremen", "sandworm", "spice melange",
+    "חולית", "אראקיס", "אטרייאידס", "הארקונן", "פרמן",
+    # Narnia
+    "narnia", "chronicles of narnia", "aslan", "c.s. lewis", "cair paravel",
+    "נרניה", "סיפורי נרניה", "אסלן", "קאר פאראוול",
+    # Marvel / DC
+    "marvel cinematic universe", "marvel comics", "avengers", "wakanda", "asgard",
+    "נוקמים", "וואקנדה", "אסגארד", "מארוול",
+    # The Witcher
+    "witcher", "the witcher", "geralt", "rivia", "novigrad", "kaer morhen", "temeria", "redania",
+    "הוויצ'ר", "גרלט", "ריביה", "נוביגרד", "קאר מורהן",
+    # Cosmere / Fantasy / Sci-fi
+    "wheel of time", "כישור הזמן",
+    "cosmere", "mistborn", "stormlight", "brandon sanderson", "roshar",
+    "ברנדון סנדרסון", "הערפילאים", "גנזך גנזי הסער", "רושאר",
+    "avatar: the last airbender", "the last airbender", "אווטאר: כשף האוויר האחרון",
+    "star trek", "uss enterprise", "klingon", "vulcan", "מסע בין כוכבים",
+    "discworld", "terry pratchett", "ankh-morpork", "עולם הדיסק", "טרי פראצ'ט",
+    "percy jackson", "camp half-blood", "פרסי ג'קסון",
+    "hunger games", "panem", "katniss", "district 12", "משחקי הרעב", "פאנם",
+}
+
+def is_fictional_context(*texts: Optional[str]) -> bool:
+    """
+    Safely determine if any provided text belongs to a fictional universe or literary saga.
+    Handles None and non-string inputs safely.
+    """
+    for text in texts:
+        if not text or not isinstance(text, str):
+            continue
+        text_lower = text.lower()
+        for kw in FICTIONAL_KEYWORDS:
+            if kw in text_lower:
+                return True
+    return False
+
 
 def generate_title_variations(raw_title: str, lang: str = "he") -> List[str]:
     """
@@ -495,7 +554,8 @@ async def search_wikipedia_candidates(
 async def enrich_events_with_wikipedia(
     events_data: list,
     lang: str = "en",
-    timeline_topic: str = ""
+    timeline_topic: str = "",
+    is_timeline_fictional: bool = False
 ) -> list:
     """
     Given a list of event dictionaries, asynchronously fetch Wikipedia data for all of them.
@@ -568,12 +628,47 @@ async def enrich_events_with_wikipedia(
                     events_data[i]["extract"] = res["extract"]
                 if not events_data[i].get("wikiTitle") and res.get("wikiTitle"):
                     events_data[i]["wikiTitle"] = res["wikiTitle"]
-                if (events_data[i].get("lat") is None or events_data[i].get("lng") is None) and res.get("lat") is not None and res.get("lng") is not None:
-                    events_data[i]["lat"] = res["lat"]
-                    events_data[i]["lng"] = res["lng"]
 
-        # Geocoding fallback for events with location_name but without coordinates
+                event_is_fictional = (
+                    is_timeline_fictional
+                    or bool(events_data[i].get("is_fictional"))
+                    or is_fictional_context(
+                        timeline_topic,
+                        events_data[i].get("title"),
+                        events_data[i].get("subtitle"),
+                        events_data[i].get("location_name"),
+                        events_data[i].get("locationName")
+                    )
+                )
+
+                if event_is_fictional:
+                    events_data[i]["lat"] = None
+                    events_data[i]["lng"] = None
+                    events_data[i]["is_fictional"] = True
+                else:
+                    if (events_data[i].get("lat") is None or events_data[i].get("lng") is None) and res.get("lat") is not None and res.get("lng") is not None:
+                        events_data[i]["lat"] = res["lat"]
+                        events_data[i]["lng"] = res["lng"]
+
+        # Geocoding fallback for real-world events with location_name but without coordinates
         async def geocode_fallback(event: dict):
+            event_is_fictional = (
+                is_timeline_fictional
+                or bool(event.get("is_fictional"))
+                or is_fictional_context(
+                    timeline_topic,
+                    event.get("title"),
+                    event.get("subtitle"),
+                    event.get("location_name"),
+                    event.get("locationName")
+                )
+            )
+            if event_is_fictional:
+                event["lat"] = None
+                event["lng"] = None
+                event["is_fictional"] = True
+                return
+
             if event.get("lat") is not None and event.get("lng") is not None:
                 return
             loc = event.get("location_name") or event.get("locationName")
@@ -593,10 +688,35 @@ async def enrich_events_with_wikipedia(
         geo_tasks = [
             geocode_fallback(event)
             for event in events_data
-            if (event.get("lat") is None or event.get("lng") is None) and (event.get("location_name") or event.get("locationName"))
+            if not (
+                is_timeline_fictional
+                or bool(event.get("is_fictional"))
+                or is_fictional_context(
+                    timeline_topic,
+                    event.get("title"),
+                    event.get("subtitle"),
+                    event.get("location_name"),
+                    event.get("locationName")
+                )
+            )
+            and (event.get("lat") is None or event.get("lng") is None)
+            and (event.get("location_name") or event.get("locationName"))
         ]
         if geo_tasks:
             await asyncio.gather(*geo_tasks, return_exceptions=True)
+
+        # Final sweep: guarantee that any fictional event has lat/lng strictly set to None
+        for event in events_data:
+            if is_timeline_fictional or bool(event.get("is_fictional")) or is_fictional_context(
+                timeline_topic,
+                event.get("title"),
+                event.get("subtitle"),
+                event.get("location_name"),
+                event.get("locationName")
+            ):
+                event["lat"] = None
+                event["lng"] = None
+                event["is_fictional"] = True
 
     return events_data
 

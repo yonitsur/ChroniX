@@ -302,11 +302,14 @@ export default function EventEditModal({
 
     const parsedLat = lat !== '' && !isNaN(Number(lat)) ? Number(lat) : undefined;
     const parsedLng = lng !== '' && !isNaN(Number(lng)) ? Number(lng) : undefined;
+    const isFictional = initialEvent?.isFictional;
     let googleMapsUrl = initialEvent?.googleMapsUrl;
     if (parsedLat !== undefined && parsedLng !== undefined) {
       googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${parsedLat},${parsedLng}`;
-    } else if (locationName.trim()) {
+    } else if (locationName.trim() && !isFictional) {
       googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationName.trim())}`;
+    } else if (isFictional && (parsedLat === undefined || parsedLng === undefined)) {
+      googleMapsUrl = undefined;
     }
 
     const savedArticle = {
@@ -324,6 +327,7 @@ export default function EventEditModal({
       lat: parsedLat,
       lng: parsedLng,
       googleMapsUrl: googleMapsUrl || undefined,
+      isFictional: isFictional,
       rank: initialEvent?.rank || 8,
     };
 
