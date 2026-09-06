@@ -403,6 +403,13 @@ export const translations = {
       contactDesc: 'We would love to hear from you. Reach out to our team at:',
       copyEmail: 'Copy email',
       copied: 'Copied!',
+      githubTitle: 'Open Source on GitHub',
+      githubDesc: 'Explore the complete ChroniX source code, report issues, or contribute to development.',
+      githubLink: 'View on GitHub',
+      githubRepo: 'GitHub Repository',
+      creditsChroniXTitle: 'ChroniX Source Code',
+      creditsChroniXSub: 'Official Open Source Project Repository',
+      creditsChroniXDesc: 'The complete ChroniX frontend, backend server, and interactive timeline components are publicly hosted on GitHub.',
       footerTagline: 'Made with curiosity for history, science & discovery.'
     },
     userGuide: {
@@ -956,6 +963,13 @@ export const translations = {
       contactDesc: 'נשמח מאוד לשמוע מכם ולסייע. פנו לצוות שלנו בכתובת:',
       copyEmail: 'העתק אימייל',
       copied: 'הועתק!',
+      githubTitle: 'קוד פתוח ב-GitHub',
+      githubDesc: 'צפו בקוד המקור המלא של ChroniX, דווחו על בעיות או קחו חלק בפיתוח הפרויקט.',
+      githubLink: 'צפו ב-GitHub',
+      githubRepo: 'מאגר GitHub',
+      creditsChroniXTitle: 'קוד המקור של ChroniX',
+      creditsChroniXSub: 'המאגר הרשמי של הפרויקט ב-GitHub',
+      creditsChroniXDesc: 'קוד המקור של ממשק המשתמש, שרת ה-Backend ורכיבי ציר הזמן האינטראקטיביים זמינים באופן חופשי ב-GitHub.',
       footerTagline: 'נוצר מתוך סקרנות והתלהבות להיסטוריה, מדע וגילוי.'
     },
     userGuide: {
