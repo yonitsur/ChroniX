@@ -171,48 +171,65 @@ export default function Toolbar({
   const toolbarContainerRef = useRef(null);
   const logoRef = useRef(null);
 
-  // Dynamic room detection for top bar action buttons (Refine & Add Event)
-  const [topBarRoom, setTopBarRoom] = useState('full'); // 'full' | 'compact' | 'none'
+  // Progressive room detection for top bar controls:
+  // actions: Refine, Add Event, Cards, Starred, Map, Divider
+  // zoom: Zoom In, Zoom Out, Fit All pill
+  // utilities: Clear Board, Quota, Language, Theme
+  const [topBarVisibility, setTopBarVisibility] = useState({
+    actions: true,
+    zoom: true,
+    utilities: true
+  });
 
-  const updateRoomAvailability = useCallback(() => {
+  const updateRoomAvailability = useCallback((overrideWidth) => {
     if (!toolbarContainerRef.current) return;
     const containerWidth = toolbarContainerRef.current.clientWidth;
 
-    // Mobile viewport (< 768px): not enough room in top bar (handled via mobile nav bar & more menu)
+    // Mobile viewport (< 768px): prompt is full-width in row 2; row 1 has logo & core controls
     if (containerWidth < 768) {
-      setTopBarRoom('none');
+      setTopBarVisibility({
+        actions: false,
+        zoom: false,
+        utilities: containerWidth >= 420
+      });
       return;
     }
 
     const logoWidth = logoRef.current?.offsetWidth || 130;
-    const rightItems = Array.from(rightControlsRef.current?.children || []);
-    // Sum width of non-action controls (Zoom, Starred, Clear, Quota, Lang, Theme, More, User)
-    const baseControlsWidth = rightItems
-      .filter((el) => !el.dataset.action && !el.dataset.divider)
-      .reduce((sum, el) => sum + el.offsetWidth + 6, 0);
 
     // Tablet 2-row layout (768px <= containerWidth < 1024px): prompt is in row 2
     if (containerWidth < 1024) {
-      const freeSpaceInRow1 = containerWidth - logoWidth - baseControlsWidth - 32;
-      if (freeSpaceInRow1 >= 180) {
-        setTopBarRoom('compact');
-      } else {
-        setTopBarRoom('none');
-      }
+      const freeSpaceInRow1 = containerWidth - logoWidth - 140;
+      setTopBarVisibility({
+        actions: freeSpaceInRow1 >= 430,
+        zoom: freeSpaceInRow1 >= 260,
+        utilities: true
+      });
       return;
     }
 
     // Desktop single-row layout (containerWidth >= 1024px)
+    const activeWidth = typeof overrideWidth === 'number' ? overrideWidth : promptCustomWidth;
     const defaultFormWidth = containerWidth >= 1280 ? 460 : 380;
-    const formWidth = promptCustomWidth || (isPromptExpanded ? 400 : defaultFormWidth);
-    const freeSpace = containerWidth - logoWidth - formWidth - baseControlsWidth - 48;
+    const formWidth = activeWidth || (isPromptExpanded ? (containerWidth - logoWidth - 120) : defaultFormWidth);
 
-    if (freeSpace >= 180) {
-      setTopBarRoom('compact');
-    } else {
-      setTopBarRoom('none');
-    }
-  }, [isPromptExpanded, promptCustomWidth]);
+    // Free space between prompt and persistent right-side items (more menu + user profile + gaps/padding ~140px)
+    const spaceForIcons = containerWidth - logoWidth - formWidth - 140;
+
+    const neededActionsWidth = timelineData ? 220 : 0;
+    const neededZoomWidth = timelineData ? 95 : 0;
+    const neededUtilitiesWidth = (timelineData ? 36 : 0) + (user ? 75 : 0) + 110;
+
+    const showUtilities = spaceForIcons >= 60;
+    const showZoom = spaceForIcons >= (neededUtilitiesWidth + 60);
+    const showActions = spaceForIcons >= (neededUtilitiesWidth + neededZoomWidth + (neededActionsWidth > 0 ? 100 : 0));
+
+    setTopBarVisibility({
+      actions: showActions,
+      zoom: showZoom,
+      utilities: showUtilities
+    });
+  }, [isPromptExpanded, promptCustomWidth, timelineData, user]);
 
   useEffect(() => {
     updateRoomAvailability();
@@ -226,11 +243,11 @@ export default function Toolbar({
       resizeObserver.observe(toolbarContainerRef.current);
     }
 
-    window.addEventListener('resize', updateRoomAvailability);
+    window.addEventListener('resize', () => updateRoomAvailability());
 
     return () => {
       if (resizeObserver) resizeObserver.disconnect();
-      window.removeEventListener('resize', updateRoomAvailability);
+      window.removeEventListener('resize', () => updateRoomAvailability());
     };
   }, [updateRoomAvailability, timelineData, user, language, filterStarredOnly, isCardsListOpen, isMapMenuOpen, mapMode]);
 
@@ -263,12 +280,17 @@ export default function Toolbar({
       startWidthRef.current = promptCustomWidth || 450;
     }
 
-    // Calculate maximum available width dynamically until it reaches the next element (zoom controls on the right)
-    if (rightControlsRef.current && formContainerRef.current) {
-      const rightControlsRect = rightControlsRef.current.getBoundingClientRect();
+    // Calculate maximum available width dynamically until it reaches the More Actions button (the three dots)
+    if (moreMenuRef.current && formContainerRef.current) {
+      const moreMenuRect = moreMenuRef.current.getBoundingClientRect();
       const formRect = formContainerRef.current.getBoundingClientRect();
-      // Distance between prompt left edge and the right controls left edge, minus gap (12px)
-      const available = rightControlsRect.left - formRect.left - 12;
+      // Distance between prompt left edge and the More Actions button left edge, minus gap (12px)
+      const available = moreMenuRect.left - formRect.left - 12;
+      maxAvailableWidthRef.current = Math.max(360, Math.floor(available));
+    } else if (toolbarContainerRef.current && formContainerRef.current) {
+      const containerRect = toolbarContainerRef.current.getBoundingClientRect();
+      const formRect = formContainerRef.current.getBoundingClientRect();
+      const available = containerRect.right - formRect.left - 100;
       maxAvailableWidthRef.current = Math.max(360, Math.floor(available));
     } else {
       maxAvailableWidthRef.current = Math.max(360, window.innerWidth - 200);
@@ -286,6 +308,7 @@ export default function Toolbar({
       const newWidth = Math.min(maxWidth, Math.max(260, Math.round(startWidthRef.current + change)));
 
       setPromptCustomWidth(newWidth);
+      updateRoomAvailability(newWidth);
     };
 
     const onMouseUp = () => {
@@ -297,6 +320,7 @@ export default function Toolbar({
             try {
               localStorage.setItem('vt_prompt_custom_width', String(finalWidth));
             } catch (err) {}
+            updateRoomAvailability(finalWidth);
           }
           return finalWidth;
         });
@@ -318,6 +342,7 @@ export default function Toolbar({
     e.stopPropagation();
     setPromptCustomWidth(null);
     setIsPromptExpanded(false);
+    updateRoomAvailability(null);
     try {
       localStorage.removeItem('vt_prompt_custom_width');
       localStorage.removeItem('vt_prompt_expanded');
@@ -423,12 +448,10 @@ export default function Toolbar({
         {/* Right: Core Actions & More Dropdown (Top right on smaller screens, far right on large) */}
         <div
           ref={rightControlsRef}
-          className={`order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 min-w-0 transition-all duration-200 ${
-            isPromptExpanded ? 'ml-auto lg:ml-0' : 'ml-auto'
-          }`}
+          className="order-2 lg:order-3 flex items-center gap-1 sm:gap-1.5 shrink-0 min-w-0 ml-auto transition-all duration-200"
         >
           {/* AI Refine Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && (
             <button
               type="button"
               id="toolbar-refine-btn"
@@ -444,7 +467,7 @@ export default function Toolbar({
           )}
 
           {/* Add Event Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && (
             <button
               type="button"
               id="toolbar-add-event-btn"
@@ -459,7 +482,7 @@ export default function Toolbar({
           )}
 
           {/* Cards List / Events Drawer Quick Access Button (when timeline exists and room permits) */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && (
             <button
               type="button"
               id="toolbar-cards-btn"
@@ -492,7 +515,7 @@ export default function Toolbar({
           )}
 
           {/* Starred Filter Quick Access Button (when timeline exists and room permits) - Right to Cards */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && (
             <button
               type="button"
               id="toolbar-starred-btn"
@@ -521,7 +544,7 @@ export default function Toolbar({
           )}
 
           {/* Map Options Dropdown Button (when timeline exists and room permits) */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && (
             <div className="relative shrink-0" ref={mapMenuRef}>
               <button
                 type="button"
@@ -585,43 +608,45 @@ export default function Toolbar({
           )}
 
           {/* Subtle separator between timeline action buttons and canvas zoom controls */}
-          {timelineData && topBarRoom !== 'none' && (
+          {timelineData && topBarVisibility.actions && topBarVisibility.zoom && (
             <div data-divider="true" className="hidden md:block h-4 w-px bg-slate-200 dark:bg-slate-800 mx-0.5 shrink-0" />
           )}
 
-          {/* Zoom Controls Pill (Desktop only) */}
-          <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
-            <button
-              type="button"
-              onClick={onZoomIn}
-              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title={t('toolbar.zoomIn')}
-              aria-label={t('toolbar.zoomIn')}
-            >
-              <ZoomIn className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={onZoomOut}
-              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title={t('toolbar.zoomOut')}
-              aria-label={t('toolbar.zoomOut')}
-            >
-              <ZoomOut className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={onFitAll}
-              className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
-              title={t('toolbar.fitAll')}
-              aria-label={t('toolbar.fitAll')}
-            >
-              <Maximize2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          {/* Zoom Controls Pill (Desktop only - only when timeline exists) */}
+          {timelineData && topBarVisibility.zoom && (
+            <div className="hidden md:flex h-8 items-center bg-slate-100/90 dark:bg-slate-900/90 rounded-lg p-0.5 border border-slate-200/90 dark:border-slate-800/90 shadow-2xs shrink-0">
+              <button
+                type="button"
+                onClick={onZoomIn}
+                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                title={t('toolbar.zoomIn')}
+                aria-label={t('toolbar.zoomIn')}
+              >
+                <ZoomIn className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={onZoomOut}
+                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                title={t('toolbar.zoomOut')}
+                aria-label={t('toolbar.zoomOut')}
+              >
+                <ZoomOut className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={onFitAll}
+                className="h-7 w-7 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white rounded-md transition-colors cursor-pointer"
+                title={t('toolbar.fitAll')}
+                aria-label={t('toolbar.fitAll')}
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
 
           {/* Clear / New Board Quick Access Button (when timeline exists) */}
-          {timelineData && (
+          {timelineData && topBarVisibility.utilities && (
             <button
               type="button"
               onClick={() => {
@@ -639,42 +664,46 @@ export default function Toolbar({
           )}
 
           {/* Quota Indicator Badge */}
-          {user && (
+          {user && topBarVisibility.utilities && (
             <QuotaBadge quota={quota} onClick={onOpenQuota} />
           )}
 
           {/* Dedicated Language Switcher (EN / עב) - Perfectly locked size and non-wrapping */}
-          <button
-            type="button"
-            onClick={toggleLanguage}
-            className="h-8 shrink-0 whitespace-nowrap select-none flex items-center justify-center gap-1.5 px-2.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer text-xs font-semibold"
-            title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
-            aria-label={language === 'en' ? 'Switch to Hebrew' : 'Switch to English'}
-          >
-            <Languages className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-            <span className="whitespace-nowrap tracking-wide leading-none inline-flex items-center">
-              {language === 'en' ? (
-                <span><strong className="text-sky-600 dark:text-sky-400 font-bold">EN</strong> / עב</span>
-              ) : (
-                <span><strong className="text-sky-600 dark:text-sky-400 font-bold">עב</strong> / EN</span>
-              )}
-            </span>
-          </button>
+          {topBarVisibility.utilities && (
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="h-8 shrink-0 whitespace-nowrap select-none flex items-center justify-center gap-1.5 px-2.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer text-xs font-semibold"
+              title={language === 'en' ? t('toolbar.switchLanguageToHebrew') : t('toolbar.switchLanguageToEnglish')}
+              aria-label={language === 'en' ? 'Switch to Hebrew' : 'Switch to English'}
+            >
+              <Languages className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+              <span className="whitespace-nowrap tracking-wide leading-none inline-flex items-center">
+                {language === 'en' ? (
+                  <span><strong className="text-sky-600 dark:text-sky-400 font-bold">EN</strong> / עב</span>
+                ) : (
+                  <span><strong className="text-sky-600 dark:text-sky-400 font-bold">עב</strong> / EN</span>
+                )}
+              </span>
+            </button>
+          )}
 
           {/* Light / Dark Mode Toggle Button */}
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            className="h-8 w-8 shrink-0 flex items-center justify-center bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
-            aria-label={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
-          >
-            {isDark ? (
-              <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
-            ) : (
-              <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
-            )}
-          </button>
+          {topBarVisibility.utilities && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className="h-8 w-8 shrink-0 flex items-center justify-center bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-800 shadow-2xs transition-all active:scale-95 cursor-pointer"
+              title={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
+              aria-label={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
+              )}
+            </button>
+          )}
 
           {/* More Actions Dropdown Menu */}
           <div className="relative shrink-0" ref={moreMenuRef}>
@@ -694,7 +723,7 @@ export default function Toolbar({
 
             {isMoreMenuOpen && (
               <div
-                className={`absolute right-0 mt-2 w-60 bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
+                className={`absolute right-0 mt-2 w-60 max-h-[calc(100vh-5rem)] overflow-y-auto overscroll-contain bg-white/95 dark:bg-slate-900/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl ${
                   language === 'he' ? 'text-right' : 'text-left'
                 }`}
                 dir={language === 'he' ? 'rtl' : 'ltr'}
@@ -820,6 +849,55 @@ export default function Toolbar({
                   );
                 })}
 
+                {/* Zoom & Navigation Controls (only when timeline exists) */}
+                {timelineData && (
+                  <>
+                    <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
+                    <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                      {t('toolbar.zoomSection')}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onZoomIn?.();
+                      }}
+                      className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      title={t('toolbar.zoomIn')}
+                    >
+                      <ZoomIn className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span className="font-medium">{t('toolbar.zoomIn')}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onZoomOut?.();
+                      }}
+                      className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      title={t('toolbar.zoomOut')}
+                    >
+                      <ZoomOut className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span className="font-medium">{t('toolbar.zoomOut')}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onFitAll?.();
+                      }}
+                      className="w-full text-start px-3 py-2 flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      title={t('toolbar.fitAll')}
+                    >
+                      <Maximize2 className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span className="font-medium">{t('toolbar.fitAll')}</span>
+                    </button>
+                  </>
+                )}
+
                 {/* Export Options */}
                 <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -875,6 +953,61 @@ export default function Toolbar({
                 <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                   {t('toolbar.systemSection')}
                 </div>
+
+                {/* Prompt Cap / Quota Status */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMoreMenuOpen(false);
+                    if (user) {
+                      onOpenQuota?.();
+                    } else {
+                      onOpenAuth?.();
+                    }
+                  }}
+                  className="w-full text-start px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  title={t('toolbar.promptCap')}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Zap className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span className="font-medium">{t('toolbar.promptCap')}</span>
+                  </div>
+                  {user && quota ? (
+                    <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800">
+                      {quota.is_admin
+                        ? t('quota.badgeAdmin')
+                        : quota.remaining_paid > 0
+                        ? `${quota.remaining_paid}/${quota.daily_paid_limit || 15}`
+                        : t('quota.tierFree')}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
+                      {t('toolbar.signIn')}
+                    </span>
+                  )}
+                </button>
+
+                {/* Theme Mode Toggle (Light / Dark) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToggleTheme?.();
+                  }}
+                  className="w-full text-start px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  title={isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {isDark ? (
+                      <Sun className="w-4 h-4 text-amber-400 shrink-0" />
+                    ) : (
+                      <Moon className="w-4 h-4 text-slate-600 dark:text-slate-400 shrink-0" />
+                    )}
+                    <span className="font-medium">{isDark ? t('toolbar.switchThemeLight') : t('toolbar.switchThemeDark')}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    {isDark ? t('toolbar.themeDark') : t('toolbar.themeLight')}
+                  </span>
+                </button>
 
                 {/* Language switch option in More Menu */}
                 <button
