@@ -73,6 +73,10 @@ export default function EventDrawer({
   const laneObj = laneIndex >= 0 ? lanes[laneIndex] : null;
   const laneColor = laneObj ? getLaneColor(laneObj, laneIndex, lanes) : null;
   const timeSpan = localizedTimeSpan(article.from, article.to, article.isToPresent);
+  
+  const hasHebrew = (str) => /[\u0590-\u05FF]/.test(str || '');
+  const isTitleHebrew = hasHebrew((article.title || '') + ' ' + (article.subtitle || ''));
+  const isLaneHebrew = hasHebrew(laneObj?.title || '');
 
   return (
     <div
@@ -120,7 +124,7 @@ export default function EventDrawer({
             <img
               src={article.imageUrl}
               alt={article.title}
-              className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -134,7 +138,10 @@ export default function EventDrawer({
         )}
 
         {/* Title and Subtitle */}
-        <div dir="auto">
+        <div
+          dir={isTitleHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}
+          className={isTitleHebrew ? 'text-right' : (isRtl ? 'text-right' : 'text-left')}
+        >
           <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
             {article.title}
           </h2>
@@ -160,7 +167,7 @@ export default function EventDrawer({
                 className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
                 style={{ backgroundColor: laneColor }}
               />
-              <span dir="auto">{laneObj.title}</span>
+              <span dir={isLaneHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}>{laneObj.title}</span>
             </div>
           )}
         </div>
@@ -218,8 +225,10 @@ export default function EventDrawer({
         {/* Wikipedia Extract */}
         {article.extract ? (
           <div
-            dir="auto"
-            className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed text-start"
+            dir={hasHebrew(article.extract) ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}
+            className={`bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed ${
+              hasHebrew(article.extract) ? 'text-right' : (isRtl ? 'text-right' : 'text-left')
+            }`}
           >
             <p>{article.extract}</p>
           </div>

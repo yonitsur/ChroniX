@@ -119,13 +119,15 @@ export default function AiRefineModal({
             <textarea
               rows={3}
               required
-              dir="auto"
+              dir={instruction ? (/[\u0590-\u05FF]/.test(instruction) ? 'rtl' : 'ltr') : (isRtl ? 'rtl' : 'ltr')}
               maxLength={500}
               disabled={isLoading}
               value={instruction}
               onChange={(e) => setInstruction(e.target.value)}
               placeholder={t('aiRefine.placeholder')}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all resize-none text-sm"
+              className={`w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all resize-none text-sm ${
+                (instruction ? /[\u0590-\u05FF]/.test(instruction) : isRtl) ? 'text-right' : 'text-left'
+              }`}
             />
           </div>
 

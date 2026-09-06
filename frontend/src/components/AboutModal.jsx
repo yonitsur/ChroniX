@@ -160,7 +160,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
           {activeTab === 'overview' && (
             <div className="space-y-5 animate-in fade-in duration-150">
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40">
-                <p className="text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed">
+                <p className={`text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.heroDesc')}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <span className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.features.0.title')}
                     </span>
                   </div>
@@ -185,7 +185,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <span className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.features.1.title')}
                     </span>
                   </div>
@@ -197,7 +197,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <span className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.features.2.title')}
                     </span>
                   </div>
@@ -209,7 +209,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                 <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
                   <div className="flex items-center gap-2">
                     <Edit3 className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <span className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
                       {t('about.features.3.title')}
                     </span>
                   </div>
@@ -293,7 +293,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
           {/* TAB 2: CREDITS & ATTRIBUTIONS */}
           {activeTab === 'credits' && (
             <div className="space-y-4 animate-in fade-in duration-150">
-              <p className={`text-xs text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
+              <p className={`text-xs text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                 {t('about.creditsIntro')}
               </p>
 
@@ -304,7 +304,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <div className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs">
                       JS
                     </div>
-                    <div>
+                    <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                       <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                         {t('about.creditsHistropediaTitle')}
                       </h4>
@@ -323,7 +323,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.creditsHistropediaDesc')}
                 </p>
                 <div className="pt-1.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between border-t border-slate-200/80 dark:border-slate-800">
@@ -346,7 +346,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       <Cpu className="w-4 h-4 text-sky-500" />
                     </div>
-                    <div>
+                    <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                       <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                         {t('about.creditsGeminiTitle')}
                       </h4>
@@ -365,7 +365,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.creditsGeminiDesc')}
                 </p>
               </div>
@@ -377,7 +377,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       <Globe className="w-4 h-4 text-sky-500" />
                     </div>
-                    <div>
+                    <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                       <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                         {t('about.creditsWikiTitle')}
                       </h4>
@@ -396,7 +396,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.creditsWikiDesc')}
                 </p>
               </div>
@@ -408,7 +408,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       <Code2 className="w-4 h-4 text-sky-500" />
                     </div>
-                    <div>
+                    <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                       <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                         {t('about.creditsLeafletTitle')}
                       </h4>
@@ -421,7 +421,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     {t('about.creditsLeafletLicense')}
                   </span>
                 </div>
-                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.creditsLeafletDesc')}
                 </p>
               </div>
@@ -433,7 +433,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       <GithubIcon className="w-4 h-4 text-sky-500" />
                     </div>
-                    <div>
+                    <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                       <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                         {t('about.creditsChroniXTitle')}
                       </h4>
@@ -452,7 +452,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`}>
+                <p className={`text-xs text-slate-600 dark:text-slate-300 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   {t('about.creditsChroniXDesc')}
                 </p>
               </div>
@@ -463,11 +463,11 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                   <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
                     <Mail className="w-3.5 h-3.5 text-sky-500" />
                   </div>
-                  <div>
-                    <h5 className={`font-semibold text-xs text-slate-900 dark:text-white ${isRtl ? 'text-right' : 'text-left'}`}>
+                  <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
+                    <h5 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.contactTitle')}
                     </h5>
-                    <p className={`text-[11px] text-slate-500 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
                       {t('about.contactDesc')}
                     </p>
                   </div>
@@ -488,12 +488,12 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
             <div className="space-y-4 animate-in fade-in duration-150">
               {/* Callout to Full User Guide */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="space-y-0.5">
+                <div className={`space-y-0.5 ${isRtl ? 'text-right' : 'text-left'}`} dir={isRtl ? 'rtl' : 'ltr'}>
                   <h4 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <BookOpen className="w-4 h-4 text-sky-500" />
-                    {t('about.guideCalloutTitle')}
+                    <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
+                    <span>{t('about.guideCalloutTitle')}</span>
                   </h4>
-                  <p className={`text-xs text-slate-600 dark:text-slate-400 ${isRtl ? 'text-right' : 'text-left'}`}>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
                     {t('about.guideCalloutDesc')}
                   </p>
                 </div>
@@ -520,11 +520,11 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                   <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
                     <ZoomIn className="w-4 h-4 text-sky-500" />
                   </div>
-                  <div>
+                  <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.0.title')}
                     </h4>
-                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                       {t('about.guides.0.desc')}
                     </p>
                   </div>
@@ -534,11 +534,11 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                   <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
                     <MousePointer className="w-4 h-4 text-sky-500" />
                   </div>
-                  <div>
+                  <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.1.title')}
                     </h4>
-                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                       {t('about.guides.1.desc')}
                     </p>
                   </div>
@@ -548,11 +548,11 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
                   <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
                     <Sparkles className="w-4 h-4 text-sky-500" />
                   </div>
-                  <div>
+                  <div className={isRtl ? 'text-right' : 'text-left'} dir={isRtl ? 'rtl' : 'ltr'}>
                     <h4 className="font-semibold text-xs text-slate-900 dark:text-white">
                       {t('about.guides.2.title')}
                     </h4>
-                    <p className={`text-xs text-slate-600 dark:text-slate-400 mt-0.5 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                       {t('about.guides.2.desc')}
                     </p>
                   </div>

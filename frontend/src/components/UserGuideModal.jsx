@@ -194,7 +194,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
                 <Search className={`w-3.5 h-3.5 absolute ${language === 'he' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-slate-400`} />
                 <input
                   type="text"
-                  dir="auto"
+                  dir={searchQuery ? 'auto' : (language === 'he' ? 'rtl' : 'ltr')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('userGuide.searchPlaceholder')}
@@ -263,11 +263,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
               {/* Welcome Banner */}
               <div className="p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.getting_started.welcomeTitle}</span>
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
                     {guide.getting_started.welcomeDesc}
                   </p>
                 </div>
@@ -283,36 +283,36 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Core Navigation Controls */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.getting_started.navHeading}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <ZoomIn className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.getting_started.zoomTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.zoomDesc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <MousePointer className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.getting_started.panTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.panDesc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <Maximize2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.getting_started.fitAllTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.fitAllDesc}
                     </p>
                   </div>
@@ -321,30 +321,30 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Event Inspection & The Side Drawers */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.getting_started.inspectHeading}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <div className="p-1 rounded-md bg-slate-200/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">
                         <Calendar className="w-3.5 h-3.5 text-sky-500" />
                       </div>
                       <span>{guide.getting_started.eventDrawerTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.eventDrawerDesc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <div className="p-1 rounded-md bg-slate-200/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">
                         <Layers className="w-3.5 h-3.5 text-sky-500" />
                       </div>
                       <span>{guide.getting_started.cardsDrawerTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.getting_started.cardsDrawerDesc}
                     </p>
                   </div>
@@ -353,7 +353,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Stopping Generation Notice */}
               <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5" dir="auto">
+                <div className="flex items-center gap-2.5">
                   <AlertTriangle className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
                   <span className="text-xs text-slate-600 dark:text-slate-400">
                     <strong className="text-slate-900 dark:text-white">{guide.getting_started.stopGenTitle} </strong>
@@ -368,18 +368,18 @@ export default function UserGuideModal({ isOpen, onClose }) {
           {activeSection === 'prompt_mastery' && (
             <div className="space-y-6 animate-in fade-in duration-150">
               <div className="space-y-1">
-                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.prompt_mastery.title}</span>
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.prompt_mastery.subtitle}
                 </p>
               </div>
 
               {/* 1. Detail Levels */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.prompt_mastery.detailHeading}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
@@ -393,11 +393,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
                         {guide.prompt_mastery.levels.overview.count}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       <strong>{language === 'he' ? 'מתאים במיוחד ל: ' : 'Best for: '}</strong>
                       {guide.prompt_mastery.levels.overview.bestFor}
                     </p>
-                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono" dir="auto">
+                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono">
                       {guide.prompt_mastery.levels.overview.example}
                     </div>
                   </div>
@@ -412,11 +412,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
                         {guide.prompt_mastery.levels.standard.count}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       <strong>{language === 'he' ? 'מתאים במיוחד ל: ' : 'Best for: '}</strong>
                       {guide.prompt_mastery.levels.standard.bestFor}
                     </p>
-                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono" dir="auto">
+                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono">
                       {guide.prompt_mastery.levels.standard.example}
                     </div>
                   </div>
@@ -431,11 +431,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
                         {guide.prompt_mastery.levels.deep_dive.count}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       <strong>{language === 'he' ? 'מתאים במיוחד ל: ' : 'Best for: '}</strong>
                       {guide.prompt_mastery.levels.deep_dive.bestFor}
                     </p>
-                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono" dir="auto">
+                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-mono">
                       {guide.prompt_mastery.levels.deep_dive.example}
                     </div>
                   </div>
@@ -444,11 +444,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* 2. Swimlanes Division */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.prompt_mastery.swimlanesHeading}
                 </h4>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-3">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.prompt_mastery.swimlanesDesc}
                   </p>
 
@@ -457,7 +457,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
                       <div
                         key={i}
                         className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1"
-                        dir="auto"
+                       
                       >
                         <span className="font-semibold text-xs text-slate-900 dark:text-white">
                           {ex.title}
@@ -473,26 +473,26 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* 3. Concise vs Detailed Prompts */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.prompt_mastery.framingHeading}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                    <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.prompt_mastery.conciseTitle}</span>
                     </span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.prompt_mastery.conciseDesc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                    <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.prompt_mastery.detailedTitle}</span>
                     </span>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.prompt_mastery.detailedDesc}
                     </p>
                   </div>
@@ -502,15 +502,15 @@ export default function UserGuideModal({ isOpen, onClose }) {
               {/* 4. Multilingual Support: Prompt Language vs UI Language */}
               {guide.prompt_mastery.multilingualHeading && (
                 <div>
-                  <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                  <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                     {guide.prompt_mastery.multilingualHeading}
                   </h4>
                   <div className="p-4 sm:p-5 rounded-xl border border-sky-200/80 dark:border-sky-800/60 bg-sky-50/60 dark:bg-sky-950/25 space-y-2.5">
-                    <div className="flex items-center gap-2 font-semibold text-xs sm:text-sm text-sky-900 dark:text-sky-200" dir="auto">
+                    <div className="flex items-center gap-2 font-semibold text-xs sm:text-sm text-sky-900 dark:text-sky-200">
                       <Globe className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.prompt_mastery.multilingualTitle}</span>
                     </div>
-                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                       {guide.prompt_mastery.multilingualDesc}
                     </p>
                   </div>
@@ -524,11 +524,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
             <div className="space-y-5 animate-in fade-in duration-150">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                  <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                     <Play className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.prompt_showcase.title}</span>
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5" dir="auto">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     {guide.prompt_showcase.subtitle}
                   </p>
                 </div>
@@ -583,20 +583,20 @@ export default function UserGuideModal({ isOpen, onClose }) {
                         </div>
 
                         {/* Title */}
-                        <h4 className="font-semibold text-sm text-slate-900 dark:text-white" dir="auto">
+                        <h4 className="font-semibold text-sm text-slate-900 dark:text-white">
                           {itemTitle}
                         </h4>
 
                         {/* Prompt Body */}
                         <div
-                          dir="auto"
+                         
                           className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans select-all"
                         >
                           &ldquo;{itemPrompt}&rdquo;
                         </div>
 
                         {/* Why it works */}
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1.5" dir="auto">
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1.5">
                           <span className="font-medium text-slate-700 dark:text-slate-300 shrink-0">
                             {guide.prompt_showcase.whyItWorksLabel}
                           </span>
@@ -646,11 +646,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
           {activeSection === 'event_editing' && (
             <div className="space-y-6 animate-in fade-in duration-150">
               <div className="space-y-1">
-                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Edit3 className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.event_editing.title}</span>
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.event_editing.subtitle}
                 </p>
               </div>
@@ -658,31 +658,31 @@ export default function UserGuideModal({ isOpen, onClose }) {
               {/* Editing & Adding Workflow Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                     <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.event_editing.cards[0].title}</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.event_editing.cards[0].desc}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                     <Search className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.event_editing.cards[1].title}</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.event_editing.cards[1].desc}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                     <PlusCircle className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.event_editing.cards[2].title}</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.event_editing.cards[2].desc}
                   </p>
                 </div>
@@ -690,11 +690,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Geographic Coordinates in Event Edit */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                <h4 className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.event_editing.geoCoordsTitle}</span>
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.event_editing.geoCoordsDesc}
                 </p>
               </div>
@@ -705,11 +705,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
           {activeSection === 'ai_refine' && (
             <div className="space-y-6 animate-in fade-in duration-150">
               <div className="space-y-1">
-                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <SlidersHorizontal className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.ai_refine.title}</span>
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.ai_refine.subtitle}
                 </p>
               </div>
@@ -717,11 +717,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
               {/* Splitting / Restructuring tip banner */}
               {guide.ai_refine.splitTipTitle && (
                 <div className="p-4 rounded-xl border border-sky-200/80 dark:border-sky-800/50 bg-sky-50/50 dark:bg-sky-950/20 space-y-1.5">
-                  <h4 className="font-semibold text-xs text-sky-900 dark:text-sky-300 flex items-center gap-2" dir="auto">
+                  <h4 className="font-semibold text-xs text-sky-900 dark:text-sky-300 flex items-center gap-2">
                     <Columns2 className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.ai_refine.splitTipTitle}</span>
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.ai_refine.splitTipDesc}
                   </p>
                 </div>
@@ -729,7 +729,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Refinement examples */}
               <div className="space-y-3">
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   {guide.ai_refine.examplesHeading}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -737,7 +737,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
                     <div
                       key={idx}
                       className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2 flex flex-col justify-between"
-                      dir="auto"
+                     
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-semibold text-xs text-slate-900 dark:text-white">
@@ -771,57 +771,57 @@ export default function UserGuideModal({ isOpen, onClose }) {
           {activeSection === 'geo_map' && (
             <div className="space-y-6 animate-in fade-in duration-150">
               <div className="space-y-1">
-                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.geo_map.title}</span>
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.geo_map.subtitle}
                 </p>
               </div>
 
               {/* The 4 Map Display Modes */}
               <div>
-                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
                   {guide.geo_map.modesHeading}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <Globe className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.geo_map.modes[0].title}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.geo_map.modes[0].desc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <Minimize2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.geo_map.modes[1].title}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.geo_map.modes[1].desc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <Columns2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.geo_map.modes[2].title}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.geo_map.modes[2].desc}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1.5">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                       <Maximize2 className="w-4 h-4 text-sky-500 shrink-0" />
                       <span>{guide.geo_map.modes[3].title}</span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                       {guide.geo_map.modes[3].desc}
                     </p>
                   </div>
@@ -830,11 +830,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* Bi-Directional Interactive Sync */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                <h4 className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h4 className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.geo_map.syncHeading}</span>
                 </h4>
-                <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 list-disc list-inside" dir="auto">
+                <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 list-disc list-inside">
                   {guide.geo_map.syncPoints.map((pt, i) => (
                     <li key={i} className="leading-relaxed">
                       {pt}
@@ -849,42 +849,42 @@ export default function UserGuideModal({ isOpen, onClose }) {
           {activeSection === 'export_saving' && (
             <div className="space-y-6 animate-in fade-in duration-150">
               <div className="space-y-1">
-                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2" dir="auto">
+                <h3 className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Download className="w-4 h-4 text-sky-500 shrink-0" />
                   <span>{guide.export_saving.title}</span>
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.export_saving.subtitle}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5" dir="auto">
+                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Download className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.export_saving.cards[0].title}</span>
                   </span>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.export_saving.cards[0].desc}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5" dir="auto">
+                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Download className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.export_saving.cards[1].title}</span>
                   </span>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.export_saving.cards[1].desc}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5" dir="auto">
+                  <span className="font-semibold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
                     <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
                     <span>{guide.export_saving.cards[2].title}</span>
                   </span>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {guide.export_saving.cards[2].desc}
                   </p>
                 </div>
@@ -892,11 +892,11 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
               {/* AI Disclaimer Alert */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
-                <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs" dir="auto">
+                <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
                   <AlertTriangle className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
                   <span>{guide.export_saving.disclaimerTitle}</span>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed" dir="auto">
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                   {guide.export_saving.disclaimerDesc}
                 </p>
               </div>

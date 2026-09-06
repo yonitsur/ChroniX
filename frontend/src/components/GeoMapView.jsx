@@ -24,7 +24,7 @@ export default function GeoMapView({
   theme = 'light',
   className = ''
 }) {
-  const { t, formatDatePart } = useLanguage();
+  const { t, formatDatePart, isRtl } = useLanguage();
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
@@ -203,8 +203,11 @@ export default function GeoMapView({
       const marker = L.marker([lat, lng], { icon: customIcon });
 
       // Build popup content
+      const isPopupHebrew = /[\u0590-\u05FF]/.test((art.title || '') + ' ' + (art.subtitle || ''));
+      const popupDir = isPopupHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr');
+      const popupAlign = isPopupHebrew ? 'text-right' : (isRtl ? 'text-right' : 'text-left');
       const popupHtml = `
-        <div class="chronix-popup-card p-3 max-w-[260px] text-slate-800 dark:text-slate-100 font-sans" dir="auto">
+        <div class="chronix-popup-card p-3 max-w-[260px] text-slate-800 dark:text-slate-100 font-sans ${popupAlign}" dir="${popupDir}">
           ${
             art.imageUrl
               ? `<div class="w-full h-24 mb-2 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
@@ -358,7 +361,10 @@ export default function GeoMapView({
 
       {/* Global Events Drawer/Popup */}
       {showGlobalEvents && nonGeoArticles.length > 0 && (
-        <div className="absolute top-16 left-4 z-30 w-72 max-h-80 overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-4 text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-top-2">
+        <div
+          className="absolute top-16 left-4 z-30 w-72 max-h-80 overflow-y-auto rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-4 text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-top-2"
+          dir={isRtl ? 'rtl' : 'ltr'}
+        >
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
             <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
               {t('floatingMap.globalEvents', { count: nonGeoArticles.length })}
@@ -366,7 +372,7 @@ export default function GeoMapView({
             <button
               type="button"
               onClick={() => setShowGlobalEvents(false)}
-              className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs font-bold"
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs font-bold cursor-pointer"
             >
               ✕
             </button>
@@ -380,7 +386,7 @@ export default function GeoMapView({
                   if (onSelectArticle) onSelectArticle(art);
                   setShowGlobalEvents(false);
                 }}
-                className="w-full text-left p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer"
+                className={`w-full ${isRtl ? 'text-right' : 'text-left'} p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer`}
               >
                 <div className="text-xs font-semibold line-clamp-1">{art.title}</div>
                 {art.from && (

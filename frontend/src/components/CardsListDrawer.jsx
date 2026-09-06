@@ -104,31 +104,30 @@ export default function CardsListDrawer({
 
   if (!isOpen) return null;
 
+  const hasHebrew = (str) => /[\u0590-\u05FF]/.test(str || '');
+
   return (
     <aside
-      className={`fixed inset-y-0 right-0 w-full sm:w-96 md:w-[410px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col transition-all duration-300 ease-in-out select-none ${
+      className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800/80 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out font-sans ${
         isRtl ? 'text-right' : 'text-left'
       }`}
       dir={isRtl ? 'rtl' : 'ltr'}
-      aria-label={t('cardsList.title')}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200/80 dark:border-slate-800/80">
         <div className="flex items-center gap-2">
-          <h2 className="font-semibold text-sm text-slate-900 dark:text-white font-sans">
+          <Layers className="w-4 h-4 text-sky-500" />
+          <h2 className="font-bold text-sm text-slate-900 dark:text-white">
             {t('cardsList.title')}
           </h2>
-          <span className="text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
-            {filteredArticles.length === articles.length
-              ? t('cardsList.countLabel', { count: articles.length })
-              : `${filteredArticles.length} / ${articles.length}`}
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            {filteredArticles.length}
           </span>
         </div>
-
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+          className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
           title={t('common.close')}
           aria-label={t('common.close')}
         >
@@ -136,18 +135,20 @@ export default function CardsListDrawer({
         </button>
       </div>
 
-      {/* Search & Sort Controls */}
+      {/* Search & Filter Controls */}
       <div className="p-3 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/40 space-y-2">
         {/* Search Input */}
         <div className="relative flex items-center">
           <Search className="w-4 h-4 absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <input
             type="text"
-            dir="auto"
+            dir={searchQuery ? (hasHebrew(searchQuery) ? 'rtl' : 'ltr') : (isRtl ? 'rtl' : 'ltr')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('cardsList.searchPlaceholder')}
-            className="w-full pl-9 pr-8 py-1.5 text-xs bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 transition-all shadow-2xs"
+            className={`w-full pl-9 pr-8 py-1.5 text-xs bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 transition-all shadow-2xs ${
+              (searchQuery ? hasHebrew(searchQuery) : isRtl) ? 'text-right' : 'text-left'
+            }`}
           />
           {searchQuery && (
             <button
@@ -266,6 +267,7 @@ export default function CardsListDrawer({
             const isStarred = Boolean(starredArticleIds?.has(art.id));
             const timeSpan = formatTimeSpan(art.from, art.to, art.isToPresent);
             const laneInfo = laneMap.get(art.lane);
+            const isItemHebrew = hasHebrew((art.title || '') + ' ' + (art.subtitle || ''));
 
             return (
               <div
@@ -302,7 +304,10 @@ export default function CardsListDrawer({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0" dir="auto">
+                <div
+                  className={`flex-1 min-w-0 ${isItemHebrew ? 'text-right' : (isRtl ? 'text-right' : 'text-left')}`}
+                  dir={isItemHebrew ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}
+                >
                   <div className="flex items-center gap-1.5">
                     <h3 className="font-semibold text-xs sm:text-[13px] text-slate-900 dark:text-white truncate leading-snug">
                       {art.title}

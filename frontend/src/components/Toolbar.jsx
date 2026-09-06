@@ -1274,7 +1274,7 @@ export default function Toolbar({
 
               <input
                 type="text"
-                dir="auto"
+                dir={prompt ? (/[\u0590-\u05FF]/.test(prompt) ? 'rtl' : 'ltr') : (language === 'he' ? 'rtl' : 'ltr')}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 disabled={isGenerating}
@@ -1284,7 +1284,9 @@ export default function Toolbar({
                     ? loadingSteps[loadingStepIdx % loadingSteps.length]
                     : t('toolbar.inputPlaceholder')
                 }
-                className="flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans"
+                className={`flex-1 min-w-0 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs sm:text-sm outline-none font-medium py-1 px-1 font-sans ${
+                  (prompt ? /[\u0590-\u05FF]/.test(prompt) : language === 'he') ? 'text-right' : 'text-left'
+                }`}
               />
 
               {/* Quick Clear Button when text entered */}

@@ -439,7 +439,7 @@ export default function EventEditModal({
               <input
                 type="text"
                 required
-                dir="auto"
+                dir={title ? (/[\u0590-\u05FF]/.test(title) ? 'rtl' : 'ltr') : (isRtl ? 'rtl' : 'ltr')}
                 maxLength={150}
                 value={title}
                 onChange={(e) => {
@@ -447,7 +447,9 @@ export default function EventEditModal({
                   setShowCandidatePicker(false);
                 }}
                 placeholder={t('eventEditModal.titlePlaceholder')}
-                className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm"
+                className={`flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm ${
+                  (title ? /[\u0590-\u05FF]/.test(title) : isRtl) ? 'text-right' : 'text-left'
+                }`}
               />
 
               <div className="flex items-center gap-1.5 shrink-0">
@@ -558,12 +560,14 @@ export default function EventEditModal({
             </label>
             <input
               type="text"
-              dir="auto"
+              dir={subtitle ? (/[\u0590-\u05FF]/.test(subtitle) ? 'rtl' : 'ltr') : (isRtl ? 'rtl' : 'ltr')}
               maxLength={300}
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
               placeholder={t('eventEditModal.subtitlePlaceholder')}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm"
+              className={`w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-sm ${
+                (subtitle ? /[\u0590-\u05FF]/.test(subtitle) : isRtl) ? 'text-right' : 'text-left'
+              }`}
             />
           </div>
 
@@ -817,11 +821,13 @@ export default function EventEditModal({
             </label>
             <textarea
               rows={3}
-              dir="auto"
+              dir={extract ? (/[\u0590-\u05FF]/.test(extract) ? 'rtl' : 'ltr') : (isRtl ? 'rtl' : 'ltr')}
               value={extract}
               onChange={(e) => setExtract(e.target.value)}
               placeholder={t('eventEditModal.fullDescPlaceholder')}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 resize-none text-xs leading-relaxed"
+              className={`w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-sky-500 resize-none text-xs leading-relaxed ${
+                (extract ? /[\u0590-\u05FF]/.test(extract) : isRtl) ? 'text-right' : 'text-left'
+              }`}
             />
           </div>
 

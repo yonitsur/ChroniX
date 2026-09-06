@@ -361,14 +361,14 @@ export default function AuthGate() {
                     {error && (
                       <div className="mb-4 p-3 rounded-2xl bg-red-950/60 border border-red-800/70 text-red-300 text-xs flex items-start gap-2.5">
                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
-                        <span className="flex-1 text-left">{error}</span>
+                        <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{error}</span>
                       </div>
                     )}
 
                     {successMsg && (
                       <div className="mb-4 p-3 rounded-2xl bg-emerald-950/60 border border-emerald-800/70 text-emerald-300 text-xs flex items-start gap-2.5">
                         <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-                        <span className="flex-1 text-left">{successMsg}</span>
+                        <span className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>{successMsg}</span>
                       </div>
                     )}
 
@@ -376,7 +376,7 @@ export default function AuthGate() {
                     <form onSubmit={handleSubmit} className="space-y-3.5">
                       {mode === 'signup' && (
                         <div>
-                          <label className="block text-xs font-medium text-slate-300 mb-1 text-left">
+                          <label className={`block text-xs font-medium text-slate-300 mb-1 ${isRtl ? 'text-right' : 'text-left'}`}>
                             {t('auth.fullNameLabel')}
                           </label>
                           <div className="relative">
@@ -386,14 +386,14 @@ export default function AuthGate() {
                               value={displayName}
                               onChange={(e) => setDisplayName(e.target.value)}
                               placeholder={t('auth.fullNamePlaceholder')}
-                              className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
+                              className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all ${isRtl ? 'text-right' : 'text-left'}`}
                             />
                           </div>
                         </div>
                       )}
 
                       <div>
-                        <label className="block text-xs font-medium text-slate-300 mb-1 text-left">
+                        <label className={`block text-xs font-medium text-slate-300 mb-1 ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('auth.emailLabel')}
                         </label>
                         <div className="relative">
@@ -404,13 +404,13 @@ export default function AuthGate() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder={t('auth.emailPlaceholder')}
-                            className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
+                            className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all ${isRtl ? 'text-right' : 'text-left'}`}
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-slate-300 mb-1 text-left">
+                        <label className={`block text-xs font-medium text-slate-300 mb-1 ${isRtl ? 'text-right' : 'text-left'}`}>
                           {t('auth.passwordLabel')}
                         </label>
                         <div className="relative">
@@ -422,7 +422,7 @@ export default function AuthGate() {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder={t('auth.passwordPlaceholder')}
                             minLength={6}
-                            className="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all text-left"
+                            className={`w-full pl-10 pr-3.5 py-2.5 bg-slate-900/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-slate-900/70 transition-all ${isRtl ? 'text-right' : 'text-left'}`}
                           />
                         </div>
                       </div>
