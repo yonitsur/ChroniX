@@ -2,28 +2,87 @@ import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react
 import { Timeline, Article } from 'histropediajs';
 import { getLaneColor, isColorLight, DEFAULT_LANE_COLORS } from '../data/laneColors';
 
-// Patch Article.prototype.drawPeriodLinesAndConnectors once so lines are semi-transparent in normal state,
-// and 100% solid dark when hovered, selected, or active — without making the card header transparent!
+// Reimplement Article.prototype.drawPeriodLinesAndConnectors so the period line and connector line
+// are semi-transparent in the normal state (100% solid when hovered/selected/active), while the arrow
+// triangle at the card is always filled opaquely — otherwise the connector line shows through it.
 if (typeof window !== 'undefined' && Article) {
   if (!Article.prototype._originalChroniXDrawPeriodLinesAndConnectors) {
     Article.prototype._originalChroniXDrawPeriodLinesAndConnectors = Article.prototype.drawPeriodLinesAndConnectors;
   }
-  const originalDraw = Article.prototype._originalChroniXDrawPeriodLinesAndConnectors;
   Article.prototype.drawPeriodLinesAndConnectors = function(ctx, axisY) {
     const selectedId = this.owner?._selectedArticleId;
     const isSelected = selectedId ? (this.id === selectedId) : false;
     const isHigh = Boolean(this.isMouseover || this.isDragging || isSelected);
-    const prevOpacity = typeof this.opacity === 'number' ? this.opacity : 1;
-    if (!isHigh) {
-      this.opacity = prevOpacity * 0.45;
+    const baseAlpha = typeof this.opacity === 'number' ? this.opacity : 1;
+    const lineAlpha = isHigh ? baseAlpha : baseAlpha * 0.45;
+
+    const style = this._getCurrentStyle();
+    const geometry = this._getPeriodLineRenderGeometry(axisY);
+    const y = geometry.y;
+
+    ctx.globalAlpha = lineAlpha;
+    if (!this.hidePeriodLine) {
+      const fromX = this.indicator.fromX, toX = this.indicator.toX;
+      ctx.beginPath();
+      ctx.lineWidth = geometry.thickness;
+      ctx.moveTo(fromX, y);
+      ctx.lineTo(toX, y);
+      if (this.period.isToPresent) {
+        const periodLength = toX - fromX, maxFadeLength = 15;
+        const fadeStartColorStop = Math.max(1 - maxFadeLength / periodLength, 0.7);
+        const grad = ctx.createLinearGradient(fromX, y, toX, y);
+        grad.addColorStop(0, style.color);
+        grad.addColorStop(fadeStartColorStop, style.color);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.strokeStyle = grad;
+      } else {
+        ctx.strokeStyle = style.color;
+      }
+      ctx.stroke();
     }
+
+    if (!style.connectorLine.visible) {
+      ctx.globalAlpha = 1;
+      return;
+    }
+
+    const cardLayout = this._getCurrentCardLayout();
+    const connectorEnd = typeof cardLayout.getConnectorEnd === 'function'
+      ? cardLayout.getConnectorEnd.call(this)
+      : {
+          left: this.position.left + style.connectorLine.offsetX,
+          top: this.position.top + this.getHeight() + style.connectorLine.offsetY,
+        };
+    const x1 = Math.max(0, this.indicator.fromX);
+    const y1 = y;
+    const x2 = connectorEnd.left;
+    const y2 = connectorEnd.top;
+
+    // Connector line: semi-transparent in the normal state.
+    ctx.globalAlpha = lineAlpha;
+    ctx.strokeStyle = style.color;
+    ctx.lineWidth = style.connectorLine.thickness;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    // Arrow triangle: always fully opaque so the connector line never shows through it.
+    const radians = Math.atan((y2 - y1) / (x2 - x1)) + (x2 >= x1 ? -90 : 90) * Math.PI / 180;
+    ctx.globalAlpha = baseAlpha;
+    ctx.fillStyle = style.color;
     ctx.save();
-    try {
-      originalDraw.call(this, ctx, axisY);
-    } finally {
-      this.opacity = prevOpacity;
-      ctx.restore();
-    }
+    ctx.beginPath();
+    ctx.translate(x2, y2);
+    ctx.rotate(radians);
+    ctx.moveTo(-style.connectorLine.arrow.width, 0);
+    ctx.lineTo(style.connectorLine.arrow.width, 0);
+    ctx.lineTo(0, -style.connectorLine.arrow.height);
+    ctx.closePath();
+    ctx.restore();
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
   };
 
   // Patch Article.prototype._getCurrentStyle so that in landscape layout (used in multi-lane / multi-timeline view),
@@ -60,6 +119,18 @@ if (typeof window !== 'undefined' && Article) {
   };
 
   Article.prototype._hasChroniXAlphaPatch = true;
+}
+
+// Convert a hex color (#rgb or #rrggbb) to an rgba string with the given alpha.
+function hexToRgba(hex, alpha = 1) {
+  if (typeof hex !== 'string' || !hex.startsWith('#')) return hex;
+  let h = hex.slice(1);
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 function resolveArticleLaneColor(laneIdentifier, lanes = []) {
@@ -482,6 +553,10 @@ const TimelineView = forwardRef(({
             style: {
               ...articleStyle,
               color: laneColor,
+              border: {
+                color: '#000000',
+                width: 1.5,
+              },
               header: {
                 ...articleStyle.header,
                 text: {
