@@ -181,10 +181,10 @@ export function isColorLight(hexOrColor) {
 }
 
 /**
- * Resolves the color for a lane.
+ * Resolves the preferred museum color for a single lane, ignoring collisions.
  * Maps legacy/bright primary colors to the curated archival museum palette.
  */
-export function getLaneColor(lane, index = 0, allLanes = []) {
+function resolvePreferredLaneColor(lane, index = 0) {
   const fallbackColor = DEFAULT_LANE_COLORS[index % DEFAULT_LANE_COLORS.length];
   if (!lane) return fallbackColor;
 
@@ -211,4 +211,47 @@ export function getLaneColor(lane, index = 0, allLanes = []) {
 
   // 4. Harmonic fallback by lane index
   return fallbackColor;
+}
+
+/** Returns a stable key identifying a lane for uniqueness bookkeeping. */
+function laneKey(lane, index) {
+  if (lane && (lane.id !== undefined && lane.id !== null)) return `id:${lane.id}`;
+  if (lane && lane.name) return `name:${lane.name}`;
+  return `idx:${index}`;
+}
+
+/**
+ * Resolves the color for a lane, guaranteeing every lane in `allLanes`
+ * receives a distinct color. Each lane keeps its preferred museum tone when
+ * possible; on a collision it is reassigned to the next unused palette color.
+ */
+export function getLaneColor(lane, index = 0, allLanes = []) {
+  if (!lane) return DEFAULT_LANE_COLORS[index % DEFAULT_LANE_COLORS.length];
+
+  // Without the full lane set we cannot deduplicate; return preferred color.
+  if (!Array.isArray(allLanes) || allLanes.length <= 1) {
+    return resolvePreferredLaneColor(lane, index);
+  }
+
+  const used = new Set();
+  const targetKey = laneKey(lane, index);
+
+  for (let i = 0; i < allLanes.length; i += 1) {
+    const current = allLanes[i];
+    const preferred = resolvePreferredLaneColor(current, i);
+
+    let assigned = preferred;
+    if (used.has(preferred.toLowerCase())) {
+      // Collision: pick the next unused color from the museum palette.
+      assigned =
+        DEFAULT_LANE_COLORS.find((c) => !used.has(c.toLowerCase())) || preferred;
+    }
+    used.add(assigned.toLowerCase());
+
+    if (laneKey(current, i) === targetKey) {
+      return assigned;
+    }
+  }
+
+  return resolvePreferredLaneColor(lane, index);
 }

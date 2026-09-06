@@ -584,15 +584,15 @@ export default function Toolbar({
                 onClick={() => setIsMapMenuOpen((prev) => !prev)}
                 className={`h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-semibold border transition-all cursor-pointer select-none active:scale-95 shadow-2xs group ${
                   isMapMenuOpen || mapMode !== 'icon'
-                    ? 'bg-blue-500/10 dark:bg-blue-400/15 border-blue-400/80 dark:border-blue-500/80 text-blue-700 dark:text-blue-300 ring-2 ring-blue-400/20 shadow-xs'
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-950/40'
+                    ? 'bg-sky-500/10 dark:bg-sky-400/15 border-sky-400/80 dark:border-sky-500/80 text-sky-700 dark:text-sky-300 ring-2 ring-sky-400/20 shadow-xs'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-300 dark:hover:border-sky-700/60 hover:bg-sky-50/70 dark:hover:bg-sky-950/40'
                 }`}
                 title={t('toolbar.mapOptions')}
                 aria-label={t('toolbar.mapOptions')}
                 aria-haspopup="true"
                 aria-expanded={isMapMenuOpen}
               >
-                <Globe className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
+                <Globe className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 group-hover:rotate-12 transition-transform duration-200 shrink-0" />
               </button>
 
               {isMapMenuOpen && (
