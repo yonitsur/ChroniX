@@ -522,7 +522,12 @@ export const translations = {
       sortDesc: 'Newest first',
       tapToViewMap: 'View on map',
       resetPositions: 'Reset Card Positions',
-      dragToMove: 'Drag to move'
+      dragToMove: 'Drag to move',
+      gestureHint: 'Pinch to zoom · Drag to pan',
+      noEvents: 'No events to display',
+      spanYears: 'Viewing {n} years',
+      spanMonths: 'Viewing {n} months',
+      spanDays: 'Viewing {n} days'
     },
     auth: {
       signInTitle: 'Sign In to ChroniX',
@@ -1092,7 +1097,12 @@ export const translations = {
       sortDesc: 'מהמאוחר למוקדם',
       tapToViewMap: 'הצג במפה',
       resetPositions: 'איפוס מיקומי כרטיסים',
-      dragToMove: 'גרור להזזה'
+      dragToMove: 'גרור להזזה',
+      gestureHint: 'צביטה לזום · גרירה להזזה',
+      noEvents: 'אין אירועים להצגה',
+      spanYears: 'תצוגה: {n} שנים',
+      spanMonths: 'תצוגה: {n} חודשים',
+      spanDays: 'תצוגה: {n} ימים'
     },
     auth: {
       signInTitle: 'כניסה ל-ChroniX',
