@@ -142,12 +142,13 @@ export async function enrichItem(title, context = '', lang = null) {
   return res.json();
 }
 
-export async function suggestEventData({ query, timelineTopic = '', timeScale = 'calendar', lanes = [], language = null }) {
+export async function suggestEventData({ query, timelineTopic = '', timeScale = 'calendar', lanes = [], language = null, timelineId = null }) {
   const res = await fetch(`${API_BASE}/timeline/suggest-event`, {
     method: 'POST',
     headers: await getHeaders(),
     body: JSON.stringify({
       query,
+      timeline_id: timelineId || null,
       timeline_topic: timelineTopic,
       time_scale: timeScale,
       lanes,

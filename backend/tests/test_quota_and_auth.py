@@ -8,7 +8,10 @@ from services.quota_service import (
     get_user_daily_usage,
     record_prompt_usage,
     get_user_quota_info,
-    resolve_gemini_key
+    resolve_gemini_key,
+    resolve_refine_gemini_key,
+    resolve_event_suggest_gemini_key,
+    get_timeline_ai_usage
 )
 from main import SimpleRateLimiter
 
@@ -124,3 +127,91 @@ def test_quota_service_routing(monkeypatch, tmp_path):
         admin_info = get_user_quota_info(admin_user)
         assert admin_info["is_admin"] is True
         assert admin_info["tier"] == "admin_unlimited"
+
+def test_timeline_refine_quota_routing(monkeypatch, tmp_path):
+    monkeypatch.setenv("GEMINI_API_KEY", "PAID_KEY_123")
+    monkeypatch.setenv("GEMINI_API_KEY_FREE", "FREE_KEY_456")
+    monkeypatch.setenv("DAILY_PAID_PROMPTS_PER_USER", "20")
+    monkeypatch.setenv("TIMELINE_PAID_REFINE_LIMIT", "3")
+    monkeypatch.setenv("ADMIN_EMAILS", "admin@test.com")
+
+    # Isolate storage files
+    test_usage_file = tmp_path / "daily_usage.json"
+    test_tl_file = tmp_path / "timeline_usage.json"
+    monkeypatch.setattr("services.quota_service.USAGE_FILE", test_usage_file)
+    monkeypatch.setattr("services.quota_service.TIMELINE_USAGE_FILE", test_tl_file)
+
+    user = {"id": "user-tl-test", "email": "user@test.com"}
+    admin = {"id": "admin-tl-test", "email": "admin@test.com"}
+
+    tl_1 = "timeline-alpha-123"
+    tl_2 = "timeline-beta-456"
+
+    # Refine 1, 2, 3 on tl_1 should get PAID key
+    for i in range(3):
+        key, tier, is_admin, remaining = resolve_refine_gemini_key(user, timeline_id=tl_1, increment_usage=True)
+        assert key == "PAID_KEY_123"
+        assert tier == "paid"
+        assert is_admin is False
+        assert remaining == 2 - i
+
+    # Refine 4 on tl_1 exceeds limit (3) -> switches to FREE key
+    key, tier, is_admin, remaining = resolve_refine_gemini_key(user, timeline_id=tl_1, increment_usage=True)
+    assert key == "FREE_KEY_456"
+    assert tier == "free"
+    assert is_admin is False
+    assert remaining == 0
+
+    # tl_2 is a different timeline, so its first refine should still get PAID key
+    key, tier, is_admin, remaining = resolve_refine_gemini_key(user, timeline_id=tl_2, increment_usage=True)
+    assert key == "PAID_KEY_123"
+    assert tier == "paid"
+    assert remaining == 2
+
+    # Admin on tl_1 always gets PAID key without limit
+    admin_key, admin_tier, admin_is_admin, admin_rem = resolve_refine_gemini_key(admin, timeline_id=tl_1, increment_usage=True)
+    assert admin_key == "PAID_KEY_123"
+    assert admin_tier == "admin_paid"
+    assert admin_is_admin is True
+
+    # Custom BYOK key
+    cust_key, cust_tier, _, _ = resolve_refine_gemini_key(user, timeline_id=tl_1, custom_api_key="CUSTOM_USER_KEY")
+    assert cust_key == "CUSTOM_USER_KEY"
+    assert cust_tier == "custom"
+
+def test_timeline_event_suggest_quota_routing(monkeypatch, tmp_path):
+    monkeypatch.setenv("GEMINI_API_KEY", "PAID_KEY_123")
+    monkeypatch.setenv("GEMINI_API_KEY_FREE", "FREE_KEY_456")
+    monkeypatch.setenv("DAILY_PAID_PROMPTS_PER_USER", "20")
+    monkeypatch.setenv("TIMELINE_PAID_EVENT_ADD_LIMIT", "2")
+    monkeypatch.setenv("ADMIN_EMAILS", "admin@test.com")
+
+    test_usage_file = tmp_path / "daily_usage.json"
+    test_tl_file = tmp_path / "timeline_usage.json"
+    monkeypatch.setattr("services.quota_service.USAGE_FILE", test_usage_file)
+    monkeypatch.setattr("services.quota_service.TIMELINE_USAGE_FILE", test_tl_file)
+
+    user = {"id": "user-event-test", "email": "user@test.com"}
+    admin = {"id": "admin-event-test", "email": "admin@test.com"}
+    tl_id = "tl-event-suggest-101"
+
+    # First 2 suggestions get PAID key
+    for i in range(2):
+        key, tier, is_admin, remaining = resolve_event_suggest_gemini_key(user, timeline_id=tl_id, increment_usage=True)
+        assert key == "PAID_KEY_123"
+        assert tier == "paid"
+        assert is_admin is False
+        assert remaining == 1 - i
+
+    # 3rd suggestion exceeds limit of 2 -> switches to FREE key
+    key, tier, is_admin, remaining = resolve_event_suggest_gemini_key(user, timeline_id=tl_id, increment_usage=True)
+    assert key == "FREE_KEY_456"
+    assert tier == "free"
+    assert is_admin is False
+    assert remaining == 0
+
+    # Admin is exempt
+    a_key, a_tier, a_admin, _ = resolve_event_suggest_gemini_key(admin, timeline_id=tl_id, increment_usage=True)
+    assert a_key == "PAID_KEY_123"
+    assert a_tier == "admin_paid"
+    assert a_admin is True

@@ -1046,6 +1046,7 @@ export default function App() {
         lanes={currentTimeline?.lanes || []}
         timelineTopic={currentTimeline?.title || ''}
         timeScale={currentTimeline?.timeScale || 'calendar'}
+        timelineId={currentTimeline?.id}
       />
 
       <AiRefineModal
@@ -1056,7 +1057,8 @@ export default function App() {
         }}
         onRefine={handleRefine}
         isLoading={isRefining}
-        currentTimelineTitle={currentTimeline?.title}
+        currentTimeline={currentTimeline}
+        quota={quota}
       />
 
       <SavedTimelinesModal

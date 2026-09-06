@@ -231,7 +231,10 @@ export const translations = {
         'Filter to highlight only major turning points and decisive battles'
       ],
       refining: 'Refining Timeline...',
-      applyBtn: 'Apply Refinements'
+      applyBtn: 'Apply Refinements',
+      remainingPremium: '{remaining} of {limit} premium refinements remaining for this timeline',
+      freeTierNotice: 'Free Tier Key active ({limit}/{limit} premium refinements used for this timeline)',
+      adminUnlimited: 'Admin: Unlimited Premium Refinement'
     },
     savedTimelines: {
       title: 'Saved Timelines',
@@ -792,7 +795,10 @@ export const translations = {
         'סנן כדי להדגיש רק נקודות מפנה עיקריות ואירועים מכריעים'
       ],
       refining: 'מלטש ומארגן את ציר הזמן...',
-      applyBtn: 'החל ליטוש'
+      applyBtn: 'החל ליטוש',
+      remainingPremium: 'נותרו {remaining} מתוך {limit} ליטושי פרימיום לציר זמן זה',
+      freeTierNotice: 'מפתח חינמי פעיל (נוצלו {limit}/{limit} ליטושי פרימיום לציר זה)',
+      adminUnlimited: 'מנהל: ליטושי פרימיום ללא הגבלה'
     },
     savedTimelines: {
       title: 'צירים שמורים',

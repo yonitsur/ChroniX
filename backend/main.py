@@ -29,7 +29,13 @@ from services.storage import (
     ensure_data_dir
 )
 from services.auth_service import get_current_user_optional, get_current_user_required, is_admin_user
-from services.quota_service import resolve_gemini_key, get_user_quota_info
+from services.quota_service import (
+    resolve_gemini_key,
+    resolve_refine_gemini_key,
+    resolve_event_suggest_gemini_key,
+    get_user_quota_info,
+    get_timeline_ai_usage
+)
 import httpx
 import asyncio
 
@@ -162,17 +168,31 @@ async def refine_timeline_endpoint(
 ):
     """
     Refine or extend an existing timeline via a natural language instruction.
-    Requires authentication. Routes between paid and free Gemini keys based on daily quota.
+    Requires authentication. Routes between paid and free Gemini keys based on daily quota and per-timeline limit (3).
     """
     try:
-        api_key, key_tier, is_admin = resolve_gemini_key(user, x_gemini_api_key, increment_usage=True)
-        logger.info(f"Refining timeline for user {user.get('id')} using {key_tier} key (is_admin={is_admin})")
+        timeline_id = req.timeline.id
+        api_key, key_tier, is_admin, remaining_refines = resolve_refine_gemini_key(
+            user,
+            timeline_id=timeline_id,
+            custom_api_key=x_gemini_api_key,
+            increment_usage=True
+        )
+        logger.info(
+            f"Refining timeline {timeline_id} for user {user.get('id')} using {key_tier} key "
+            f"(is_admin={is_admin}, remaining_refines={remaining_refines})"
+        )
 
         updated_timeline = await refine_timeline_with_gemini(
             current_timeline=req.timeline,
             instruction=req.instruction,
             api_key=api_key
         )
+        # Update AI usage counters on the returned timeline
+        usage = get_timeline_ai_usage(timeline_id)
+        updated_timeline.aiRefineCount = usage.get("refine_count", (req.timeline.aiRefineCount or 0) + 1)
+        updated_timeline.aiEventAddCount = usage.get("event_add_count", req.timeline.aiEventAddCount or 0)
+
         user_id = user.get("id")
         save_timeline_data(updated_timeline.model_dump(by_alias=True), user_id=user_id)
         return updated_timeline
@@ -256,9 +276,14 @@ async def suggest_single_event(
 ):
     """
     Suggest event details using Gemini and Wikipedia.
-    Requires authentication. Routes key based on user and quota.
+    Requires authentication. Routes key based on user, daily quota, and per-timeline limit (10).
     """
-    api_key, key_tier, is_admin = resolve_gemini_key(user, x_gemini_api_key or payload.api_key, increment_usage=False)
+    api_key, key_tier, is_admin, remaining_adds = resolve_event_suggest_gemini_key(
+        user,
+        timeline_id=payload.timeline_id,
+        custom_api_key=x_gemini_api_key or payload.api_key,
+        increment_usage=True
+    )
     if not api_key:
         raise HTTPException(status_code=400, detail="Gemini API Key is missing. Configure it in .env or Settings.")
 

@@ -66,6 +66,10 @@ class TimelineData(BaseModel):
     articles: List[TimelineArticle] = Field(default_factory=list)
     createdAt: Optional[str] = None
     updatedAt: Optional[str] = None
+    aiRefineCount: Optional[int] = Field(default=0, alias="aiRefineCount")
+    aiEventAddCount: Optional[int] = Field(default=0, alias="aiEventAddCount")
+
+    model_config = {"populate_by_name": True}
 
 class GenerateTimelineRequest(BaseModel):
     prompt: str = Field(..., min_length=2, max_length=400, description="User natural language request for timeline")
@@ -79,6 +83,7 @@ class RefineTimelineRequest(BaseModel):
 
 class EventSuggestionRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=150, description="Event name, query, or phrase")
+    timeline_id: Optional[str] = Field(default=None, description="Optional active timeline ID for tracking per-timeline limits")
     timeline_topic: Optional[str] = Field(default="", max_length=250, description="Active timeline title or prompt")
     time_scale: Optional[Literal["calendar", "prehistoric"]] = Field(default="calendar")
     lanes: Optional[List[dict]] = Field(default_factory=list)

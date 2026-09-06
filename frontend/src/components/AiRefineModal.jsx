@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Loader2, ArrowRight, AlertTriangle } from 'lucide-react';
+import { X, Sparkles, Loader2, ArrowRight, AlertTriangle, Clock, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const DEFAULT_SUGGESTIONS = [
@@ -14,12 +14,23 @@ export default function AiRefineModal({
   onClose,
   onRefine,
   isLoading,
-  currentTimelineTitle
+  currentTimeline,
+  currentTimelineTitle,
+  quota
 }) {
   const { t, isRtl } = useLanguage();
   const [instruction, setInstruction] = useState('');
 
   if (!isOpen) return null;
+
+  const isAdmin = quota?.is_admin === true;
+  const limit = quota?.timeline_paid_refine_limit && quota.timeline_paid_refine_limit > 0
+    ? quota.timeline_paid_refine_limit
+    : 3;
+  const used = currentTimeline?.aiRefineCount || 0;
+  const remaining = Math.max(0, limit - used);
+  const isFreeTier = !isAdmin && (remaining === 0 || (quota && quota.remaining_paid === 0));
+  const activeTitle = currentTimelineTitle || currentTimeline?.title || '';
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,7 +65,7 @@ export default function AiRefineModal({
                 {t('aiRefine.title')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">
-                {t('aiRefine.subtitle', { title: currentTimelineTitle || '' })}
+                {t('aiRefine.subtitle', { title: activeTitle })}
               </p>
             </div>
           </div>
@@ -67,6 +78,31 @@ export default function AiRefineModal({
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Refine Quota Status Banner */}
+        <div className="px-6 py-2 bg-slate-50/90 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          {isAdmin ? (
+            <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400 font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>{t('aiRefine.adminUnlimited')}</span>
+            </div>
+          ) : isFreeTier ? (
+            <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-medium">
+              <Clock className="w-3.5 h-3.5 shrink-0" />
+              <span>{t('aiRefine.freeTierNotice', { limit })}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-medium">
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <span>{t('aiRefine.remainingPremium', { remaining, limit })}</span>
+            </div>
+          )}
+          {!isAdmin && (
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
+              {used}/{limit}
+            </span>
+          )}
         </div>
 
         {/* Content */}

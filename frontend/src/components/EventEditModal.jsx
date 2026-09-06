@@ -23,7 +23,8 @@ export default function EventEditModal({
   initialEvent = null,
   lanes = [],
   timelineTopic = '',
-  timeScale = 'calendar'
+  timeScale = 'calendar',
+  timelineId = null
 }) {
   const { t, isRtl } = useLanguage();
   const [title, setTitle] = useState('');
@@ -93,7 +94,8 @@ export default function EventEditModal({
         query: title.trim(),
         timelineTopic,
         timeScale,
-        lanes
+        lanes,
+        timelineId
       });
 
       if (data) {
@@ -161,7 +163,8 @@ export default function EventEditModal({
         query: title.trim(),
         timelineTopic,
         timeScale,
-        lanes
+        lanes,
+        timelineId
       });
       if (data && data.from) {
         if (data.from.year !== undefined && data.from.year !== null) setFromYear(data.from.year);
