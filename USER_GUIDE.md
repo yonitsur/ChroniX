@@ -134,7 +134,7 @@ One of ChroniX's most powerful capabilities is **parallel swimlanes**. You can i
 #### Concise & Natural Prompts (Fast Exploration)
 You do not need to memorize exact dates or historical terminology. Simple prompts let the AI uncover milestones and verified imagery automatically:
 - *"The Industrial Revolution"*
-- *"Evolution of the Whale"*
+- *"Evolution of the Horse"*
 - *"The French Revolution"*
 - *"History of Aviation"*
 
@@ -349,17 +349,17 @@ Here is a curated catalog of 18 ready-to-use prompts across 6 domains. You can c
   ```
 - **Why It Works**: Maps biological history from single-celled organisms through the Cambrian explosion up to modern ecosystems across three distinct biological kingdoms.
 
-#### 15. Evolution of the Whale
+#### 15. Evolution of the Horse
 - **Detail Level**: Overview
 - **English Prompt**:
   ```text
-  The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants
+  Evolution of the horse
   ```
 - **Hebrew Prompt**:
   ```text
-  האבולוציה של הלווייתן: כיצד התפתח הלווייתן מיונק יבשתי שהלך על ארבע ועד ללווייתן הענק באוקיינוס
+  האבולוציה של הסוס
   ```
-- **Why It Works**: Traces a specific, fascinating evolutionary transition (land mammal ancestors returning to the sea) with transitional fossil milestones.
+- **Why It Works**: Traces a specific, fascinating evolutionary transition (from small multi-toed forest dwellers to the modern horse) with transitional fossil milestones.
 
 ---
 

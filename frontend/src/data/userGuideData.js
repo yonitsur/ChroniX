@@ -318,24 +318,24 @@ export const SHOWCASE_PROMPTS_DATA = [
     }
   },
   {
-    id: 'whale-evolution',
+    id: 'horse-evolution',
     categoryKey: 'prehistory',
     detailLevel: 'overview',
     title: {
-      en: 'Evolution of the Whale',
-      he: 'האבולוציה של הלווייתן'
+      en: 'Evolution of the Horse',
+      he: 'האבולוציה של הסוס'
     },
     category: {
       en: 'Prehistory & Nature',
       he: 'פרה-היסטוריה וטבע'
     },
     prompt: {
-      en: 'The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants',
-      he: 'האבולוציה של הלווייתן: כיצד התפתח הלווייתן מיונק יבשתי שהלך על ארבע ועד ללווייתן הענק באוקיינוס'
+      en: 'Evolution of the horse',
+      he: 'האבולוציה של הסוס'
     },
     whyItWorks: {
-      en: 'A fascinating, accessible prompt: land mammals returning to the sea is easy to understand, and the AI lays out the sequence of transitional forms on the timeline.',
-      he: 'פרומפט מרתק ונגיש: הרעיון של יונק יבשתי שהלך על ארבע וחזר לים קל להבנה, וה-AI חושף בציר הזמן את שלבי המעבר המפתיעים בדרך.'
+      en: 'A fascinating, accessible prompt: traces the classic evolutionary sequence from small multi-toed forest dwellers to the modern horse, with clear transitional fossils.',
+      he: 'פרומפט מרתק ונגיש: מדגים את המסע האבולוציוני הקלאסי מיונקים קטנים בעלי מספר אצבעות לסוס המודרני, עם שלבי מעבר ומאובנים ברורים.'
     }
   },
   {
@@ -449,7 +449,7 @@ export const USER_GUIDE_DATA = {
       ],
       framingHeading: '3. Prompt Framing: Concise vs. Detailed',
       conciseTitle: 'Concise & Natural Prompts: Exploring Topics with Ease',
-      conciseDesc: 'Prompts can be simple, natural, and direct. There is no need for specialized dates or technical jargon. Prompts like "The Industrial Revolution", "Evolution of the Whale", or "The French Revolution" let the AI discover and organize the pivotal milestones and verified imagery automatically.',
+      conciseDesc: 'Prompts can be simple, natural, and direct. There is no need for specialized dates or technical jargon. Prompts like "The Industrial Revolution", "Evolution of the Horse", or "The French Revolution" let the AI discover and organize the pivotal milestones and verified imagery automatically.',
       detailedTitle: 'Detailed & Structured Prompts: Custom Focus & Specific Angles',
       detailedDesc: 'When you want to study a targeted angle, you can guide the AI explicitly: specify bookend dates ("from 1789 to 1799"), define distinct geographical theaters ("WWII divided into European and Pacific Theaters"), or group opposing factions into parallel swimlanes.',
       multilingualHeading: '4. Multilingual Prompts vs. UI Language',
@@ -651,7 +651,7 @@ export const USER_GUIDE_DATA = {
       ],
       framingHeading: '3. מבנה הפרומפט: קצר ופשוט מול מפורט ומובנה',
       conciseTitle: 'פרומפט קצר ופשוט: חקר נושאים בבהירות ובטבעיות',
-      conciseDesc: 'פרומפטים יכולים להיות פשוטים, קצרים וטבעיים. אין צורך להכיר שמות היסטוריים או מונחים מדעיים מראש. פרומפטים כמו "המהפכה התעשייתית", "האבולוציה של הלווייתן" או "המהפכה הצרפתית" מאפשרים ל-AI לגלות באופן אוטומטי את כל ציוני הדרך והאישים המרכזיים.',
+      conciseDesc: 'פרומפטים יכולים להיות פשוטים, קצרים וטבעיים. אין צורך להכיר שמות היסטוריים או מונחים מדעיים מראש. פרומפטים כמו "המהפכה התעשייתית", "האבולוציה של הסוס" או "המהפכה הצרפתית" מאפשרים ל-AI לגלות באופן אוטומטי את כל ציוני הדרך והאישים המרכזיים.',
       detailedTitle: 'פרומפט מפורט ומובנה: מיקוד והכוונה מדויקת',
       detailedDesc: 'כאשר רוצים להתמקד בהיבט מסוים, ניתן להנחות את ה-AI במפורש: להגדיר תאריכי התחלה וסיום מדויקים ("המהפכה הצרפתית מ-1789 עד 1799"), לחלק לזירות גיאוגרפיות ("מלחמת העולם השנייה בחלוקה לזירה האירופית וזירת האוקיינוס השקט") או להשוות פלגים ומסלולים מקבילים.',
       multilingualHeading: '4. שפת הפרומפט מול שפת הממשק',

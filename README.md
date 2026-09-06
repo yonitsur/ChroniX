@@ -55,7 +55,7 @@
 ## Key Features
 
 - **AI-Powered Chronology Synthesis**:
-  - Enter any topic in natural language (e.g. *"The Space Race"*, *"Industrial Revolution"*, *"World War II"*, *"Evolution of the Whale"*).
+  - Enter any topic in natural language (e.g. *"The Space Race"*, *"Industrial Revolution"*, *"World War II"*, *"Evolution of the Horse"*).
   - **Global Multilingual Support**: Prompts can be written in **any language** (French, Spanish, German, Arabic, Russian, Japanese, etc.) regardless of the interface language. Generated events, descriptions, and Wikipedia links automatically correspond to the prompt's language and its respective Wikipedia edition, with automatic fallback to English Wikipedia (`en.wikipedia.org`) for missing articles or media.
   - **Localized Interface**: Full UI localization in English and Hebrew with native Right-to-Left (RTL) canvas formatting.
   - Three tailored detail levels: **Overview** (10–15 events), **Standard** (20–30 events), and **Deep Dive** (35–50 events).

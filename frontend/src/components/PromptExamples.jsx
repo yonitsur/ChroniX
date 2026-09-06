@@ -783,15 +783,15 @@ export const PROMPT_EXAMPLES = [
     detailLevel: 'deep_dive',
     lang: 'en'
   },
-  // 131. Hebrew - Overview (Whale Evolution)
+  // 131. Hebrew - Overview (Horse Evolution)
   {
-    prompt: 'האבולוציה של הלווייתן: כיצד התפתח הלווייתן מיונק יבשתי שהלך על ארבע ועד ללווייתן הענק באוקיינוס',
+    prompt: 'האבולוציה של הסוס',
     detailLevel: 'overview',
     lang: 'he'
   },
-  // 132. English - Overview (Whale Evolution)
+  // 132. English - Overview (Horse Evolution)
   {
-    prompt: 'The evolution of the whale: How whales evolved from four-legged land mammals into modern ocean giants',
+    prompt: 'Evolution of the horse',
     detailLevel: 'overview',
     lang: 'en'
   },
