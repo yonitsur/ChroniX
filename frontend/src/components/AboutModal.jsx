@@ -75,7 +75,7 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -84,13 +84,13 @@ export default function AboutModal({ isOpen, onClose, onOpenGuide }) {
       aria-labelledby="about-chronix-title"
     >
       <div
-        className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
+        className="bg-white/75 dark:bg-slate-900/75 backdrop-blur-2xl backdrop-saturate-150 border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl shadow-slate-950/30 dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/5 flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200"
         dir="ltr"
         style={{ direction: 'ltr' }}
       >
         
         {/* Header with Logo & Hero */}
-        <div className="px-6 pt-6 pb-4 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-slate-900/20">
+        <div className="px-6 pt-6 pb-4 border-b border-slate-200/70 dark:border-white/10 bg-gradient-to-b from-white/60 via-white/30 to-transparent dark:from-white/[0.07] dark:to-transparent">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5">

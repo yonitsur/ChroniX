@@ -198,35 +198,37 @@
 }
 
 .public-feature-card {
-  background: rgba(15, 23, 42, 0.35);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.35));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
   padding: 28px 24px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
 }
 
 .public-feature-card:hover {
-  background: rgba(15, 23, 42, 0.55);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.65), rgba(15, 23, 42, 0.5));
   border-color: rgba(56, 189, 248, 0.45);
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 40px -8px rgba(0, 0, 0, 0.65), 0 0 28px rgba(56, 189, 248, 0.18);
 }
 
 .public-feature-icon {
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: linear-gradient(160deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.08));
+  border: 1px solid rgba(56, 189, 248, 0.28);
   color: #38bdf8;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .public-feature-title {
@@ -245,16 +247,16 @@
 
 /* Call to Action */
 .public-cta-box {
-  background: rgba(15, 23, 42, 0.4);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.4));
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 24px;
   padding: 40px 32px;
   text-align: center;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   margin-top: auto;
   margin-bottom: 40px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 22px 44px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.1);
 }
 
 .public-cta-box h3 {
@@ -299,13 +301,13 @@
 
 /* Legal Content Box (Privacy & Terms) */
 .public-content-card {
-  background: rgba(15, 23, 42, 0.35);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.48), rgba(15, 23, 42, 0.35));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   padding: 44px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 22px 44px -10px rgba(0, 0, 0, 0.6);
   margin-bottom: 48px;
   line-height: 1.75;
 }

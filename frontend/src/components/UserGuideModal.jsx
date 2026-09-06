@@ -150,7 +150,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200 font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200 font-sans"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -159,13 +159,13 @@ export default function UserGuideModal({ isOpen, onClose }) {
       aria-labelledby="user-guide-title"
     >
       <div
-        className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${language === 'he' ? 'text-right' : 'text-left'
+        className={`bg-white/75 dark:bg-slate-900/75 backdrop-blur-2xl backdrop-saturate-150 border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl shadow-slate-950/30 dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/5 flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-200 ${language === 'he' ? 'text-right' : 'text-left'
           }`}
         dir={language === 'he' ? 'rtl' : 'ltr'}
       >
 
         {/* Top Header */}
-        <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-slate-900/20 shrink-0">
+        <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-200/70 dark:border-white/10 bg-gradient-to-b from-white/60 via-white/30 to-transparent dark:from-white/[0.07] dark:to-transparent shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center">

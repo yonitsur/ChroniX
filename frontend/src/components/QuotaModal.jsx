@@ -88,7 +88,7 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200 font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200 font-sans"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -96,13 +96,13 @@ export default function QuotaModal({ isOpen, onClose, quota, onOpenSettings }) {
       aria-modal="true"
     >
       <div
-        className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 ${
+        className={`bg-white/75 dark:bg-slate-900/75 backdrop-blur-2xl backdrop-saturate-150 border border-white/60 dark:border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl shadow-slate-950/30 dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/5 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200 ${
           isRtl ? 'text-right' : 'text-left'
         }`}
         dir={isRtl ? 'rtl' : 'ltr'}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200/70 dark:border-white/10 bg-white/30 dark:bg-slate-900/20 shrink-0">
+        <div className="px-6 py-4 border-b border-slate-200/70 dark:border-white/10 bg-gradient-to-b from-white/60 via-white/30 to-transparent dark:from-white/[0.07] dark:to-transparent shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
