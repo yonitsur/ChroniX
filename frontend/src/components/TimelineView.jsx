@@ -70,9 +70,9 @@ if (typeof window !== 'undefined' && Article) {
     ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    // Arrow triangle: matches the connector line — semi-transparent in the normal state.
+    // Arrow triangle: always fully opaque so the connector line never shows through it.
     const radians = Math.atan((y2 - y1) / (x2 - x1)) + (x2 >= x1 ? -90 : 90) * Math.PI / 180;
-    ctx.globalAlpha = lineAlpha;
+    ctx.globalAlpha = baseAlpha;
     ctx.fillStyle = lineColor;
     ctx.save();
     ctx.beginPath();
