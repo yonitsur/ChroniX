@@ -558,6 +558,9 @@ const TimelineView = forwardRef(({
             to: tb.to,
             style: {
               background: formatBandBg(tb.color),
+              text: {
+                color: isDark ? '#e2e8f0' : '#475569',
+              },
             }
           }))
         );
