@@ -56,7 +56,7 @@
 
 - **AI-Powered Chronology Synthesis**:
   - Enter any topic in natural language (e.g. *"The Space Race"*, *"Industrial Revolution"*, *"World War II"*, *"Evolution of the Whale"*).
-  - **Global Multilingual Support**: Prompts can be written in **any language** (French, Spanish, German, Arabic, Russian, Japanese, etc.) regardless of the interface language. Generated events, descriptions, and Wikipedia links automatically correspond to the prompt's language and its respective Wikipedia edition.
+  - **Global Multilingual Support**: Prompts can be written in **any language** (French, Spanish, German, Arabic, Russian, Japanese, etc.) regardless of the interface language. Generated events, descriptions, and Wikipedia links automatically correspond to the prompt's language and its respective Wikipedia edition, with automatic fallback to English Wikipedia (`en.wikipedia.org`) for missing articles or media.
   - **Localized Interface**: Full UI localization in English and Hebrew with native Right-to-Left (RTL) canvas formatting.
   - Three tailored detail levels: **Overview** (10–15 events), **Standard** (20–30 events), and **Deep Dive** (35–50 events).
 - **Synchronized Geographic World Map (Leaflet)**:
@@ -70,7 +70,8 @@
   - **Time Bands**: Broad historical epochs painted across the canvas with start and end dates.
   - **Fit All Articles**: Instant re-centering of the full timeline span with one click.
 - **Automated Wikimedia Commons & Wikipedia Enrichment**:
-  - Automatically fetches authentic portraits, photos, license attributions, and encyclopedic extracts.
+  - Automatically fetches authentic portraits, photos, license attributions, and encyclopedic extracts across all Wikipedia language editions.
+  - **Automatic English Wikipedia Fallback**: Automatically supplements missing articles, portraits, or coordinates from English Wikipedia whenever a local language edition lacks them.
   - **Candidate Disambiguation Picker**: Interactive modal lets you select the exact Wikipedia article if multiple candidates match an event title.
 - **In-Canvas Event Studio & AI Auto-Fill**:
   - Full freedom to add (`+`), edit, or remove events.

@@ -88,7 +88,8 @@ class EventSuggestionRequest(BaseModel):
 class EventSuggestionOutput(BaseModel):
     title: str = Field(description="Display title of the event or person")
     subtitle: Optional[str] = Field(default="", description="Crisp one-line summary or historical significance")
-    wikipedia_title: Optional[str] = Field(default=None, description="Exact canonical Wikipedia title (with disambiguation parenthetical if needed, e.g. 'Lucy (hominid)' or 'לוסי (שלד)')")
+    wikipedia_title: Optional[str] = Field(default=None, description="Exact canonical Wikipedia title in the prompt's language (with disambiguation parenthetical if needed, e.g. 'Lucy (hominid)' or 'לוסי (שלד)')")
+    wikipedia_title_en: Optional[str] = Field(default=None, description="Exact canonical English Wikipedia title for fallback if the prompt language article does not exist")
     from_year: int = Field(description="Start calendar year. Negative for BCE (e.g. -753) or astronomical years ago if prehistoric (e.g. -3200000)")
     from_month: Optional[int] = Field(default=None, ge=1, le=12, description="Start month (1-12) if known")
     from_day: Optional[int] = Field(default=None, ge=1, le=31, description="Start day (1-31) if known")
@@ -125,7 +126,8 @@ class GeminiEventItem(BaseModel):
         default=False,
         description="Set to true if this entity, movement, reign, or event began in history and continues actively to this day."
     )
-    wikipedia_title: Optional[str] = Field(default="", description="Exact canonical Wikipedia title (with parenthetical qualifier if disambiguation needed)")
+    wikipedia_title: Optional[str] = Field(default="", description="Exact canonical Wikipedia title in the language of the prompt (with parenthetical qualifier if disambiguation needed)")
+    wikipedia_title_en: Optional[str] = Field(default="", description="Exact canonical English Wikipedia title for fallback if the prompt language article does not exist or lacks images")
     importance_rank: int = Field(default=5, ge=1, le=10, description="Visual prominence rank from 1 (minor) to 10 (defining milestone)")
     location_name: Optional[str] = Field(default=None, description="City, region, archaeological site, or country where the event took place, or null")
     lat: Optional[float] = Field(default=None, description="Approximate latitude coordinate (-90.0 to 90.0), or null")
@@ -148,6 +150,7 @@ class GeminiTimelineOutput(BaseModel):
     title: str
     description: str
     time_scale: Literal["calendar", "prehistoric"] = "calendar"
+    detected_language: Optional[str] = Field(default="en", description="2-letter ISO 639-1 language code of the prompt/timeline, e.g. 'en', 'he', 'fr', 'es', 'de', 'ru', 'ar', 'it', 'ja', etc.")
     lanes: List[GeminiLaneItem] = Field(default_factory=list)
     time_bands: List[GeminiTimeBandItem] = Field(default_factory=list)
     events: List[GeminiEventItem] = Field(default_factory=list)

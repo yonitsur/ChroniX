@@ -603,9 +603,84 @@ def test_schema_descriptions_for_gemini():
     assert "description" in gemini_schema["properties"]["to_year"]
     assert "MANDATORY" in gemini_schema["properties"]["to_year"]["description"]
     assert "description" in gemini_schema["properties"]["is_to_present"]
+    assert "wikipedia_title_en" in gemini_schema["properties"]
 
     sugg_schema = EventSuggestionOutput.model_json_schema()
     assert "description" in sugg_schema["properties"]["to_year"]
     assert "description" in sugg_schema["properties"]["is_to_present"]
+    assert "wikipedia_title_en" in sugg_schema["properties"]
+
+
+@pytest.mark.asyncio
+async def test_multilingual_wikipedia_enrichment_french():
+    """Verify that querying French Wikipedia returns French URL, extract, and thumbnail."""
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        sem = asyncio.Semaphore(1)
+        res = await fetch_wikipedia_summary(
+            "Bataille d'Austerlitz",
+            client,
+            sem,
+            lang="fr",
+            fallback_lang="en",
+            fallback_title="Battle of Austerlitz"
+        )
+        assert res is not None
+        assert "fr.wikipedia.org" in res.get("wikiUrl", "")
+        assert "Austerlitz" in res.get("wikiTitle", "")
+        assert res.get("extract") is not None
+        assert len(res.get("extract", "")) > 0
+        assert res.get("imageUrl") is not None
+
+
+@pytest.mark.asyncio
+async def test_multilingual_wikipedia_enrichment_with_english_fallback():
+    """
+    Verify that an entity lacking an article in a foreign language Wikipedia
+    gracefully falls back to English Wikipedia using fallback_title.
+    """
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        sem = asyncio.Semaphore(1)
+        # Query an entity with an intentionally nonexistent title in Hebrew/French, with English fallback
+        res = await fetch_wikipedia_summary(
+            "NonExistentArticleXYZ123456",
+            client,
+            sem,
+            lang="fr",
+            fallback_lang="en",
+            fallback_title="Battle of Midway"
+        )
+        assert res is not None
+        assert "en.wikipedia.org" in res.get("wikiUrl", "")
+        assert "Midway" in res.get("wikiTitle", "")
+        assert res.get("imageUrl") is not None
+
+
+@pytest.mark.asyncio
+async def test_multilingual_batch_enrichment_spanish_and_fallback():
+    """Verify batch enrichment in Spanish with English fallback."""
+    events = [
+        {
+            "id": "1",
+            "title": "Revolución mexicana",
+            "wikipedia_title": "Revolución mexicana",
+            "wikipedia_title_en": "Mexican Revolution"
+        },
+        {
+            "id": "2",
+            "title": "Obscure Event Without Spanish Article",
+            "wikipedia_title": "CompletelyFakeArticleTitleABC999",
+            "wikipedia_title_en": "Declaration of Independence of the United States"
+        }
+    ]
+    enriched = await enrich_events_with_wikipedia(events, lang="es")
+    assert len(enriched) == 2
+    # First event should resolve to Spanish Wikipedia
+    assert "es.wikipedia.org" in enriched[0].get("wikiUrl", "")
+    assert enriched[0].get("imageUrl") is not None
+
+    # Second event should gracefully fall back to English Wikipedia
+    assert "en.wikipedia.org" in enriched[1].get("wikiUrl", "")
+    assert enriched[1].get("imageUrl") is not None
+
 
 

@@ -218,6 +218,7 @@ async def delete_timeline(
 async def enrich_single_item(payload: dict = Body(...)):
     """
     Enrich an event with Wikipedia thumbnail & description by query.
+    Supports any language edition with automatic English fallback.
     """
     title = payload.get("title", "")
     if not title:
@@ -227,6 +228,7 @@ async def enrich_single_item(payload: dict = Body(...)):
     if not lang:
         lang = "he" if bool(re.search(r'[\u0590-\u05FF]', title)) else "en"
 
+    fallback_title = payload.get("fallback_title") or payload.get("wikipedia_title_en")
     context = payload.get("context") or payload.get("subtitle", "")
     year = payload.get("year")
     is_prehistoric = payload.get("is_prehistoric", False)
@@ -240,7 +242,9 @@ async def enrich_single_item(payload: dict = Body(...)):
             lang=lang,
             context_text=context,
             year=year,
-            is_prehistoric=is_prehistoric
+            is_prehistoric=is_prehistoric,
+            fallback_lang="en",
+            fallback_title=fallback_title
         )
         return res
 

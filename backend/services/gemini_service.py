@@ -51,33 +51,46 @@ def is_hebrew_text(text: str) -> bool:
         return False
     return bool(re.search(r'[\u0590-\u05FF]', text))
 
-def get_system_instruction(is_hebrew: bool = False) -> str:
-    if is_hebrew:
+def get_system_instruction(is_hebrew: bool = False, lang: Optional[str] = None) -> str:
+    if is_hebrew or lang == "he":
         wikipedia_instruction = (
-            "- For every single event, provide the accurate, canonical article title from HEBREW Wikipedia (ויקיפדיה העברית) "
-            "in `wikipedia_title` (e.g. 'פלישת גרמניה הנאצית לפולין', 'קרב סטלינגרד', 'מערת קסם', 'התרבות האוריניאקית', 'מערת טאבון', 'ניקולאי השני, קיסר רוסיה'). "
+            "- For every single event, provide BOTH:\n"
+            "  1. `wikipedia_title`: The accurate, canonical article title from HEBREW Wikipedia (ויקיפדיה העברית) "
+            "(e.g. 'פלישת גרמניה הנאצית לפולין', 'קרב סטלינגרד', 'מערת קסם', 'התרבות האוריניאקית', 'מערת טאבון', 'ניקולאי השני, קיסר רוסיה'). "
+            "If the subject has an ambiguous name or multiple meanings in Wikipedia, specify the exact disambiguated article title with its parenthetical qualifier (e.g. 'יפתחאל (אתר ארכאולוגי)' instead of 'יפתחאל').\n"
+            "  2. `wikipedia_title_en`: The canonical article title in ENGLISH Wikipedia (e.g. 'Invasion of Poland', 'Battle of Stalingrad', 'Qesem cave', 'Nicholas II of Russia'). "
+            "This is used as an automatic fallback if the Hebrew Wikipedia article does not exist or lacks thumbnail images.\n"
             "CRITICAL RELEVANCE RULE: If an event or entity does NOT have its own dedicated Wikipedia article, "
             "set `wikipedia_title` to empty string \"\" or null. NEVER guess, invent titles, or link to unrelated persons, places, or concepts. "
-            "If the subject has an ambiguous name or multiple meanings in Wikipedia, specify the exact disambiguated article title with its parenthetical qualifier (e.g. 'יפתחאל (אתר ארכאולוגי)' instead of 'יפתחאל'). "
             "Do NOT append custom descriptions, dates, or subtitles to `wikipedia_title`. Keep `wikipedia_title` as the exact, clean canonical Wikipedia entry title so portraits and summaries can be automatically resolved."
         )
         language_instruction = (
-            "\n8. HEBREW LANGUAGE REQUIREMENT:\n"
-            "   - The user request is in Hebrew. All timeline output elements (including `title`, `description`, "
+            "\n8. LANGUAGE & LOCALE REQUIREMENT:\n"
+            "   - Set `detected_language`: 'he'.\n"
+            "   - All timeline output elements (including `title`, `description`, "
             "lane titles, time band titles, event `title`s, and event `subtitle`s) MUST be written in natural, fluent HEBREW.\n"
             "   - For prolonged events (wars, reigns/administrations, dynasties, movements, epidemics), you MUST provide an end date (`to_year`), "
             "or set `is_to_present: true` if the entity or movement is active today. For single-moment or single-day events only, leave `to_year` null."
         )
     else:
         wikipedia_instruction = (
-            "- For every single event, provide the accurate, canonical English Wikipedia article title in `wikipedia_title` "
-            "(e.g. 'Tyrannosaurus', 'Franklin D. Roosevelt', 'Battle of Stalingrad', 'Apollo 11 (spacecraft)'). "
-            "CRITICAL RELEVANCE RULE: If an event does NOT have its own dedicated Wikipedia article, set `wikipedia_title` to empty string \"\" or null. "
+            "- MULTILINGUAL WIKIPEDIA INTEGRATION & ENGLISH FALLBACK:\n"
+            "  - Detect the language of the user's prompt (e.g. 'en', 'fr', 'es', 'de', 'it', 'ru', 'ar', 'ja', etc.) and set `detected_language` to its 2-letter ISO 639-1 code.\n"
+            "  - For every single event, provide:\n"
+            "    1. `wikipedia_title`: The accurate, canonical article title in that language's Wikipedia edition (e.g. for French: 'Bataille d\\'Austerlitz'; for Spanish: 'Revolución mexicana'; for German: 'Schlacht von Stalingrad'; for English: 'Battle of Midway').\n"
+            "    2. `wikipedia_title_en`: The accurate, canonical article title in ENGLISH Wikipedia (e.g. 'Battle of Austerlitz', 'Mexican Revolution', 'Battle of Stalingrad', 'Battle of Midway'). "
+            "This enables automatic English fallback and photo supplementation whenever the local language edition lacks an article or thumbnail image.\n"
+            "  - CRITICAL RELEVANCE RULE: If an event does NOT have its own dedicated Wikipedia article, set `wikipedia_title` to empty string \"\" or null. "
             "NEVER guess or link to loosely related people or places. "
-            "If the subject has an ambiguous name or multiple meanings, specify the exact disambiguated article title with its qualifier in parentheses. "
-            "Keep `wikipedia_title` as the clean Wikipedia entry title without appending subtitles or custom descriptions."
+            "If the subject has an ambiguous name or multiple meanings, specify the exact disambiguated article title with its qualifier in parentheses.\n"
+            "  - Keep `wikipedia_title` and `wikipedia_title_en` as clean canonical Wikipedia entry titles without appending subtitles or custom descriptions."
         )
-        language_instruction = ""
+        language_instruction = (
+            "\n8. LANGUAGE REQUIREMENT:\n"
+            "   - Output all timeline elements (`title`, `description`, lane titles, time bands, event `title`s, and event `subtitle`s) "
+            "in the natural, fluent language of the user's prompt (e.g. French if prompted in French, Spanish if in Spanish, German if in German, English if in English, etc.).\n"
+            "   - Set `detected_language` to the 2-letter ISO 639-1 code of that language (e.g. 'fr', 'es', 'de', 'en')."
+        )
 
     return f"""You are an expert chronological historian, paleontologist, and curator of interactive timelines.
 Your job is to generate rich, accurate, and engaging timeline datasets based on user requests.
@@ -279,8 +292,8 @@ async def generate_timeline_with_gemini(
     client = get_gemini_client(api_key)
 
     is_hebrew = (language == "he") if language else is_hebrew_text(prompt)
-    target_lang = "he" if is_hebrew else "en"
-    system_inst = get_system_instruction(is_hebrew=is_hebrew)
+    target_lang = language or ("he" if is_hebrew else "en")
+    system_inst = get_system_instruction(is_hebrew=is_hebrew, lang=target_lang)
 
     detail_instruction = DETAIL_LEVEL_GUIDELINES.get(detail_level, DETAIL_LEVEL_GUIDELINES["standard"])
     user_prompt = f"""
@@ -288,7 +301,7 @@ Create an interactive visual timeline for the topic: "{prompt}".
 Detail level: {detail_level}.
 Guideline: {detail_instruction}
 {"Special focus: " + custom_focus if custom_focus else ""}
-{"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else ""}
+{"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else "Please respond in the natural language of the prompt and provide canonical Wikipedia titles in that language along with English fallback titles in wikipedia_title_en."}
 
 LANE INSTRUCTION: Maintain exactly ONE single timeline lane for all events unless the prompt or focus explicitly instructs to divide into multiple lanes/swimlanes.
 
@@ -306,7 +319,7 @@ Return a structured JSON timeline following the schema.
 
     for model_name in models_to_try:
         try:
-            logger.info(f"Generating timeline with {model_name} (hebrew={is_hebrew})...")
+            logger.info(f"Generating timeline with {model_name} (hebrew={is_hebrew}, lang={target_lang})...")
             response = client.models.generate_content(
                 model=model_name,
                 contents=user_prompt,
@@ -404,6 +417,7 @@ Return a structured JSON timeline following the schema.
                     "rank": ev.importance_rank,
                     "isToPresent": is_present,
                     "wikipedia_title": ev.wikipedia_title or ev.title,
+                    "wikipedia_title_en": ev.wikipedia_title_en or "",
                     "location_name": ev.location_name,
                     "lat": ev.lat,
                     "lng": ev.lng
@@ -413,7 +427,8 @@ Return a structured JSON timeline following the schema.
                 articles_to_enrich.append(art_dict)
 
             # Enrich asynchronously with Wikipedia summaries and verified Wikimedia Commons thumbnails
-            enriched_articles = await enrich_events_with_wikipedia(articles_to_enrich, lang=target_lang, timeline_topic=prompt)
+            active_lang = parsed_data.detected_language or target_lang or "en"
+            enriched_articles = await enrich_events_with_wikipedia(articles_to_enrich, lang=active_lang, timeline_topic=prompt)
 
             # Build final TimelineArticle objects
             final_articles = []
@@ -499,7 +514,7 @@ async def refine_timeline_with_gemini(
 
     is_hebrew = is_hebrew_text(instruction) or is_hebrew_text(current_timeline.title)
     target_lang = "he" if is_hebrew else "en"
-    system_inst = get_system_instruction(is_hebrew=is_hebrew)
+    system_inst = get_system_instruction(is_hebrew=is_hebrew, lang=target_lang)
 
     existing_lanes_summary = [
         {"id": l.id, "title": l.title}
@@ -552,7 +567,7 @@ Instructions for generating the refined timeline:
 4. DURATION & DATE SPANS:
    - For any prolonged events, wars, reigns, administrations, dynasties, or movements, preserve or specify both start date (`from_year`) and end date (`to_year`, `to_month`, `to_day`), or set `is_to_present: true` if continuing today.
    - Leave `to_year` null only for single-moment / single-day events.
-5. {"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else "Please respond in English and provide English Wikipedia titles."}
+5. {"Please respond in HEBREW and provide Hebrew Wikipedia titles." if is_hebrew else "Please respond in the natural language of the timeline/instruction and provide canonical Wikipedia titles in that language, along with English fallback titles in wikipedia_title_en."}
 
 Return a structured JSON timeline following the schema.
 """
@@ -712,6 +727,7 @@ Return a structured JSON timeline following the schema.
                         "rank": ev.importance_rank or 5,
                         "isToPresent": is_present,
                         "wikipedia_title": ev.wikipedia_title or ev.title,
+                        "wikipedia_title_en": ev.wikipedia_title_en or "",
                         "location_name": ev.location_name,
                         "lat": ev.lat,
                         "lng": ev.lng
@@ -733,9 +749,10 @@ Return a structured JSON timeline following the schema.
             # Enrich new articles with Wikipedia metadata
             enriched_new_articles = []
             if new_articles_to_enrich:
+                refine_lang = parsed_data.detected_language or target_lang or "en"
                 enriched = await enrich_events_with_wikipedia(
                     new_articles_to_enrich,
-                    lang=target_lang,
+                    lang=refine_lang,
                     timeline_topic=current_timeline.title
                 )
                 for item in enriched:
@@ -834,7 +851,7 @@ async def suggest_event_details(
     client = get_gemini_client(api_key)
 
     is_hebrew = (language == "he") if language else (is_hebrew_text(query) or is_hebrew_text(timeline_topic))
-    target_lang = "he" if is_hebrew else "en"
+    target_lang = language or ("he" if is_hebrew else "en")
 
     lanes_desc = ""
     if lanes:
@@ -848,7 +865,7 @@ Your task is to understand the user's input query and return precise chronologic
 
 CRITICAL RULES:
 1. Language: Output `title`, `subtitle`, and `location_name` MUST be written in natural, fluent HEBREW.
-2. Wikipedia (`wikipedia_title`): Provide the exact canonical article title from HEBREW Wikipedia (ויקיפדיה העברית) in `wikipedia_title` (e.g. 'לוסי (שלד)', 'קרב מידוויי', 'מערת קסם'). If ambiguous, use Wikipedia parenthetical disambiguation qualifiers.
+2. Wikipedia: Provide the exact canonical article title from HEBREW Wikipedia (ויקיפדיה העברית) in `wikipedia_title` (e.g. 'לוסי (שלד)', 'קרב מידוויי', 'מערת קסם'). Provide the canonical English Wikipedia title in `wikipedia_title_en` for fallback. If ambiguous, use Wikipedia parenthetical disambiguation qualifiers.
 3. Timescale & Dates:
    - If timescale is 'prehistoric' (fossils, hominids, dinosaurs, geology, deep time):
      * If the subject lived in deep time (e.g. Lucy, Neanderthal, T-Rex), `from_year` MUST be a negative number representing years ago (e.g. -3200000 for 3.2 million years ago), and `from_precision` should be 'million-years' or 'millennium'.
@@ -870,8 +887,8 @@ CRITICAL RULES:
 Your task is to understand the user's input query and return precise chronological details for the event/person/fossil in the context of the active timeline topic.
 
 CRITICAL RULES:
-1. Language: `title` and `subtitle` should be in English.
-2. Wikipedia (`wikipedia_title`): Provide the exact canonical title from English Wikipedia (e.g. 'Lucy (Australopithecus)' or 'Lucy (hominid)', 'Battle of Midway', 'Apollo 11 (spacecraft)'). Include parenthetical disambiguation qualifiers where appropriate.
+1. Language: Output in the natural language of the query / timeline topic.
+2. Wikipedia: Provide the exact canonical title in that language's Wikipedia in `wikipedia_title`, and provide the exact canonical title from English Wikipedia in `wikipedia_title_en` for fallback. Include parenthetical disambiguation qualifiers where appropriate.
 3. Timescale & Dates:
    - If timescale is 'prehistoric' (fossils, hominids, dinosaurs, geology, deep time):
      * If the subject is an organism or fossil that lived in deep time (e.g. Lucy, Neanderthal, Tyrannosaurus), `from_year` MUST be a negative number representing years ago (e.g. -3200000 for 3.2 million years ago), and `from_precision` should be 'million-years' or 'millennium'.
@@ -942,7 +959,9 @@ Timescale: "{time_scale}"
                 http_client,
                 sem,
                 lang=target_lang,
-                context_text=f"{timeline_topic} {parsed_suggestion.subtitle or ''}"
+                context_text=f"{timeline_topic} {parsed_suggestion.subtitle or ''}",
+                fallback_lang="en",
+                fallback_title=parsed_suggestion.wikipedia_title_en
             )
             # If nothing returned, retry with plain title
             if not wiki_data and parsed_suggestion.title != wiki_query:
@@ -951,7 +970,9 @@ Timescale: "{time_scale}"
                     http_client,
                     sem,
                     lang=target_lang,
-                    context_text=timeline_topic
+                    context_text=timeline_topic,
+                    fallback_lang="en",
+                    fallback_title=parsed_suggestion.wikipedia_title_en
                 )
     except Exception as e:
         logger.warning(f"Failed to fetch wiki summary for suggested event: {e}")

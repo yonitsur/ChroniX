@@ -92,32 +92,40 @@ def generic_token_overlap(text1: str, text2: str) -> int:
 async def _resolve_disambiguation(
     title: str,
     client: httpx.AsyncClient,
-    lang: str = "he",
+    lang: str = "en",
     context_text: str = ""
 ) -> Optional[Dict[str, Any]]:
     """
     Parse a disambiguation page and select the option with the highest
     semantic token overlap with the event/timeline context.
+    Universal across all Wikipedia language editions by using MediaWiki's
+    native mainspace filter (ns == 0), completely eliminating hardcoded namespace strings.
     """
     try:
         url = (
             f"https://{lang}.wikipedia.org/w/api.php?action=parse&page="
-            f"{urllib.parse.quote(title.strip())}&prop=wikitext&format=json"
+            f"{urllib.parse.quote(title.strip())}&prop=links|wikitext&format=json"
         )
         resp = await client.get(url, headers=HEADERS, timeout=5.0)
         if resp.status_code != 200:
             return None
 
-        wt = resp.json().get("parse", {}).get("wikitext", {}).get("*", "")
+        parse_data = resp.json().get("parse", {})
+        # MediaWiki namespace 0 is the universal content/article namespace across all 300+ Wikipedia editions
+        mainspace_links = {
+            l.get("*", "").strip()
+            for l in parse_data.get("links", [])
+            if l.get("ns") == 0 and l.get("*")
+        }
+
+        wt = parse_data.get("wikitext", {}).get("*", "")
         candidates = []
         for line in wt.split("\n"):
             m = re.findall(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', line)
             if m:
                 link = m[0].strip()
-                if not any(link.startswith(ns) for ns in [
-                    "ויקיפדיה:", "קטגוריה:", "תבנית:", "קובץ:",
-                    "Wikipedia:", "Category:", "Template:", "File:", "Help:"
-                ]):
+                # Accept links that belong to the main article space (ns == 0)
+                if link in mainspace_links or (not mainspace_links and ":" not in link):
                     clean_line = re.sub(r'\[\[(?:[^\]|]+\|)?([^\]]+)\]\]', r'\1', line)
                     candidates.append((link, clean_line))
 
@@ -141,7 +149,7 @@ async def _resolve_disambiguation(
 async def _get_summary_direct(
     title: str,
     client: httpx.AsyncClient,
-    lang: str = "he",
+    lang: str = "en",
     resolve_disambig: bool = True,
     context_text: str = ""
 ) -> Optional[Dict[str, Any]]:
@@ -181,7 +189,8 @@ async def _get_summary_direct(
                 "description": data.get("description", ""),
                 "imageUrl": img_url,
                 "lat": lat,
-                "lng": lng
+                "lng": lng,
+                "lang": lang
             }
     except Exception:
         pass
@@ -191,7 +200,7 @@ async def _get_summary_direct(
 async def _search_wikipedia_titles(
     query: str,
     client: httpx.AsyncClient,
-    lang: str = "he",
+    lang: str = "en",
     limit: int = 5
 ) -> List[str]:
     """Search Wikipedia titles using full-text CirrusSearch with OpenSearch fallback."""
@@ -238,35 +247,83 @@ async def fetch_wikipedia_summary(
     lang: str = "en",
     context_text: str = "",
     year: Optional[int] = None,
-    is_prehistoric: bool = False
+    is_prehistoric: bool = False,
+    fallback_lang: str = "en",
+    fallback_title: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Fetch summary, thumbnail image, and page URL from Wikipedia REST API.
-    Generic, language-agnostic architecture:
-    1. Direct REST lookup for normalized candidate titles (handles canonical redirects & disambiguation).
-    2. Search fallback validated strictly against title relevance to prevent false positives.
+    Universal multilingual architecture with graceful English fallback:
+    1. Direct REST lookup and search fallback on the target language Wikipedia edition (e.g. fr, es, de, he).
+    2. If found in target language but lacks thumbnail image or coordinates, supplement them from English Wikipedia.
+    3. If not found in target language, fall back to English Wikipedia (using fallback_title or title).
     """
     if not title:
         return {}
 
-    lang = lang or "en"
-    candidates = generate_title_variations(title, lang=lang)
+    lang = (lang or "en").strip().lower()
+    fallback_lang = (fallback_lang or "en").strip().lower()
 
     async with semaphore:
-        # 1. Direct REST lookup (exact match or canonical redirect)
+        primary_res: Optional[Dict[str, Any]] = None
+        candidates = generate_title_variations(title, lang=lang)
+
+        # 1. Primary language: Direct REST lookup
         for cand in candidates:
             res = await _get_summary_direct(cand, client, lang=lang, resolve_disambig=True, context_text=context_text)
             if res:
-                return res
+                primary_res = res
+                break
 
-        # 2. Search fallback: only accept hits whose titles are relevant to the queried entity
-        for cand in candidates:
-            search_hits = await _search_wikipedia_titles(cand, client, lang=lang, limit=5)
-            for hit in search_hits:
-                if is_title_relevant(hit, cand) or is_title_relevant(hit, title):
-                    res = await _get_summary_direct(hit, client, lang=lang, resolve_disambig=False)
+        # 2. Primary language: Search fallback
+        if not primary_res:
+            for cand in candidates:
+                search_hits = await _search_wikipedia_titles(cand, client, lang=lang, limit=5)
+                for hit in search_hits:
+                    if is_title_relevant(hit, cand) or is_title_relevant(hit, title):
+                        res = await _get_summary_direct(hit, client, lang=lang, resolve_disambig=False)
+                        if res:
+                            primary_res = res
+                            break
+                if primary_res:
+                    break
+
+        # 3. If primary language found: supplement missing thumbnail / coordinates from fallback language (en)
+        if primary_res:
+            if lang != fallback_lang and (not primary_res.get("imageUrl") or primary_res.get("lat") is None):
+                supplement_target = (fallback_title or primary_res.get("wikiTitle") or title).strip()
+                if supplement_target:
+                    sup_candidates = generate_title_variations(supplement_target, lang=fallback_lang)
+                    for sup_cand in sup_candidates:
+                        sup_res = await _get_summary_direct(sup_cand, client, lang=fallback_lang, resolve_disambig=False)
+                        if sup_res:
+                            if not primary_res.get("imageUrl") and sup_res.get("imageUrl"):
+                                primary_res["imageUrl"] = sup_res["imageUrl"]
+                            if primary_res.get("lat") is None and sup_res.get("lat") is not None:
+                                primary_res["lat"] = sup_res["lat"]
+                                primary_res["lng"] = sup_res.get("lng")
+                            break
+            return primary_res
+
+        # 4. Fallback to English Wikipedia if not found in primary language
+        if lang != fallback_lang:
+            fb_target = (fallback_title or title).strip()
+            if fb_target:
+                fb_candidates = generate_title_variations(fb_target, lang=fallback_lang)
+                # 4a. Fallback direct REST
+                for fb_cand in fb_candidates:
+                    res = await _get_summary_direct(fb_cand, client, lang=fallback_lang, resolve_disambig=True, context_text=context_text)
                     if res:
                         return res
+
+                # 4b. Fallback search
+                for fb_cand in fb_candidates:
+                    search_hits = await _search_wikipedia_titles(fb_cand, client, lang=fallback_lang, limit=5)
+                    for hit in search_hits:
+                        if is_title_relevant(hit, fb_cand) or is_title_relevant(hit, fb_target):
+                            res = await _get_summary_direct(hit, client, lang=fallback_lang, resolve_disambig=False)
+                            if res:
+                                return res
 
         return {}
 
@@ -276,16 +333,19 @@ async def search_wikipedia_candidates(
     client: httpx.AsyncClient,
     lang: str = "en",
     context_text: str = "",
-    limit: int = 5
+    limit: int = 5,
+    fallback_lang: str = "en"
 ) -> List[Dict[str, Any]]:
     """
     Search Wikipedia for multiple candidate articles matching a query and optional timeline context.
-    Fetches rich summary, thumbnail, and description for each candidate.
+    Universal across languages with English fallback candidates.
     """
     clean = query.strip()
     if not clean:
         return []
 
+    lang = (lang or "en").strip().lower()
+    fallback_lang = (fallback_lang or "en").strip().lower()
     titles_set: List[str] = []
 
     # 1. If context_text is provided, search combined query first to prioritize domain-relevant articles
@@ -332,7 +392,23 @@ async def search_wikipedia_candidates(
                 seen_titles.add(wt)
                 valid_candidates.append(res)
 
-    # 5. Score and sort candidates
+    # 5. English candidate fallback if primary language found fewer than 2 hits
+    if len(valid_candidates) < 2 and lang != fallback_lang:
+        try:
+            fb_direct = await _search_wikipedia_titles(clean, client, lang=fallback_lang, limit=limit)
+            fb_fetch = [t for t in fb_direct if t not in seen_titles][:limit]
+            fb_tasks = [_get_summary_direct(t, client, lang=fallback_lang, resolve_disambig=False) for t in fb_fetch]
+            fb_results = await asyncio.gather(*fb_tasks, return_exceptions=True)
+            for res in fb_results:
+                if isinstance(res, dict) and res.get("wikiTitle"):
+                    wt = res["wikiTitle"]
+                    if wt not in seen_titles:
+                        seen_titles.add(wt)
+                        valid_candidates.append(res)
+        except Exception:
+            pass
+
+    # 6. Score and sort candidates
     def score_candidate(cand: Dict[str, Any]) -> int:
         score = 0
         cand_title = cand.get("wikiTitle", "").lower()
@@ -365,7 +441,6 @@ async def search_wikipedia_candidates(
     return valid_candidates[:limit]
 
 
-
 async def enrich_events_with_wikipedia(
     events_data: list,
     lang: str = "en",
@@ -373,12 +448,15 @@ async def enrich_events_with_wikipedia(
 ) -> list:
     """
     Given a list of event dictionaries, asynchronously fetch Wikipedia data for all of them.
-    Leaves events without matching Wikipedia articles cleanly unlinked.
+    Supports any language edition with automatic fallback to English Wikipedia.
     """
     semaphore = asyncio.Semaphore(10)
+    lang = (lang or "en").strip().lower()
+
     async with httpx.AsyncClient(follow_redirects=True) as client:
         async def fetch_for_event(event: dict):
             wiki_key = (event.get("wikipedia_title") or "").strip()
+            wiki_key_en = (event.get("wikipedia_title_en") or "").strip()
             regular_title = (event.get("title") or "").strip()
             subtitle = (event.get("subtitle") or "").strip()
             lane = (event.get("lane") or "").strip()
@@ -387,21 +465,37 @@ async def enrich_events_with_wikipedia(
             context_text = " ".join([p for p in context_parts if p]).strip()
 
             res = {}
+            # 1. Try with canonical local wikipedia_title
             if wiki_key:
                 res = await fetch_wikipedia_summary(
                     wiki_key,
                     client,
                     semaphore,
                     lang=lang,
-                    context_text=context_text
+                    context_text=context_text,
+                    fallback_lang="en",
+                    fallback_title=wiki_key_en or (regular_title if lang == "en" else None)
                 )
 
+            # 2. If not found, try regular title
             if not res and regular_title and regular_title != wiki_key:
                 res = await fetch_wikipedia_summary(
                     regular_title,
                     client,
                     semaphore,
                     lang=lang,
+                    context_text=context_text,
+                    fallback_lang="en",
+                    fallback_title=wiki_key_en
+                )
+
+            # 3. If still not found and we have an English fallback key, query English directly
+            if not res and wiki_key_en and lang != "en":
+                res = await fetch_wikipedia_summary(
+                    wiki_key_en,
+                    client,
+                    semaphore,
+                    lang="en",
                     context_text=context_text
                 )
 
@@ -418,6 +512,9 @@ async def enrich_events_with_wikipedia(
                     events_data[i]["wikiUrl"] = res["wikiUrl"]
                 if not events_data[i].get("wikiExtract") and res.get("extract"):
                     events_data[i]["wikiExtract"] = res["extract"]
+                    events_data[i]["extract"] = res["extract"]
+                elif not events_data[i].get("extract") and res.get("extract"):
+                    events_data[i]["extract"] = res["extract"]
                 if not events_data[i].get("wikiTitle") and res.get("wikiTitle"):
                     events_data[i]["wikiTitle"] = res["wikiTitle"]
                 if (events_data[i].get("lat") is None or events_data[i].get("lng") is None) and res.get("lat") is not None and res.get("lng") is not None:
@@ -451,3 +548,4 @@ async def enrich_events_with_wikipedia(
             await asyncio.gather(*geo_tasks, return_exceptions=True)
 
     return events_data
+

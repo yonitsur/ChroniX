@@ -154,6 +154,7 @@ When studying a specific angle or comparing parallel narratives, specify bookend
 > - **Write in Any Language**: You can enter prompts in Spanish, French, German, Italian, Arabic, Russian, Japanese, or any other language, completely independent of the language currently selected in the UI.
 > - **Events Match Your Prompt**: The milestones generated on the canvas (event titles, dates, descriptions, and swimlanes) will be written in the exact language of your prompt.
 > - **Localized Wikipedia Links & Media**: Wikipedia summaries and article links will automatically point to that language's specific Wikipedia edition (e.g. `es.wikipedia.org`, `fr.wikipedia.org`, `de.wikipedia.org`, `he.wikipedia.org`, or `en.wikipedia.org`).
+> - **Automatic English Wikipedia Fallback**: Because the English Wikipedia possesses the largest and richest repository of articles, historical portraits, and coordinates, ChroniX automatically checks English Wikipedia (`en.wikipedia.org`) whenever an entry or portrait is missing from the local language edition. If an entry has no article in your prompt's language, it smoothly links to the English Wikipedia article so no event is left empty. If an article exists locally but lacks an image, the thumbnail is supplemented from English Wikipedia while preserving your localized title and summary.
 > - **RTL Support**: When generating or viewing in Hebrew or other right-to-left scripts, the timeline interface cleanly formats text and layout direction accordingly.
 
 ---
