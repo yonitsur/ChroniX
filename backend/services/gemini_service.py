@@ -398,6 +398,16 @@ Return a structured JSON timeline following the schema.
                 for tb in parsed_data.time_bands
             ]
 
+            # Determine if the timeline represents a fictional universe
+            is_fictional = (
+                bool(parsed_data.is_fictional)
+                or is_fictional_context(
+                    prompt,
+                    parsed_data.title,
+                    parsed_data.description
+                )
+            )
+
             # Convert events to articles dict for enrichment
             articles_to_enrich = []
             for ev in parsed_data.events:

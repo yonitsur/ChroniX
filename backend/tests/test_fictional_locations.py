@@ -160,3 +160,50 @@ async def test_enrich_events_preserves_real_coordinates():
     assert results[0]["lat"] == 49.33
     assert results[0]["lng"] == -0.45
     assert results[0].get("is_fictional") is not True
+
+
+@pytest.mark.asyncio
+async def test_generate_timeline_fictional_mock(monkeypatch):
+    """Verify that generate_timeline_with_gemini correctly defines and handles is_fictional without NameError."""
+    from unittest.mock import MagicMock
+    import services.gemini_service as gs
+    from models import GeminiTimelineOutput, GeminiEventItem, GeminiLaneItem
+
+    mock_client = MagicMock()
+    mock_response = MagicMock()
+    mock_response.parsed = GeminiTimelineOutput(
+        title="משחקי הכס: שושלת טארגאריין",
+        description="ציר זמן בדיוני של ווסטרוז",
+        is_fictional=True,
+        lanes=[GeminiLaneItem(id="main", title="וסטרוז")],
+        events=[
+            GeminiEventItem(
+                id="ev-1",
+                title="כיבוש אאיגון",
+                subtitle="אאיגון הראשון נוחת בווסטרוז",
+                from_year=0,
+                location_name="מעלה מלך",
+                lat=31.5,
+                lng=35.2,
+                is_fictional=True
+            )
+        ]
+    )
+    mock_client.models.generate_content.return_value = mock_response
+    monkeypatch.setattr(gs, "get_gemini_client", lambda api_key=None: mock_client)
+
+    tl = await gs.generate_timeline_with_gemini(
+        prompt="משחקי הכס: שושלת טארגאריין",
+        detail_level="overview"
+    )
+
+    assert tl is not None
+    assert tl.isFictional is True
+    assert len(tl.articles) == 1
+    art = tl.articles[0]
+    assert art.isFictional is True
+    assert art.lat is None, "Fictional event lat must be None"
+    assert art.lng is None, "Fictional event lng must be None"
+    assert art.googleMapsUrl is None, "Google Maps URL must be None for fictional events"
+    assert art.locationName == "מעלה מלך"
+
