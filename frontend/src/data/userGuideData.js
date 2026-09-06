@@ -192,6 +192,8 @@ export const USER_GUIDE_DATA = {
       cardsDrawerDesc: 'Open the searchable chronological list of events grouped by lanes with quick jump-to-event.',
       starTitle: 'Starring Favorites',
       starDesc: 'Click the star icon on any card to highlight key events and keep them visible even when zoomed far out.',
+      exploreTitle: 'Guided Exploration Mode',
+      exploreDesc: 'Launch a step-by-step tour that glides through events one at a time, automatically pairing the map and timeline in split-screen for an interactive chronological-geographic journey through both time and place.',
       stopGenTitle: 'Cancel Generation:',
       stopGenDesc: 'Press Esc or click "Stop generate" in the bottom status pill anytime.'
     },
@@ -343,8 +345,7 @@ export const USER_GUIDE_DATA = {
       syncPoints: [
         'Timeline to Map: Clicking an event card flies the map camera directly to its geographic pin.',
         'Map to Timeline: Clicking a map marker highlights the event and centers the timeline canvas.',
-        'Color Coding: Map pins match each event’s swimlane color for instant visual clarity.',
-        'Guided Exploration Mode: Launch a step-by-step tour that glides through events one at a time, automatically pairing the map and timeline in split-screen for an interactive chronological-geographic journey through both time and place.'
+        'Color Coding: Map pins match each event’s swimlane color for instant visual clarity.'
       ]
     },
     export_saving: {
@@ -392,6 +393,8 @@ export const USER_GUIDE_DATA = {
       cardsDrawerDesc: 'פתחו את רשימת האירועים הכרונולוגית לחיפוש, סינון ומעבר מיידי ישירות לכל אירוע בקנבס.',
       starTitle: 'סימון מועדפים בכוכב',
       starDesc: 'לחצו על הכוכב בכל כרטיסייה כדי להדגיש אירועי מפתח ולשמור עליהם גלויים גם בזום רחוק.',
+      exploreTitle: 'מצב חקירה מודרך',
+      exploreDesc: 'הפעילו סיור צעד-אחר-צעד בין האירועים, המסנכרן אוטומטית את המפה וציר הזמן במסך מפוצל למסע כרונולוגי-גיאוגרפי אינטראקטיבי בזמן ובמרחב.',
       stopGenTitle: 'עצירת יצירה:',
       stopGenDesc: 'לחצו Esc או על "עצור יצירה" בסרגל הסטטוס התחתון בכל עת.'
     },
@@ -543,8 +546,7 @@ export const USER_GUIDE_DATA = {
       syncPoints: [
         'מציר הזמן למפה: לחיצה על אירוע בציר הזמן מטיסה את מצלמת המפה ישירות לנעץ שלו.',
         'מהמפה לציר הזמן: לחיצה על נעץ במפה מדגישה את האירוע וממרכזת את קנבס ציר הזמן.',
-        'התאמת צבעים: צבעי הנעצים תואמים לצבעי המסלולים לזיהוי ויזואלי מיידי.',
-        'מצב חקירה מודרך: הפעילו סיור צעד-אחר-צעד בין האירועים, המסנכרן אוטומטית את המפה וציר הזמן במסך מפוצל למסע כרונולוגי-גיאוגרפי אינטראקטיבי בזמן ובמרחב.'
+        'התאמת צבעים: צבעי הנעצים תואמים לצבעי המסלולים לזיהוי ויזואלי מיידי.'
       ]
     },
     export_saving: {

@@ -365,6 +365,19 @@ export default function UserGuideModal({ isOpen, onClose }) {
                 </div>
               </div>
 
+              {/* Guided Exploration Mode */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+                <div className="flex items-center gap-2 text-slate-900 dark:text-white font-semibold text-xs">
+                  <div className="p-1 rounded-md bg-slate-200/60 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">
+                    <Play className="w-3.5 h-3.5 text-sky-500" />
+                  </div>
+                  <span>{guide.getting_started.exploreTitle}</span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {guide.getting_started.exploreDesc}
+                </p>
+              </div>
+
               {/* Stopping Generation Notice */}
               <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
