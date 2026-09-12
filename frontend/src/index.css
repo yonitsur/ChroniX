@@ -1,0 +1,602 @@
+@import './styles/publicPages.css';
+@import 'katex/dist/katex.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Plus Jakarta Sans', Heebo, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+  letter-spacing: -0.011em;
+
+  /* ── Design tokens (light) ──────────────────────────────────────────────
+     Values are space-separated RGB channels so Tailwind's rgb(var(--x) /
+     <alpha-value>) tokens support opacity modifiers. Consumed via the
+     surface / line / ink / accent color scales in tailwind.config.js. */
+  --surface: 255 255 255;         /* page + primary panels            */
+  --surface-sunken: 244 244 245;  /* recessed tracks / inset controls */
+  --surface-raised: 255 255 255;  /* cards, dropdowns, popovers        */
+  --surface-overlay: 255 255 255; /* modals / drawers                  */
+  --surface-hover: 244 244 245;   /* hover fill on quiet controls      */
+  --surface-active: 228 228 231;  /* pressed / selected fill           */
+
+  --line: 228 228 231;            /* default hairline borders          */
+  --line-strong: 212 212 216;     /* emphasised borders                */
+
+  --ink: 24 24 27;                /* primary text                      */
+  --ink-muted: 82 82 91;          /* secondary text                    */
+  --ink-subtle: 113 113 122;      /* tertiary text / captions          */
+  --ink-faint: 161 161 170;       /* placeholders / disabled           */
+
+  --accent: 2 132 199;            /* sky-600 — calm authoritative blue */
+  --accent-hover: 3 105 161;      /* sky-700                           */
+  --accent-fg: 255 255 255;       /* text/icon on accent fill          */
+  --accent-soft: 224 242 254;     /* sky-100 — tinted backgrounds      */
+  --accent-ring: 14 165 233;      /* sky-500 — focus rings             */
+
+  --danger: 225 29 72;            /* rose-600 — clear restrained error */
+  --danger-hover: 190 18 60;      /* rose-700                          */
+  --danger-fg: 255 255 255;
+  --danger-soft: 255 241 242;     /* rose-50                           */
+
+  --success: 22 163 74;           /* emerald-600 — calm positive state */
+  --success-hover: 21 128 61;     /* emerald-700                       */
+  --success-fg: 255 255 255;
+  --success-soft: 240 253 244;    /* emerald-50                        */
+
+  --warning: 217 119 6;           /* amber-600 — cautionary notice     */
+  --warning-hover: 180 83 9;      /* amber-700                         */
+  --warning-fg: 255 255 255;
+  --warning-soft: 254 243 199;    /* amber-100                         */
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  /* ── Design tokens (dark) — near-neutral zinc ramp, not blue slate ── */
+  --surface: 15 15 18;            /* #0f0f12 primary surface            */
+  --surface-sunken: 22 22 26;     /* #16161a slightly brighter gray-black timeline canvas */
+  --surface-raised: 26 26 31;     /* #1a1a1f cards / panels / dropdowns */
+  --surface-overlay: 30 30 36;    /* #1e1e24 modals / drawers           */
+  --surface-hover: 38 38 45;      /* #26262d hover fill                 */
+  --surface-active: 48 48 56;     /* #303038 pressed / active fill      */
+
+  --line: 52 52 60;               /* #34343c clearly defined border     */
+  --line-strong: 78 78 90;        /* #4e4e5a emphasized border          */
+
+  --ink: 244 244 245;             /* #f4f4f5 primary text               */
+  --ink-muted: 161 161 170;       /* #a1a1aa secondary text             */
+  --ink-subtle: 113 113 122;      /* #71717a tertiary / caption text    */
+  --ink-faint: 82 82 91;          /* #52525b placeholders / disabled    */
+
+  --accent: 56 189 233;           /* sky-400 — high contrast on dark    */
+  --accent-hover: 125 199 252;    /* sky-300                            */
+  --accent-fg: 8 12 18;           /* dark text on bright accent         */
+  --accent-soft: 12 42 58;        /* muted sky tint                     */
+  --accent-ring: 56 189 248;      /* sky-400 focus ring                 */
+
+  --danger: 244 63 94;            /* rose-500                           */
+  --danger-hover: 251 113 133;    /* rose-400                           */
+  --danger-fg: 255 255 255;
+  --danger-soft: 76 5 25;         /* rose-950                           */
+
+  --success: 34 197 94;           /* emerald-500                        */
+  --success-hover: 74 222 128;    /* emerald-400                        */
+  --success-fg: 10 24 14;
+  --success-soft: 6 44 20;
+
+  --warning: 245 158 11;          /* amber-500                          */
+  --warning-hover: 251 191 36;    /* amber-400                          */
+  --warning-fg: 24 16 4;
+  --warning-soft: 66 28 4;
+}
+
+html[dir="rtl"], html.rtl-mode, html.lang-he {
+  font-family: Heebo, 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html.lang-ar {
+  font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+html.lang-ja {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+html.lang-ko {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
+html.lang-zh {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+html.lang-hi {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+
+/* Ensure right-to-left text alignment across pages, modals, cards, tabs, and drawers in RTL mode */
+html.rtl-mode body,
+html.lang-he body,
+html.lang-ar body {
+  text-align: right;
+}
+
+/* Dialogs, modals, and drawers default to RTL in RTL mode */
+html.rtl-mode [role="dialog"],
+html.lang-he [role="dialog"],
+html.lang-ar [role="dialog"],
+html.rtl-mode aside,
+html.lang-he aside,
+html.lang-ar aside,
+html.rtl-mode .modal-card,
+html.lang-he .modal-card,
+html.lang-ar .modal-card {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Map pin tooltips / labels */
+.leaflet-tooltip.chronix-pin-label.chronix-pin-label-rtl,
+.leaflet-tooltip.chronix-pin-label[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+.leaflet-tooltip.chronix-pin-label:not(.chronix-pin-label-rtl):not([dir="rtl"]) {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Text inputs and textareas in RTL mode (unless explicitly LTR for URLs/coordinates) */
+html.rtl-mode input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.lang-he input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.lang-ar input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.rtl-mode textarea:not([dir="ltr"]),
+html.lang-he textarea:not([dir="ltr"]),
+html.lang-ar textarea:not([dir="ltr"]),
+html.rtl-mode select:not([dir="ltr"]),
+html.lang-he select:not([dir="ltr"]),
+html.lang-ar select:not([dir="ltr"]) {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Explicit LTR overrides for technical data (coordinates, URLs, code, numbers) */
+[dir="ltr"],
+.ltr-text {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* The timeline canvas and container MUST always maintain strict LTR coordinate positioning */
+#histropedia-container,
+.histropedia-timeline-wrapper,
+.histropedia-canvas {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+#histropedia-container canvas,
+.histropedia-canvas {
+  touch-action: none !important;
+}
+
+/* Ensure dark mode timeline wrapper has the refined gray-black background */
+html.dark .histropedia-timeline-wrapper,
+html.dark #histropedia-container {
+  background-color: rgb(22, 22, 26) !important;
+}
+
+/* Emphasized window & drawer borders in dark mode for crisp definition & depth */
+html.dark #guide-chat-panel,
+html.dark [role="dialog"],
+html.dark .modal-card,
+html.dark aside[role="complementary"],
+html.dark aside[aria-label] {
+  border-color: rgb(var(--line-strong)) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 20px 48px -8px rgba(0, 0, 0, 0.75) !important;
+}
+
+html,
+body {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#root {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(var(--surface-sunken));
+  color: rgb(var(--ink));
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.dark body {
+  background-color: rgb(var(--surface-sunken));
+  color: rgb(var(--ink));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line-strong) / 0.6);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--ink-faint));
+}
+
+/* Indeterminate Progress Bar Animation */
+@keyframes progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(380%);
+  }
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(380%);
+  }
+}
+
+.animate-progress-indeterminate {
+  animation: progress-slide 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.prompt-bar-shell-idle,
+html.dark .prompt-bar-shell-idle {
+  border-color: rgb(var(--line)) !important;
+}
+
+.prompt-bar-shell-idle:hover,
+.prompt-bar-shell-idle:focus-within {
+  border-color: rgb(var(--line-strong)) !important;
+}
+
+.prompt-bar-shell:hover,
+.prompt-bar-shell:focus-within,
+html.dark .prompt-bar-shell:hover,
+html.dark .prompt-bar-shell:focus-within {
+  border-color: rgb(var(--accent)) !important;
+  box-shadow: 0 0 0 2px rgb(var(--accent-soft)), 0 4px 16px -4px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* While a prompt is generating, a bright segment crawls continuously around the
+   search box border (replaces the old in-field spinner). A masked conic-gradient
+   ring rides just over the border; the animated angle needs @property support. */
+@property --chronix-crawl-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes chronix-border-crawl {
+  to {
+    --chronix-crawl-angle: 360deg;
+  }
+}
+
+.prompt-bar-shell-running::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--chronix-crawl-angle),
+    transparent 0deg,
+    transparent 250deg,
+    rgb(var(--accent-ring) / 0) 250deg,
+    rgb(var(--accent-ring) / 0.85) 320deg,
+    rgb(var(--accent-ring)) 345deg,
+    rgb(var(--accent-ring) / 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: chronix-border-crawl 1.5s linear infinite;
+  pointer-events: none;
+}
+
+/* Keep the field's own content above the crawling ring. */
+.prompt-bar-shell-running > * {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-bar-shell-running::before {
+    animation: none;
+    background: conic-gradient(
+      from 320deg,
+      transparent 0deg,
+      rgb(var(--accent-ring) / 0.6) 340deg,
+      transparent 360deg
+    );
+  }
+}
+
+.prompt-bar-shell:hover,
+.prompt-bar-shell:focus-within,
+html.dark .prompt-bar-shell:hover,
+html.dark .prompt-bar-shell:focus-within {
+  border-color: rgb(14 165 233) !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 10px 15px -3px rgba(14, 165, 233, 0.12) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-bar-shell-idle {
+    animation: none;
+  }
+}
+
+/* Draw the eye to the guided-tour Play button when a fresh timeline first appears,
+   nudging the user to start the interactive tour. Stops once the tour begins. */
+@keyframes tour-play-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.55), 0 0 10px 0 rgba(14, 165, 233, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(14, 165, 233, 0), 0 0 16px 2px rgba(14, 165, 233, 0.45);
+  }
+}
+
+.tour-play-hint {
+  border-color: rgba(14, 165, 233, 0.8) !important;
+  color: rgb(2, 132, 199) !important;
+  animation: tour-play-pulse 1.8s ease-in-out infinite;
+}
+
+html.dark .tour-play-hint {
+  color: rgb(56, 189, 248) !important;
+}
+
+.tour-play-hint:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-play-hint {
+    animation: none;
+  }
+}
+
+/* Infinite Marquee Animation for Movie Strip Reel */
+@keyframes infinite-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-marquee {
+  display: flex;
+  width: max-content;
+  animation: infinite-marquee 50s linear infinite;
+  will-change: transform;
+}
+
+.animate-infinite-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animated glowing border floating chat launcher */
+@keyframes chronix-chat-border-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chronix-chat-launcher {
+  position: fixed;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  overflow: visible;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chronix-chat-launcher:active {
+  cursor: grabbing;
+  transform: scale(0.94);
+}
+
+.chronix-chat-launcher:hover {
+  transform: scale(1.06);
+}
+
+/* The animated shifting colors border */
+.chronix-chat-launcher::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    #ef4444,
+    #f97316,
+    #eab308,
+    #22c55e,
+    #06b6d4,
+    #3b82f6,
+    #8b5cf6,
+    #ec4899,
+    #ef4444
+  );
+  animation: chronix-chat-border-spin 4s linear infinite;
+  z-index: 1;
+}
+
+/* The ambient glowing halo */
+.chronix-chat-launcher::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    #ef4444,
+    #f97316,
+    #eab308,
+    #22c55e,
+    #06b6d4,
+    #3b82f6,
+    #8b5cf6,
+    #ec4899,
+    #ef4444
+  );
+  filter: blur(8px);
+  opacity: 0.65;
+  animation: chronix-chat-border-spin 4s linear infinite;
+  z-index: 0;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.chronix-chat-launcher:hover::after {
+  opacity: 0.9;
+  filter: blur(11px);
+}
+
+html.dark .chronix-chat-launcher::after {
+  opacity: 0.8;
+}
+
+html.dark .chronix-chat-launcher:hover::after {
+  opacity: 1;
+  filter: blur(12px);
+}
+
+/* The clean surface inside the glowing border */
+.chronix-chat-launcher-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: rgb(var(--surface-raised));
+  color: rgb(var(--ink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.chronix-chat-launcher:hover .chronix-chat-launcher-inner {
+  background-color: rgb(var(--surface-hover));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chronix-chat-launcher::before,
+  .chronix-chat-launcher::after {
+    animation: none;
+  }
+}
+
+/* Histropedia Swimlane Header & Styling */
+.histropedia-lane-header {
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 8px 8px 0 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 2px 6px -1px rgba(0, 0, 0, 0.16) !important;
+  z-index: 2 !important;
+  overflow: hidden !important;
+  transition: background-color 0.25s ease, opacity 0.25s ease !important;
+}
+
+.histropedia-lane-title {
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 16px !important;
+  font-family: 'Plus Jakarta Sans', Heebo, system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+  unicode-bidi: plaintext !important;
+  pointer-events: none !important;
+}
+
+.histropedia-lane-body {
+  border-radius: 0 0 10px 10px !important;
+}
+
+.home-screen-bg {
+  position: relative;
+}
+
+/* Main Home Screen & Auth Gate dynamic background (Light: Mountains, Dark: Stars) */
+.home-screen-bg,
+.auth-gate-bg {
+  background-color: #f6f3eb;
+  background-image: 
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.28) 0%, rgba(246, 243, 235, 0.5) 100%),
+    url('/mountains_bg.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: background-image 0.4s ease-in-out, background-color 0.4s ease-in-out;
+}
+
+html.dark .home-screen-bg,
+html.dark .auth-gate-bg {
+  background-color: #060913;
+  background-position: center bottom;
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(6, 9, 19, 0.25) 0%, rgba(6, 9, 19, 0.1) 100%),
+    url('/stars-bg.jpg');
+}
+
