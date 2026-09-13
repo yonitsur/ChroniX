@@ -4,7 +4,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import {
   MessageSquare, X, Minus, Send, Loader2, Square, Sparkles,
-  ShieldCheck, Zap, Trash2, Undo2, GripHorizontal, Wand2, ExternalLink,
+  Trash2, Undo2, GripHorizontal, Wand2, ExternalLink,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { FLOATING_Z } from '../utils/floatingFocus';
@@ -112,7 +112,6 @@ export default function TimelineChatPanel({
   const [minimized, setMinimized] = useState(false);
   const [input, setInput] = useState('');
   const [grounding, setGrounding] = useState(readGroundingPref);
-  const [groundingMenuOpen, setGroundingMenuOpen] = useState(false);
   const [pos, setPos] = useState(readDock); // {left, top} viewport px, or null = default anchor
   const [size, setSize] = useState(readSize); // {w, h} panel size (persisted)
   const [vw, setVw] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1024));
@@ -126,19 +125,6 @@ export default function TimelineChatPanel({
   const dragRef = useRef(null);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-  const groundingMenuRef = useRef(null);
-
-  // Close the grounding menu on outside click.
-  useEffect(() => {
-    if (!groundingMenuOpen) return;
-    const handleClickOutside = (e) => {
-      if (groundingMenuRef.current && !groundingMenuRef.current.contains(e.target)) {
-        setGroundingMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [groundingMenuOpen]);
 
   // Re-clamp on resize using the bubble anchor footprint.
   useEffect(() => {
@@ -262,9 +248,9 @@ export default function TimelineChatPanel({
   };
 
   const setGroundingValue = (next) => {
+    if (isBusy || next === grounding) return;
     setGrounding(next);
     try { localStorage.setItem(GROUNDING_STORAGE_KEY, String(next)); } catch {}
-    setGroundingMenuOpen(false);
   };
 
   const submit = () => {
@@ -380,63 +366,44 @@ export default function TimelineChatPanel({
             </p>
           )}
         </div>
-        <div className="relative shrink-0" ref={groundingMenuRef}>
+        {/* Grounding mode toggle: Web Search / Fast */}
+        <div
+          onPointerDown={(e) => e.stopPropagation()}
+          role="radiogroup"
+          aria-label={t('toolbar.groundingToggle')}
+          dir={isRtl ? 'rtl' : 'ltr'}
+          className="inline-flex items-center p-0.5 bg-surface-raised border border-line rounded-full shrink-0 gap-0.5 select-none"
+        >
           <button
             type="button"
-            onClick={() => setGroundingMenuOpen((v) => !v)}
-            aria-pressed={grounding}
-            aria-haspopup="menu"
-            aria-expanded={groundingMenuOpen}
-            title={grounding ? t('toolbar.groundingVerifiedTip') : t('toolbar.groundingFastTip')}
-            className="flex items-center gap-1 px-2 py-1 rounded-control border border-line bg-surface-raised hover:bg-surface-hover text-[10.5px] font-semibold text-ink-muted hover:text-ink shrink-0 transition-colors cursor-pointer"
+            role="radio"
+            aria-checked={grounding}
+            disabled={isBusy}
+            onClick={() => setGroundingValue(true)}
+            title={t('toolbar.groundingVerifiedTip')}
+            className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+              grounding
+                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm'
+                : 'text-ink-muted hover:text-ink hover:bg-surface-hover/60'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            {grounding
-              ? <ShieldCheck className="w-3 h-3 text-success shrink-0" />
-              : <Zap className="w-3 h-3 text-ink-muted shrink-0" />}
-            <span className="hidden lg:inline">
-              {grounding ? t('toolbar.groundingToggle') : t('toolbar.groundingFast')}
-            </span>
+            {t('toolbar.groundingToggle')}
           </button>
-          {groundingMenuOpen && (
-            <div
-              role="menu"
-              onPointerDown={(e) => e.stopPropagation()}
-              className="absolute top-full mt-1.5 right-0 w-max min-w-full bg-surface-raised border border-line rounded-panel shadow-pop p-1 z-30 flex flex-col gap-0.5"
-            >
-              <button
-                type="button"
-                role="menuitemradio"
-                aria-checked={grounding}
-                onClick={() => setGroundingValue(true)}
-                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-control transition-all whitespace-nowrap ${
-                  isRtl ? 'text-right flex-row-reverse' : 'text-left'
-                } ${
-                  grounding
-                    ? 'bg-surface-hover text-ink font-semibold'
-                    : 'text-ink-muted hover:bg-surface-hover'
-                }`}
-              >
-                <ShieldCheck className={`w-3.5 h-3.5 shrink-0 ${grounding ? 'text-success' : 'text-ink-muted'}`} />
-                <span className="text-[11px] font-semibold">{t('toolbar.groundingToggle')}</span>
-              </button>
-              <button
-                type="button"
-                role="menuitemradio"
-                aria-checked={!grounding}
-                onClick={() => setGroundingValue(false)}
-                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-control transition-all whitespace-nowrap ${
-                  isRtl ? 'text-right flex-row-reverse' : 'text-left'
-                } ${
-                  !grounding
-                    ? 'bg-surface-hover text-ink font-semibold'
-                    : 'text-ink-muted hover:bg-surface-hover'
-                }`}
-              >
-                <Zap className={`w-3.5 h-3.5 shrink-0 ${!grounding ? 'text-ink' : 'text-ink-muted'}`} />
-                <span className="text-[11px] font-semibold">{t('toolbar.groundingFast')}</span>
-              </button>
-            </div>
-          )}
+          <button
+            type="button"
+            role="radio"
+            aria-checked={!grounding}
+            disabled={isBusy}
+            onClick={() => setGroundingValue(false)}
+            title={t('toolbar.groundingFastTip')}
+            className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+              !grounding
+                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm'
+                : 'text-ink-muted hover:text-ink hover:bg-surface-hover/60'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {t('toolbar.groundingFast')}
+          </button>
         </div>
         <button
           type="button"
