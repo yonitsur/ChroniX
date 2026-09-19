@@ -1,0 +1,724 @@
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import {
+  MessageSquare, X, Send, Loader2, Square, Sparkles,
+  Trash2, Undo2, GripHorizontal, Wand2, ExternalLink, Paperclip, FileText, Image as ImageIcon,
+} from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { FLOATING_Z } from '../utils/floatingFocus';
+import { readGroundingPref, writeGroundingPref } from '../utils/groundingConfig';
+
+// Compact, XSS-safe markdown styling for assistant replies (react-markdown renders no raw HTML).
+const MD_COMPONENTS = {
+  p: (props) => <p className="my-1 first:mt-0 last:mb-0 leading-relaxed" {...props} />,
+  ul: (props) => <ul className="my-1 ps-4 list-disc space-y-0.5" {...props} />,
+  ol: (props) => <ol className="my-1 ps-4 list-decimal space-y-0.5" {...props} />,
+  li: (props) => <li className="leading-snug" {...props} />,
+  a: (props) => <a className="text-accent hover:underline underline-offset-2 break-words" target="_blank" rel="noopener noreferrer" {...props} />,
+  strong: (props) => <strong className="font-semibold text-ink" {...props} />,
+  em: (props) => <em className="italic" {...props} />,
+  h1: (props) => <h3 className="text-body-sm font-bold text-ink mt-2 mb-1 first:mt-0" {...props} />,
+  h2: (props) => <h3 className="text-body-sm font-bold text-ink mt-2 mb-1 first:mt-0" {...props} />,
+  h3: (props) => <h4 className="text-body-sm font-semibold text-ink mt-2 mb-1 first:mt-0" {...props} />,
+  blockquote: (props) => <blockquote className="border-s-2 border-line-strong ps-2 my-1 text-ink-muted italic" {...props} />,
+  hr: () => <hr className="my-2 border-line" />,
+  code: (props) => <code className="px-1 py-0.5 rounded bg-surface-sunken border border-line text-caption font-mono break-words text-ink" {...props} />,
+  pre: (props) => <pre className="my-1 p-2 rounded-control bg-surface-sunken border border-line text-ink text-caption overflow-x-auto [&_code]:bg-transparent [&_code]:p-0 [&_code]:border-0" {...props} />,
+};
+
+// v3: stores bubble anchor so the panel always opens upwards and to the left of the bubble.
+const DOCK_STORAGE_KEY = 'chronix_chat_dock_v3';
+const SIZE_STORAGE_KEY = 'chronix_chat_size';
+const PANEL_W = 380;
+const PANEL_H = 560;
+const MIN_W = 300;
+const MIN_H = 380;
+const LAUNCHER_SIZE = 48; // collapsed bubble footprint (w-12 h-12)
+const EDGE_MARGIN = 16; // gap from the right screen edge
+// Clearance reserved at the bottom for the timeline's year/date bar so the default
+// launcher position floats just above it (mobile needs more room than desktop).
+const YEAR_BAR_CLEARANCE_MOBILE = 100;
+const YEAR_BAR_CLEARANCE_DESKTOP = 100;
+
+const ACCEPTED_ATTACH_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'application/pdf'];
+const MAX_ATTACH_FILES = 20;
+const MAX_ATTACH_FILE_BYTES = 8 * 1024 * 1024;
+const MAX_ATTACH_TOTAL_BYTES = 30 * 1024 * 1024;
+
+
+function isRtlText(s) {
+  return s ? /[\u0590-\u05FF\u0600-\u06FF]/.test(s) : false;
+}
+
+// Keep a floating element fully on-screen given its own width/height.
+function clampPos(p, w, h) {
+  if (!p) return null;
+  const maxLeft = Math.max(8, window.innerWidth - w - 8);
+  const maxTop = Math.max(8, window.innerHeight - h - 8);
+  return {
+    left: Math.max(8, Math.min(p.left, maxLeft)),
+    top: Math.max(8, Math.min(p.top, maxTop)),
+  };
+}
+
+/**
+ * Floating, draggable, minimizable chat dock — "Talk to the timeline".
+ * Presentational + local drag/minimize/input/grounding state; the conversation,
+ * busy flag and undo are owned by App.jsx. onSend(text, grounding) mirrors the
+ * generate/refine signature so grounding stays consistent app-wide.
+ */
+export default function TimelineChatPanel({
+  isOpen,
+  onClose,
+  onOpen,
+  timelineTitle = '',
+  timelineId = null,
+  messages = [],
+  isBusy = false,
+  onSend,
+  onSendFiles,
+  onStop,
+  onClear,
+  onUndo,
+  seed = null,
+  onSeedConsumed,
+}) {
+  const { t, isRtl } = useLanguage();
+  const zIndex = FLOATING_Z.CHAT;
+
+  const [input, setInput] = useState('');
+  const [pendingFiles, setPendingFiles] = useState([]);
+  const [attachError, setAttachError] = useState('');
+  const fileInputRef = useRef(null);
+  const [grounding, setGrounding] = useState(readGroundingPref);
+  const [pos, setPos] = useState(null); // {left, top} viewport px, or null = default anchor (bottom-right)
+  const [size, setSize] = useState({ w: PANEL_W, h: PANEL_H }); // {w, h} panel size
+  const [vw, setVw] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1024));
+  const [vh, setVh] = useState(() => (typeof window !== 'undefined' ? window.innerHeight : 768));
+  const isNarrow = vw < 640;
+  const yearBarClearance = isNarrow ? YEAR_BAR_CLEARANCE_MOBILE : YEAR_BAR_CLEARANCE_DESKTOP;
+  // Compact floating size used once the mobile bottom-sheet panel is dragged off its default anchor.
+  const narrowFloatW = Math.min(vw - 16, 360);
+  const narrowFloatH = Math.min(Math.round(vh * 0.7), 520);
+
+  // Reset position & size to default whenever timeline changes
+  useEffect(() => {
+    setPos(null);
+    setSize({ w: PANEL_W, h: PANEL_H });
+  }, [timelineId]);
+
+  const dragRef = useRef(null);
+  const scrollRef = useRef(null);
+  const inputRef = useRef(null);
+  const titleContainerRef = useRef(null);
+  const titleTextRef = useRef(null);
+
+  const [titleOverflow, setTitleOverflow] = useState(0);
+
+  const titleText = timelineTitle || t('chat.title');
+  const hasRtlChar = isRtlText(titleText);
+  const hasLtrChar = /[A-Za-z\u00C0-\u024F]/.test(titleText);
+  const isTitleRtl = hasRtlChar ? true : hasLtrChar ? false : isRtl;
+
+  // Measure title overflow for ticker animation when title exceeds available header width
+  useEffect(() => {
+    if (!isOpen) {
+      setTitleOverflow(0);
+      return;
+    }
+
+    let rafId;
+    const measure = () => {
+      if (titleContainerRef.current && titleTextRef.current) {
+        const style = window.getComputedStyle(titleContainerRef.current);
+        const paddingLeft = parseFloat(style.paddingLeft) || 0;
+        const paddingRight = parseFloat(style.paddingRight) || 0;
+        const containerWidth = titleContainerRef.current.clientWidth - paddingLeft - paddingRight;
+        const textWidth = titleTextRef.current.offsetWidth || titleTextRef.current.scrollWidth;
+        const diff = textWidth - containerWidth;
+        setTitleOverflow(diff > 4 ? Math.ceil(diff + 8) : 0);
+      }
+    };
+
+    rafId = requestAnimationFrame(measure);
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(measure).catch(() => {});
+    }
+
+    let ro;
+    if (typeof ResizeObserver !== 'undefined' && titleContainerRef.current) {
+      ro = new ResizeObserver(measure);
+      ro.observe(titleContainerRef.current);
+    }
+    window.addEventListener('resize', measure);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [isOpen, titleText, size.w, vw]);
+
+  const titleAnimationDuration = titleOverflow > 0
+    ? Math.max(4.5, Math.round(titleOverflow / 28 + 3.5))
+    : 0;
+
+  // Re-clamp on resize using the bubble anchor footprint.
+  useEffect(() => {
+    const onResize = () => {
+      const w0 = window.innerWidth;
+      const h0 = window.innerHeight;
+      setVw(w0);
+      setVh(h0);
+      setPos((p) => (p ? clampPos(p, LAUNCHER_SIZE, LAUNCHER_SIZE) : p));
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // Auto-scroll to the newest message.
+  useEffect(() => {
+    if (isOpen && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isBusy, isOpen]);
+
+  // Focus the input when opening / expanding.
+  useEffect(() => {
+    if (isOpen && window.innerWidth >= 768) {
+      const id = setTimeout(() => inputRef.current?.focus(), 60);
+      return () => clearTimeout(id);
+    }
+  }, [isOpen]);
+
+  // Prefill the composer when asked to discuss a specific event.
+  useEffect(() => {
+    if (seed) {
+      setInput(seed);
+      const id = setTimeout(() => inputRef.current?.focus(), 80);
+      onSeedConsumed?.();
+      return () => clearTimeout(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seed]);
+
+  // Pointer-drag for both the panel header and the collapsed bubble. If the pointer
+  // didn't actually move, treat it as a tap and run onTap (used to open the bubble).
+  // `isPanel` indicates whether we are dragging the expanded panel (true) or collapsed bubble (false).
+  const beginDrag = (e, onTap, isPanel = false) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const rect = dragRef.current?.getBoundingClientRect();
+    const origin = rect ? { left: rect.left, top: rect.top } : { left: 0, top: 0 };
+    const panelW = isNarrow ? narrowFloatW : size.w;
+    const panelH = isNarrow ? narrowFloatH : size.h;
+    let moved = false;
+    try { e.target.setPointerCapture?.(e.pointerId); } catch {}
+
+    const onMove = (ev) => {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+      moved = true;
+      if (isPanel) {
+        // Dragging the panel: clamp panel position, then anchor the bubble to its bottom-right
+        const newPanel = clampPos({ left: origin.left + dx, top: origin.top + dy }, panelW, panelH);
+        const bubbleAnchor = clampPos(
+          { left: newPanel.left + panelW - LAUNCHER_SIZE, top: newPanel.top + panelH - LAUNCHER_SIZE },
+          LAUNCHER_SIZE,
+          LAUNCHER_SIZE
+        );
+        setPos(bubbleAnchor);
+      } else {
+        // Dragging the bubble: clamp bubble position directly
+        setPos(clampPos({ left: origin.left + dx, top: origin.top + dy }, LAUNCHER_SIZE, LAUNCHER_SIZE));
+      }
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      if (!moved) {
+        onTap?.();
+      }
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+
+  // Resize from the top-left corner: the bottom-right corner stays pinned while width/height grow.
+  const beginResize = (e) => {
+    e.stopPropagation();
+    const rect = dragRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const fixedRight = rect.left + rect.width;
+    const fixedBottom = rect.top + rect.height;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startW = rect.width;
+    const startH = rect.height;
+    try { e.target.setPointerCapture?.(e.pointerId); } catch {}
+    const onMove = (ev) => {
+      const w = Math.max(MIN_W, Math.min(startW - (ev.clientX - startX), fixedRight - 8));
+      const h = Math.max(MIN_H, Math.min(startH - (ev.clientY - startY), fixedBottom - 8));
+      setSize({ w, h });
+      setPos(clampPos({ left: fixedRight - LAUNCHER_SIZE, top: fixedBottom - LAUNCHER_SIZE }, LAUNCHER_SIZE, LAUNCHER_SIZE));
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+
+  const setGroundingValue = (next) => {
+    if (isBusy || next === grounding) return;
+    setGrounding(next);
+    writeGroundingPref(next);
+  };
+
+  const submit = () => {
+    const text = input.trim();
+    if (isBusy) return;
+    if (pendingFiles.length > 0) {
+      onSendFiles?.(pendingFiles, text);
+      setPendingFiles([]);
+      setInput('');
+      return;
+    }
+    if (!text) return;
+    onSend?.(text, grounding);
+    setInput('');
+  };
+
+  const addPendingFiles = (fileList) => {
+    const incoming = Array.from(fileList || []);
+    if (!incoming.length) return;
+
+    let rejected = false;
+    const accepted = incoming.filter((f) => {
+      const ok = ACCEPTED_ATTACH_TYPES.includes(f.type) && f.size <= MAX_ATTACH_FILE_BYTES;
+      if (!ok) rejected = true;
+      return ok;
+    });
+
+    setPendingFiles((prev) => {
+      const combined = [...prev, ...accepted].slice(0, MAX_ATTACH_FILES);
+      const totalBytes = combined.reduce((sum, f) => sum + f.size, 0);
+      if (totalBytes > MAX_ATTACH_TOTAL_BYTES) {
+        setAttachError(t('chat.attachErrorTotalSize'));
+        return prev;
+      }
+      return combined;
+    });
+
+    if (rejected) {
+      setAttachError(t('chat.attachErrorRejected'));
+    } else if (attachError) {
+      setAttachError('');
+    }
+  };
+
+  const removePendingFile = (idx) => setPendingFiles((prev) => prev.filter((_, i) => i !== idx));
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submit();
+    }
+  };
+
+  // Auto-expand chat textarea height based on content
+  const adjustChatTextareaHeight = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    const targetHeight = Math.min(Math.max(el.scrollHeight, 40), 120);
+    el.style.height = `${targetHeight}px`;
+  }, []);
+
+  useEffect(() => {
+    adjustChatTextareaHeight();
+  }, [input, adjustChatTextareaHeight]);
+
+  // Default anchor: bottom-right corner, floating just above the timeline's year bar.
+  const defaultAnchor = clampPos(
+    {
+      left: vw - LAUNCHER_SIZE - EDGE_MARGIN,
+      top: vh - LAUNCHER_SIZE - yearBarClearance,
+    },
+    LAUNCHER_SIZE,
+    LAUNCHER_SIZE
+  );
+  const bubbleStyle = pos
+    ? { left: `${pos.left}px`, top: `${pos.top}px`, right: 'auto', bottom: 'auto', zIndex }
+    : { right: `${EDGE_MARGIN}px`, bottom: `${yearBarClearance}px`, left: 'auto', top: 'auto', zIndex };
+
+  const openChat = () => { if (!isOpen) onOpen?.(); };
+
+  // ---- Collapsed launcher bubble (always visible when the panel isn't expanded; draggable) ----
+  if (!isOpen) {
+    return (
+      <button
+        ref={dragRef}
+        id="guide-chat-bubble"
+        type="button"
+        style={bubbleStyle}
+        onPointerDown={(e) => beginDrag(e, openChat, false)}
+        onClick={(e) => { if (e.detail === 0) openChat(); }}
+        title={t('chat.title')}
+        aria-label={t('chat.open')}
+        className="chronix-chat-launcher fixed w-12 h-12 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing active:scale-95 touch-none overflow-visible shadow-control"
+      >
+        <span className="chronix-chat-launcher-inner">
+          <MessageSquare className="w-5 h-5 pointer-events-none text-ink" />
+        </span>
+        {isBusy && (
+          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-warning border-2 border-surface animate-pulse pointer-events-none z-20" />
+        )}
+      </button>
+    );
+  }
+
+  // Panel position: always opens upwards and to the left of the bubble anchor so that the
+  // bottom-right corner of the panel aligns with the bottom-right corner of the bubble.
+  const activeBubblePos = pos || defaultAnchor;
+  const panelW = isNarrow ? narrowFloatW : size.w;
+  const panelH = isNarrow ? narrowFloatH : size.h;
+
+  const panelPos = clampPos(
+    {
+      left: activeBubblePos.left + LAUNCHER_SIZE - panelW,
+      top: activeBubblePos.top + LAUNCHER_SIZE - panelH,
+    },
+    panelW,
+    panelH
+  );
+
+  const panelStyle = isNarrow && !pos
+    ? { left: 8, right: 8, bottom: 8, height: 'min(74vh, 620px)', zIndex }
+    : pos
+      ? { left: `${panelPos.left}px`, top: `${panelPos.top}px`, width: `${panelW}px`, height: `${panelH}px`, zIndex }
+      : { right: `${EDGE_MARGIN}px`, bottom: `${yearBarClearance}px`, width: `${panelW}px`, height: `${panelH}px`, zIndex };
+
+  return (
+    <div
+      ref={dragRef}
+      id="guide-chat-panel"
+      style={{ ...panelStyle, maxHeight: 'calc(100vh - 16px)', maxWidth: 'calc(100vw - 16px)' }}
+      dir={isRtl ? 'rtl' : 'ltr'}
+      role="dialog"
+      aria-label={timelineTitle || t('chat.title')}
+      className="fixed flex flex-col rounded-sheet border border-line bg-surface-raised shadow-panel overflow-hidden font-sans animate-in fade-in duration-200"
+    >
+      {/* Resize grip (top-left corner; bottom-right stays anchored) */}
+      {!isNarrow && (
+        <div
+          onPointerDown={beginResize}
+          aria-hidden="true"
+          style={{ touchAction: 'none' }}
+          className="absolute top-0 left-0 w-5 h-5 z-20 cursor-nwse-resize group"
+        >
+          <span className="absolute top-1.5 left-1.5 w-2 h-2 border-t-2 border-l-2 border-line-strong rounded-tl-[3px] group-hover:border-accent transition-colors" />
+        </div>
+      )}
+      {/* Header (drag handle) — draggable on both desktop and mobile (narrow) */}
+      <div
+        onPointerDown={(e) => beginDrag(e, null, true)}
+        style={{ touchAction: 'none' }}
+        className="flex items-center gap-2 px-3 py-2.5 border-b border-line bg-surface-sunken cursor-grab active:cursor-grabbing select-none shrink-0"
+      >
+        <GripHorizontal className="w-4 h-4 text-ink-subtle shrink-0" />
+        <div className="p-1 rounded-control bg-accent-soft text-accent shrink-0 flex items-center justify-center pointer-events-none">
+          <MessageSquare className="w-3.5 h-3.5" />
+        </div>
+        <div
+          ref={titleContainerRef}
+          dir={isTitleRtl ? 'rtl' : 'ltr'}
+          className={`min-w-0 flex-1 overflow-hidden select-none px-1 ${
+            titleOverflow > 0 ? 'chat-title-ticker-container' : ''
+          } ${isTitleRtl ? 'text-right' : 'text-left'}`}
+        >
+          <h3
+            className="text-body-sm font-bold text-ink leading-tight m-0 p-0"
+            title={titleText}
+          >
+            <span
+              ref={titleTextRef}
+              style={{
+                '--chat-title-scroll-dist': `${titleOverflow}px`,
+                animationDuration: `${titleAnimationDuration}s`,
+              }}
+              className={`inline-block whitespace-nowrap ${
+                titleOverflow > 0
+                  ? isTitleRtl
+                    ? 'chat-title-ticker-rtl'
+                    : 'chat-title-ticker-ltr'
+                  : ''
+              }`}
+            >
+              {titleText}
+            </span>
+          </h3>
+        </div>
+        {/* Grounding mode toggle: Web Search / Fast */}
+        <div
+          onPointerDown={(e) => e.stopPropagation()}
+          role="radiogroup"
+          aria-label={t('toolbar.groundingToggle')}
+          dir={isRtl ? 'rtl' : 'ltr'}
+          className="inline-flex items-center p-0.5 bg-surface-raised border border-line rounded-full shrink-0 gap-0.5 select-none"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={grounding}
+            disabled={isBusy}
+            onClick={() => setGroundingValue(true)}
+            title={t('toolbar.groundingVerifiedTip')}
+            className={`px-2 py-0.5 rounded-full text-caption font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+              grounding
+                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm'
+                : 'text-ink-muted hover:text-ink hover:bg-surface-hover/60'
+            } disabled:opacity-50 disabled:cursor-default`}
+          >
+            {t('toolbar.groundingToggle')}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={!grounding}
+            disabled={isBusy}
+            onClick={() => setGroundingValue(false)}
+            title={t('toolbar.groundingFastTip')}
+            className={`px-2 py-0.5 rounded-full text-caption font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+              !grounding
+                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-sm'
+                : 'text-ink-muted hover:text-ink hover:bg-surface-hover/60'
+            } disabled:opacity-50 disabled:cursor-default`}
+          >
+            {t('toolbar.groundingFast')}
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          title={t('common.close')}
+          aria-label={t('common.close')}
+          className="p-1 text-ink-subtle hover:text-ink hover:bg-surface-hover rounded-control transition-colors cursor-pointer shrink-0"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Message list */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 space-y-3">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center px-3 gap-3">
+            <div className="p-3 rounded-panel bg-surface-sunken text-accent border border-line">
+              <Sparkles className="w-7 h-7" />
+            </div>
+            <p className="text-sm font-semibold text-ink">
+              {t('chat.emptyTitle')}
+            </p>
+            <p className="text-caption leading-relaxed text-ink-subtle max-w-[260px]">
+              {t('chat.emptyBody')}
+            </p>
+          </div>
+        )}
+
+        {messages.map((m) => {
+          const mine = m.role === 'user';
+          const contentRtl = isRtlText(m.content);
+          return (
+            <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] ${mine ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
+                <div
+                  dir={contentRtl ? 'rtl' : 'ltr'}
+                  className={`px-3 py-2 rounded-panel text-body-sm leading-relaxed break-words ${
+                    mine
+                      ? 'bg-accent text-accent-fg rounded-br-sm whitespace-pre-wrap'
+                      : m.error
+                        ? 'bg-danger-soft text-danger border border-danger/20 rounded-bl-sm whitespace-pre-wrap'
+                        : 'bg-surface-sunken text-ink rounded-bl-sm border border-line'
+                  } ${contentRtl ? 'text-right' : 'text-left'}`}
+                >
+                  {mine || m.error ? (
+                    m.content
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                      components={MD_COMPONENTS}
+                    >
+                      {m.content}
+                    </ReactMarkdown>
+                  )}
+                </div>
+
+                {/* Edit-applied chip with one-step Undo */}
+                {m.action === 'edit' && !m.error && (
+                  <div className="flex items-center gap-2 text-caption text-success bg-success-soft border border-success/20 rounded-control px-2 py-1">
+                    <Wand2 className="w-3 h-3 shrink-0" />
+                    <span>{m.undone ? t('chat.reverted') : t('chat.updated')}</span>
+                    {m.canUndo && !m.undone && (
+                      <button
+                        type="button"
+                        onClick={() => onUndo?.(m.id)}
+                        className="flex items-center gap-1 font-semibold text-accent hover:underline cursor-pointer ms-1"
+                      >
+                        <Undo2 className="w-3 h-3" />
+                        {t('chat.undo')}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Grounding sources */}
+                {Array.isArray(m.sources) && m.sources.length > 0 && (
+                  <div className="flex flex-wrap gap-1 max-w-full">
+                    {m.sources.slice(0, 4).map((s, i) => (
+                      <a
+                        key={i}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={s.title}
+                        className="flex items-center gap-1 text-caption text-ink-muted bg-surface-sunken hover:bg-surface-hover border border-line rounded-control px-1.5 py-0.5 max-w-[150px] truncate transition-colors"
+                      >
+                        <ExternalLink className="w-2.5 h-2.5 shrink-0 text-ink-subtle" />
+                        <span className="truncate">{s.title || s.url}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+
+        {isBusy && (
+          <div className="flex justify-start">
+            <div className="px-3 py-2.5 rounded-panel rounded-bl-sm bg-surface-sunken border border-line">
+              <span className="flex gap-1 items-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce" />
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Composer */}
+      <div className="border-t border-line p-2.5 shrink-0 bg-surface-sunken">
+        {pendingFiles.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-1.5">
+            {pendingFiles.map((f, idx) => (
+              <span
+                key={`${f.name}-${idx}`}
+                className="flex items-center gap-1 text-caption text-ink-muted bg-surface-raised border border-line rounded-control px-1.5 py-0.5 max-w-[140px]"
+              >
+                {f.type === 'application/pdf' ? (
+                  <FileText className="w-3 h-3 shrink-0 text-ink-subtle" />
+                ) : (
+                  <ImageIcon className="w-3 h-3 shrink-0 text-ink-subtle" />
+                )}
+                <span className="truncate">{f.name}</span>
+                <button
+                  type="button"
+                  onClick={() => removePendingFile(idx)}
+                  disabled={isBusy}
+                  aria-label={t('common.remove')}
+                  className="text-ink-subtle hover:text-danger shrink-0 cursor-pointer disabled:opacity-40"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        {attachError && (
+          <p className="text-caption text-danger mb-1.5">{attachError}</p>
+        )}
+        <div className="flex items-end gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept={ACCEPTED_ATTACH_TYPES.join(',')}
+            className="hidden"
+            onChange={(e) => {
+              addPendingFiles(e.target.files);
+              e.target.value = '';
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isBusy}
+            title={t('chat.attachFiles')}
+            aria-label={t('chat.attachFiles')}
+            className="p-2.5 rounded-control bg-surface-raised border border-line hover:bg-surface-hover text-ink-muted hover:text-ink transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-default shadow-control"
+          >
+            <Paperclip className="w-4 h-4" />
+          </button>
+          <textarea
+            ref={inputRef}
+            rows={1}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            maxLength={1000}
+            dir={isRtlText(input) ? 'rtl' : (isRtl ? 'rtl' : 'ltr')}
+            placeholder={pendingFiles.length > 0 ? t('chat.placeholderWithFiles') : t('chat.placeholder')}
+            className={`flex-1 min-w-0 resize-none max-h-32 bg-surface-raised border border-line rounded-control px-3 py-2 text-body-sm text-ink placeholder-ink-faint outline-none focus:border-accent focus:ring-1 focus:ring-accent-ring/30 transition-all shadow-control scrollbar-none overflow-y-auto leading-normal ${
+              (isRtlText(input) || (!input && isRtl)) ? 'text-right' : 'text-left'
+            }`}
+            style={{ minHeight: 40 }}
+          />
+          {isBusy ? (
+            <button
+              type="button"
+              onClick={onStop}
+              title={t('chat.stop')}
+              aria-label={t('chat.stop')}
+              className="p-2.5 rounded-control bg-danger hover:bg-danger-hover text-danger-fg transition-colors cursor-pointer shrink-0 shadow-control"
+            >
+              <Square className="w-4 h-4" fill="currentColor" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!input.trim() && pendingFiles.length === 0}
+              title={t('chat.send')}
+              aria-label={t('chat.send')}
+              className="p-2.5 rounded-control bg-accent hover:bg-accent-hover text-accent-fg transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-default active:scale-95 shadow-control"
+            >
+              <Send className={`w-4 h-4 ${isRtl ? '-scale-x-100' : ''}`} />
+            </button>
+          )}
+        </div>
+        <div className="flex items-center justify-between mt-1.5 px-0.5">
+          <span className="text-caption text-ink-subtle">
+            {t('chat.disclaimer')}
+          </span>
+          {messages.length > 0 && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="flex items-center gap-1 text-caption text-ink-subtle hover:text-ink transition-colors cursor-pointer"
+              title={t('chat.clear')}
+            >
+              <Trash2 className="w-3 h-3" />
+              {t('chat.clear')}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

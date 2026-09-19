@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <!-- Brand Cyan-to-Blue Linear Gradient matching ChroniX Logo -->
+    <linearGradient id="chronix-fav-x-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded modern dark background tile -->
+  <rect width="48" height="48" rx="12" fill="#090d16" />
+  <rect width="46" height="46" x="1" y="1" rx="11" stroke="#1e293b" stroke-width="1.2" />
+
+  <!-- Authentic Plus Jakarta Sans ExtraBold 'X' centered matching the ChroniX logo typography -->
+  <path
+    d="M 19.14 35.92 L 13.44 35.92 L 21.25 23.98 L 13.44 12.08 L 19.14 12.08 L 25.41 21.62 L 22.63 21.62 L 28.87 12.08 L 34.56 12.08 L 26.79 23.98 L 34.56 35.92 L 28.87 35.92 L 22.63 26.35 L 25.41 26.38 Z"
+    fill="url(#chronix-fav-x-grad)"
+  />
+</svg>
