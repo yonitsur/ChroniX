@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <style>
+    :root {
+      --tile-bg: #ffffff;
+      --tile-border: #e4e4e8;
+      --ink: #17171a;
+      --shadow: #868790;
+      --slit: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --tile-bg: #111113;
+        --tile-border: #2a2a2f;
+        --ink: #ececef;
+        --shadow: #6b6d7a;
+        --slit: #111113;
+      }
+    }
+  </style>
+  <rect width="48" height="48" rx="11" fill="var(--tile-bg)" />
+  <rect width="46.8" height="46.8" x="0.6" y="0.6" rx="10.4" stroke="var(--tile-border)" stroke-width="1.2" />
+  <g transform="translate(10 9) scale(0.28 0.3)">
+    <!-- Back dark stripe (Masterpiece parallel right arm) -->
+    <path d="M75 0 H100 L62.5 50 L100 100 H75 L37.5 50 Z" fill="var(--shadow)" stroke="var(--shadow)" stroke-width="2" stroke-linejoin="round" />
+    <!-- Slit gap cutout matching tile background -->
+    <path d="M0 0 H25 L62.5 50 L25 100 H0 L37.5 50 Z" stroke="var(--slit)" stroke-width="5" stroke-linejoin="round" fill="none" />
+    <!-- Front chevron with micro-rounded corners -->
+    <path d="M0 0 H25 L62.5 50 L25 100 H0 L37.5 50 Z" fill="var(--ink)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" />
+  </g>
+</svg>
