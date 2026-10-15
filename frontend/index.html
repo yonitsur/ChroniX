@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,400..800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Suez+One&display=swap" rel="stylesheet" />
+    <title>ChroniX – Interactive Visual Chronologies</title>
+    <meta name="description" content="ChroniX – Explore, create, and share interactive visual chronologies and historical timelines." />
+    <!-- Open Graph / WhatsApp / Telegram / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ChroniX" />
+    <meta property="og:title" content="ChroniX – Interactive Visual Chronologies" />
+    <meta property="og:description" content="Explore, create, and share interactive visual chronologies and historical timelines." />
+    <meta property="og:image" content="/chronix_logo_full.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ChroniX – Interactive Visual Chronologies" />
+    <meta name="twitter:description" content="Explore, create, and share interactive visual chronologies and historical timelines." />
+    <meta name="twitter:image" content="/chronix_logo_full.png" />
+    <script>
+      (function() {
+        try {
+          var isManual = localStorage.getItem('vt_theme_manual') === 'true';
+          var theme = isManual ? localStorage.getItem('vt_theme') : null;
+          if (!theme || (theme !== 'dark' && theme !== 'light')) {
+            theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
