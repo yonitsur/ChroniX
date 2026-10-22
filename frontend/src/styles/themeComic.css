@@ -1,0 +1,579 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+/* =========================================================================
+   💥 YOUTH "COMIC" THEME (preview)
+   Activated when <html class="theme-comic"> is set (see main.jsx: ?theme=comic).
+   Same layout as Classic/Kids — purely visual: ink outlines, hard offset
+   shadows, halftone dots and comic lettering for headings.
+   ========================================================================= */
+
+html.theme-comic {
+  --comic-ink: 17 17 17;
+  --comic-red: 230 57 70;
+  --comic-yellow: 255 210 63;
+  --comic-blue: 29 111 216;
+  --comic-teal: 15 157 138;
+  --comic-dot: rgba(17, 17, 17, 0.07);
+  --comic-display: 'Bangers', 'Suez One', 'Rubik', 'Heebo', system-ui, sans-serif;
+
+  --surface: 255 255 255;
+  --surface-sunken: 255 248 225;
+  --surface-raised: 255 255 255;
+  --surface-overlay: 255 255 255;
+  --surface-hover: 255 241 168;
+  --surface-active: 255 228 110;
+  --surface-selected: 255 210 63;
+
+  --line: 17 17 17;
+  --line-strong: 17 17 17;
+
+  --ink: 17 17 17;
+  --ink-muted: 40 40 44;
+  --ink-subtle: 72 72 80;
+  --ink-faint: 120 120 128;
+
+  --accent: 230 57 70;
+  --accent-hover: 200 38 52;
+  --accent-fg: 255 255 255;
+  --accent-soft: 255 226 228;
+  --accent-ring: 17 17 17;
+
+  --crawl-beam: 230 57 70;
+  --crawl-beam-head: 255 210 63;
+  --crawl-beam-glow: 29 111 216;
+
+  --star: 255 210 63;
+  --star-hover: 244 169 12;
+  --star-fg: 17 17 17;
+  --star-soft: 255 241 168;
+  --star-ring: 17 17 17;
+
+  --comic-edge: 17 17 17;
+  --comic-shadow: 17 17 17;
+  --shadow-control: 2px 2px 0 0 rgb(var(--comic-shadow));
+  --shadow-card: 3px 3px 0 0 rgb(var(--comic-shadow));
+  --shadow-pop: 4px 4px 0 0 rgb(var(--comic-shadow));
+  --shadow-panel: 6px 6px 0 0 rgb(var(--comic-shadow));
+  --shadow-inset-hi: inset 0 0 0 0 transparent;
+
+  font-family: 'Rubik', 'Heebo', system-ui, -apple-system, sans-serif !important;
+}
+
+html.theme-comic.dark {
+  /* "Night edition": a dark comic page. Like the day page, outlines and hard offset shadows share
+     one ink — here a graphite tone lighter than the ink-black paper (like Kids' slate lip), since
+     pure black would vanish on the night page. Comic colors are used only as accents. */
+  --comic-dot: rgba(255, 255, 255, 0.05);
+  --surface: 30 30 34;
+  --surface-sunken: 22 22 25;
+  --surface-raised: 34 34 39;
+  --surface-overlay: 38 38 44;
+  --surface-hover: 48 48 55;
+  --surface-active: 60 60 68;
+  --surface-selected: 255 210 63;
+
+  --line: 74 74 86;
+  --line-strong: 74 74 86;
+
+  --ink: 246 245 240;
+  --ink-muted: 214 212 205;
+  --ink-subtle: 168 166 160;
+  --ink-faint: 120 118 114;
+
+  --accent: 255 90 100;
+  --accent-hover: 255 128 136;
+  --accent-fg: 17 17 17;
+  --accent-soft: 70 26 32;
+  --accent-ring: 255 210 63;
+
+  --star-fg: 17 17 17;
+  --star-soft: 70 56 18;
+  --star-ring: 255 210 63;
+
+  --comic-edge: 74 74 86;
+  --comic-shadow: 74 74 86;
+}
+
+html.theme-comic body,
+html.theme-comic .font-sans,
+html.theme-comic button,
+html.theme-comic input,
+html.theme-comic textarea {
+  font-family: 'Rubik', 'Heebo', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Comic lettering for display headings (titles, panel headers) */
+html.theme-comic .font-serif,
+html.theme-comic .font-display,
+html.theme-comic .home-hero-title,
+html.theme-comic .chronix-side-drawer h2,
+html.theme-comic [role="dialog"] h2 {
+  font-family: var(--comic-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1.05 !important;
+}
+
+html.theme-comic .chronix-side-drawer h2.font-serif {
+  font-size: 1.9rem !important;
+  color: rgb(var(--ink)) !important;
+  text-shadow: 2px 2px 0 rgb(var(--comic-yellow));
+}
+
+html.theme-comic.dark .chronix-side-drawer h2.font-serif {
+  color: rgb(var(--comic-yellow)) !important;
+  text-shadow: 2px 2px 0 rgb(var(--comic-shadow));
+}
+
+/* 1. Paper + halftone backgrounds */
+html.theme-comic body,
+html.theme-comic .bg-surface-sunken {
+  background-image: radial-gradient(var(--comic-dot) 1.4px, transparent 1.6px) !important;
+  background-size: 9px 9px !important;
+}
+
+html.theme-comic:not(.dark) .home-screen-bg,
+html.theme-comic:not(.dark) .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-comic:not(.dark) .auth-gate-bg {
+  background-color: #fff8e1 !important;
+  background-image:
+    radial-gradient(rgba(230, 57, 70, 0.16) 1.6px, transparent 1.8px),
+    linear-gradient(180deg, #fff3c4 0%, #fff8e1 55%, #ffffff 100%) !important;
+  background-size: 11px 11px, auto !important;
+}
+
+html.theme-comic.dark .home-screen-bg,
+html.theme-comic.dark .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-comic.dark .auth-gate-bg {
+  background-color: #1a1a1e !important;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.06) 1.6px, transparent 1.8px),
+    linear-gradient(180deg, #1c1c21 0%, #141417 100%) !important;
+  background-size: 11px 11px, auto !important;
+}
+
+html.theme-comic .home-hero-title {
+  color: rgb(var(--comic-yellow)) !important;
+  /* Stroke painted behind the fill so the outline stays thin and the yellow stays readable */
+  -webkit-text-stroke: 3px rgb(var(--comic-ink));
+  paint-order: stroke fill;
+  text-shadow: 3px 3px 0 rgb(var(--comic-ink));
+  transform: rotate(-2deg);
+}
+
+html.theme-comic.dark .home-hero-title {
+  text-shadow: 4px 4px 0 rgb(var(--comic-shadow));
+}
+
+html.theme-comic .home-hero-subtitle {
+  font-weight: 600 !important;
+}
+
+/* 2. Panels, docks & bars: ink outline + hard offset shadow */
+html.theme-comic .floating-dock-glass,
+html.theme-comic .glass-panel,
+html.theme-comic .glass-dock {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 4px 4px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+/* Top bar is a squared comic panel, not a pill, like the rest of the frames */
+html.theme-comic .toolbar-header .floating-dock-glass {
+  border-radius: 6px !important;
+}
+
+html.theme-comic .toolbar-header .floating-dock-glass button.rounded-full {
+  border-radius: 4px !important;
+}
+
+html.theme-comic .chronix-desktop-rail {
+  background: rgb(var(--comic-yellow)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 3px solid rgb(var(--comic-edge)) !important;
+  box-shadow: none !important;
+  color: rgb(var(--comic-ink));
+}
+
+html.theme-comic.dark .chronix-desktop-rail {
+  background: rgb(var(--surface-raised)) !important;
+  color: rgb(var(--ink));
+}
+
+html.theme-comic .dock-rail-btn {
+  border-radius: 6px !important;
+  border: 2px solid transparent !important;
+  color: inherit !important;
+  transition: transform 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease !important;
+}
+
+html.theme-comic .dock-rail-btn:hover:not(:disabled) {
+  background-color: #ffffff !important;
+  border-color: rgb(var(--comic-edge)) !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+  transform: translate(-1px, -1px) rotate(-3deg);
+}
+
+html.theme-comic.dark .dock-rail-btn:hover:not(:disabled) {
+  background-color: rgb(var(--surface-hover)) !important;
+}
+
+html.theme-comic .dock-rail-btn:active:not(:disabled) {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0 0 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .dock-rail-btn[aria-pressed="true"],
+html.theme-comic .dock-rail-btn[aria-expanded="true"] {
+  background-color: rgb(var(--comic-red)) !important;
+  color: #ffffff !important;
+  border-color: rgb(var(--comic-edge)) !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+/* Side drawers (Overview, Filters, Cards List, Quiz, Games…) = comic page panels */
+html.theme-comic .chronix-side-drawer {
+  background-color: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 3px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 5px 0 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .chronix-side-drawer > div.shrink-0 {
+  background-color: rgb(var(--comic-blue)) !important;
+  color: #ffffff !important;
+  border-bottom: 3px solid rgb(var(--comic-edge)) !important;
+}
+
+html.theme-comic .chronix-side-drawer > div.shrink-0 :is(span, div, button, svg) {
+  color: #ffffff !important;
+}
+
+html.theme-comic .chronix-side-drawer > div.shrink-0 span {
+  font-family: var(--comic-display) !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+html.theme-comic .chronix-side-drawer strong,
+html.theme-comic .chronix-side-drawer b {
+  background: linear-gradient(transparent 55%, rgba(255, 210, 63, 0.75) 55%);
+  padding: 0 1px;
+}
+
+html.theme-comic.dark .chronix-side-drawer strong,
+html.theme-comic.dark .chronix-side-drawer b {
+  background: none;
+  color: rgb(var(--comic-yellow)) !important;
+}
+
+html.theme-comic .mobile-top-command-bar {
+  background: rgb(var(--comic-yellow)) !important;
+  border-bottom: 3px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 0 3px 0 0 rgb(var(--comic-shadow) / 0.25) !important;
+}
+
+html.theme-comic .mobile-bottom-command-bar {
+  background: rgb(var(--surface-raised)) !important;
+  border-top: 3px solid rgb(var(--comic-edge)) !important;
+}
+
+html.theme-comic .mobile-bottom-command-bar > button {
+  border-radius: 6px !important;
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .mobile-bottom-command-bar > button:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: none !important;
+}
+
+/* 3. Prompt bar */
+html.theme-comic .prompt-dock-shell {
+  background: rgb(var(--surface-raised)) !important;
+  border: 3px solid rgb(var(--comic-edge)) !important;
+  border-radius: 8px !important;
+  box-shadow: 6px 6px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .prompt-dock-shell:focus-within {
+  box-shadow: 6px 6px 0 0 rgb(var(--comic-blue)) !important;
+}
+
+html.theme-comic .prompt-bar-input {
+  font-weight: 500 !important;
+}
+
+html.theme-comic .prompt-dock-shell > div > button,
+html.theme-comic .prompt-submit-btn {
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .prompt-dock-shell > div > button[type="submit"]:not(:disabled),
+html.theme-comic .prompt-submit-btn[type="submit"]:not(:disabled) {
+  background: rgb(var(--comic-red)) !important;
+  color: #ffffff !important;
+}
+
+html.theme-comic .prompt-dock-shell > div > button:not(:disabled):active,
+html.theme-comic .prompt-submit-btn:not(:disabled):active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: none !important;
+}
+
+/* 4. Home quick actions & example cards */
+html.theme-comic .home-quick-actions button {
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 3px 3px 0 0 rgb(var(--comic-shadow)) !important;
+  font-weight: 700 !important;
+  color: #111111 !important;
+  border-radius: 6px !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+}
+
+html.theme-comic .home-quick-actions button:nth-child(1) { background-color: rgb(var(--comic-yellow)) !important; }
+html.theme-comic .home-quick-actions button:nth-child(2) { background-color: #7cc4ff !important; }
+html.theme-comic .home-quick-actions button:nth-child(3) { background-color: #ff9aa2 !important; }
+
+/* Icons default to text-ink-subtle, which turns light gray at night and vanishes on the bright fills */
+html.theme-comic .home-quick-actions button svg {
+  color: #111111 !important;
+  stroke-width: 2.5;
+}
+
+html.theme-comic .home-quick-actions button:hover {
+  transform: translate(-2px, -2px) rotate(-1deg) !important;
+  box-shadow: 5px 5px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .home-quick-actions button:active {
+  transform: translate(3px, 3px) !important;
+  box-shadow: none !important;
+}
+
+html.theme-comic .prompt-example-card {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  border-radius: 4px !important;
+  box-shadow: 4px 4px 0 0 rgb(var(--comic-shadow)) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+html.theme-comic .prompt-example-card:nth-child(4n + 1) { border-top: 7px solid rgb(var(--comic-red)) !important; }
+html.theme-comic .prompt-example-card:nth-child(4n + 2) { border-top: 7px solid rgb(var(--comic-blue)) !important; }
+html.theme-comic .prompt-example-card:nth-child(4n + 3) { border-top: 7px solid rgb(var(--comic-yellow)) !important; }
+html.theme-comic .prompt-example-card:nth-child(4n + 4) { border-top: 7px solid rgb(var(--comic-teal)) !important; }
+
+html.theme-comic .prompt-example-card p {
+  font-weight: 600 !important;
+  color: rgb(var(--ink)) !important;
+}
+
+html.theme-comic .prompt-example-card:hover:not(:disabled) {
+  transform: translate(-3px, -3px) rotate(-0.6deg) !important;
+  box-shadow: 7px 7px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .group\/carousel > button {
+  background: rgb(var(--comic-yellow)) !important;
+  color: #111111 !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+/* 5. Segmented controls — one joined ink panel: options are flush cells split by ink
+   dividers and the active one is flat-filled (no nested boxes or inner shadows).
+   Each cell draws its divider on its left and top edges; the track's overflow clips the
+   ones on the outer edge, so this works for flex rows, 2x2 grids and RTL alike. */
+html.theme-comic .seg-track {
+  background-color: rgb(var(--surface)) !important;
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  border-radius: 6px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  align-items: stretch !important;
+  box-shadow: 2px 2px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .seg-track .seg-item,
+html.theme-comic .toolbar-header .floating-dock-glass .seg-track button.seg-item {
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  border-radius: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+  min-height: 30px;
+  box-shadow: -2px 0 0 0 rgb(var(--comic-edge)), 0 -2px 0 0 rgb(var(--comic-edge)) !important;
+  color: rgb(var(--ink)) !important;
+}
+
+html.theme-comic .seg-item:not(.seg-item-active) {
+  background-color: transparent !important;
+}
+
+html.theme-comic .seg-item:not(.seg-item-active):hover:not(:disabled) {
+  background-color: rgb(var(--surface-hover)) !important;
+}
+
+html.theme-comic .seg-item.seg-item-active,
+html.theme-comic .toolbar-header .floating-dock-glass .seg-track button.seg-item.seg-item-active {
+  background-color: rgb(var(--comic-red)) !important;
+  color: #ffffff !important;
+}
+
+html.theme-comic .constellation-floating-badge {
+  background: rgb(var(--comic-yellow)) !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  border-radius: 6px !important;
+  box-shadow: 3px 3px 0 0 rgb(var(--comic-shadow)) !important;
+  backdrop-filter: none !important;
+}
+
+/* 6. Timeline swimlanes — lanes cycle through the comic primaries */
+html.theme-comic .histropedia-lane { --comic-lane: rgb(var(--comic-red)); }
+html.theme-comic .histropedia-lane:nth-child(4n + 2 of .histropedia-lane) { --comic-lane: rgb(var(--comic-blue)); }
+html.theme-comic .histropedia-lane:nth-child(4n + 3 of .histropedia-lane) { --comic-lane: rgb(var(--comic-teal)); }
+html.theme-comic .histropedia-lane:nth-child(4n + 4 of .histropedia-lane) { --comic-lane: #f4a90c; }
+
+html.theme-comic .histropedia-lane-header,
+html.theme-comic .histropedia-lane.is-lane-collapsed .histropedia-lane-header,
+html.theme-comic .histropedia-lane.is-lane-collapsed:not(.histropedia-lane-position-bottom):not([data-is-last-lane="true"]) .histropedia-lane-header {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-top: 3px solid rgb(var(--comic-edge)) !important;
+  border-bottom: 2px solid rgb(var(--comic-edge)) !important;
+  border-inline-start: none !important;
+  background: var(--comic-lane) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Hover / tap keeps the lane's own ink (slightly deeper) instead of the generic gray surface tint */
+html.theme-comic:root .histropedia-lane:is(:hover, .is-lane-hovered) .histropedia-lane-header {
+  background: color-mix(in srgb, var(--comic-lane) 86%, #000000) !important;
+}
+
+html.theme-comic .histropedia-lane-title {
+  font-family: var(--comic-display) !important;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.08em !important;
+  color: #ffffff !important;
+  text-shadow: 1.5px 1.5px 0 #111111;
+}
+
+html.theme-comic .histropedia-lane-title::before,
+html.theme-comic .histropedia-lane-title::after {
+  background-color: #ffffff !important;
+}
+
+html.theme-comic .histropedia-lane-body {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-inline-start: none !important;
+  box-shadow: inset 6px 0 0 0 var(--comic-lane) !important;
+  /* The page halftone shows through the translucent lane tint; a second dot grid here causes moiré */
+  background-image: none !important;
+}
+
+html.theme-comic .chronix-lane-resizer-grip {
+  background: rgb(var(--comic-yellow)) !important;
+  border: 2px solid rgb(var(--comic-edge)) !important;
+}
+
+/* 7. Chat launcher, dialogs & chat panel */
+html.theme-comic .chronix-chat-launcher-inner,
+html.theme-comic .chronix-chat-top-btn .chronix-chat-top-inner {
+  background-color: rgb(var(--comic-red)) !important;
+  color: #ffffff !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 3px 3px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .chronix-chat-launcher:hover .chronix-chat-launcher-inner,
+html.theme-comic .chronix-chat-top-btn:hover .chronix-chat-top-inner {
+  transform: rotate(-6deg) scale(1.05);
+}
+
+html.theme-comic [role="dialog"][aria-modal="true"] > div.bg-surface-overlay,
+html.theme-comic [role="dialog"][aria-modal="true"] > div.bg-surface,
+html.theme-comic [role="dialog"][aria-modal="true"] > div.bg-surface-raised {
+  border: 3px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 8px 8px 0 0 rgb(var(--comic-shadow)) !important;
+  border-radius: 6px !important;
+}
+
+html.theme-comic .chronix-chat-teaser {
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 4px 4px 0 0 rgb(var(--comic-shadow)) !important;
+  border-radius: 14px 14px 14px 2px !important;
+}
+
+html.theme-comic #guide-chat-panel {
+  border: 3px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 6px 6px 0 0 rgb(var(--comic-shadow)) !important;
+  border-radius: 6px !important;
+}
+
+html.theme-comic #guide-chat-panel textarea {
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  border-radius: 6px !important;
+}
+
+/* 8. Popovers, map chrome, mobile feed cards */
+html.theme-comic .chronix-dock-popover {
+  background: rgb(var(--surface-overlay)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 3px solid rgb(var(--comic-edge)) !important;
+  border-radius: 6px !important;
+  box-shadow: 5px 5px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .chronix-map-capsule,
+html.theme-comic .chronix-map-full-bar,
+html.theme-comic .chronix-map-split-bar,
+html.theme-comic .chronix-map-control-pill,
+html.theme-comic .chronix-map-pip {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  box-shadow: 3px 3px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .chronix-map-teaser-pill {
+  background: rgb(var(--comic-yellow)) !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border: 2px solid rgb(var(--comic-edge)) !important;
+}
+
+html.theme-comic [data-article-id] {
+  border: 2.5px solid rgb(var(--comic-edge)) !important;
+  border-radius: 4px !important;
+  box-shadow: 4px 4px 0 0 rgb(var(--comic-shadow)) !important;
+}
+
+html.theme-comic .btn-spring:active:not(:disabled),
+html.theme-comic .btn-spring-sm:active:not(:disabled) {
+  transform: translate(2px, 2px) !important;
+}
