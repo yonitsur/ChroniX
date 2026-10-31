@@ -1,0 +1,498 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Gveret+Levin&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+Hebrew:wght@400;500;600;700&display=swap');
+
+/* =========================================================================
+   📓 "JOURNAL" THEME
+   Activated when <html class="theme-journal"> is set (see main.jsx: ?theme=journal).
+   Same layout as Classic/Kids - purely visual: notebook paper, ruled lines,
+   handwritten headings, washi-tape notes, fountain-pen ink and highlighter.
+   Caveat has no Hebrew glyphs, so Hebrew headings fall back to the Gveret Levin
+   handwriting face; body text uses Lora with Noto Serif Hebrew for Hebrew.
+   ========================================================================= */
+
+html.theme-journal {
+  --journal-paper: 251 246 233;
+  --journal-page: 255 253 246;
+  --journal-ink: 43 42 51;
+  --journal-blue: 47 93 158;
+  --journal-red: 184 67 47;
+  --journal-ochre: 192 138 30;
+  --journal-sage: 74 124 89;
+  --journal-rule: rgba(47, 93, 158, 0.13);
+  --journal-margin: rgba(214, 69, 65, 0.35);
+  --journal-edge: rgba(139, 115, 85, 0.32);
+  --journal-highlight: rgba(255, 214, 10, 0.55);
+  --journal-hand: 'Caveat', 'Gveret Levin', 'Segoe Print', cursive;
+  --journal-serif: 'Lora', 'Noto Serif Hebrew', Georgia, serif;
+
+  --surface: 255 253 246;
+  --surface-sunken: 247 241 227;
+  --surface-raised: 255 253 246;
+  --surface-overlay: 255 253 246;
+  --surface-hover: 250 243 225;
+  --surface-active: 243 234 210;
+  --surface-selected: 255 243 176;
+
+  --line: 226 214 188;
+  --line-strong: 201 184 150;
+
+  --ink: 43 42 51;
+  --ink-muted: 74 68 60;
+  --ink-subtle: 115 103 86;
+  --ink-faint: 158 145 124;
+
+  --accent: 47 93 158;
+  --accent-hover: 35 72 126;
+  --accent-fg: 255 253 246;
+  --accent-soft: 226 234 246;
+  --accent-ring: 47 93 158;
+
+  --crawl-beam: 47 93 158;
+  --crawl-beam-head: 184 67 47;
+  --crawl-beam-glow: 47 93 158;
+
+  --star: 192 138 30;
+  --star-hover: 160 112 20;
+  --star-fg: 255 255 255;
+  --star-soft: 253 240 200;
+  --star-ring: 192 138 30;
+
+  --shadow-control: 1px 1px 0 rgba(90, 70, 40, 0.12);
+  --shadow-card: 2px 3px 0 rgba(90, 70, 40, 0.10), 0 6px 14px -8px rgba(90, 70, 40, 0.25);
+  --shadow-pop: 3px 4px 0 rgba(90, 70, 40, 0.10), 0 14px 30px -12px rgba(90, 70, 40, 0.35);
+  --shadow-panel: 4px 6px 0 rgba(90, 70, 40, 0.08), 0 24px 50px -20px rgba(90, 70, 40, 0.4);
+  --shadow-inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  font-family: var(--journal-serif) !important;
+}
+
+html.theme-journal.dark {
+  --journal-blue: 187 147 76;
+  --journal-paper: 28 24 20;
+  --journal-page: 38 33 27;
+  --journal-ink: 243 234 216;
+  --journal-rule: rgba(187, 147, 76, 0.08);
+  --journal-margin: rgba(230, 110, 100, 0.22);
+  --journal-edge: rgba(232, 220, 196, 0.16);
+  --journal-highlight: rgba(255, 196, 0, 0.32);
+
+  --surface: 38 33 27;
+  --surface-sunken: 24 21 17;
+  --surface-raised: 38 33 27;
+  --surface-overlay: 44 38 31;
+  --surface-hover: 46 40 32;
+  --surface-active: 56 48 38;
+  --surface-selected: 66 54 30;
+
+  --line: 62 54 44;
+  --line-strong: 84 74 60;
+
+  --ink: 243 234 216;
+  --ink-muted: 214 202 180;
+  --ink-subtle: 168 154 130;
+  --ink-faint: 122 110 92;
+
+  --accent: 187 147 76;
+  --accent-hover: 210 171 105;
+  --accent-fg: 24 21 17;
+  --accent-soft: 58 46 28;
+  --accent-ring: 187 147 76;
+
+  --crawl-beam: 187 147 76;
+  --crawl-beam-head: 235 199 125;
+  --crawl-beam-glow: 187 147 76;
+
+  --star-soft: 66 50 16;
+
+  --shadow-control: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --shadow-card: 2px 3px 0 rgba(0, 0, 0, 0.35), 0 8px 20px -10px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 3px 4px 0 rgba(0, 0, 0, 0.35), 0 14px 34px -10px rgba(0, 0, 0, 0.75);
+  --shadow-panel: 4px 6px 0 rgba(0, 0, 0, 0.3), 0 24px 60px -20px rgba(0, 0, 0, 0.85);
+  --shadow-inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+html.theme-journal body,
+html.theme-journal .font-sans,
+html.theme-journal button,
+html.theme-journal input,
+html.theme-journal textarea {
+  font-family: var(--journal-serif) !important;
+}
+
+/* Hebrew faces have no italic; a synthesized slant distorts them (Lora keeps its real italic) */
+html.theme-journal {
+  font-synthesis-style: none;
+}
+
+/* Display headings: handwritten */
+html.theme-journal .font-serif,
+html.theme-journal .font-display,
+html.theme-journal .home-hero-title,
+html.theme-journal .chronix-side-drawer h2,
+html.theme-journal [role="dialog"] h2 {
+  font-family: var(--journal-hand) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  /* Gveret Levin ships a single weight; faux bold smears its pen strokes */
+  font-synthesis-weight: none;
+}
+
+html.theme-journal .chronix-side-drawer h2.font-serif {
+  font-size: 2rem !important;
+  line-height: 1.1 !important;
+}
+
+html[dir="rtl"].theme-journal .chronix-side-drawer h2.event-drawer-title {
+  font-size: 1.6rem !important;
+}
+
+html.theme-journal [role="dialog"] h2 {
+  font-size: 1.9em !important;
+  line-height: 1.1 !important;
+}
+
+/* 1. Backgrounds: ruled notebook paper with a red margin */
+html.theme-journal body,
+html.theme-journal .bg-surface-sunken {
+  background-color: rgb(var(--surface-sunken)) !important;
+}
+
+html.theme-journal .home-screen-bg,
+html.theme-journal .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-journal .auth-gate-bg {
+  background-color: rgb(var(--journal-paper)) !important;
+  background-image:
+    linear-gradient(90deg, transparent 0 72px, var(--journal-margin) 72px 74px, transparent 74px),
+    repeating-linear-gradient(180deg, transparent 0 31px, var(--journal-rule) 31px 32px) !important;
+}
+
+html[dir="rtl"].theme-journal .home-screen-bg,
+html[dir="rtl"].theme-journal .auth-gate-bg {
+  background-image:
+    linear-gradient(270deg, transparent 0 72px, var(--journal-margin) 72px 74px, transparent 74px),
+    repeating-linear-gradient(180deg, transparent 0 31px, var(--journal-rule) 31px 32px) !important;
+}
+
+html.theme-journal .home-hero-title {
+  color: rgb(var(--accent)) !important;
+  font-size: 1.25em;
+  text-decoration-line: underline !important;
+  text-decoration-color: var(--journal-highlight) !important;
+  text-decoration-thickness: 0.3em !important;
+  text-underline-offset: -0.12em !important;
+  text-decoration-skip-ink: none !important;
+}
+
+html.theme-journal .home-hero-subtitle {
+  color: rgb(var(--ink-subtle)) !important;
+  font-style: italic !important;
+}
+
+/* 2. Panels & docks: paper sheets with a sepia edge */
+html.theme-journal .floating-dock-glass,
+html.theme-journal .glass-panel,
+html.theme-journal .glass-dock {
+  background: rgb(var(--journal-page)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+html.theme-journal .chronix-desktop-rail {
+  background: rgb(var(--journal-page)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 1px solid var(--journal-edge) !important;
+  box-shadow: none !important;
+}
+
+html.theme-journal .dock-rail-btn {
+  border-radius: 6px !important;
+}
+
+html.theme-journal .dock-rail-btn:hover:not(:disabled) {
+  background-color: rgb(var(--surface-hover)) !important;
+}
+
+html.theme-journal .dock-rail-btn[aria-pressed="true"],
+html.theme-journal .dock-rail-btn[aria-expanded="true"] {
+  background-color: var(--journal-highlight) !important;
+  color: rgb(var(--ink)) !important;
+  box-shadow: none !important;
+}
+
+/* Side drawers: a clean notebook page */
+html.theme-journal .chronix-side-drawer {
+  background-color: rgb(var(--journal-page)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 1px solid var(--journal-edge) !important;
+  box-shadow: 6px 0 24px -16px rgba(90, 70, 40, 0.4) !important;
+}
+
+html.theme-journal .chronix-side-drawer > div.shrink-0 {
+  background-color: rgb(var(--journal-page)) !important;
+  border-bottom: 1.5px dashed var(--journal-edge) !important;
+}
+
+html.theme-journal .chronix-side-drawer > div.shrink-0 span {
+  font-weight: 600 !important;
+}
+
+html.theme-journal .chronix-side-drawer strong,
+html.theme-journal .chronix-side-drawer b {
+  color: rgb(var(--ink)) !important;
+  font-weight: 700 !important;
+  background: linear-gradient(transparent 55%, var(--journal-highlight) 55% 90%, transparent 90%);
+}
+
+html.theme-journal .chronix-side-drawer .rounded-lg,
+html.theme-journal .chronix-side-drawer .rounded-xl {
+  border-radius: 6px !important;
+}
+
+html.theme-journal .mobile-top-command-bar,
+html.theme-journal .mobile-bottom-command-bar {
+  background: rgb(var(--journal-page) / 0.94) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-color: var(--journal-edge) !important;
+  box-shadow: none !important;
+}
+
+/* 3. Prompt bar: a single ruled line to write on */
+html.theme-journal .prompt-dock-shell {
+  background: rgb(var(--journal-page)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+html.theme-journal .prompt-dock-shell:focus-within {
+  border-color: rgb(var(--accent) / 0.55) !important;
+  box-shadow: 0 0 0 3px rgb(var(--accent) / 0.14), var(--shadow-pop) !important;
+}
+
+html.theme-journal .prompt-dock-shell textarea,
+html.theme-journal .prompt-dock-shell input {
+  font-size: 1.02em;
+}
+
+html.theme-journal .prompt-dock-shell > div > button[type="submit"]:not(:disabled),
+html.theme-journal .prompt-submit-btn[type="submit"]:not(:disabled) {
+  background: rgb(var(--accent)) !important;
+  color: rgb(var(--accent-fg)) !important;
+}
+
+/* 4. Home quick actions & example cards: taped-in notes */
+html.theme-journal .home-quick-actions button {
+  background: rgb(var(--journal-page)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-control) !important;
+  transition: transform 0.2s ease, background-color 0.15s ease !important;
+}
+
+html.theme-journal .home-quick-actions button:hover {
+  transform: rotate(-1deg) translateY(-1px) !important;
+  background: rgb(var(--surface-hover)) !important;
+}
+
+html.theme-journal .prompt-example-card {
+  position: relative;
+  overflow: visible !important;
+  background-color: rgb(var(--journal-page)) !important;
+  background-image: repeating-linear-gradient(180deg, transparent 0 21px, var(--journal-rule) 21px 22px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 3px !important;
+  box-shadow: var(--shadow-card) !important;
+  transform: rotate(-0.8deg);
+  transition: transform 0.25s ease, box-shadow 0.2s ease !important;
+}
+
+html.theme-journal .prompt-example-card { --journal-tape: var(--journal-blue); }
+html.theme-journal .prompt-example-card:nth-child(4n + 2) { --journal-tape: var(--journal-red); transform: rotate(0.7deg); }
+html.theme-journal .prompt-example-card:nth-child(4n + 3) { --journal-tape: var(--journal-ochre); transform: rotate(-0.4deg); }
+html.theme-journal .prompt-example-card:nth-child(4n + 4) { --journal-tape: var(--journal-sage); transform: rotate(0.9deg); }
+
+html.theme-journal .prompt-example-card::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 64px;
+  height: 18px;
+  margin-left: -32px;
+  background: rgb(var(--journal-tape) / 0.35);
+  border-left: 1px dashed rgba(255, 255, 255, 0.5);
+  border-right: 1px dashed rgba(255, 255, 255, 0.5);
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+
+html.theme-journal .prompt-example-card:hover:not(:disabled) {
+  transform: rotate(0deg) translateY(-3px) !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+html.theme-journal .prompt-example-card p {
+  color: rgb(var(--ink)) !important;
+  font-weight: 500 !important;
+}
+
+html.theme-journal .group\/carousel > button {
+  background: rgb(var(--journal-page)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* 5. Segmented controls: highlighter on the selected option */
+html.theme-journal .seg-track {
+  background-color: rgb(var(--surface-sunken)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  padding: 3px !important;
+}
+
+html.theme-journal .seg-item {
+  border-radius: 4px !important;
+}
+
+html.theme-journal .seg-item.seg-item-active {
+  background-color: var(--journal-highlight) !important;
+  color: rgb(var(--ink)) !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+html.theme-journal .constellation-floating-badge {
+  background: rgb(var(--journal-page)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-card) !important;
+  backdrop-filter: none !important;
+}
+
+/* 6. Timeline swimlanes: notebook tabs with an ink-colored label */
+html.theme-journal .histropedia-lane { --journal-lane: rgb(var(--journal-blue)); }
+html.theme-journal .histropedia-lane:nth-child(4n + 2 of .histropedia-lane) { --journal-lane: rgb(var(--journal-red)); }
+html.theme-journal .histropedia-lane:nth-child(4n + 3 of .histropedia-lane) { --journal-lane: rgb(var(--journal-ochre)); }
+html.theme-journal .histropedia-lane:nth-child(4n + 4 of .histropedia-lane) { --journal-lane: rgb(var(--journal-sage)); }
+
+html.theme-journal .histropedia-lane-header,
+html.theme-journal .histropedia-lane.is-lane-collapsed .histropedia-lane-header,
+html.theme-journal .histropedia-lane.is-lane-collapsed:not(.histropedia-lane-position-bottom):not([data-is-last-lane="true"]) .histropedia-lane-header {
+  background: color-mix(in srgb, var(--journal-lane) 9%, rgb(var(--journal-page))) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-bottom: 1.5px dashed color-mix(in srgb, var(--journal-lane) 40%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html.theme-journal .histropedia-lane-title {
+  font-family: var(--journal-hand) !important;
+  font-size: 1.35em !important;
+  font-weight: 700 !important;
+  font-synthesis-weight: none;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--journal-lane) !important;
+}
+
+html[dir="rtl"].theme-journal .histropedia-lane-title {
+  font-size: 1.05em !important;
+}
+
+html.theme-journal .histropedia-lane-title::before {
+  background-color: var(--journal-lane) !important;
+}
+
+html.theme-journal .histropedia-lane-header svg {
+  color: var(--journal-lane) !important;
+}
+
+html.theme-journal .histropedia-lane-body {
+  border: none !important;
+  box-shadow: inset 0 0 0 1px var(--journal-edge) !important;
+  background-image: none !important;
+}
+
+html.theme-journal .chronix-lane-resizer-grip {
+  background: rgb(var(--journal-page)) !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 4px !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* 7. Chat launcher, dialogs & chat panel */
+html.theme-journal .chronix-chat-launcher-inner,
+html.theme-journal .chronix-chat-top-btn .chronix-chat-top-inner {
+  background: rgb(var(--accent)) !important;
+  color: rgb(var(--accent-fg)) !important;
+  border: none !important;
+  box-shadow: 2px 3px 0 rgba(90, 70, 40, 0.25) !important;
+}
+
+html.theme-journal [role="dialog"][aria-modal="true"] > div.bg-surface-overlay,
+html.theme-journal [role="dialog"][aria-modal="true"] > div.bg-surface,
+html.theme-journal [role="dialog"][aria-modal="true"] > div.bg-surface-raised {
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+html.theme-journal .chronix-chat-teaser,
+html.theme-journal #guide-chat-panel,
+html.theme-journal .chronix-dock-popover {
+  background: rgb(var(--journal-page)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+html.theme-journal .chronix-chat-teaser button,
+html.theme-journal #guide-chat-panel textarea {
+  border-radius: 6px !important;
+}
+
+/* 8. Map chrome & mobile feed cards */
+html.theme-journal .chronix-map-capsule,
+html.theme-journal .chronix-map-full-bar,
+html.theme-journal .chronix-map-split-bar,
+html.theme-journal .chronix-map-control-pill,
+html.theme-journal .chronix-map-pip {
+  background: rgb(var(--journal-page)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--journal-edge) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html.theme-journal .chronix-map-teaser-pill {
+  background: var(--journal-highlight) !important;
+  color: rgb(var(--ink)) !important;
+  font-weight: 600 !important;
+}
+
+html.theme-journal [data-article-id] {
+  border: 1px solid var(--journal-edge) !important;
+  border-radius: 4px !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html.theme-journal ::selection {
+  background: var(--journal-highlight);
+  color: inherit;
+}
+
+/* Feed card titles: same handwriting as the event details title */
+html.theme-journal .cards-list-item-title {
+  font-size: 1.45rem !important;
+  line-height: 1.1 !important;
+}

@@ -1,0 +1,475 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================================
+   🍱 YOUTH "CLEAN BENTO" THEME (preview)
+   Activated when <html class="theme-bento"> is set (see main.jsx: ?theme=bento).
+   Same layout as Classic/Kids — purely visual: soft rounded tiles, hairline
+   edges, diffuse shadows, violet accent and a tight modern type scale.
+   ========================================================================= */
+
+html.theme-bento {
+  --bento-violet: 139 92 246;
+  --bento-sky: 14 165 233;
+  --bento-amber: 245 158 11;
+  --bento-emerald: 16 185 129;
+  --bento-tile: 255 255 255;
+  --bento-tile2: 246 246 250;
+  --bento-hair: rgba(17, 17, 24, 0.07);
+  --bento-radius: 18px;
+  --bento-radius-sm: 12px;
+  --bento-gradient: linear-gradient(135deg, rgb(var(--bento-amber)), rgb(var(--bento-violet)) 50%, rgb(var(--bento-sky)));
+
+  --surface: 255 255 255;
+  --surface-sunken: 242 242 247;
+  --surface-raised: 255 255 255;
+  --surface-overlay: 255 255 255;
+  --surface-hover: 246 246 250;
+  --surface-active: 237 237 244;
+  --surface-selected: 237 233 254;
+
+  --line: 228 228 236;
+  --line-strong: 208 208 220;
+
+  --ink: 17 17 24;
+  --ink-muted: 60 60 72;
+  --ink-subtle: 110 110 128;
+  --ink-faint: 150 150 166;
+
+  --accent: 139 92 246;
+  --accent-hover: 124 58 237;
+  --accent-fg: 255 255 255;
+  --accent-soft: 237 233 254;
+  --accent-ring: 139 92 246;
+
+  --crawl-beam: 139 92 246;
+  --crawl-beam-head: 14 165 233;
+  --crawl-beam-glow: 139 92 246;
+
+  --star: 245 158 11;
+  --star-hover: 217 119 6;
+  --star-fg: 255 255 255;
+  --star-soft: 254 243 199;
+  --star-ring: 245 158 11;
+
+  --shadow-control: 0 1px 2px rgba(17, 17, 24, 0.05);
+  --shadow-card: 0 1px 3px rgba(17, 17, 24, 0.05), 0 4px 14px rgba(17, 17, 24, 0.05);
+  --shadow-pop: 0 10px 30px -8px rgba(17, 17, 24, 0.16);
+  --shadow-panel: 0 20px 50px -20px rgba(17, 17, 24, 0.22);
+  --shadow-inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  font-family: 'Inter Tight', 'Inter', 'Heebo', system-ui, -apple-system, sans-serif !important;
+}
+
+html.theme-bento.dark {
+  --bento-tile: 21 21 29;
+  --bento-tile2: 28 28 38;
+  --bento-hair: rgba(255, 255, 255, 0.07);
+
+  --surface: 21 21 29;
+  --surface-sunken: 10 10 15;
+  --surface-raised: 21 21 29;
+  --surface-overlay: 28 28 38;
+  --surface-hover: 28 28 38;
+  --surface-active: 36 36 48;
+  --surface-selected: 46 36 82;
+
+  --line: 38 38 50;
+  --line-strong: 56 56 72;
+
+  --ink: 245 245 250;
+  --ink-muted: 205 205 218;
+  --ink-subtle: 142 142 163;
+  --ink-faint: 100 100 120;
+
+  --accent: 167 139 250;
+  --accent-hover: 196 181 253;
+  --accent-fg: 10 10 15;
+  --accent-soft: 46 36 82;
+  --accent-ring: 167 139 250;
+
+  --star-soft: 66 46 10;
+
+  --shadow-control: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px -10px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 14px 34px -10px rgba(0, 0, 0, 0.7);
+  --shadow-panel: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+  --shadow-inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+html.theme-bento body,
+html.theme-bento .font-sans,
+html.theme-bento button,
+html.theme-bento input,
+html.theme-bento textarea {
+  font-family: 'Inter Tight', 'Inter', 'Heebo', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Display headings: tight, heavy sans instead of the classic serif */
+html.theme-bento .font-serif,
+html.theme-bento .font-display,
+html.theme-bento .home-hero-title,
+html.theme-bento .chronix-side-drawer h2,
+html.theme-bento [role="dialog"] h2 {
+  font-family: 'Inter Tight', 'Heebo', system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+}
+
+html.theme-bento .chronix-side-drawer h2.font-serif {
+  font-size: 1.65rem !important;
+  line-height: 1.15 !important;
+}
+
+/* 1. Backgrounds */
+html.theme-bento body,
+html.theme-bento .bg-surface-sunken {
+  background-color: rgb(var(--surface-sunken)) !important;
+}
+
+html.theme-bento:not(.dark) .home-screen-bg,
+html.theme-bento:not(.dark) .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-bento:not(.dark) .auth-gate-bg {
+  background-color: #f2f2f7 !important;
+  background-image:
+    radial-gradient(600px 380px at 18% 12%, rgba(245, 158, 11, 0.10), transparent 70%),
+    radial-gradient(700px 420px at 82% 18%, rgba(139, 92, 246, 0.12), transparent 70%),
+    radial-gradient(700px 420px at 50% 100%, rgba(14, 165, 233, 0.10), transparent 70%) !important;
+}
+
+html.theme-bento.dark .home-screen-bg,
+html.theme-bento.dark .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-bento.dark .auth-gate-bg {
+  background-color: #0a0a0f !important;
+  background-image:
+    radial-gradient(600px 380px at 18% 12%, rgba(245, 158, 11, 0.08), transparent 70%),
+    radial-gradient(700px 420px at 82% 18%, rgba(139, 92, 246, 0.14), transparent 70%),
+    radial-gradient(700px 420px at 50% 100%, rgba(14, 165, 233, 0.08), transparent 70%) !important;
+}
+
+html.theme-bento .home-hero-title {
+  background: var(--bento-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+}
+
+html.theme-bento .home-hero-subtitle {
+  color: rgb(var(--ink-subtle)) !important;
+  font-weight: 500 !important;
+}
+
+/* 2. Panels & docks: flat tiles, hairline edge, diffuse shadow */
+html.theme-bento .floating-dock-glass,
+html.theme-bento .glass-panel,
+html.theme-bento .glass-dock {
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: var(--bento-radius) !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+/* Left rail: floating rounded tile */
+html.theme-bento .chronix-desktop-rail {
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 1px solid var(--bento-hair) !important;
+  box-shadow: none !important;
+}
+
+html.theme-bento .dock-rail-btn {
+  border-radius: var(--bento-radius-sm) !important;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.2s cubic-bezier(.2, .9, .3, 1.2) !important;
+}
+
+html.theme-bento .dock-rail-btn:hover:not(:disabled) {
+  background-color: rgb(var(--bento-tile2)) !important;
+  transform: translateY(-1px);
+}
+
+html.theme-bento .dock-rail-btn[aria-pressed="true"],
+html.theme-bento .dock-rail-btn[aria-expanded="true"] {
+  background-color: rgb(var(--accent-soft)) !important;
+  color: rgb(var(--accent)) !important;
+  box-shadow: inset 0 0 0 1px rgb(var(--accent) / 0.25) !important;
+}
+
+/* Side drawers: one big rounded tile */
+html.theme-bento .chronix-side-drawer {
+  background-color: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 1px solid var(--bento-hair) !important;
+  box-shadow: 8px 0 30px -18px rgba(17, 17, 24, 0.25) !important;
+}
+
+html.theme-bento .chronix-side-drawer > div.shrink-0 {
+  background-color: rgb(var(--bento-tile)) !important;
+  border-bottom: 1px solid var(--bento-hair) !important;
+}
+
+html.theme-bento .chronix-side-drawer > div.shrink-0 span {
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html.theme-bento .chronix-side-drawer strong,
+html.theme-bento .chronix-side-drawer b {
+  color: rgb(var(--accent)) !important;
+  font-weight: 700 !important;
+}
+
+/* Drawer sub-sections & chips read as small tiles */
+html.theme-bento .chronix-side-drawer .rounded-lg,
+html.theme-bento .chronix-side-drawer .rounded-xl {
+  border-radius: 14px !important;
+}
+
+html.theme-bento .chronix-side-drawer .rounded-full {
+  border-color: var(--bento-hair) !important;
+}
+
+html.theme-bento .mobile-top-command-bar,
+html.theme-bento .mobile-bottom-command-bar {
+  background: rgb(var(--bento-tile) / 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-color: var(--bento-hair) !important;
+  box-shadow: none !important;
+}
+
+html.theme-bento .mobile-bottom-command-bar > button {
+  border-radius: var(--bento-radius-sm) !important;
+}
+
+/* 3. Prompt bar */
+html.theme-bento .prompt-dock-shell {
+  background: rgb(var(--bento-tile)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+html.theme-bento .prompt-dock-shell:focus-within {
+  box-shadow: 0 0 0 4px rgb(var(--accent) / 0.16), var(--shadow-pop) !important;
+}
+
+html.theme-bento .prompt-dock-shell > div > button[type="submit"]:not(:disabled),
+html.theme-bento .prompt-submit-btn[type="submit"]:not(:disabled) {
+  background: rgb(var(--accent)) !important;
+  color: #ffffff !important;
+}
+
+/* 4. Home quick actions & example cards */
+html.theme-bento .home-quick-actions button {
+  background: rgb(var(--bento-tile)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--shadow-control) !important;
+  font-weight: 600 !important;
+  transition: transform 0.2s cubic-bezier(.2, .9, .3, 1.2), border-color 0.15s ease !important;
+}
+
+html.theme-bento .home-quick-actions button:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgb(var(--accent) / 0.4) !important;
+}
+
+html.theme-bento .prompt-example-card {
+  position: relative;
+  overflow: hidden;
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: transform 0.25s cubic-bezier(.2, .9, .3, 1.2), box-shadow 0.2s ease !important;
+}
+
+html.theme-bento .prompt-example-card { --bento-c: var(--bento-violet); }
+html.theme-bento .prompt-example-card:nth-child(4n + 2) { --bento-c: var(--bento-sky); }
+html.theme-bento .prompt-example-card:nth-child(4n + 3) { --bento-c: var(--bento-amber); }
+html.theme-bento .prompt-example-card:nth-child(4n + 4) { --bento-c: var(--bento-emerald); }
+
+html.theme-bento .prompt-example-card::before {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  inset-inline-end: -60px;
+  top: -70px;
+  border-radius: 50%;
+  background: rgb(var(--bento-c));
+  opacity: 0.2;
+  filter: blur(28px);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+html.theme-bento .prompt-example-card:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.01) !important;
+  box-shadow: var(--shadow-pop) !important;
+}
+
+html.theme-bento .prompt-example-card:hover::before {
+  opacity: 0.35;
+}
+
+html.theme-bento .prompt-example-card p {
+  font-weight: 600 !important;
+  color: rgb(var(--ink)) !important;
+}
+
+html.theme-bento .group\/carousel > button {
+  background: rgb(var(--bento-tile)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* 5. Segmented controls */
+html.theme-bento .seg-track {
+  background-color: rgb(var(--bento-tile2)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 12px !important;
+  padding: 3px !important;
+}
+
+html.theme-bento .seg-item {
+  border-radius: 9px !important;
+  font-weight: 600 !important;
+}
+
+html.theme-bento .seg-item.seg-item-active {
+  background-color: rgb(var(--bento-tile)) !important;
+  color: rgb(var(--ink)) !important;
+  box-shadow: 0 1px 3px rgba(17, 17, 24, 0.1), 0 0 0 1px var(--bento-hair) !important;
+}
+
+html.theme-bento.dark .seg-item.seg-item-active {
+  background-color: rgb(var(--surface-active)) !important;
+}
+
+html.theme-bento .constellation-floating-badge {
+  background: rgb(var(--bento-tile)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--shadow-card) !important;
+  backdrop-filter: none !important;
+}
+
+/* 6. Timeline swimlanes: soft rounded lane tiles with a colored dot */
+html.theme-bento .histropedia-lane { --bento-lane: rgb(var(--bento-violet)); }
+html.theme-bento .histropedia-lane:nth-child(4n + 2 of .histropedia-lane) { --bento-lane: rgb(var(--bento-sky)); }
+html.theme-bento .histropedia-lane:nth-child(4n + 3 of .histropedia-lane) { --bento-lane: rgb(var(--bento-amber)); }
+html.theme-bento .histropedia-lane:nth-child(4n + 4 of .histropedia-lane) { --bento-lane: rgb(var(--bento-emerald)); }
+
+html.theme-bento .histropedia-lane-header,
+html.theme-bento .histropedia-lane.is-lane-collapsed .histropedia-lane-header,
+html.theme-bento .histropedia-lane.is-lane-collapsed:not(.histropedia-lane-position-bottom):not([data-is-last-lane="true"]) .histropedia-lane-header {
+  background: color-mix(in srgb, var(--bento-lane) 10%, rgb(var(--bento-tile))) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-bottom: 1px solid var(--bento-hair) !important;
+  box-shadow: none !important;
+}
+
+html.theme-bento .histropedia-lane-title {
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: rgb(var(--ink)) !important;
+}
+
+html.theme-bento .histropedia-lane-title::before {
+  background-color: var(--bento-lane) !important;
+}
+
+html.theme-bento .histropedia-lane-header svg {
+  color: var(--bento-lane) !important;
+}
+
+html.theme-bento .histropedia-lane-body {
+  border: none !important;
+  box-shadow: inset 0 0 0 1px var(--bento-hair) !important;
+  background-image: none !important;
+}
+
+html.theme-bento .chronix-lane-resizer-grip {
+  background: rgb(var(--bento-tile)) !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* 7. Chat launcher, dialogs & chat panel */
+html.theme-bento .chronix-chat-launcher-inner,
+html.theme-bento .chronix-chat-top-btn .chronix-chat-top-inner {
+  background: var(--bento-gradient) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 10px 26px -8px rgb(var(--bento-violet) / 0.6) !important;
+}
+
+html.theme-bento [role="dialog"][aria-modal="true"] > div.bg-surface-overlay,
+html.theme-bento [role="dialog"][aria-modal="true"] > div.bg-surface,
+html.theme-bento [role="dialog"][aria-modal="true"] > div.bg-surface-raised {
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 26px !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+html.theme-bento .chronix-chat-teaser,
+html.theme-bento #guide-chat-panel,
+html.theme-bento .chronix-dock-popover {
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+html.theme-bento .chronix-chat-teaser button,
+html.theme-bento #guide-chat-panel textarea {
+  border-radius: 14px !important;
+}
+
+/* 8. Map chrome & mobile feed cards */
+html.theme-bento .chronix-map-capsule,
+html.theme-bento .chronix-map-full-bar,
+html.theme-bento .chronix-map-split-bar,
+html.theme-bento .chronix-map-control-pill,
+html.theme-bento .chronix-map-pip {
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--bento-hair) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html.theme-bento .chronix-map-teaser-pill {
+  background: rgb(var(--accent-soft)) !important;
+  color: rgb(var(--accent)) !important;
+  font-weight: 700 !important;
+}
+
+html.theme-bento [data-article-id] {
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html.theme-bento .btn-spring:active:not(:disabled),
+html.theme-bento .btn-spring-sm:active:not(:disabled) {
+  transform: scale(0.97) !important;
+}
+
+/* Feed card titles: same heavy sans as the event details title */
+html.theme-bento .cards-list-item-title {
+  font-size: 1.1rem !important;
+  line-height: 1.2 !important;
+}

@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/webhooks/kofi",
+      "destination": "/api/kofi-webhook"
+    },
+    {
+      "source": "/t/:id",
+      "destination": "/api/share?id=:id"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

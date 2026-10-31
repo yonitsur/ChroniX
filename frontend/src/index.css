@@ -1,0 +1,3237 @@
+@import './styles/publicPages.css';
+@import 'katex/dist/katex.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', Heebo, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-optical-sizing: auto;
+  color-scheme: light;
+  letter-spacing: -0.006em;
+
+  /* ── Design tokens (light) ──────────────────────────────────────────────
+     Values are space-separated RGB channels so Tailwind's rgb(var(--x) /
+     <alpha-value>) tokens support opacity modifiers. Consumed via the
+     surface / line / ink / accent color scales in tailwind.config.js. */
+  --surface: 255 255 255;
+  /* page + primary panels            */
+  --surface-sunken: 247 247 248;
+  /* #f7f7f8 app canvas / recessed    */
+  --surface-raised: 255 255 255;
+  /* cards, dropdowns, popovers        */
+  --surface-overlay: 255 255 255;
+  /* modals / drawers                  */
+  --surface-hover: 242 242 244;
+  /* #f2f2f4 hover on quiet controls   */
+  --surface-active: 233 233 236;
+  /* #e9e9ec pressed / selected fill   */
+  --surface-selected: 255 255 255;
+  /* raised thumb inside segmented tracks */
+
+  --line: 229 229 233;
+  /* #e5e5e9 default hairline          */
+  --line-strong: 209 209 214;
+  /* #d1d1d6 emphasised borders        */
+
+  --ink: 23 23 26;
+  /* #17171a primary text              */
+  --ink-muted: 82 82 91;
+  /* #52525b secondary (7.7:1)         */
+  --ink-subtle: 113 113 122;
+  /* #71717a captions (4.8:1)          */
+  --ink-faint: 161 161 170;
+  /* placeholders / disabled           */
+  --logo-silver: 180 182 191;
+  --logo-shadow: 134 135 144;
+  /* #868790 */
+
+  /* Accent is graphite: primary actions read as ink, not as a hue. */
+  --accent: 28 28 31;
+  /* #1c1c1f */
+  --accent-hover: 52 52 58;
+  /* #34343a */
+  --accent-fg: 255 255 255;
+  --accent-soft: 238 238 241;
+  /* #eeeef1 selected / info wash      */
+  --accent-ring: 82 82 91;
+  /* #52525b focus ring (7.7:1)        */
+  --crawl-beam: 70 104 168;
+  /* #4668a8 - star-atlas cobalt (matches day sky) */
+  --crawl-beam-head: 30 46 88;
+  /* #1e2e58 - navy ink leading edge */
+  --crawl-beam-glow: 72 102 160;
+  /* soft cool-blue glow */
+
+  /* Elevation - hairline-ringed, low-spread, neutral. */
+  --shadow-control: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 3px 0 rgb(0 0 0 / 0.04);
+  --shadow-pop: 0 0 0 1px rgb(0 0 0 / 0.02), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 10px 24px -6px rgb(0 0 0 / 0.10);
+  --shadow-panel: 0 0 0 1px rgb(0 0 0 / 0.02), 0 8px 16px -4px rgb(0 0 0 / 0.06), 0 24px 48px -12px rgb(0 0 0 / 0.16);
+  --shadow-inset-hi: inset 0 1px 0 0 rgb(255 255 255 / 0.6);
+
+  --star: 242 184 18;
+  /* #f2b812 - vibrant radiant sun-gold */
+  --star-hover: 225 168 12;
+  /* #e1a80c */
+  --star-fg: 255 255 255;
+  --star-soft: 254 246 226;
+  /* #fef6e2 */
+  --star-ring: 250 196 22;
+
+  --danger: 225 29 72;
+  /* rose-600 - clear restrained error */
+  --danger-hover: 190 18 60;
+  /* rose-700                          */
+  --danger-fg: 255 255 255;
+  --danger-soft: 255 241 242;
+  /* rose-50                           */
+
+  --success: 22 163 74;
+  /* emerald-600 - calm positive state */
+  --success-hover: 21 128 61;
+  /* emerald-700                       */
+  --success-fg: 255 255 255;
+  --success-soft: 240 253 244;
+  /* emerald-50                        */
+
+  --warning: 217 119 6;
+  /* amber-600 - cautionary notice     */
+  --warning-hover: 180 83 9;
+  /* amber-700                         */
+  --warning-fg: 255 255 255;
+  --warning-soft: 254 243 199;
+  /* amber-100                         */
+
+  /* ── Typography tokens (relative rem, base 1rem = 16px) ─────────── */
+  --font-display: clamp(2rem, 4vw + 1rem, 3.5rem);
+  --line-height-display: 1.15;
+  --font-h1: clamp(1.75rem, 2vw + 1rem, 2.25rem);
+  --line-height-h1: 1.2;
+  --font-h2: clamp(1.5rem, 1.5vw + 1rem, 1.875rem);
+  --line-height-h2: 1.25;
+  --font-h3: clamp(1.125rem, 1vw + 0.875rem, 1.375rem);
+  --line-height-h3: 1.3;
+  --font-body: 1rem;
+  --line-height-body: 1.55;
+  --font-body-sm: 0.875rem;
+  --line-height-body-sm: 1.45;
+  --font-caption: 0.75rem;
+  --line-height-caption: 1.4;
+}
+
+@layer base {
+
+  /* Prevent iOS Safari from auto-zooming on focus by enforcing 16px (1rem) min font size on mobile */
+  @media screen and (max-width: 768px) {
+
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="hidden"]),
+    select,
+    textarea {
+      font-size: 1rem !important;
+    }
+  }
+
+  /* One consistent keyboard focus ring; utilities (outline-none, focus-visible:*) still override. */
+  :where(button, a[href], summary, [role="button"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"], [role="tab"], [role="radio"], [role="switch"], [role="option"]):focus-visible {
+    outline: 2px solid rgb(var(--accent-ring));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: rgb(var(--ink) / 0.14);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ── Calm neutral cursor for disabled controls ────────────────────────
+   Disabled buttons and controls should always display a calm, default arrow cursor,
+   preventing stressful 'not-allowed' (no-entry) symbols or misleading pointers. */
+:disabled,
+[disabled],
+[aria-disabled="true"],
+.disabled {
+  cursor: default !important;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  /* ── Design tokens (dark) - neutral graphite. Elevation reads as lighter
+     surfaces + a faint top highlight, not heavier shadows. Ink is softened
+     from pure white to cut glare on large dark fields. ── */
+  --surface: 16 16 18;
+  /* #101012 primary panels */
+  --surface-sunken: 10 10 11;
+  /* #0a0a0b app canvas */
+  --surface-raised: 22 22 25;
+  /* #161619 cards / docks / popovers */
+  --surface-overlay: 27 27 30;
+  /* #1b1b1e modals / drawers */
+  --surface-hover: 36 36 40;
+  /* #242428 */
+  --surface-active: 46 46 51;
+  /* #2e2e33 */
+  --surface-selected: 52 52 58;
+  /* #34343a segmented thumb */
+
+  --line: 42 42 47;
+  /* #2a2a2f hairline */
+  --line-strong: 63 63 70;
+  /* #3f3f46 */
+
+  --ink: 236 236 239;
+  /* #ececef primary (16:1) */
+  --ink-muted: 164 164 172;
+  /* #a4a4ac secondary (7.9:1) */
+  --ink-subtle: 128 128 137;
+  /* #808089 captions (4.6:1 on raised) */
+  --ink-faint: 86 86 94;
+  /* #56565e placeholders / disabled */
+  --logo-silver: 133 136 148;
+  --logo-shadow: 107 109 122;
+  /* #6b6d7a (balanced 3.7:1 contrast on dark graphite) */
+
+  --accent: 236 236 239;
+  /* primary action = light ink on dark */
+  --accent-hover: 255 255 255;
+  --accent-fg: 16 16 18;
+  --accent-soft: 40 40 45;
+  /* #28282d selected / info wash */
+  --accent-ring: 161 161 170;
+  /* #a1a1aa focus ring */
+  --crawl-beam: 195 208 225;
+  /* #c3d0e1 - sleek liquid silver beam */
+  --crawl-beam-head: 245 248 255;
+  /* #f5f8ff - brilliant diamond-silver head */
+  --crawl-beam-glow: 170 185 210;
+  /* cosmic starlight silver glow */
+
+  --shadow-control: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.03);
+  --shadow-pop: 0 0 0 1px rgb(0 0 0 / 0.3), 0 4px 10px -2px rgb(0 0 0 / 0.5), 0 16px 32px -8px rgb(0 0 0 / 0.55), inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+  --shadow-panel: 0 0 0 1px rgb(0 0 0 / 0.35), 0 8px 20px -4px rgb(0 0 0 / 0.5), 0 32px 64px -16px rgb(0 0 0 / 0.7), inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+  --shadow-inset-hi: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+
+  --star: 234 179 8;
+  /* #eab308 - radiant archival gold */
+  --star-hover: 250 204 21;
+  /* #facc15 */
+  --star-fg: 26 18 4;
+  --star-soft: 56 38 12;
+  --star-ring: 234 179 8;
+
+  --danger: 244 63 94;
+  /* rose-500                           */
+  --danger-hover: 251 113 133;
+  /* rose-400                           */
+  --danger-fg: 255 255 255;
+  --danger-soft: 76 5 25;
+  /* rose-950                           */
+
+  --success: 34 197 94;
+  /* emerald-500                        */
+  --success-hover: 74 222 128;
+  /* emerald-400                        */
+  --success-fg: 10 24 14;
+  --success-soft: 6 44 20;
+
+  --warning: 245 158 11;
+  /* amber-500                          */
+  --warning-hover: 251 191 36;
+  /* amber-400                          */
+  --warning-fg: 24 16 4;
+  --warning-soft: 66 28 4;
+}
+
+html[dir="rtl"],
+html.rtl-mode,
+html.lang-he {
+  font-family: Heebo, 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html.lang-ar {
+  font-family: 'Noto Sans Arabic', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html.lang-ja {
+  font-family: 'Inter', 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+html.lang-ko {
+  font-family: 'Inter', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
+html.lang-zh {
+  font-family: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+html.lang-hi {
+  font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+}
+
+/* ── Typography & Heading Hierarchy ────────────────────────────────────────────────── */
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  letter-spacing: -0.021em;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-wrap: balance;
+}
+
+/* Bi-directional letter-spacing safeguards: keep natural kerning in RTL scripts (Hebrew & Arabic) */
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4,
+html.rtl-mode h1,
+html.rtl-mode h2,
+html.rtl-mode h3,
+html.rtl-mode h4,
+html.lang-he h1,
+html.lang-he h2,
+html.lang-he h3,
+html.lang-he h4,
+html.lang-ar h1,
+html.lang-ar h2,
+html.lang-ar h3,
+html.lang-ar h4 {
+  letter-spacing: normal !important;
+}
+
+/* Ensure right-to-left text alignment across pages, modals, cards, tabs, and drawers in RTL mode */
+html.rtl-mode body,
+html.lang-he body,
+html.lang-ar body {
+  text-align: right;
+}
+
+/* Dialogs, modals, and drawers default to RTL in RTL mode */
+html.rtl-mode [role="dialog"],
+html.lang-he [role="dialog"],
+html.lang-ar [role="dialog"],
+html.rtl-mode aside,
+html.lang-he aside,
+html.lang-ar aside,
+html.rtl-mode .modal-card,
+html.lang-he .modal-card,
+html.lang-ar .modal-card {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Map pin tooltips / labels */
+.leaflet-container {
+  direction: ltr !important;
+}
+
+.leaflet-tooltip {
+  left: 0 !important;
+  top: 0 !important;
+}
+
+.chronix-pin-hover-tooltip[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+.chronix-pin-hover-tooltip[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Text inputs and textareas in RTL mode (unless explicitly LTR for URLs/coordinates) */
+html.rtl-mode input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.lang-he input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.lang-ar input:not([dir="ltr"]):not([type="number"]):not([type="url"]),
+html.rtl-mode textarea:not([dir="ltr"]),
+html.lang-he textarea:not([dir="ltr"]),
+html.lang-ar textarea:not([dir="ltr"]),
+html.rtl-mode select:not([dir="ltr"]),
+html.lang-he select:not([dir="ltr"]),
+html.lang-ar select:not([dir="ltr"]) {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Explicit LTR overrides for technical data (coordinates, URLs, code, numbers) */
+.ltr-text {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* The timeline canvas and container MUST always maintain strict LTR coordinate positioning */
+#histropedia-container,
+.histropedia-timeline-wrapper,
+.histropedia-canvas {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+#histropedia-container canvas,
+.histropedia-canvas {
+  touch-action: none !important;
+}
+
+/* Timeline canvas sits on the primary surface in dark mode */
+html.dark .histropedia-timeline-wrapper,
+html.dark #histropedia-container {
+  background-color: rgb(var(--surface)) !important;
+}
+
+/* Dark-mode windows and drawers: crisp strong hairline + token elevation */
+html.dark #guide-chat-panel,
+html.dark [role="dialog"],
+html.dark .modal-card,
+html.dark aside[role="complementary"],
+html.dark aside[aria-label] {
+  border-color: rgb(var(--line-strong)) !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+html,
+body {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#root {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(var(--surface-sunken));
+  color: rgb(var(--ink));
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.dark body {
+  background-color: rgb(var(--surface-sunken));
+  color: rgb(var(--ink));
+}
+
+/* ── Sleek Minimalist Scrollbars (Linear / Felt inspired) ────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+html.dark * {
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Dedicated styled scroller for menus, drawers, and popovers */
+.menu-scroller {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.35) transparent;
+}
+
+html.dark .menu-scroller {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.menu-scroller::-webkit-scrollbar {
+  width: 7px;
+}
+
+.menu-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu-scroller::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+
+.menu-scroller::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+html.dark .menu-scroller::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+html.dark .menu-scroller::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Top-Tier Glassmorphism & Surface Utilities (Linear & Felt) ─────── */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+html.dark .glass-panel {
+  background-color: rgb(var(--surface-raised) / 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+.glass-dock {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+html.dark .glass-dock {
+  background-color: rgb(var(--surface-raised) / 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-pill {
+  background-color: rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
+}
+
+html.dark .glass-pill {
+  background-color: rgb(var(--surface-hover) / 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.border-hairline {
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+html.dark .border-hairline {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.border-hairline-strong {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+html.dark .border-hairline-strong {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Ambient glows */
+.glow-accent {
+  box-shadow: 0 0 24px -4px rgb(var(--accent) / 0.35);
+}
+
+.glow-star {
+  box-shadow: 0 0 24px -4px rgb(var(--star) / 0.35);
+}
+
+.glow-subtle {
+  box-shadow: 0 0 20px -3px rgba(255, 255, 255, 0.06);
+}
+
+/* Background vignette & atmospheric highlights */
+.bg-radial-vignette {
+  background: radial-gradient(circle at 50% 35%, transparent 20%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.bg-cosmic-glow {
+  background: radial-gradient(600px circle at 50% -10%, rgb(var(--accent) / 0.14), transparent 70%);
+}
+
+/* ── Segmented controls: recessed track + raised neutral thumb ───────────────── */
+.seg-track {
+  background-color: rgb(var(--surface-hover) / 0.8);
+  box-shadow: inset 0 0 0 1px rgb(var(--line) / 0.9);
+}
+
+.seg-item {
+  color: rgb(var(--ink-muted));
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seg-item:hover:not(:disabled) {
+  color: rgb(var(--ink));
+}
+
+.seg-item.seg-item-active {
+  background-color: rgb(var(--surface-selected));
+  color: rgb(var(--ink));
+  box-shadow: 0 0 0 1px rgb(var(--line-strong) / 0.7), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+}
+
+html.dark .seg-item.seg-item-active {
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(0 0 0 / 0.35), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+}
+
+/* ── Micro-Interaction Utility Classes ───────────────────────────────── */
+.btn-spring {
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+  will-change: transform;
+}
+
+.btn-spring:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.btn-spring-sm {
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.14s ease, background-color 0.14s ease, border-color 0.14s ease;
+  will-change: transform;
+}
+
+.btn-spring-sm:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.hover-lift {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-lift-subtle {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hover-lift-subtle:hover {
+  transform: translateY(-1px);
+}
+
+/* Shimmer sweep effect for loading & premium highlights */
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-linear {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2.2s infinite ease-in-out;
+}
+
+/* Indeterminate Progress Bar Animation */
+@keyframes progress {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(380%);
+  }
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(380%);
+  }
+}
+
+.animate-progress-indeterminate {
+  animation: progress-slide 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.prompt-bar-shell-idle,
+html.dark .prompt-bar-shell-idle {
+  border-color: rgb(var(--line)) !important;
+}
+
+.prompt-bar-shell-idle:hover,
+.prompt-bar-shell-idle:focus-within {
+  border-color: rgb(var(--line-strong)) !important;
+}
+
+.prompt-bar-shell:hover,
+.prompt-bar-shell:focus-within,
+html.dark .prompt-bar-shell:hover,
+html.dark .prompt-bar-shell:focus-within {
+  border-color: rgb(var(--line-strong)) !important;
+  box-shadow: var(--shadow-panel) !important;
+}
+
+/* ── Floating Island Docks & Navigation (Linear & Perplexity Inspired) ── */
+
+.floating-dock-glass {
+  background: rgb(var(--surface-raised) / 0.94);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgb(var(--line));
+  box-shadow: var(--shadow-inset-hi), var(--shadow-pop);
+}
+
+html.dark .floating-dock-glass {
+  border-color: rgb(var(--line-strong) / 0.7);
+}
+
+/* Mobile timeline navigation is a shelf, not a second floating layer. */
+.mobile-bottom-command-bar {
+  min-height: 52px;
+  background: rgb(var(--surface-raised) / 0.96);
+  border-top: 1px solid rgb(var(--line));
+  box-shadow: 0 -8px 20px -16px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+html.dark .mobile-bottom-command-bar {
+  box-shadow: 0 -12px 28px -18px rgb(0 0 0 / 0.9);
+}
+
+/* Mobile top navigation shelf (mirrors the bottom command bar) */
+.mobile-top-command-bar {
+  min-height: 52px;
+  background: rgb(var(--surface-raised) / 0.96);
+  border-bottom: 1px solid rgb(var(--line));
+  box-shadow: 0 8px 20px -16px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+html.dark .mobile-top-command-bar {
+  box-shadow: 0 12px 28px -18px rgb(0 0 0 / 0.9);
+}
+
+/* Prompt island: quiet at rest, a firmer hairline + lift on focus (no glow). */
+.prompt-dock-shell {
+  background: rgb(var(--surface-raised));
+  border: 1px solid rgb(var(--line));
+  box-shadow: var(--shadow-inset-hi), var(--shadow-pop);
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.2s ease;
+}
+
+.prompt-dock-shell:focus-within {
+  border-color: rgb(var(--ink-subtle) / 0.55) !important;
+  box-shadow: var(--shadow-inset-hi), 0 0 0 3px rgb(var(--ink) / 0.06), var(--shadow-panel) !important;
+}
+
+/* Dock buttons: motion handled by utilities; no decorative halo. */
+.dock-btn-luminescent {
+  position: relative;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ambient Pulse while Generating */
+@keyframes ambient-pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.55;
+    filter: blur(16px);
+  }
+
+  50% {
+    opacity: 0.95;
+    filter: blur(24px);
+  }
+}
+
+.animate-ambient-pulse {
+  animation: ambient-pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* While a prompt is generating, a bright segment crawls continuously around the
+   search box border (replaces the old in-field spinner). A masked conic-gradient
+   ring rides just over the border; the animated angle needs @property support. */
+@property --chronix-crawl-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes chronix-border-crawl {
+  to {
+    --chronix-crawl-angle: 360deg;
+  }
+}
+
+.prompt-bar-shell-running {
+  box-shadow: 0 4px 20px -2px rgb(var(--crawl-beam-glow) / 0.16),
+    0 0 0 1px rgb(var(--crawl-beam) / 0.22),
+    var(--shadow-panel) !important;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+html.dark .prompt-bar-shell-running {
+  box-shadow: 0 6px 28px -2px rgb(var(--crawl-beam-glow) / 0.20),
+    0 0 0 1px rgb(var(--crawl-beam) / 0.28),
+    var(--shadow-panel) !important;
+}
+
+.prompt-bar-shell-running::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--chronix-crawl-angle),
+      transparent 0deg,
+      transparent 230deg,
+      rgb(var(--crawl-beam) / 0) 230deg,
+      rgb(var(--crawl-beam) / 0.45) 280deg,
+      rgb(var(--crawl-beam) / 0.90) 330deg,
+      rgb(var(--crawl-beam-head)) 352deg,
+      rgb(var(--crawl-beam) / 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: chronix-border-crawl 1.6s linear infinite;
+  pointer-events: none;
+}
+
+/* Keep the field's own content above the crawling ring. */
+.prompt-bar-shell-running>* {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-bar-shell-running::before {
+    animation: none;
+    background: conic-gradient(from 320deg,
+        transparent 0deg,
+        rgb(var(--crawl-beam) / 0.6) 340deg,
+        transparent 360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-bar-shell-idle {
+    animation: none;
+  }
+}
+
+/* Prompt Bar Text Ticker: smooth reading glide during generation */
+.prompt-ticker-container {
+  mask-image: linear-gradient(to right,
+      transparent 0px,
+      black 14px,
+      black calc(100% - 14px),
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+      transparent 0px,
+      black 14px,
+      black calc(100% - 14px),
+      transparent 100%);
+}
+
+@keyframes prompt-ticker-ltr {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(calc(-1 * var(--prompt-scroll-dist, 0px)));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes prompt-ticker-rtl {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(var(--prompt-scroll-dist, 0px));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.prompt-ticker-ltr {
+  animation-name: prompt-ticker-ltr;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.prompt-ticker-rtl {
+  animation-name: prompt-ticker-rtl;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.prompt-ticker-container:hover .prompt-ticker-ltr,
+.prompt-ticker-container:hover .prompt-ticker-rtl {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .prompt-ticker-ltr,
+  .prompt-ticker-rtl {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Timeline Chat Panel Title Ticker: smooth reading glide for overflowing titles */
+.chat-title-ticker-container {
+  /* No opacity/fade mask so all letters, especially the first character in LTR/RTL, remain 100% sharp and crisp */
+}
+
+@keyframes chat-title-ticker-ltr {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(calc(-1 * var(--chat-title-scroll-dist, 0px)));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes chat-title-ticker-rtl {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(var(--chat-title-scroll-dist, 0px));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.chat-title-ticker-ltr {
+  animation-name: chat-title-ticker-ltr;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.chat-title-ticker-rtl {
+  animation-name: chat-title-ticker-rtl;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.chat-title-ticker-container:hover .chat-title-ticker-ltr,
+.chat-title-ticker-container:hover .chat-title-ticker-rtl {
+  animation-play-state: paused;
+}
+
+@keyframes saved-title-ticker-ltr {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(calc(-1 * var(--saved-title-scroll-dist, 0px)));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes saved-title-ticker-rtl {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  72%,
+  86% {
+    transform: translateX(var(--saved-title-scroll-dist, 0px));
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.saved-title-ticker-ltr,
+.saved-title-ticker-rtl {
+  will-change: transform;
+}
+
+.group:hover .saved-title-ticker-ltr {
+  animation-name: saved-title-ticker-ltr;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+}
+
+.group:hover .saved-title-ticker-rtl {
+  animation-name: saved-title-ticker-rtl;
+  animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .chat-title-ticker-ltr,
+  .chat-title-ticker-rtl,
+  .saved-title-ticker-ltr,
+  .saved-title-ticker-rtl {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Infinite Marquee Animation for Movie Strip Reel */
+@keyframes infinite-marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-marquee {
+  display: flex;
+  width: max-content;
+  animation: infinite-marquee 50s linear infinite;
+  will-change: transform;
+}
+
+.animate-infinite-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Floating chat launcher: solid raised disc with a hairline, lifts on hover */
+.chronix-chat-launcher {
+  position: fixed;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  overflow: visible;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chronix-chat-launcher:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.chronix-chat-launcher:hover {
+  transform: translateY(-1px);
+}
+
+.chronix-chat-launcher-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: rgb(var(--surface-raised));
+  color: rgb(var(--ink));
+  border: 1px solid rgb(var(--line-strong));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-inset-hi), var(--shadow-pop);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+}
+
+.chronix-chat-launcher:hover .chronix-chat-launcher-inner {
+  background-color: rgb(var(--surface-hover));
+  box-shadow: var(--shadow-inset-hi), var(--shadow-panel);
+}
+
+/* Chat discovery: a few soft rings on the launcher while the teaser bubble is showing */
+@keyframes chronix-chat-attention {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--ink) / 0.28);
+  }
+
+  100% {
+    box-shadow: 0 0 0 10px rgb(var(--ink) / 0);
+  }
+}
+
+.chronix-chat-attention {
+  border-radius: 9999px;
+  animation: chronix-chat-attention 1.6s ease-out 3;
+}
+
+@keyframes chronix-chat-teaser-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes chronix-chat-teaser-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chronix-chat-teaser.is-above {
+  transform-origin: bottom right;
+  animation: chronix-chat-teaser-in-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.chronix-chat-teaser.is-below {
+  transform-origin: top right;
+  animation: chronix-chat-teaser-in-down 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .chronix-chat-attention,
+  .chronix-chat-teaser.is-above,
+  .chronix-chat-teaser.is-below {
+    animation: none;
+  }
+}
+
+/* Top command bar chat button */
+.chronix-chat-top-btn {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chronix-chat-top-btn:active {
+  transform: scale(0.92);
+}
+
+.chronix-chat-top-btn .chronix-chat-top-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: rgb(var(--surface-raised));
+  color: rgb(var(--ink));
+  border: 1px solid rgb(var(--line-strong));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-control);
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chronix-chat-top-btn:hover .chronix-chat-top-inner {
+  background-color: rgb(var(--surface-hover));
+}
+
+.chronix-chat-top-btn.is-active .chronix-chat-top-inner {
+  background-color: rgb(var(--accent));
+  border-color: rgb(var(--accent));
+  color: rgb(var(--accent-fg));
+}
+
+/* ── Histropedia Swimlane Architectural Layout & Styling ───────────────────── */
+/* ── Histropedia Swimlane Architectural Layout & Styling ───────────────────── */
+div[data-histropedia-lane-layer] {
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+.histropedia-lane {
+  pointer-events: none !important;
+}
+
+/* 1. The Lane Header: Crisp Architectural Divider + Smooth Rounded Top-Left Tab */
+.histropedia-lane-header {
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  border-top-left-radius: 8px !important;
+  border-start-start-radius: 8px !important;
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-top: 1px solid rgb(var(--line-strong)) !important;
+  border-bottom: none !important;
+  border-inline-start: 4px solid var(--lane-color, #71717a) !important;
+  background: rgb(var(--surface-sunken) / 0.92) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 3 !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 -1px 0 0 rgb(var(--line) / 0.8) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Flush straight edge at top-left where the top track (or single track) meets the canvas/header ceiling.
+   Position is by class/data only: histropedia appends lanes bottom-first, so :first-child is the BOTTOM lane. */
+.histropedia-lane.histropedia-lane-position-top .histropedia-lane-header,
+.histropedia-lane[data-is-first-lane="true"] .histropedia-lane-header,
+.histropedia-lane:only-child .histropedia-lane-header {
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+}
+
+/* A collapsed lane has a 0px body, so its header carries the lower curve of the junction */
+.histropedia-lane.is-lane-collapsed:not(.histropedia-lane-position-bottom):not([data-is-last-lane="true"]) .histropedia-lane-header {
+  border-bottom-left-radius: 8px !important;
+  border-end-start-radius: 8px !important;
+}
+
+html.dark .histropedia-lane-header {
+  background: rgb(var(--surface-raised) / 0.9) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: var(--shadow-inset-hi), inset 0 -1px 0 0 rgb(var(--line) / 0.8) !important;
+}
+
+/* 2. The Lane Title: Crisp Tracked Uppercase with Layers Icon */
+.histropedia-lane-title {
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-inline-start: 14px !important;
+  padding-inline-end: 16px !important;
+  font-family: 'Inter', Heebo, system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  /* ~12px */
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: rgb(var(--ink)) !important;
+  unicode-bidi: plaintext !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  gap: 8px !important;
+  transition: color 0.15s ease !important;
+}
+
+/* Lane icon in lane title matching the app-wide Layers symbol (no colored dots for lanes) */
+.histropedia-lane-title::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  background-color: rgb(var(--ink-subtle));
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'/%3E%3Cpath d='m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65'/%3E%3Cpath d='m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'/%3E%3Cpath d='m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65'/%3E%3Cpath d='m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'/%3E%3C/svg%3E") no-repeat center / contain;
+  transition: transform 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* Down-arrow indicator pointing to the lane track below (desktop & mobile) */
+.histropedia-lane-title::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  background-color: var(--lane-color, #71717a);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M19 12l-7 7-7-7'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M19 12l-7 7-7-7'/%3E%3C/svg%3E") no-repeat center / contain;
+  opacity: 0.75;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* 3. The Lane Body: Curved Left Accent Spine Bounding the Track (Transparent in Normal State = 100% Sharp Cards) */
+.histropedia-lane-body {
+  border: none !important;
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-bottom-left-radius: 8px !important;
+  border-end-start-radius: 8px !important;
+  border-inline-start: 4px solid var(--lane-color, #71717a) !important;
+  background-color: transparent !important;
+  pointer-events: none !important;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+/* Flush straight edge at bottom-left where the bottom track (or single track) docks into the bottom ruler */
+.histropedia-lane.histropedia-lane-position-bottom .histropedia-lane-body,
+.histropedia-lane[data-is-last-lane="true"] .histropedia-lane-body,
+.histropedia-lane:only-child .histropedia-lane-body {
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+}
+
+/* 4. Interactive Hover & Active Highlight */
+
+/* Active / tapped highlight (controlled explicitly via JS class is-lane-hovered for both desktop and mobile) */
+.histropedia-lane.is-lane-hovered .histropedia-lane-header {
+  background-color: color-mix(in srgb, var(--lane-color, #71717a) 11%, rgb(var(--surface-raised))) !important;
+}
+
+.histropedia-lane.is-lane-hovered .histropedia-lane-title::before {
+  background-color: rgb(var(--ink));
+}
+
+.histropedia-lane.is-lane-hovered .histropedia-lane-title::after {
+  transform: translateY(2px);
+  opacity: 1;
+}
+
+.histropedia-lane.is-lane-hovered .histropedia-lane-body {
+  background-color: color-mix(in srgb, var(--lane-color, #71717a) 9%, transparent) !important;
+}
+
+/* Dark mode active / tapped highlight */
+html.dark .histropedia-lane.is-lane-hovered .histropedia-lane-header {
+  background-color: color-mix(in srgb, var(--lane-color, #71717a) 14%, rgb(var(--surface-raised))) !important;
+}
+
+html.dark .histropedia-lane.is-lane-hovered .histropedia-lane-body {
+  background-color: color-mix(in srgb, var(--lane-color, #71717a) 10%, transparent) !important;
+}
+
+/* Desktop mouse hover: only on devices that genuinely support hover without sticky touch artifacts */
+@media (hover: hover) and (pointer: fine) {
+  .histropedia-lane:hover .histropedia-lane-header {
+    background-color: color-mix(in srgb, var(--lane-color, #71717a) 11%, rgb(var(--surface-raised))) !important;
+  }
+
+  .histropedia-lane:hover .histropedia-lane-title::before {
+    background-color: rgb(var(--ink));
+  }
+
+  .histropedia-lane:hover .histropedia-lane-title::after {
+    transform: translateY(2px);
+    opacity: 1;
+  }
+
+  .histropedia-lane:hover .histropedia-lane-body {
+    background-color: color-mix(in srgb, var(--lane-color, #71717a) 9%, transparent) !important;
+  }
+
+  html.dark .histropedia-lane:hover .histropedia-lane-header {
+    background-color: color-mix(in srgb, var(--lane-color, #71717a) 14%, rgb(var(--surface-raised))) !important;
+  }
+
+  html.dark .histropedia-lane:hover .histropedia-lane-body {
+    background-color: color-mix(in srgb, var(--lane-color, #71717a) 10%, transparent) !important;
+  }
+}
+
+/* 5. Drag divider between parallel lanes (straddles the lower lane's header top edge) */
+.chronix-lane-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -5px;
+  height: 10px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: row-resize;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.chronix-lane-resizer[data-resizable="false"] {
+  display: none;
+}
+
+.chronix-lane-resizer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: rgb(var(--ink-subtle));
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.chronix-lane-resizer-grip {
+  position: relative;
+  width: 30px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(var(--surface-raised));
+  border: 1px solid rgb(var(--line-strong));
+  box-shadow: var(--shadow-control);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.chronix-lane-resizer-grip::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgb(var(--ink-faint));
+}
+
+.chronix-lane-resizer:hover::before,
+.chronix-lane-resizer:focus-visible::before,
+.chronix-lane-resizer.is-resizing::before {
+  opacity: 0.55;
+}
+
+.chronix-lane-resizer:hover .chronix-lane-resizer-grip,
+.chronix-lane-resizer:focus-visible .chronix-lane-resizer-grip,
+.chronix-lane-resizer.is-resizing .chronix-lane-resizer-grip {
+  border-color: rgb(var(--ink-subtle));
+}
+
+.chronix-lane-resizer:hover .chronix-lane-resizer-grip::after,
+.chronix-lane-resizer:focus-visible .chronix-lane-resizer-grip::after,
+.chronix-lane-resizer.is-resizing .chronix-lane-resizer-grip::after {
+  background: rgb(var(--ink-muted));
+}
+
+@media (pointer: coarse) {
+  .chronix-lane-resizer {
+    top: -9px;
+    height: 18px;
+  }
+
+  .chronix-lane-resizer-grip {
+    width: 40px;
+    height: 8px;
+  }
+}
+
+.home-screen-bg {
+  position: relative;
+}
+
+/* =========================================================================
+   Top-Tier Architectural Time-Grid & Living Ambient Aura (Option 1 + Motion)
+   Subtle GPU-accelerated breathing ambient light with rich daytime presence.
+   ========================================================================= */
+
+.home-screen-bg,
+.auth-gate-bg {
+  position: relative;
+  background-color: rgb(var(--surface-sunken));
+  overflow: hidden;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Precision Time-Grid Dot Matrix layer via ::before - sits over the glowing orbs */
+.home-screen-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: radial-gradient(rgb(24 24 27 / 0.10) 1.25px, transparent 1.25px);
+  background-size: 28px 28px;
+  background-position: center center;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 42%, black 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 42%, black 30%, transparent 92%);
+}
+
+/* Dark Mode Canvas */
+html.dark .home-screen-bg,
+html.dark .auth-gate-bg {
+  background-color: rgb(var(--surface-sunken));
+}
+
+html.dark .home-screen-bg::before {
+  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1.2px, transparent 1.2px);
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 42%, black 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 42%, black 30%, transparent 92%);
+}
+
+/* Living Ambient Aura Container */
+.ambient-aurora-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  contain: strict;
+}
+
+/* Floating constellation name label */
+.constellation-floating-badge {
+  background: rgb(var(--surface-raised) / 0.92);
+  color: rgb(var(--ink));
+  border: 1px solid rgb(var(--line-strong));
+  box-shadow: var(--shadow-pop);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:root:not(.dark) .constellation-floating-badge {
+  border-color: rgb(34 54 100 / 0.22);
+  box-shadow: 0 4px 18px -4px rgb(34 54 100 / 0.18), var(--shadow-pop);
+}
+
+/* Day sky: pale cool wash so the ink-toned stars read like a star atlas */
+:root:not(.dark) .home-screen-bg:has([data-home-ambient="constellations"]) {
+  background-color: #ebf0f6;
+  background-image: linear-gradient(180deg, #e2e9f3 0%, #ebf0f7 50%, #f2f5f9 100%);
+}
+
+:root:not(.dark) .home-screen-bg:has([data-home-ambient="constellations"])::before {
+  background-image: radial-gradient(rgb(34 54 100 / 0.07) 1.25px, transparent 1.25px);
+}
+
+/* Classic home prompt cards: softer corners and a subtle monochrome gray/graphite
+   corner shading (echoing the two-tone ChroniX logo). */
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card {
+  --classic-card-c: 39 39 42;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 18px;
+}
+
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 2) { --classic-card-c: 82 82 91; }
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 3) { --classic-card-c: 52 52 58; }
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 4) { --classic-card-c: 100 102 112; }
+
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card { --classic-card-c: 161 161 170; }
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 2) { --classic-card-c: 205 207 215; }
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 3) { --classic-card-c: 133 136 148; }
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:nth-child(4n + 4) { --classic-card-c: 180 182 191; }
+
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 150px;
+  height: 150px;
+  inset-inline-end: -58px;
+  top: -66px;
+  border-radius: 50%;
+  background: rgb(var(--classic-card-c));
+  opacity: 0.26;
+  filter: blur(28px);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+:root:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:hover:not(:disabled)::before {
+  opacity: 0.38;
+}
+
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card::before {
+  background: rgb(var(--classic-card-c));
+  opacity: 0.24;
+}
+
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .prompt-example-card:hover:not(:disabled)::before {
+  opacity: 0.38;
+}
+
+/* Antique Parchment Badge for Blueprint Mode */
+.constellation-parchment-badge {
+  background: rgba(255, 253, 245, 0.96);
+  color: #78350f;
+  border: 1px solid rgba(180, 115, 25, 0.45);
+  box-shadow: 0 4px 16px rgba(120, 53, 15, 0.12), 0 0 10px rgba(245, 158, 11, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Stationary Hero Focal Glow - subtle, restrained single-tone presence */
+.ambient-hero-focal {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(880px, 90vw);
+  height: min(520px, 60vh);
+  transform: translate(-50%, 0);
+  border-radius: 9999px;
+  background: radial-gradient(ellipse 700px 380px at 50% 30%, rgba(37, 99, 235, 0.12) 0%, rgba(99, 102, 241, 0.05) 55%, transparent 75%);
+  filter: blur(70px);
+  animation: ambientHeroBreathe 7s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+html.dark .ambient-hero-focal {
+  background: radial-gradient(ellipse 750px 420px at 50% 30%, rgba(59, 130, 246, 0.16) 0%, rgba(99, 102, 241, 0.08) 55%, transparent 75%);
+  filter: blur(85px);
+}
+
+/* Interactive Cursor Spotlight - glides with the pointer under the time-grid */
+.ambient-cursor-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(560px circle at var(--mouse-x, 50%) var(--mouse-y, 32%),
+      rgba(14, 165, 233, 0.13) 0%,
+      rgba(37, 99, 235, 0.05) 40%,
+      transparent 70%);
+  transition: opacity 0.4s ease;
+}
+
+html.dark .ambient-cursor-spotlight {
+  background: radial-gradient(620px circle at var(--mouse-x, 50%) var(--mouse-y, 32%),
+      rgba(59, 130, 246, 0.16) 0%,
+      rgba(99, 102, 241, 0.06) 40%,
+      transparent 70%);
+}
+
+/* Gentle, visible breathing cycle on hero focal glow */
+@keyframes ambientHeroBreathe {
+  0% {
+    transform: translate(-50%, 0) scale(0.96);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: translate(-50%, 15px) scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-hero-focal {
+    animation: none !important;
+  }
+
+  .ambient-aurora-orb-1,
+  .ambient-aurora-orb-2,
+  .ambient-aurora-orb-3 {
+    animation: none !important;
+  }
+}
+
+/* Mode specific overrides for home screen background and public pages */
+.home-bg-aurora::before,
+.home-bg-particles::before,
+.auth-gate-bg::before {
+  display: none !important;
+}
+
+/* ── Deep Atmospheric Aurora Orbs (Option 2) ── */
+.ambient-aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ambient-aurora-orb-1 {
+  top: -10%;
+  left: 12%;
+  width: min(720px, 85vw);
+  height: min(720px, 85vw);
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.20) 0%, rgba(37, 99, 235, 0.10) 45%, transparent 70%);
+  filter: blur(85px);
+  animation: auroraFloat1 24s ease-in-out infinite alternate;
+}
+
+html.dark .ambient-aurora-orb-1 {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.15) 45%, transparent 70%);
+  filter: blur(100px);
+}
+
+.ambient-aurora-orb-2 {
+  top: 8%;
+  right: 8%;
+  width: min(680px, 80vw);
+  height: min(680px, 80vw);
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.16) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 70%);
+  filter: blur(95px);
+  animation: auroraFloat2 28s ease-in-out infinite alternate;
+}
+
+html.dark .ambient-aurora-orb-2 {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.20) 0%, rgba(99, 102, 241, 0.12) 50%, transparent 70%);
+  filter: blur(110px);
+}
+
+.ambient-aurora-orb-3 {
+  bottom: 8%;
+  left: 32%;
+  width: min(540px, 70vw);
+  height: min(540px, 70vw);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(236, 72, 153, 0.06) 50%, transparent 70%);
+  filter: blur(90px);
+  animation: auroraFloat3 22s ease-in-out infinite alternate;
+}
+
+html.dark .ambient-aurora-orb-3 {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(236, 72, 153, 0.08) 50%, transparent 70%);
+  filter: blur(100px);
+}
+
+@keyframes auroraFloat1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: translate(70px, 35px) scale(1.10);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-35px, 60px) scale(0.95);
+    opacity: 0.88;
+  }
+}
+
+@keyframes auroraFloat2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translate(-60px, 45px) scale(1.08);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(45px, -25px) scale(0.94);
+    opacity: 0.85;
+  }
+}
+
+@keyframes auroraFloat3 {
+  0% {
+    transform: translate(0, 0) scale(0.95);
+    opacity: 0.75;
+  }
+
+  50% {
+    transform: translate(-50px, -35px) scale(1.08);
+    opacity: 0.95;
+  }
+
+  100% {
+    transform: translate(35px, 25px) scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* ── Living Temporal Particles Canvas (Option 3) ── */
+.ambient-particles-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-screen-bg [data-home-ambient="topo"] {
+  opacity: 0.74;
+}
+
+.home-screen-bg [data-home-ambient="night"] .ambient-particles-canvas,
+.home-screen-bg [data-home-ambient="constellations"] .ambient-particles-canvas {
+  mask-image: radial-gradient(ellipse 48% 44% at 50% 43%, rgb(0 0 0 / 0.45) 12%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse 48% 44% at 50% 43%, rgb(0 0 0 / 0.45) 12%, #000 100%);
+}
+
+.home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="topo"] {
+  opacity: 0.52;
+}
+
+.home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="night"],
+.home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="constellations"] {
+  opacity: 0.65;
+}
+
+html.dark .home-screen-bg .prompt-dock-shell {
+  background: rgb(var(--surface-overlay));
+}
+
+html.dark .home-screen-bg .prompt-dock-shell:not(:focus-within) {
+  border-color: rgb(var(--line-strong)) !important;
+}
+
+html.dark .home-screen-bg .prompt-dock-shell textarea::placeholder {
+  color: rgb(var(--ink-muted));
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .home-screen-bg [data-home-ambient="topo"] {
+    opacity: 0.65;
+  }
+
+  .home-screen-bg [data-home-ambient="night"],
+  .home-screen-bg [data-home-ambient="constellations"] {
+    opacity: 0.92;
+  }
+
+  .home-screen-bg [data-home-ambient="night"] .ambient-particles-canvas,
+  .home-screen-bg [data-home-ambient="constellations"] .ambient-particles-canvas {
+    mask-image: radial-gradient(ellipse 80% 46% at 50% 43%, rgb(0 0 0 / 0.28) 18%, #000 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 46% at 50% 43%, rgb(0 0 0 / 0.28) 18%, #000 100%);
+  }
+
+  .home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="topo"] {
+    opacity: 0.42;
+  }
+
+  .home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="night"],
+  .home-screen-bg:has([data-home-prompt]:focus-within) [data-home-ambient="constellations"] {
+    opacity: 0.58;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-screen-bg [data-home-ambient] {
+    transition: none;
+  }
+}
+
+/* ── Mobile Touch & Bottom Sheet Utilities (Apple HIG / Material 3) ── */
+@media (max-width: 768px) {
+
+  /* Prevent background bounce and disable tap highlight */
+  body {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Touch-optimized button feedback */
+  button,
+  [role="button"],
+  a {
+    touch-action: manipulation;
+  }
+
+  /* Safe area helpers */
+  .safe-bottom-pad {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ── KaTeX Mathematical Typesetting & RTL Isolation ── */
+.math-markdown-container .katex {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  font-size: 1.05em;
+  line-height: normal;
+  display: inline-block;
+  vertical-align: -0.1em;
+}
+
+.math-markdown-container .katex-display {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  margin: 0.75rem 0;
+  text-align: center;
+  scrollbar-width: thin;
+}
+
+html.dark .math-markdown-container .katex {
+  color: inherit;
+}
+
+/* ── ChroniX Living Logo 360° Flip Animation (Balanced 2.4s) ── */
+@keyframes chronixFlip360 {
+
+  0%,
+  45% {
+    transform: rotate(0deg);
+  }
+
+  84% {
+    transform: rotate(372deg);
+  }
+
+  92% {
+    transform: rotate(357deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-chronix-flip {
+  animation: chronixFlip360 2.4s infinite cubic-bezier(0.34, 1.3, 0.64, 1);
+  transform-origin: 50px 50px;
+}
+
+@keyframes chronixSpinOnce {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: cubic-bezier(0.34, 1.1, 0.64, 1);
+  }
+
+  35% {
+    transform: rotate(360deg);
+    animation-timing-function: linear;
+  }
+
+  65% {
+    transform: rotate(360deg);
+    animation-timing-function: cubic-bezier(0.34, 1.1, 0.64, 1);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.chronix-x-rotor {
+  transform-origin: 50px 50px;
+  transition: transform 700ms ease-out;
+}
+
+/* Hover flip only where a real pointer exists; touch taps would otherwise leave it stuck. */
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .chronix-x-rotor {
+    transform: rotate(360deg);
+  }
+}
+
+.chronix-x-rotor.is-spinning {
+  animation: chronixSpinOnce 1800ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .chronix-x-rotor,
+  .chronix-x-rotor.is-spinning {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ========================================================================= */
+/* ── Mobile Landscape & Short Viewport System-Wide Adaptation (<= 520px) ── */
+/* ========================================================================= */
+@media (max-height: 520px) {
+
+  /* 1. Home Screen Container: Prevent flex centering from cutting off top logo into unreachable scroll coordinates */
+  .home-screen-scroll-container {
+    padding-top: 0.25rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .home-hero-container {
+    justify-content: flex-start !important;
+    min-height: calc(100vh - 40px) !important;
+    padding-top: 0.125rem !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  /* 2. ChroniX Logo in landscape / short viewports: crisp, compact and fully visible */
+  .home-hero-logo {
+    margin-bottom: 0 !important;
+  }
+
+  .home-hero-logo svg {
+    height: 1.875rem !important;
+    width: auto !important;
+  }
+
+  .home-hero-text {
+    row-gap: 0 !important;
+  }
+
+  .home-hero-title {
+    font-size: 1.05rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .home-hero-subtitle {
+    font-size: 0.725rem !important;
+    line-height: 1.15 !important;
+    max-width: 32rem !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* 3. Search Bar Container */
+  .home-search-wrapper {
+    margin-top: 0.2rem !important;
+    margin-bottom: 0.15rem !important;
+  }
+
+  .prompt-dock-shell {
+    padding: 0.25rem 0.5rem !important;
+    gap: 0.25rem !important;
+  }
+
+  .prompt-bar-input {
+    font-size: 13px !important;
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+
+  /* 4. Quick Action Chips (Prompt Guide / Build Own) */
+  .home-quick-actions {
+    padding-bottom: 0.1rem !important;
+    gap: 0.35rem !important;
+  }
+
+  .home-quick-actions button {
+    padding: 0.15rem 0.6rem !important;
+    font-size: 0.725rem !important;
+  }
+
+  /* 5. Prompt Examples Carousel: compact cards that never get clipped */
+  .home-prompt-examples {
+    margin-top: 0.15rem !important;
+  }
+
+  .prompt-examples-track {
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+  }
+
+  .prompt-example-card {
+    width: 13.5rem !important;
+    height: 70px !important;
+    padding: 0.35rem 0.6rem !important;
+  }
+
+  .prompt-example-card p {
+    font-size: 0.725rem !important;
+    line-height: 1.2 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .trivia-toy-card {
+    padding: 0.45rem 0.75rem !important;
+  }
+
+  .trivia-toy-card p {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+    min-height: 2rem !important;
+  }
+
+  /* 6. Top Toolbar in Home Screen */
+  .toolbar-header {
+    padding-top: max(0.2rem, env(safe-area-inset-top)) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .toolbar-header .floating-dock-glass {
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  .toolbar-header .floating-dock-glass > button,
+  .toolbar-header .floating-dock-glass > div > button {
+    min-height: 28px !important;
+    height: 28px !important;
+  }
+
+  /* 7. Desktop Left Rail in short viewports / mobile landscape */
+  .chronix-desktop-rail {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  .dock-rail-section {
+    row-gap: 0.15rem !important;
+  }
+
+  .dock-rail-btn {
+    width: 1.875rem !important;
+    /* 30px */
+    height: 1.875rem !important;
+    /* 30px */
+  }
+
+  .dock-rail-btn svg {
+    width: 1rem !important;
+    /* 16px */
+    height: 1rem !important;
+    /* 16px */
+  }
+
+  /* 8. Modals in short viewports / mobile landscape (excluding floating chat dock) */
+  [role="dialog"]:not(#guide-chat-panel) {
+    align-items: center !important;
+    padding: 0.25rem !important;
+  }
+
+  [role="dialog"]:not(#guide-chat-panel)>div {
+    max-height: 96vh !important;
+    border-radius: 1rem !important;
+  }
+
+  [role="dialog"]:not(#guide-chat-panel) header,
+  [role="dialog"]:not(#guide-chat-panel) [class*="border-b"] {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.45rem !important;
+  }
+
+  /* 9. Event Drawer image frame & content */
+  .event-drawer-media {
+    max-height: 135px !important;
+  }
+
+  /* 10. Chat copilot panel */
+  #guide-chat-panel {
+    max-height: calc(100vh - 16px) !important;
+  }
+}
+
+@media (max-height: 380px) {
+  .dock-rail-btn {
+    width: 1.625rem !important;
+    height: 1.625rem !important;
+  }
+
+  .dock-rail-btn svg {
+    width: 0.9375rem !important;
+    height: 0.9375rem !important;
+  }
+}
+
+/* =========================================================================
+   🧱 TACTILE TOY BLOCKS 3D THEME (Kids / Duolingo & Lego Style)
+   Activated globally when <html class="theme-toy"> is set.
+   Zero functional changes — purely visual transformation across the entire app.
+   ========================================================================= */
+
+html.theme-toy {
+  font-family: 'Fredoka', 'Rubik', 'Heebo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  letter-spacing: 0.005em;
+
+  /* Light Mode Toy Palette: Sunny Sky & Crisp White/Yellow/Green 3D Toy Blocks */
+  --surface: 255 255 255;
+  --surface-sunken: 224 242 254;
+  /* #e0f2fe sunny sky blue canvas */
+  --surface-raised: 255 255 255;
+  --surface-overlay: 255 255 255;
+  --surface-hover: 254 249 195;
+  /* #fef9c3 soft sunny yellow hover */
+  --surface-active: 254 240 138;
+  /* #fef08a bright yellow pressed */
+  --surface-selected: 250 204 21;
+  /* #facc15 golden toy block */
+
+  --line: 15 23 42;
+  /* #0f172a bold dark cartoon/toy outline */
+  --line-strong: 15 23 42;
+
+  --ink: 15 23 42;
+  /* #0f172a ultra-crisp dark slate */
+  --ink-muted: 30 41 59;
+  /* #1e293b */
+  --ink-subtle: 51 65 85;
+  /* #334155 */
+  --ink-faint: 100 116 139;
+  /* #64748b */
+
+  --accent: 34 197 94;
+  /* #22c55e Duolingo emerald green */
+  --accent-hover: 22 163 74;
+  /* #16a34a */
+  --accent-fg: 255 255 255;
+  --accent-soft: 220 252 231;
+  /* #dcfce7 */
+  --accent-ring: 15 23 42;
+
+  --crawl-beam: 34 197 94;
+  --crawl-beam-head: 250 204 21;
+  --crawl-beam-glow: 56 189 248;
+
+  --star: 250 204 21;
+  --star-hover: 234 179 8;
+  --star-fg: 15 23 42;
+  --star-soft: 254 249 195;
+  --star-ring: 15 23 42;
+
+  /* Toy outline tokens: --toy-ink outlines colorful blocks, --toy-edge outlines
+     surfaces, --toy-lip is the 3D extrusion under every block. */
+  --toy-ink: 15 23 42;
+  --toy-edge: 15 23 42;
+  --toy-lip: 15 23 42;
+  --toy-icon-outline: #0f172a;
+  --toy-icon-ink: #0f172a;
+  --toy-icon-stroke: #0f172a;
+
+  /* 3D Extruded Bottom Lips instead of blurry shadows */
+  --shadow-control: 0 3px 0 0 rgb(var(--toy-lip));
+  --shadow-card: 0 4px 0 0 rgb(var(--toy-lip));
+  --shadow-pop: 0 5px 0 0 rgb(var(--toy-lip));
+  --shadow-panel: 0 6px 0 0 rgb(var(--toy-lip));
+  --shadow-inset-hi: inset 0 2px 0 0 rgba(255, 255, 255, 0.75);
+}
+
+html.theme-toy.dark {
+  /* Night Mode Toy Palette: "Midnight Playroom".
+     The night twin of Day Mode's white blocks on sky blue: calm, neutral
+     midnight-slate surfaces (no saturated purple fields), so the toy colors
+     (sun yellow, sky, grape, grass) stay the only chromatic voices.
+     Surfaces are rimmed with a quiet slate edge and rest on a slate 3D lip
+     (Duolingo-style night blocks); colored blocks get a deeper shade of their
+     own hue as edge + lip instead. All text ≥ 4.5:1, body text ≥ 10:1. */
+  --surface: 19 27 46;
+  /* #131b2e timeline canvas / primary panels */
+  --surface-sunken: 15 22 38;
+  /* #0f1626 app floor */
+  --surface-raised: 26 35 56;
+  /* #1a2338 cards, docks, menus */
+  --surface-overlay: 29 39 62;
+  /* #1d273e modals / drawers */
+  --surface-hover: 36 48 73;
+  /* #243049 */
+  --surface-active: 44 58 88;
+  /* #2c3a58 pressed / selected rail */
+  --surface-selected: 250 204 21;
+  /* #facc15 */
+
+  --line: 42 54 80;
+  /* #2a3650 hairlines */
+  --line-strong: 58 72 102;
+  /* #3a4866 emphasised borders */
+
+  --ink: 245 247 251;
+  /* #f5f7fb (14.6:1 on raised) */
+  --ink-muted: 205 213 227;
+  /* #cdd5e3 (10.6:1) */
+  --ink-subtle: 154 167 191;
+  /* #9aa7bf (6.4:1) */
+  --ink-faint: 107 120 148;
+  /* #6b7894 placeholders (3.5:1) */
+
+  --accent: 74 222 128;
+  /* #4ade80 night grass green */
+  --accent-hover: 134 239 172;
+  /* #86efac */
+  --accent-fg: 11 17 32;
+  --accent-soft: 22 58 44;
+  --accent-ring: 250 204 21;
+
+  --star-fg: 11 17 32;
+  --star-soft: 58 48 22;
+  --star-ring: 250 204 21;
+
+  --toy-ink: 11 17 32;
+  /* #0b1120 cartoon ink inside colorful glyphs/icons */
+  --toy-edge: 56 70 106;
+  /* #38466a quiet slate rim around surfaces */
+  --toy-lip: 42 54 84;
+  /* #2a3654 slate 3D extrusion */
+  --toy-icon-outline: #64748b;
+  /* subtle slate edge around filled toy icons on dark surfaces */
+  --toy-icon-ink: #0f172a;
+  /* dark ink for internal details on bright icon fills */
+  --toy-icon-stroke: #cbd5e1;
+  /* soft silver-slate for freestanding open strokes on dark surfaces */
+
+  --shadow-inset-hi: inset 0 1.5px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Force bubbly toy font across all utility font classes in Toy Mode */
+html.theme-toy body,
+html.theme-toy .font-sans,
+html.theme-toy .font-display,
+html.theme-toy .font-serif,
+html.theme-toy button,
+html.theme-toy input,
+html.theme-toy textarea {
+  font-family: 'Fredoka', 'Rubik', 'Heebo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* 1. Home Screen Sky & Lego Stud Baseplate Pattern */
+html.theme-toy:not(.dark) .home-screen-bg,
+html.theme-toy:not(.dark) .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-toy:not(.dark) .auth-gate-bg {
+  background-color: #e0f2fe !important;
+  background-image: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 52%, #f0f9ff 100%) !important;
+}
+
+html.theme-toy.dark .home-screen-bg,
+html.theme-toy.dark .home-screen-bg:has([data-home-ambient="constellations"]),
+html.theme-toy.dark .auth-gate-bg {
+  background-color: #0f1626 !important;
+  background-image: linear-gradient(180deg, #0b1120 0%, #101829 50%, #171c38 100%) !important;
+}
+
+html.theme-toy:not(.dark) .home-screen-bg::before {
+  background-image: radial-gradient(rgba(14, 165, 233, 0.22) 2.5px, transparent 2.5px) !important;
+  background-size: 32px 32px !important;
+}
+
+html.theme-toy.dark .home-screen-bg::before {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.09) 2.5px, transparent 2.5px) !important;
+  background-size: 32px 32px !important;
+}
+
+/* 2. Hero Title & Subtitle on Home Screen */
+html.theme-toy .home-hero-title {
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+html.theme-toy.dark .home-hero-title {
+  text-shadow: 0 3px 0 rgb(var(--toy-lip));
+}
+
+html.theme-toy .home-hero-subtitle {
+  font-weight: 500 !important;
+}
+
+html.theme-toy.dark .home-hero-subtitle {
+  color: rgb(var(--ink-muted)) !important;
+}
+
+/* Logo sticker rim only exists at night, where the dark cartoon ink would melt into the sky */
+html.theme-toy:not(.dark) .chronix-toy-logo-rim {
+  display: none;
+}
+
+/* 3. Floating Island Docks, Menus, Panels & Top/Bottom Bars */
+html.theme-toy .floating-dock-glass,
+html.theme-toy .glass-panel,
+html.theme-toy .glass-dock {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  box-shadow: var(--shadow-inset-hi), 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .mobile-top-command-bar {
+  background: rgb(var(--surface-raised)) !important;
+  border-bottom: 3px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 3px 0 0 rgb(var(--toy-lip) / 0.15) !important;
+}
+
+html.theme-toy .mobile-bottom-command-bar {
+  background: rgb(var(--surface-raised)) !important;
+  border-top: 3px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 -3px 0 0 rgb(var(--toy-lip) / 0.15) !important;
+}
+
+/* 4. Prompt Bar (3D Toy Block Input Island + Push-Down Submit Button) */
+html.theme-toy .prompt-dock-shell {
+  background: rgb(var(--surface-raised)) !important;
+  border: 3px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: var(--shadow-inset-hi), 0 6px 0 0 rgb(var(--toy-lip)) !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, border-color 0.15s ease !important;
+}
+
+html.theme-toy .prompt-dock-shell:focus-within {
+  border-color: rgb(var(--toy-edge)) !important;
+  box-shadow: var(--shadow-inset-hi), 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy.dark .prompt-dock-shell:focus-within {
+  border-color: #5a6a92 !important;
+}
+
+/* Day-mode crawling light around prompt box: ride cleanly over the 3px dark border track */
+html.theme-toy:not(.dark) .prompt-bar-shell-running {
+  box-shadow: var(--shadow-inset-hi), 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy:not(.dark) .prompt-bar-shell-running::before {
+  inset: -3px !important;
+  padding: 3px !important;
+  background: conic-gradient(from var(--chronix-crawl-angle),
+      transparent 0deg,
+      transparent 215deg,
+      rgba(56, 189, 248, 0) 215deg,
+      rgba(56, 189, 248, 0.85) 265deg,
+      rgba(34, 197, 94, 0.95) 315deg,
+      #facc15 348deg,
+      #fef08a 356deg,
+      rgba(250, 204, 21, 0) 360deg) !important;
+}
+
+html.theme-toy .prompt-bar-input {
+  font-weight: 600 !important;
+}
+
+/* Target ONLY the submit/stop button in the action row (never the segmented grounding or media buttons) */
+html.theme-toy .prompt-dock-shell > div > button,
+html.theme-toy .prompt-submit-btn {
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 3px 0 0 rgb(var(--toy-lip)) !important;
+  font-weight: 700 !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease !important;
+}
+
+html.theme-toy .prompt-dock-shell > div > button[type="submit"]:not(:disabled),
+html.theme-toy .prompt-submit-btn[type="submit"]:not(:disabled) {
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+}
+
+html.theme-toy .prompt-dock-shell > div > button[type="submit"]:not(:disabled):hover,
+html.theme-toy .prompt-submit-btn[type="submit"]:not(:disabled):hover {
+  background-color: #16a34a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .prompt-dock-shell > div > button:not(:disabled):active,
+html.theme-toy .prompt-submit-btn:not(:disabled):active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 0 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 5. Quick Action Toy Pills below Search Bar (Prompt Guide / Build Own) */
+html.theme-toy .home-quick-actions button {
+  border: 2.5px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease, background-color 0.15s ease !important;
+}
+
+html.theme-toy .home-quick-actions button:nth-child(1) {
+  background-color: #facc15 !important;
+}
+
+html.theme-toy .home-quick-actions button:nth-child(2) {
+  background-color: #38bdf8 !important;
+}
+
+html.theme-toy .home-quick-actions button:nth-child(3) {
+  background-color: #c084fc !important;
+}
+
+html.theme-toy .home-quick-actions button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 0 0 rgb(var(--toy-lip)) !important;
+  filter: brightness(1.04);
+}
+
+html.theme-toy .home-quick-actions button:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 6. Prompt Example Carousel Cards: Colorful 3D Toy Bricks */
+html.theme-toy .prompt-example-card {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1.15rem !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.15s ease !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 1) {
+  border-top: 6px solid #ef4444 !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 2) {
+  border-top: 6px solid #f97316 !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 3) {
+  border-top: 6px solid #facc15 !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 4) {
+  border-top: 6px solid #22c55e !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 5) {
+  border-top: 6px solid #38bdf8 !important;
+}
+
+html.theme-toy .prompt-example-card:nth-child(6n + 6) {
+  border-top: 6px solid #c084fc !important;
+}
+
+html.theme-toy .prompt-example-card p {
+  font-weight: 600 !important;
+  color: rgb(var(--ink)) !important;
+}
+
+html.theme-toy .prompt-example-card:hover:not(:disabled) {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 7px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .prompt-example-card:active:not(:disabled) {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* Carousel Left/Right Toy Arrow Buttons */
+html.theme-toy .group\/carousel > button {
+  background: #facc15 !important;
+  color: #0f172a !important;
+  border: 2.5px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 3px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .group\/carousel > button:hover {
+  background: #fde047 !important;
+  transform: translateY(calc(-50% - 1px)) !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .group\/carousel > button:active {
+  transform: translateY(calc(-50% + 2px)) !important;
+  box-shadow: 0 1px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 7. Segmented Controls & Switches (Toy Block Toggle) */
+html.theme-toy .seg-track {
+  background-color: rgb(var(--surface-sunken)) !important;
+  border: 2px solid rgb(var(--toy-edge)) !important;
+  box-shadow: inset 0 2px 0 0 rgb(var(--toy-lip) / 0.12) !important;
+  padding: 3px !important;
+}
+
+html.theme-toy .seg-item {
+  font-weight: 600 !important;
+  border: 2px solid transparent !important;
+  box-shadow: none !important;
+}
+
+html.theme-toy .seg-item:not(.seg-item-active) {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html.theme-toy .seg-item.seg-item-active {
+  background-color: #facc15 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border: 2px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 8. Constellation Floating Badge on Home Screen */
+html.theme-toy .constellation-floating-badge {
+  background: #facc15 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border: 2.5px solid rgb(var(--toy-ink)) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+  backdrop-filter: none !important;
+}
+
+/* 9. Histropedia Swimlanes & Timeline Track Headers */
+html.theme-toy .histropedia-lane-header,
+html.theme-toy .histropedia-lane.is-lane-collapsed .histropedia-lane-header,
+html.theme-toy .histropedia-lane.is-lane-collapsed:not(.histropedia-lane-position-bottom):not([data-is-last-lane="true"]) .histropedia-lane-header {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-top: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-bottom: none !important;
+  border-inline-start: none !important;
+  background: color-mix(in srgb, var(--lane-color, #0ea5e9) 24%, rgb(var(--surface-raised))) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow:
+    inset 8px 0 0 0 var(--lane-color, #0ea5e9),
+    inset 0 -2px 0 0 rgb(var(--toy-edge)) !important;
+}
+
+html.theme-toy .histropedia-lane.is-lane-hovered .histropedia-lane-header {
+  background: color-mix(in srgb, var(--lane-color, #0ea5e9) 32%, rgb(var(--surface-raised))) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.theme-toy .histropedia-lane:hover .histropedia-lane-header {
+    background: color-mix(in srgb, var(--lane-color, #0ea5e9) 32%, rgb(var(--surface-raised))) !important;
+  }
+}
+
+html.theme-toy .histropedia-lane-title {
+  padding-inline-start: 22px !important;
+  font-family: 'Fredoka', 'Rubik', 'Heebo', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.03em !important;
+  color: rgb(var(--ink)) !important;
+}
+
+/* Replace monochrome CSS-masked lane icons with colorful 3D Toy Block SVGs in Toy mode */
+html.theme-toy .histropedia-lane-title::before {
+  width: 16px !important;
+  height: 16px !important;
+  background-color: transparent !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 13L2 18L12 23L22 18L12 13Z' fill='%234ade80' stroke='%230f172a' stroke-width='2' stroke-linejoin='round' paint-order='stroke fill'/%3E%3Cpath d='M12 7.5L2 12.5L12 17.5L22 12.5L12 7.5Z' fill='%23fbbf24' stroke='%230f172a' stroke-width='2' stroke-linejoin='round' paint-order='stroke fill'/%3E%3Cpath d='M12 2L2 7L12 12L22 7L12 2Z' fill='%2338bdf8' stroke='%230f172a' stroke-width='2' stroke-linejoin='round' paint-order='stroke fill'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+
+html.theme-toy.dark .histropedia-lane-title::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 13L2 18L12 23L22 18L12 13Z' fill='%234ade80' stroke='%2364748b' stroke-width='1.7' stroke-linejoin='round' paint-order='stroke fill'/%3E%3Cpath d='M12 7.5L2 12.5L12 17.5L22 12.5L12 7.5Z' fill='%23fbbf24' stroke='%2364748b' stroke-width='1.7' stroke-linejoin='round' paint-order='stroke fill'/%3E%3Cpath d='M12 2L2 7L12 12L22 7L12 2Z' fill='%2338bdf8' stroke='%2364748b' stroke-width='1.7' stroke-linejoin='round' paint-order='stroke fill'/%3E%3C/svg%3E") !important;
+}
+
+html.theme-toy .histropedia-lane-title::after {
+  width: 15px !important;
+  height: 15px !important;
+  opacity: 1 !important;
+  background-color: transparent !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23facc15' stroke='%230f172a' stroke-width='2' paint-order='stroke fill'/%3E%3Cpath d='M12 7.5V16.5M16 12.5L12 16.5L8 12.5' stroke='%230f172a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+
+html.theme-toy.dark .histropedia-lane-title::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23facc15' stroke='%2364748b' stroke-width='1.7' paint-order='stroke fill'/%3E%3Cpath d='M12 7.5V16.5M16 12.5L12 16.5L8 12.5' stroke='%230f172a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+html.theme-toy .histropedia-lane-body {
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-inline-start: none !important;
+  box-shadow: inset 8px 0 0 0 var(--lane-color, #0ea5e9) !important;
+}
+
+html.theme-toy .chronix-lane-resizer-grip {
+  background: #facc15 !important;
+  border: 2px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 10. Floating Chat Launcher & Top Chat Button */
+html.theme-toy .chronix-chat-launcher-inner,
+html.theme-toy .chronix-chat-top-btn .chronix-chat-top-inner {
+  background-color: #facc15 !important;
+  color: #0f172a !important;
+  border: 2.5px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-chat-launcher:hover .chronix-chat-launcher-inner,
+html.theme-toy .chronix-chat-top-btn:hover .chronix-chat-top-inner {
+  background-color: #fde047 !important;
+  box-shadow: 0 5px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-chat-launcher:active .chronix-chat-launcher-inner,
+html.theme-toy .chronix-chat-top-btn:active .chronix-chat-top-inner {
+  box-shadow: 0 1px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 11. Modals, Chat Teaser, Chat Panel & Dialogs */
+html.theme-toy [role="dialog"][aria-modal="true"] > div.bg-surface-overlay,
+html.theme-toy [role="dialog"][aria-modal="true"] > div.bg-surface,
+html.theme-toy [role="dialog"][aria-modal="true"] > div.bg-surface-raised {
+  border: 3px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 8px 0 0 rgb(var(--toy-lip)) !important;
+  border-radius: 1.5rem !important;
+}
+
+html.theme-toy .chronix-chat-teaser {
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 5px 0 0 rgb(var(--toy-lip)) !important;
+  border-radius: 1.15rem !important;
+}
+
+html.theme-toy .chronix-chat-teaser button.group {
+  border: 2px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+  border-radius: 0.75rem !important;
+}
+
+html.theme-toy #guide-chat-panel {
+  border: 3px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy #guide-chat-panel textarea {
+  border: 2px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy #guide-chat-panel textarea:focus {
+  border-color: rgb(var(--toy-edge)) !important;
+  box-shadow: 0 0 0 2px #facc15, 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* 12. Tactile Toy Push-Button Physics across Dock, Mobile Command Bar & Feed Cards */
+html.theme-toy .chronix-desktop-rail {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 3px solid rgb(var(--toy-edge)) !important;
+  box-shadow: none !important;
+}
+
+html.theme-toy .dock-rail-btn {
+  border-radius: 0.75rem !important;
+  border: 2px solid transparent !important;
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease !important;
+}
+
+html.theme-toy .dock-rail-btn:hover:not(:disabled) {
+  background-color: rgb(var(--surface-hover)) !important;
+  border-color: rgb(var(--toy-edge)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+  transform: translateY(-1px);
+}
+
+html.theme-toy .dock-rail-btn:active:not(:disabled) {
+  transform: translateY(1px) !important;
+  box-shadow: 0 0 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .dock-rail-btn[aria-pressed="true"],
+html.theme-toy .dock-rail-btn[aria-expanded="true"] {
+  background-color: #fef08a !important;
+  border-color: rgb(var(--toy-edge)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy.dark .dock-rail-btn[aria-pressed="true"],
+html.theme-toy.dark .dock-rail-btn[aria-expanded="true"] {
+  background-color: rgb(var(--surface-active)) !important;
+  border-color: rgb(var(--toy-edge)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* Mobile Bottom Command Bar tactile 3D Toy buttons */
+html.theme-toy .mobile-bottom-command-bar > button {
+  border-radius: 0.75rem !important;
+  border: 2px solid rgb(var(--toy-edge)) !important;
+  background-color: rgb(var(--surface-sunken)) !important;
+  box-shadow: 0 2.5px 0 0 rgb(var(--toy-lip)) !important;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease, background-color 0.12s ease !important;
+}
+
+html.theme-toy .mobile-bottom-command-bar > button:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 0 0 0 rgb(var(--toy-lip)) !important;
+}
+
+/* Mobile Feed & Cards List 3D Toy Block cards */
+html.theme-toy [data-article-id] {
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy [data-article-id]:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-toy-icon {
+  overflow: visible;
+  filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.18));
+}
+
+html.theme-toy.dark .chronix-toy-icon :is(path, rect, circle, polygon, ellipse)[stroke="var(--toy-icon-outline, #0f172a)"] {
+  paint-order: stroke fill;
+  stroke-width: 1.65px;
+}
+
+html.theme-toy.dark .chronix-toy-icon {
+  filter: drop-shadow(0 1px 0 rgba(2, 6, 23, 0.45));
+}
+
+html.theme-toy .btn-spring:active:not(:disabled),
+html.theme-toy .btn-spring-sm:active:not(:disabled) {
+  transform: translateY(2px) scale(0.98) !important;
+}
+
+/* 13. Timeline Dock Popovers, Map Capsule/PiP/Controls, Side Drawers & Mobile Sheets */
+html.theme-toy .chronix-dock-popover {
+  background: rgb(var(--surface-overlay)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 3px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-map-capsule,
+html.theme-toy .chronix-map-full-bar,
+html.theme-toy .chronix-map-split-bar,
+html.theme-toy .chronix-map-control-pill {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-map-teaser-pill {
+  background: #fef08a !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border: 2px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-map-teaser-pill > span:first-child {
+  background-color: #16a34a !important;
+}
+
+html.theme-toy .chronix-map-pip {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 3px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .chronix-map-pip > div:first-child {
+  background: rgb(var(--surface-sunken)) !important;
+  border-bottom: 2.5px solid rgb(var(--toy-edge)) !important;
+}
+
+@media (min-width: 768px), (min-width: 500px) and (orientation: landscape) {
+  html.theme-toy .chronix-side-drawer {
+    border-right: 3px solid rgb(var(--toy-edge)) !important;
+    box-shadow: 5px 0 0 0 rgb(var(--toy-lip) / 0.22) !important;
+  }
+}
+
+@media (max-width: 499px), (max-width: 767px) and (orientation: portrait) {
+  html.theme-toy .chronix-side-drawer,
+  html.theme-toy .chronix-mobile-sheet {
+    border-top: 3px solid rgb(var(--toy-edge)) !important;
+    box-shadow: 0 -4px 0 0 rgb(var(--toy-lip)) !important;
+  }
+}
+
+html.theme-toy .chronix-leaflet-popup .leaflet-popup-content-wrapper {
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 5px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+
+/* 14. Night Mode "gem" blocks: colored toy blocks drop the black cartoon ink at night and are
+   edged + extruded with a deeper shade of their own hue, so they glow cleanly on midnight slate. */
+html.theme-toy.dark {
+  --toy-gem-yellow: 202 138 4;
+  /* #ca8a04 */
+  --toy-gem-sky: 2 132 199;
+  /* #0284c7 */
+  --toy-gem-grape: 147 51 234;
+  /* #9333ea */
+  --toy-gem-grass: 21 128 61;
+  /* #15803d */
+}
+
+html.theme-toy.dark .home-quick-actions button:nth-child(1),
+html.theme-toy.dark .group\/carousel > button,
+html.theme-toy.dark .seg-item.seg-item-active,
+html.theme-toy.dark .constellation-floating-badge,
+html.theme-toy.dark .chronix-chat-launcher-inner,
+html.theme-toy.dark .chronix-chat-top-btn .chronix-chat-top-inner,
+html.theme-toy.dark .chronix-lane-resizer-grip,
+html.theme-toy.dark .chronix-map-teaser-pill {
+  --gem: var(--toy-gem-yellow);
+}
+
+html.theme-toy.dark .home-quick-actions button:nth-child(2) {
+  --gem: var(--toy-gem-sky);
+}
+
+html.theme-toy.dark .home-quick-actions button:nth-child(3) {
+  --gem: var(--toy-gem-grape);
+}
+
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled) {
+  --gem: var(--toy-gem-grass);
+}
+
+html.theme-toy.dark .home-quick-actions button,
+html.theme-toy.dark .group\/carousel > button,
+html.theme-toy.dark .constellation-floating-badge,
+html.theme-toy.dark .chronix-chat-launcher-inner,
+html.theme-toy.dark .chronix-chat-top-btn .chronix-chat-top-inner,
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled) {
+  border-color: rgb(var(--gem)) !important;
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.35), 0 4px 0 0 rgb(var(--gem)) !important;
+}
+
+/* Keep dark outline on icons placed directly inside bright yellow/green/sky/grape buttons in Night Mode */
+html.theme-toy.dark .bg-accent,
+html.theme-toy.dark .home-quick-actions button,
+html.theme-toy.dark .group\/carousel > button,
+html.theme-toy.dark .seg-item.seg-item-active,
+html.theme-toy.dark .constellation-floating-badge,
+html.theme-toy.dark .chronix-chat-launcher-inner,
+html.theme-toy.dark .chronix-chat-top-btn .chronix-chat-top-inner,
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled),
+html.theme-toy.dark .prompt-submit-btn[type="submit"]:not(:disabled),
+html.theme-toy.dark .chronix-map-teaser-pill,
+html.theme-toy.dark .trivia-toy-badge {
+  --toy-icon-outline: #0f172a;
+  --toy-icon-stroke: #0f172a;
+}
+
+html.theme-toy.dark .home-quick-actions button:hover,
+html.theme-toy.dark .group\/carousel > button:hover,
+html.theme-toy.dark .chronix-chat-launcher:hover .chronix-chat-launcher-inner,
+html.theme-toy.dark .chronix-chat-top-btn:hover .chronix-chat-top-inner,
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled):hover {
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.35), 0 6px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy.dark .home-quick-actions button:active,
+html.theme-toy.dark .group\/carousel > button:active,
+html.theme-toy.dark .chronix-chat-launcher:active .chronix-chat-launcher-inner,
+html.theme-toy.dark .chronix-chat-top-btn:active .chronix-chat-top-inner,
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled):active {
+  box-shadow: 0 1px 0 0 rgb(var(--gem)) !important;
+}
+
+/* 15. "Did You Know?" Trivia 3D Toy Card (shown while generating a timeline in Kids mode) */
+html.theme-toy .trivia-toy-card {
+  background: rgb(var(--surface-raised)) !important;
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-top: 6px solid var(--trivia-stripe-color, #facc15) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: var(--shadow-inset-hi), 0 5px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .trivia-toy-badge {
+  background-color: #facc15 !important;
+  color: #0f172a !important;
+  border: 2px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy.dark .seg-item.seg-item-active,
+html.theme-toy.dark .chronix-lane-resizer-grip,
+html.theme-toy.dark .chronix-map-teaser-pill,
+html.theme-toy.dark .trivia-toy-badge {
+  --gem: var(--toy-gem-yellow);
+  border-color: rgb(var(--gem)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy.dark .prompt-dock-shell > div > button[type="submit"]:not(:disabled) {
+  background-color: #22c55e !important;
+  color: #052e16 !important;
+}
+
+html.theme-toy.dark .chronix-map-teaser-pill {
+  background: #facc15 !important;
+}
+
+/* Night lane headers: a whisper of the lane hue on slate instead of a loud colored slab */
+html.theme-toy.dark .histropedia-lane-header {
+  background: color-mix(in srgb, var(--lane-color, #0ea5e9) 12%, rgb(var(--surface-raised))) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+
+
+/* ========================================================================= */
+/* ── Theme-Adaptive Ko-fi Cup Button & Community Transparency Card ────── */
+/* ========================================================================= */
+@keyframes kofi-wiggle {
+  0% { transform: rotate(0) scale(1); }
+  60% { transform: rotate(0) scale(1); }
+  75% { transform: rotate(0) scale(1.12); }
+  80% { transform: rotate(0) scale(1.1); }
+  84% { transform: rotate(-10deg) scale(1.1); }
+  88% { transform: rotate(10deg) scale(1.1); }
+  92% { transform: rotate(-10deg) scale(1.1); }
+  96% { transform: rotate(10deg) scale(1.1); }
+  100% { transform: rotate(0) scale(1); }
+}
+
+.kofi-cup-wiggle {
+  transform-origin: 50% 60%;
+  animation: kofi-wiggle 3.2s infinite;
+}
+
+.kofi-support-btn {
+  --kofi-cup-halo: #ffffff;
+}
+
+.kofi-support-btn:hover .kofi-cup-wiggle {
+  animation-duration: 1.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kofi-cup-wiggle {
+    animation: none !important;
+  }
+}
+
+/* Classic Mode: subtle monochrome ambient glow; clean cup icon on light dark-mode accent */
+.community-transparency-orb {
+  background: radial-gradient(circle, rgb(var(--accent)) 0%, transparent 70%);
+}
+
+html.dark:not(.theme-toy):not(.theme-comic):not(.theme-bento):not(.theme-journal) .kofi-support-btn {
+  --kofi-cup-halo: transparent;
+}
+
+/* Kids Mode (theme-toy): 3D Toy Block card + tactile emerald green push button */
+html.theme-toy .kofi-support-btn {
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 2.5px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 4px 0 0 rgb(var(--toy-lip)) !important;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease, background-color 0.15s ease !important;
+}
+
+html.theme-toy .kofi-support-btn:hover {
+  background-color: #16a34a !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .kofi-support-btn:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy.dark .kofi-support-btn {
+  --gem: var(--toy-gem-grass);
+  --kofi-cup-halo: transparent;
+  background-color: #22c55e !important;
+  color: #052e16 !important;
+  border-color: rgb(var(--gem)) !important;
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.35), 0 4px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy.dark .kofi-support-btn:hover {
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.35), 0 6px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy.dark .kofi-support-btn:active {
+  box-shadow: 0 1px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy .community-transparency-card {
+  background: rgb(var(--surface-raised)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 2.5px solid rgb(var(--toy-edge)) !important;
+  border-top: 6px solid #facc15 !important;
+  border-radius: 1.25rem !important;
+  box-shadow: var(--shadow-inset-hi), 0 5px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy .community-transparency-orb {
+  display: none;
+}
+
+html.theme-toy .community-transparency-badge {
+  background-color: #facc15 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border: 2px solid rgb(var(--toy-ink)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--toy-lip)) !important;
+}
+
+html.theme-toy.dark .community-transparency-badge {
+  --gem: var(--toy-gem-yellow);
+  border-color: rgb(var(--gem)) !important;
+  box-shadow: 0 2px 0 0 rgb(var(--gem)) !important;
+}
+
+html.theme-toy .community-progress-track {
+  border: 2px solid rgb(var(--toy-edge)) !important;
+  height: 0.65rem !important;
+}
+
+html.theme-toy .community-progress-fill {
+  background-color: #22c55e !important;
+}
+
+/* Teens Mode (theme-bento): Clean Bento Tile + Bento Violet CTA & multi-hue progress bar */
+html.theme-bento .community-transparency-card {
+  background: rgb(var(--bento-tile)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--bento-hair) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html.theme-bento .community-transparency-orb {
+  background: radial-gradient(circle, rgb(var(--bento-violet)) 0%, transparent 70%);
+  opacity: 0.22;
+}
+
+html.theme-bento .community-transparency-badge {
+  background-color: rgb(var(--accent-soft)) !important;
+  color: rgb(var(--accent)) !important;
+  border: 1px solid rgb(var(--accent) / 0.25) !important;
+}
+
+html.theme-bento .community-donated-amount {
+  color: rgb(var(--accent)) !important;
+}
+
+html.theme-bento .community-progress-fill {
+  background: var(--bento-gradient) !important;
+}
+
+html.theme-bento .kofi-support-btn {
+  background: rgb(var(--accent)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px -6px rgb(var(--accent) / 0.55) !important;
+}
+
+html.theme-bento.dark .kofi-support-btn {
+  --kofi-cup-halo: transparent;
+  color: rgb(var(--accent-fg)) !important;
+}
+
+/* Comic Mode (theme-comic): Ink outline + hard offset comic shadow */
+html.theme-comic .kofi-support-btn {
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  box-shadow: var(--shadow-control) !important;
+}
+
+html.theme-comic .community-transparency-card {
+  border: 2px solid rgb(var(--comic-edge)) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
