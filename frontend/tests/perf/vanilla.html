@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Histropedia baseline</title>
+  <style>html, body { margin: 0; height: 100%; } #histropedia-container { width: 100vw; height: 100vh; }</style>
+</head>
+<body>
+  <div id="histropedia-container"></div>
+  <!-- Bare HistropediaJS with the perf dataset (window.__perfData, injected by the
+       benchmark). Used as the "engine alone" baseline in timelineZoomPerf.mjs. -->
+  <script type="module">
+    import { Timeline } from '/node_modules/histropediajs/dist/histropedia.esm.js';
+    const data = window.__perfData;
+    const container = document.getElementById('histropedia-container');
+    const options = {
+      width: container.clientWidth,
+      height: container.clientHeight,
+      disableBranding: true,
+      article: { density: data.density || 'high' },
+    };
+    if (data.lanes?.length) options.lane = { data: data.lanes };
+    const tl = new Timeline(container, options);
+    tl.load(data.articles.map((a) => ({ ...a, from: { year: a.from.year, month: a.from.month, day: a.from.day } })));
+    tl.fitArticles({ padding: 70 });
+    window.__timeline = tl;
+  </script>
+</body>
+</html>

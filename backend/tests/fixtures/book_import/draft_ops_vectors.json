@@ -1,0 +1,4298 @@
+{
+ "draft": {
+  "v": 1,
+  "title": "Book",
+  "description": "",
+  "overview": "",
+  "lanes": [
+   {
+    "id": "mom",
+    "title": "Mom",
+    "color": "#111"
+   },
+   {
+    "id": "dad",
+    "title": "Dad",
+    "color": "#222"
+   }
+  ],
+  "chapters": [
+   {
+    "id": "ch1",
+    "title": "Childhood",
+    "firstUnit": 0,
+    "lastUnit": 3,
+    "include": true,
+    "status": "accepted"
+   },
+   {
+    "id": "ch2",
+    "title": "Recipes",
+    "firstUnit": 4,
+    "lastUnit": 5,
+    "include": true,
+    "status": "accepted"
+   }
+  ],
+  "cast": [
+   {
+    "id": "p1",
+    "name": "Judy",
+    "aliases": [
+     "Mom"
+    ]
+   },
+   {
+    "id": "p2",
+    "name": "Meir",
+    "aliases": []
+   },
+   {
+    "id": "p3",
+    "name": "M. Singer",
+    "aliases": []
+   }
+  ],
+  "events": [
+   {
+    "id": "bk-0001",
+    "status": "accepted",
+    "needsReview": true,
+    "flags": [
+     "date_inferred",
+     "possible_duplicate"
+    ],
+    "title": "Born",
+    "from": {
+     "year": 1944,
+     "month": null,
+     "day": null,
+     "precision": "year"
+    },
+    "people": [
+     "p1"
+    ],
+    "unresolvedPeople": [
+     "Mom"
+    ],
+    "lane": "mom",
+    "chapterId": "ch1",
+    "photos": [
+     {
+      "photoId": "u0001-p1",
+      "role": "cover",
+      "confidence": "high"
+     }
+    ],
+    "sourceRefs": [
+     {
+      "sourceId": "s0",
+      "unit": 1,
+      "snippet": "born"
+     }
+    ],
+    "mergedFrom": []
+   },
+   {
+    "id": "bk-0002",
+    "status": "accepted",
+    "needsReview": true,
+    "flags": [
+     "possible_duplicate"
+    ],
+    "title": "Birth in Monthey",
+    "from": {
+     "year": 1944,
+     "month": 7,
+     "day": 26,
+     "precision": "day"
+    },
+    "people": [
+     "p1",
+     "p3"
+    ],
+    "lane": "mom",
+    "chapterId": "ch1",
+    "photos": [
+     {
+      "photoId": "u0002-p1",
+      "role": "cover",
+      "confidence": "medium"
+     }
+    ],
+    "sourceRefs": [
+     {
+      "sourceId": "s0",
+      "unit": 2,
+      "snippet": "26.07.1944"
+     }
+    ],
+    "mergedFrom": []
+   },
+   {
+    "id": "bk-0003",
+    "status": "accepted",
+    "needsReview": true,
+    "flags": [
+     "undated"
+    ],
+    "title": "Kugel",
+    "from": null,
+    "people": [],
+    "lane": "dad",
+    "chapterId": "ch2",
+    "photos": [],
+    "sourceRefs": [],
+    "mergedFrom": []
+   }
+  ],
+  "photos": [
+   {
+    "id": "u0001-p1",
+    "unit": 1,
+    "status": "linked",
+    "eventId": "bk-0001"
+   },
+   {
+    "id": "u0002-p1",
+    "unit": 2,
+    "status": "linked",
+    "eventId": "bk-0002"
+   },
+   {
+    "id": "u0003-p1",
+    "unit": 3,
+    "status": "tray",
+    "eventId": null,
+    "suggestedEventId": "bk-0002"
+   },
+   {
+    "id": "u0003-p2",
+    "unit": 3,
+    "status": "tray",
+    "eventId": null
+   }
+  ],
+  "stats": {}
+ },
+ "cases": [
+  {
+   "name": "update title and date clears date flags",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0001",
+     "patch": {
+      "title": "Judy is born",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "precision": "month"
+      }
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Judy is born",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": null,
+       "precision": "month"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "clearing a date marks undated",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0002",
+     "patch": {
+      "from": null
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate",
+       "undated"
+      ],
+      "title": "Birth in Monthey",
+      "from": null,
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "rank is clamped",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0001",
+     "patch": {
+      "rank": 42
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": [],
+      "rank": 10
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "unknown patch key",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0001",
+     "patch": {
+      "photos": []
+     }
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "bad month",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0001",
+     "patch": {
+      "from": {
+       "year": 1944,
+       "month": 13
+      }
+     }
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "mark reviewed",
+   "ops": [
+    {
+     "op": "event.markReviewed",
+     "ids": [
+      "bk-0001",
+      "bk-0002"
+     ]
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": false,
+      "flags": [],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": false,
+      "flags": [],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 1
+    }
+   }
+  },
+  {
+   "name": "reject two",
+   "ops": [
+    {
+     "op": "event.setStatus",
+     "ids": [
+      "bk-0001",
+      "bk-0003"
+     ],
+     "status": "rejected"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "rejected",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "rejected",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 1
+    }
+   }
+  },
+  {
+   "name": "merge duplicates",
+   "ops": [
+    {
+     "op": "event.merge",
+     "targetId": "bk-0002",
+     "sourceIds": [
+      "bk-0001"
+     ]
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": false,
+      "flags": [],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       },
+       {
+        "photoId": "u0001-p1",
+        "role": "gallery",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       },
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": [
+       "bk-0001"
+      ]
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 2,
+     "needsReview": 1
+    }
+   }
+  },
+  {
+   "name": "create event",
+   "ops": [
+    {
+     "op": "event.create",
+     "event": {
+      "id": "bk-u1",
+      "title": "New",
+      "from": {
+       "year": 1970
+      },
+      "lane": "dad"
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-u1",
+      "title": "New",
+      "from": {
+       "year": 1970,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "lane": "dad",
+      "to": null,
+      "status": "accepted",
+      "photos": [],
+      "sourceRefs": [],
+      "people": [],
+      "flags": [],
+      "needsReview": false
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 4,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "create undated event",
+   "ops": [
+    {
+     "op": "event.create",
+     "event": {
+      "id": "bk-u2",
+      "title": "Someday"
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-u2",
+      "title": "Someday",
+      "from": null,
+      "to": null,
+      "status": "accepted",
+      "photos": [],
+      "sourceRefs": [],
+      "people": [],
+      "flags": [
+       "undated"
+      ],
+      "needsReview": true
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 4,
+     "needsReview": 4
+    }
+   }
+  },
+  {
+   "name": "duplicate create",
+   "ops": [
+    {
+     "op": "event.create",
+     "event": {
+      "id": "bk-0001",
+      "title": "Dup"
+     }
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "assign tray photo as cover",
+   "ops": [
+    {
+     "op": "photo.assign",
+     "photoId": "u0003-p1",
+     "eventId": "bk-0002",
+     "role": "cover"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0003-p1",
+        "role": "cover",
+        "confidence": "high"
+       },
+       {
+        "photoId": "u0002-p1",
+        "role": "gallery",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "linked",
+      "eventId": "bk-0002",
+      "suggestedEventId": null,
+      "confidence": "high"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "move photo between events",
+   "ops": [
+    {
+     "op": "photo.assign",
+     "photoId": "u0001-p1",
+     "eventId": "bk-0002"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       },
+       {
+        "photoId": "u0001-p1",
+        "role": "gallery",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0002",
+      "confidence": "high",
+      "suggestedEventId": null
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "unassign",
+   "ops": [
+    {
+     "op": "photo.unassign",
+     "photoIds": [
+      "u0002-p1"
+     ]
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "tray",
+      "eventId": null
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "exclude and restore",
+   "ops": [
+    {
+     "op": "photo.exclude",
+     "photoIds": [
+      "u0001-p1",
+      "u0003-p2"
+     ]
+    },
+    {
+     "op": "photo.exclude",
+     "photoIds": [
+      "u0003-p2"
+     ],
+     "excluded": false
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "excluded",
+      "eventId": null
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "reorder",
+   "ops": [
+    {
+     "op": "photo.assign",
+     "photoId": "u0003-p2",
+     "eventId": "bk-0001"
+    },
+    {
+     "op": "photo.reorder",
+     "eventId": "bk-0001",
+     "photoIds": [
+      "u0003-p2",
+      "u0001-p1"
+     ]
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0003-p2",
+        "role": "cover",
+        "confidence": "high"
+       },
+       {
+        "photoId": "u0001-p1",
+        "role": "gallery",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "linked",
+      "eventId": "bk-0001",
+      "confidence": "high",
+      "suggestedEventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "bad reorder",
+   "ops": [
+    {
+     "op": "photo.reorder",
+     "eventId": "bk-0001",
+     "photoIds": [
+      "u0003-p2"
+     ]
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "rename person",
+   "ops": [
+    {
+     "op": "person.rename",
+     "id": "p2",
+     "name": "  Meir Israel Singer "
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir Israel Singer",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "merge people",
+   "ops": [
+    {
+     "op": "person.merge",
+     "targetId": "p2",
+     "sourceIds": [
+      "p3"
+     ]
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": [
+       "M. Singer"
+      ]
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p2"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "resolve alias",
+   "ops": [
+    {
+     "op": "person.resolveAlias",
+     "eventIds": [
+      "bk-0001"
+     ],
+     "alias": "Mom",
+     "personId": "p1"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "lane upsert and delete",
+   "ops": [
+    {
+     "op": "lane.upsert",
+     "lane": {
+      "id": "family",
+      "title": "Family"
+     }
+    },
+    {
+     "op": "lane.delete",
+     "id": "dad",
+     "reassignTo": "family"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "family",
+      "title": "Family",
+      "color": null
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "family",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "lane rename",
+   "ops": [
+    {
+     "op": "lane.upsert",
+     "lane": {
+      "id": "mom",
+      "title": "Judy"
+     }
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Judy",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "delete last lane",
+   "ops": [
+    {
+     "op": "lane.delete",
+     "id": "mom",
+     "reassignTo": "dad"
+    },
+    {
+     "op": "lane.delete",
+     "id": "dad",
+     "reassignTo": "mom"
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "reject chapter",
+   "ops": [
+    {
+     "op": "chapter.setStatus",
+     "chapterId": "ch2",
+     "status": "rejected"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "rejected"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "rejected",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 2
+    }
+   }
+  },
+  {
+   "name": "rename chapter",
+   "ops": [
+    {
+     "op": "chapter.rename",
+     "id": "ch1",
+     "title": "Early years"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "Book",
+    "description": "",
+    "overview": "",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Early years",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "timeline text",
+   "ops": [
+    {
+     "op": "timeline.update",
+     "title": "The Singer Family",
+     "overview": "Hello"
+    }
+   ],
+   "expected": {
+    "v": 1,
+    "title": "The Singer Family",
+    "description": "",
+    "overview": "Hello",
+    "lanes": [
+     {
+      "id": "mom",
+      "title": "Mom",
+      "color": "#111"
+     },
+     {
+      "id": "dad",
+      "title": "Dad",
+      "color": "#222"
+     }
+    ],
+    "chapters": [
+     {
+      "id": "ch1",
+      "title": "Childhood",
+      "firstUnit": 0,
+      "lastUnit": 3,
+      "include": true,
+      "status": "accepted"
+     },
+     {
+      "id": "ch2",
+      "title": "Recipes",
+      "firstUnit": 4,
+      "lastUnit": 5,
+      "include": true,
+      "status": "accepted"
+     }
+    ],
+    "cast": [
+     {
+      "id": "p1",
+      "name": "Judy",
+      "aliases": [
+       "Mom"
+      ]
+     },
+     {
+      "id": "p2",
+      "name": "Meir",
+      "aliases": []
+     },
+     {
+      "id": "p3",
+      "name": "M. Singer",
+      "aliases": []
+     }
+    ],
+    "events": [
+     {
+      "id": "bk-0001",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "date_inferred",
+       "possible_duplicate"
+      ],
+      "title": "Born",
+      "from": {
+       "year": 1944,
+       "month": null,
+       "day": null,
+       "precision": "year"
+      },
+      "people": [
+       "p1"
+      ],
+      "unresolvedPeople": [
+       "Mom"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0001-p1",
+        "role": "cover",
+        "confidence": "high"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 1,
+        "snippet": "born"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0002",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "possible_duplicate"
+      ],
+      "title": "Birth in Monthey",
+      "from": {
+       "year": 1944,
+       "month": 7,
+       "day": 26,
+       "precision": "day"
+      },
+      "people": [
+       "p1",
+       "p3"
+      ],
+      "lane": "mom",
+      "chapterId": "ch1",
+      "photos": [
+       {
+        "photoId": "u0002-p1",
+        "role": "cover",
+        "confidence": "medium"
+       }
+      ],
+      "sourceRefs": [
+       {
+        "sourceId": "s0",
+        "unit": 2,
+        "snippet": "26.07.1944"
+       }
+      ],
+      "mergedFrom": []
+     },
+     {
+      "id": "bk-0003",
+      "status": "accepted",
+      "needsReview": true,
+      "flags": [
+       "undated"
+      ],
+      "title": "Kugel",
+      "from": null,
+      "people": [],
+      "lane": "dad",
+      "chapterId": "ch2",
+      "photos": [],
+      "sourceRefs": [],
+      "mergedFrom": []
+     }
+    ],
+    "photos": [
+     {
+      "id": "u0001-p1",
+      "unit": 1,
+      "status": "linked",
+      "eventId": "bk-0001"
+     },
+     {
+      "id": "u0002-p1",
+      "unit": 2,
+      "status": "linked",
+      "eventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p1",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null,
+      "suggestedEventId": "bk-0002"
+     },
+     {
+      "id": "u0003-p2",
+      "unit": 3,
+      "status": "tray",
+      "eventId": null
+     }
+    ],
+    "stats": {
+     "events": 3,
+     "needsReview": 3
+    }
+   }
+  },
+  {
+   "name": "unknown op",
+   "ops": [
+    {
+     "op": "event.explode",
+     "id": "bk-0001"
+    }
+   ],
+   "error": true
+  },
+  {
+   "name": "all or nothing",
+   "ops": [
+    {
+     "op": "event.update",
+     "id": "bk-0001",
+     "patch": {
+      "title": "kept?"
+     }
+    },
+    {
+     "op": "event.update",
+     "id": "missing",
+     "patch": {}
+    }
+   ],
+   "error": true
+  }
+ ]
+}
